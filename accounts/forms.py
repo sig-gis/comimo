@@ -2,7 +2,6 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 
-
 class SignUpForm(UserCreationForm):
     first_name = forms.CharField(max_length=30, help_text='Enter your name.')
     middle_name = forms.CharField(max_length=30, required=False, help_text='Enter your middle name. Optional')
@@ -14,7 +13,7 @@ class SignUpForm(UserCreationForm):
         required=False,
         help_text='Optional.')
     institution = forms.CharField(label="Institution", help_text='Which institution are you from?');
-    id = forms.CharField(label="ID type",
+    idtype = forms.CharField(label="ID type",
         widget=forms.Select(choices=[('citizenship','citizenship'),('passport','Passport')]),
         required=False,
         help_text='Optional.')
@@ -32,7 +31,7 @@ class SignUpForm(UserCreationForm):
             'second_last_name',
             'sector',
             'institution',
-            'id',
+            'idtype',
             'idnumber',
             'password1',
-            'password2');
+            'password2')
