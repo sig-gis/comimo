@@ -1,0 +1,33 @@
+html, body {
+  height:100%;
+  width:100%;
+  margin:0;
+  padding:0;
+}
+
+#main-container{
+  height:100%;
+  width:100%;
+  margin:0;
+  padding:0;
+}
+
+.shell {
+  height:100%;
+  width:100%;
+  margin:0;
+  padding:0;
+}
+
+.see-through{
+  opacity:0;
+  pointer-events:none;
+}
+
+.gold-drop{
+  background:gold;
+}
+
+h1{
+  text-transform: uppercase;
+}

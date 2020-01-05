@@ -1,4 +1,6 @@
 <!-- templates/base.html -->
+{% load staticfiles %}
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -6,9 +8,34 @@
   <title>{% block title %}Django Auth Tutorial{% endblock %}</title>
 </head>
 <body>
-  <main>
-    {% block content %}
-    {% endblock %}
-  </main>
+  {% block sidebar %}
+  {% endblock %}
+  {% block content %}
+  {% endblock %}
 </body>
+
+<script crossorigin src="https://unpkg.com/react@16/umd/react.development.js"></script>
+<script crossorigin src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
+<script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/6.26.0/babel.min.js"></script>
+<script type="text/javascript">
+  // global helpers
+  const l = function(message){
+    console.log(message);
+  }
+  // global constants
+  DJANGO_STATIC_URL = '{% static STATIC_URL %}';
+  DJANGO_IMAGE_FOLDER = 'images/';
+  DJANGO_JS_FOLDER = 'js/';
+  DJANGO_CSS_FOLDER = 'css/';
+</script>
+{% block pagescripts %}
+{% endblock %}
+
+<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+    integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous" />
+<link rel='stylesheet' href='{% static "css/gmw_global.css" %}' />
+{% block pagestyles %}
+{% endblock %}
+
 </html>

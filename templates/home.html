@@ -1,14 +1,40 @@
 <!-- templates/home.html-->
 {% extends 'base.html' %}
+{% load staticfiles %}
 
 {% block title %}Home{% endblock %}
 
-{% block content %}
+{% block sidebar %}
+<!-- <div id = 'sidebar'> -->
 {% if user.is_authenticated %}
   Hi {{ user.username }}!
-  <p><a href="{% url 'logout' %}">logout</a></p>
+  <!-- <p><a href="{% url 'logout' %}">logout</a></p> -->
 {% else %}
-  <p>You are not logged in</p>
-  <a href="{% url 'login' %}">login</a>
+  <!-- <p>You are not logged in</p> -->
+  <!-- <a href="{% url 'login' %}">login</a> -->
 {% endif %}
+<!-- </div> -->
+{% endblock %}
+
+{% block content %}
+<div id = 'main-container'>
+</div>
+{% endblock %}
+
+{% block pagescripts %}
+<!-- <script src='https://api.mapbox.com/mapbox-assembly/mbx/v0.18.0/assembly.js'></script> -->
+<script src="https://api.tiles.mapbox.com/mapbox-gl-js/v1.6.1/mapbox-gl.js"></script>
+
+<!-- add classes for the application -->
+<script type='text/javascript' src='{% static "js/rSlider.min.js" %}'></script>
+<script type='text/babel' src='{% static "js/SideIcons.js" %}'></script>
+<script type='text/babel' src='{% static "js/GoldMap.js" %}'></script>
+<script type='text/babel' src='{% static "js/gmw_main.js" %}'></script>
+{% endblock %}
+
+{% block pagestyles %}
+<link href='https://api.mapbox.com/mapbox-assembly/mbx/v0.18.0/assembly.min.css' rel='stylesheet'>
+<link href='https://api.tiles.mapbox.com/mapbox-gl-js/v1.6.1/mapbox-gl.css' rel='stylesheet' />
+<link rel='stylesheet' href='{% static "css/rSlider.min.css" %}' />
+<link rel='stylesheet' href='{% static "css/gmw_main.css" %}' />
 {% endblock %}
