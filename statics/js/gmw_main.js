@@ -62,8 +62,8 @@ class OuterShell extends React.Component{
 
   render(){
     return <div className='shell' {...this.props}>
-      <GoldMap />
-      <SliderPanel ishidden = {this.state.slidershidden}/>
+      <GoldMap {...this.appparams}/>
+      <SliderPanel ishidden = {this.state.slidershidden} slideradjusted = {this.slidersadjusted.bind(this)} />
       <StatsPanel ishidden = {this.state.statshidden} />
       <DownloadPanel ishidden = {this.state.downloadhidden} />
       <SubscribePanel ishidden = {this.state.subscribehidden} />

@@ -48,7 +48,7 @@ class SliderPanel extends React.Component{
       <div className='inputLabel'>Sliders to change years </div>
       <div className='slider-div'><input type="text" id="yearSlider" /></div>
       <div style={{'textAlign':'center','width':'100%'}}>
-        <button type="button" className="btn btn-warning map-upd-btn">Update Map</button>
+        <button type="button" className="btn btn-warning map-upd-btn" onClick={this.props.slideradjusted}>Update Map</button>
       </div>
     </div>
   }
