@@ -6,7 +6,7 @@ class SideIcons extends React.Component{
       title: this.props.tooltip
     }
     return <button {...parentProps}>
-      <span className={'glyphicon '+this.props.glyphicon}></span>
+      <span className={'glyphicon '+this.props.glyphicon} t="qweqwe"></span>
     </button>
   }
 }
@@ -18,28 +18,8 @@ class PlaceHolder extends React.Component{
 }
 
 class SliderPanel extends React.Component{
-  componentDidMount(){
-    this.probSlider = new rSlider({
-        target: '#probabilitySlider',
-        values: {min:0, max:100},
-        step:1,
-        range: true,
-        scale: false,
-        labels:false,
-        set: [50, 100]
-    });
-    this.yearSlider = new rSlider({
-        target: '#yearSlider',
-        values: {min:2000, max:2019},
-        step:1,
-        range: true,
-        scale: false,
-        labels:false,
-        set: [2000, 2019]
-    });
-  }
   render(){
-    return <div className={['popup-container ',this.props.ishidden?'see-through':''].join(' ')}>
+    return <div className={['popup-container ',this.props.ishidden?'see-through':''].join(' ')} style={{'top':'50px'}}>
       <h1><b>Change sliders to control data</b></h1>
       <br/>
       <div className='inputLabel'>Sliders to change probability %</div>
@@ -56,7 +36,7 @@ class SliderPanel extends React.Component{
 
 class StatsPanel extends React.Component{
   render(){
-    return <div className={['popup-container ',this.props.ishidden?'see-through':''].join(' ')}>
+    return <div className={['popup-container ',this.props.ishidden?'see-through':''].join(' ')} style={{'top':'100px'}}>
       <PlaceHolder />
     </div>
   }
@@ -64,7 +44,7 @@ class StatsPanel extends React.Component{
 
 class DownloadPanel extends React.Component{
   render(){
-    return <div className={['popup-container ',this.props.ishidden?'see-through':''].join(' ')}>
+    return <div className={['popup-container ',this.props.ishidden?'see-through':''].join(' ')} style={{'top':'150px'}}>
       <PlaceHolder />
     </div>
   }
@@ -72,15 +52,19 @@ class DownloadPanel extends React.Component{
 
 class SubscribePanel extends React.Component{
   render(){
-    return <div className={['popup-container ',this.props.ishidden?'see-through':''].join(' ')}>
-      <PlaceHolder />
+    return <div className={['popup-container ',this.props.ishidden?'see-through':''].join(' ')} style={{'top':'200px'}}>
+      <h1><b> Your Subscriptions </b></h1><br/>
+      <p> You are not subscribed to anything at the moment! Press the button below to subscribe to alerts!</p><br/>
+      <div style={{'textAlign':'center','width':'100%'}}>
+        <button type="button" className="btn btn-warning map-upd-btn" onClick={()=>{location.href = './subscribe'}}>Manage Subscriptions</button>
+      </div>
     </div>
   }
 }
 
 class ValidatePanel extends React.Component{
   render(){
-    return <div className={['popup-container ',this.props.ishidden?'see-through':''].join(' ')}>
+    return <div className={['popup-container ',this.props.ishidden?'see-through':''].join(' ')} style={{'top':'250px'}}>
       <PlaceHolder />
     </div>
   }
@@ -88,7 +72,7 @@ class ValidatePanel extends React.Component{
 
 class SearchPanel extends React.Component{
   render(){
-    return <div className={['popup-container ',this.props.ishidden?'see-through':''].join(' ')}>
+    return <div className={['popup-container ',this.props.ishidden?'see-through':''].join(' ')} style={{'top':'300px'}}>
       <PlaceHolder />
     </div>
   }

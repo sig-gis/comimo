@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+
+{% block content %}
+<div>
+{% if user.is_authenticated %}
+  Hi {{ user.username }}!
+  <p><a href="{% url 'logout' %}">logout</a></p>
+  <div style="border: 1px solid darkgreen; border-radius: 2px; padding:10px; text-align: center;">
+      <div><strong>SUBSCRIBE</strong></div>
+      <div style="margin-bottom: 10px;">Please subscribe to get the latest articles in your mailbox.</div>
+      <div>
+          <form action="{% url 'subscribe:addsubs' %}" method="post" class="form-horizontal">
+              {% csrf_token %}
+              <input type="email" name="email" class="form-control" placeholder="Your Email ID Please" required>
+              <input type="text" name="region" class="form-control" placeholder="Enter Region Please" required>
+              <br>
+              <input type="submit" value="Subscribe" class="btn btn-primary btn-sm">
+          </form>
+      </div>
+  </div>
+{% else %}
+  <p>You are not logged in</p>
+  <a href="{% url 'login' %}">login</a>
+  <script type="text/javascript">
+    location.href = "{% url 'login'%}"
+  </script>
+{% endif %}
+</div>
+{% endblock %}

@@ -67,6 +67,13 @@
   border-radius: 3px;
 }
 
+.map-upd-btn:hover{
+  color: #fff;
+  background-color: #ff9f17;
+  border-color: #eea236;
+  border-radius: 3px;
+}
+
 .disclaimer{
   position:absolute;
   left:0%;

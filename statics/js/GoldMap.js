@@ -40,8 +40,7 @@ class GoldMap extends React.Component{
 
 
   componentDidUpdate(){
-    l("gold.js");
-    l("if parameters changed, ");
+    l("gold.js - if parameters changed, ");
     this.refreshLayers();
     // fetch("https://127.0.0.1:8000/api/test")
     //   .then(res => res.json())

@@ -37,8 +37,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'corsheaders',
     'accounts.apps.AccountsConfig',
     'api.apps.ApiConfig',
+    'subscribe.apps.SubscribeConfig'
 ]
 
 MIDDLEWARE = [
@@ -49,6 +51,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
 ]
 
 ROOT_URLCONF = 'gmw.urls'
@@ -127,3 +130,15 @@ STATICFILES_DIRS = [
 
 LOGIN_REDIRECT_URL = 'home'
 LOGOUT_REDIRECT_URL = 'home'
+
+# update cors to disallow all origins
+CORS_ORIGIN_ALLOW_ALL = True
+
+# CORS_ORIGIN_WHITELIST = [
+#     'http://127.0.0.1:3000',
+#     'http://127.0.0.1:8000',
+#     'http://127.0.0.1:8080',
+#     'http://localhost:3000',
+#     'http://localhost:8000',
+#     'http://localhost:8080',
+# ]

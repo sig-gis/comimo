@@ -1,68 +1,135 @@
-
+var t;
 class OuterShell extends React.Component{
+  // set up class flags so each component update doesn't do redundant JS tasks
+  flags = {
+    updatelayers : true,
+    layeradded : false
+  }
+  // overall app parameters
   appparams = {
     minprobability:props.minprobability,
     maxprobability:props.maxprobability,
     minyear:props.minyear,
     maxyear:props.maxyear
   }
+  // initial component states
   appstates = {
     slidershidden:true,
     statshidden:true,
     downloadhidden:true,
-    subscribehidden:true,
+    subscribehidden:false,
     validatehidden:true,
     searchhidden:true
   }
+  // combining everything to app state
   state = {...this.appparams, ...this.appstates}
 
   constructor(props){
     super(props)
   }
 
-  showSliders(){
+  // function to toggle between visible panels
+  togglePanel(e, panelkey){
     document.activeElement.blur();
-    var newstate = {slidershidden:!this.state.slidershidden};
+    var newstate = {[panelkey]:!this.state[panelkey]};
     this.setState({...this.appstates,...newstate});
   }
-  showStats(){
-    document.activeElement.blur();
-    var newstate = {statshidden:!this.state.statshidden};
-    this.setState({...this.appstates,...newstate});
-  }
-  showDownload(){
-    document.activeElement.blur();
-    var newstate = {downloadhidden:!this.state.downloadhidden};
-    this.setState({...this.appstates,...newstate});
-  }
-  showSubscribe(){
-    document.activeElement.blur();
-    var newstate = {subscribehidden:!this.state.subscribehidden};
-    this.setState({...this.appstates,...newstate});
-  }
-  showValidate(){
-    document.activeElement.blur();
-    var newstate = {validatehidden:!this.state.validatehidden};
-    this.setState({...this.appstates,...newstate});
-  }
-  showSearch(){
-    document.activeElement.blur();
-    var newstate = {searchhidden:!this.state.searchhidden};
-    this.setState({...this.appstates,...newstate});
-  }
+  // function to toggle disclaimer [WIP]
   showDisclaimer(){
-    document.activeElement.blur();
-    var newstate = {disclaimerhidden:!this.state.disclaimerhidden};
-    this.setState({...this.appstates,...newstate});
+    l('maybe show a disclaimer modal');
   }
 
+  // function to call when slider values are changed
   slidersadjusted(){
-    console.log("sliders adjusted");
+    var probvals = this.probSlider.getValue().split(',').map((val)=>parseInt(val));
+    var yearvals = this.yearSlider.getValue().split(',').map((val)=>parseInt(val));
+    var newappparams = {
+      minprobability:probvals[0],
+      maxprobability:probvals[1],
+      minyear:yearvals[0],
+      maxyear:yearvals[1]
+    }
+    this.refreshlayers(newappparams);
   }
 
+  refreshlayers(appparams){
+    var tileURL = 'http://localhost:8000/api/test?minp='+appparams.minprobability+
+                    '&maxp='+appparams.maxprobability+
+                    '&miny='+appparams.minyear+
+                    '&maxy='+appparams.maxyear
+    fetch(tileURL)
+      .then(res => res.json())
+      .then(
+        (result) => {
+          l(result);
+          if (!this.flags.layeradded){
+            this.map.addSource('ee-Layer',{'type': 'raster',
+              'tiles': [result.url],
+              'tileSize': 256,
+            });
+            this.map.addLayer({
+              'id': 'simple-tiles',
+              'type': 'raster',
+              'source': 'ee-Layer',
+              'minzoom': 0,
+              'maxzoom': 22
+            });
+            this.flags.layeradded = true;
+          } else {
+            t = this.map.getSource('ee-Layer')
+            this.map.getSource('ee-Layer').tiles = [result.url];
+            this.map.style.sourceCaches['ee-Layer'].clearTiles()
+            this.map.style.sourceCaches['ee-Layer'].update(this.map.transform)
+            this.map.triggerRepaint()
+          }
+        },
+        (error) => {
+          l(error);
+        }
+      )
+  }
+
+  // set up parameters after components are mounted
+  componentDidMount(){
+    // render maps
+    this.map = new mapboxgl.Map({
+      container: this.mapContainer,
+      style: 'mapbox://styles/mapbox/streets-v9',
+      center: [-73.5609339,4.6371205],
+      zoom: 5
+    });
+
+    this.map.on('load', (e) => {
+      this.map.addControl(new mapboxgl.NavigationControl({showCompass:false}));
+    });
+    // render sliders
+    this.probSlider = new rSlider({
+        target: '#probabilitySlider',
+        values: {min:0, max:100},
+        step:1,
+        range: true,
+        scale: false,
+        labels:false,
+        set: [this.appparams.minprobability, this.appparams.maxprobability]
+    });
+    this.yearSlider = new rSlider({
+        target: '#yearSlider',
+        values: {min:2000, max:2019},
+        step:1,
+        range: true,
+        scale: false,
+        labels:false,
+        set: [this.appparams.minyear, this.appparams.maxyear]
+    });
+
+    // call initial state functions
+    this.refreshlayers(this.appparams);
+  }
+
+  // set up actions to render app
   render(){
     return <div className='shell' {...this.props}>
-      <GoldMap {...this.appparams}/>
+      <div ref={el => this.mapContainer = el}></div>
       <SliderPanel ishidden = {this.state.slidershidden} slideradjusted = {this.slidersadjusted.bind(this)} />
       <StatsPanel ishidden = {this.state.statshidden} />
       <DownloadPanel ishidden = {this.state.downloadhidden} />
@@ -74,32 +141,32 @@ class OuterShell extends React.Component{
         <SideIcons
           parentclass={this.state.slidershidden?'':'active-icon'}ß
           glyphicon='glyphicon-globe'
-          clickhandler={this.showSliders.bind(this)}
+          clickhandler={((e) => this.togglePanel(e, 'slidershidden')).bind(this)}
           tooltip='Sliders'/>
         <SideIcons
           parentclass={this.state.statshidden?'':'active-icon'}ß
           glyphicon='glyphicon-stats'
-          clickhandler={this.showStats.bind(this)}
+          clickhandler={((e) => this.togglePanel(e, 'statshidden')).bind(this)}
           tooltip='Stats'/>
         <SideIcons
           parentclass={this.state.downloadhidden?'':'active-icon'}ß
           glyphicon='glyphicon-download-alt'
-          clickhandler={this.showDownload.bind(this)}
+          clickhandler={((e) => this.togglePanel(e, 'downloadhidden')).bind(this)}
           tooltip='Download data'/>
         <SideIcons
           parentclass={this.state.subscribehidden?'':'active-icon'}ß
           glyphicon='glyphicon-envelope'
-          clickhandler={this.showSubscribe.bind(this)}
+          clickhandler={((e) => this.togglePanel(e, 'subscribehidden')).bind(this)}
           tooltip='Subscribe'/>
         <SideIcons
           parentclass={this.state.validatehidden?'':'active-icon'}ß
           glyphicon='glyphicon-ok'
-          clickhandler={this.showValidate.bind(this)}
+          clickhandler={((e) => this.togglePanel(e, 'validatehidden')).bind(this)}
           tooltip='Validate'/>
         <SideIcons
           parentclass={this.state.searchhidden?'':'active-icon'}ß
           glyphicon='glyphicon-search'
-          clickhandler={this.showSearch.bind(this)}
+          clickhandler={((e) => this.togglePanel(e, 'searchhidden')).bind(this)}
           tooltip='Search'/>
         <SideIcons parentclass='disclaimer'
           glyphicon='glyphicon-info-sign'
@@ -111,7 +178,7 @@ class OuterShell extends React.Component{
 };
 
 const props = {
-  minprobability:0,
+  minprobability:50,
   maxprobability:100,
   minyear:2000,
   maxyear:2019
