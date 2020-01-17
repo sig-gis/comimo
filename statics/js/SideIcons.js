@@ -54,7 +54,7 @@ class SubscribePanel extends React.Component{
   render(){
     return <div className={['popup-container ',this.props.ishidden?'see-through':''].join(' ')} style={{'top':'200px'}}>
       <h1><b> Your Subscriptions </b></h1><br/>
-      <p> You are not subscribed to anything at the moment! Press the button below to subscribe to alerts!</p><br/>
+      <p> See and manage which regions you are getting alert from!</p><br/>
       <div style={{'textAlign':'center','width':'100%'}}>
         <button type="button" className="btn btn-warning map-upd-btn" onClick={()=>{location.href = './subscribe'}}>Manage Subscriptions</button>
       </div>

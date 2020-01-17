@@ -40,7 +40,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'accounts.apps.AccountsConfig',
     'api.apps.ApiConfig',
-    'subscribe.apps.SubscribeConfig'
+    'subscribe.apps.SubscribeConfig',
 ]
 
 MIDDLEWARE = [

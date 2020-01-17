@@ -17,7 +17,7 @@ class OuterShell extends React.Component{
     slidershidden:true,
     statshidden:true,
     downloadhidden:true,
-    subscribehidden:false,
+    subscribehidden:true,
     validatehidden:true,
     searchhidden:true
   }
