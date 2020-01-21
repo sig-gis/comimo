@@ -14,7 +14,7 @@ class Profile(models.Model):
     idtype = models.CharField(max_length=100, blank=True)
     idnumber = models.CharField(max_length=100, blank=True)
     email = models.EmailField(max_length=150)
-    bio = models.TextField()
+    bio = models.TextField(blank=True)
 
     def __str__(self):
         return self.user.username

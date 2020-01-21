@@ -2,33 +2,28 @@
 {% load staticfiles %}
 
 {% block content %}
-<div>
+<div class='container'>
 {% if user.is_authenticated %}
-  Hi {{ user.username }}!
-  <p><a href="{% url 'logout' %}">logout</a></p>
-  <div style="border: 1px solid darkgreen; border-radius: 2px; padding:10px; text-align: center;">
-    <table>
-      {% for row in rows %}
-      <tr>{% for cell in row %}<td>{{ cell }}</td><td><button onClick="{% url 'login'%}">X</button></td>{% endfor %}</tr>
-      {% endfor %}
-    </table>
-    <div><strong>SUBSCRIBE</strong></div>
-    <div style="margin-bottom: 10px;">Please subscribe to get the latest articles in your mailbox.</div>
-    <div>
-      <form action="{% url 'subscribe:addsubs' %}" method="post" class="form-horizontal">
-        {% csrf_token %}
-        <input type="text" name="region" class="form-control" placeholder="Enter Region Please" required>
-        <br>
-        <input type="submit" value="Subscribe" class="btn btn-primary btn-sm">
-      </form>
-    </div>
+  <h3>
+    Hello <b> {{ user.username }}!</b>
+  </h3>
+  <div id="subs-list">
   </div>
+  <p><a href="{% url 'logout' %}">logout</a></p>
 {% else %}
   <p>You are not logged in</p>
-  <a href="{% url 'login' %}">login</a>
+  <a href="{% url 'login' %}?next={{request.path}}">login</a>
   <script type="text/javascript">
-    location.href = "{% url 'login'%}"
+    location.href = "{% url 'login'%}?next={{request.path}}"+
   </script>
 {% endif %}
 </div>
+{% endblock %}
+
+{% block pagescripts %}
+<script type='text/babel' src='{% static "js/gmw_subscribe.js" %}'></script>
+{% endblock %}
+
+{% block pagestyles %}
+<link rel='stylesheet' href='{% static "css/subscribe_manage.css" %}' />
 {% endblock %}

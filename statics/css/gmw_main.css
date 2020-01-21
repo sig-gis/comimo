@@ -95,3 +95,25 @@
 .placeholder{
   height:400px;
 }
+
+.info-modal{
+  position:absolute;
+  height:100%;
+  width:100%;
+  padding:0;
+  margin:0;
+  top:0;
+  left:0;
+  z-index:99;
+  background:#0000009e;
+}
+
+.info-modal .inner-container{
+  border-radius:5px;
+  margin:50px auto;
+  left:0;
+  right:0;
+  width:50%;
+  padding:10px;
+  background:white;
+}

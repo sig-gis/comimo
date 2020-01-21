@@ -19,7 +19,8 @@ class OuterShell extends React.Component{
     downloadhidden:true,
     subscribehidden:true,
     validatehidden:true,
-    searchhidden:true
+    searchhidden:true,
+    apponfohidden:false
   }
   // combining everything to app state
   state = {...this.appparams, ...this.appstates}
@@ -35,7 +36,7 @@ class OuterShell extends React.Component{
     this.setState({...this.appstates,...newstate});
   }
   // function to toggle disclaimer [WIP]
-  showDisclaimer(){
+  showAppInfo(){
     l('maybe show a disclaimer modal');
   }
 
@@ -53,7 +54,7 @@ class OuterShell extends React.Component{
   }
 
   refreshlayers(appparams){
-    var tileURL = 'http://localhost:8000/api/test?minp='+appparams.minprobability+
+    var tileURL = '/api/test?minp='+appparams.minprobability+
                     '&maxp='+appparams.maxprobability+
                     '&miny='+appparams.minyear+
                     '&maxy='+appparams.maxyear
@@ -91,6 +92,8 @@ class OuterShell extends React.Component{
 
   // set up parameters after components are mounted
   componentDidMount(){
+    mapboxgl.accessToken = 'pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4M29iazA2Z2gycXA4N2pmbDZmangifQ.-g_vE53SD2WrJ6tFX7QHmA';
+
     // render maps
     this.map = new mapboxgl.Map({
       container: this.mapContainer,
@@ -139,46 +142,48 @@ class OuterShell extends React.Component{
       <div className='sidebar' >
         <SideIcons parentclass='gold-drop' glyphicon='glyphicon-question-sign' />
         <SideIcons
-          parentclass={this.state.slidershidden?'':'active-icon'}ß
+          parentclass={this.state.slidershidden?'':'active-icon'}
           glyphicon='glyphicon-globe'
           clickhandler={((e) => this.togglePanel(e, 'slidershidden')).bind(this)}
           tooltip='Sliders'/>
         <SideIcons
-          parentclass={this.state.statshidden?'':'active-icon'}ß
+          parentclass={this.state.statshidden?'':'active-icon'}
           glyphicon='glyphicon-stats'
           clickhandler={((e) => this.togglePanel(e, 'statshidden')).bind(this)}
           tooltip='Stats'/>
         <SideIcons
-          parentclass={this.state.downloadhidden?'':'active-icon'}ß
+          parentclass={this.state.downloadhidden?'':'active-icon'}
           glyphicon='glyphicon-download-alt'
           clickhandler={((e) => this.togglePanel(e, 'downloadhidden')).bind(this)}
           tooltip='Download data'/>
         <SideIcons
-          parentclass={this.state.subscribehidden?'':'active-icon'}ß
+          parentclass={this.state.subscribehidden?'':'active-icon'}
           glyphicon='glyphicon-envelope'
           clickhandler={((e) => this.togglePanel(e, 'subscribehidden')).bind(this)}
           tooltip='Subscribe'/>
         <SideIcons
-          parentclass={this.state.validatehidden?'':'active-icon'}ß
+          parentclass={this.state.validatehidden?'':'active-icon'}
           glyphicon='glyphicon-ok'
           clickhandler={((e) => this.togglePanel(e, 'validatehidden')).bind(this)}
           tooltip='Validate'/>
         <SideIcons
-          parentclass={this.state.searchhidden?'':'active-icon'}ß
+          parentclass={this.state.searchhidden?'':'active-icon'}
           glyphicon='glyphicon-search'
           clickhandler={((e) => this.togglePanel(e, 'searchhidden')).bind(this)}
           tooltip='Search'/>
-        <SideIcons parentclass='disclaimer'
+        <SideIcons
+          parentclass='disclaimer'
           glyphicon='glyphicon-info-sign'
-          clickhandler={this.showDisclaimer.bind(this)}
+          clickhandler={((e) => this.togglePanel(e, 'appinfohidden')).bind(this)}
           tooltip='App Info'/>
       </div>
+      <AppInfo ishidden={this.state.appinfohidden} onOuterClick={((e) => this.togglePanel(e, 'appinfohidden')).bind(this)}/>
     </div>
   }
 };
 
 const props = {
-  minprobability:50,
+  minprobability:0,
   maxprobability:100,
   minyear:2000,
   maxyear:2019

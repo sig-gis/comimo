@@ -28,6 +28,15 @@ html, body {
   background:gold;
 }
 
-h1{
+.heading1{
   text-transform: uppercase;
+  font-weight: 500;
+  line-height: 1.1;
+  margin-top: 20px;
+  margin-bottom: 10px;
+}
+
+.heading3{
+  font-size: 24px;
+  font-weight: bold;
 }

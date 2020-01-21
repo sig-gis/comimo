@@ -6,6 +6,8 @@ from . import apps
 
 app_name = apps.SubscribeConfig.name
 urlpatterns = [
-    path('', views.manageSubscriptions, name='manage_subscriptions '),
-    path('addsubs/', views.addSubs, name='addsubs')
+    path('', views.manageSubscriptions, name='managesubs'),
+    path('addsubs/', views.addSubs, name='addsubs'),
+    path('delsubs/', views.deleteSubs, name='delsubs'),
+    path('getsubs/', views.getSubs, name='getsubs')
 ]
