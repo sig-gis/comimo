@@ -6,7 +6,7 @@
 {% if user.is_authenticated %}
   <h3>
     Hello <b> {{ user.username }}!</b>
-  </h3>
+  </h3><br/>
   <div id="subs-list">
   </div>
   <p><a href="{% url 'logout' %}">logout</a></p>
@@ -21,9 +21,12 @@
 {% endblock %}
 
 {% block pagescripts %}
+<script src="https://api.tiles.mapbox.com/mapbox-gl-js/v1.6.1/mapbox-gl.js"></script>
 <script type='text/babel' src='{% static "js/gmw_subscribe.js" %}'></script>
 {% endblock %}
 
 {% block pagestyles %}
+<link href='https://api.mapbox.com/mapbox-assembly/mbx/v0.18.0/assembly.min.css' rel='stylesheet'>
+<link href='https://api.tiles.mapbox.com/mapbox-gl-js/v1.6.1/mapbox-gl.css' rel='stylesheet' />
 <link rel='stylesheet' href='{% static "css/subscribe_manage.css" %}' />
 {% endblock %}

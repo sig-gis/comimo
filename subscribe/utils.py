@@ -5,14 +5,15 @@ from datetime import datetime
 from .models import SubscribeModel
 
 # function to add entry to model
-def saveEmail(email, region):
+def saveEmail(email, region, level):
     try:
-        subscribe_model_instance = SubscribeModel.objects.get(email=email, region=region)
+        subscribe_model_instance = SubscribeModel.objects.get(email=email, region=region, level=level)
         return 'Exists'
     except ObjectDoesNotExist as e:
         subscribe_model_instance = SubscribeModel()
         subscribe_model_instance.email = email
         subscribe_model_instance.region = region
+        subscribe_model_instance.level = level
         subscribe_model_instance.last_alert_for = datetime.now()
         subscribe_model_instance.mail_count = 0
         subscribe_model_instance.created_date = datetime.now()
@@ -24,9 +25,9 @@ def saveEmail(email, region):
         return 'Error'
 
 
-def delEmail(email,region):
+def delEmail(email,region, level):
     try:
-        subscribe_model_instance = SubscribeModel.objects.get(email=email, region=region)
+        subscribe_model_instance = SubscribeModel.objects.get(email=email, region=region, level=level)
     except Exception as e:
         return 'Error'
     subscribe_model_instance.delete()

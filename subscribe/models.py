@@ -5,6 +5,7 @@ class SubscribeModel(models.Model):
     sys_id = models.AutoField(primary_key=True, null=False, blank=True)
     email = models.EmailField(null=False, blank=True, max_length=200)
     region = models.CharField(max_length=200, null=False)
+    level = models.IntegerField(null=False, default=0)
     last_alert_for = models.DateTimeField(null=False, blank=True)
     created_date = models.DateTimeField(null=False, blank=True)
     updated_date = models.DateTimeField(null=False, blank=True)

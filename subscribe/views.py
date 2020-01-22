@@ -25,8 +25,12 @@ def addSubs(request):
     else:
         email = user.email
         region = request.GET.get('region')
-        subaction = utils.saveEmail(email, region)
-        return JsonResponse({'action':subaction,'region':region})
+        try:
+            level = int(request.GET.get('level'))
+        except Exception as e:
+            return JsonResponse({'action':'Error','region':region, 'level':level})
+        subaction = utils.saveEmail(email, region, level)
+        return JsonResponse({'action':subaction,'region':region, 'level':level})
 
 def deleteSubs(request):
     user = request.user
@@ -35,8 +39,12 @@ def deleteSubs(request):
     else:
         email = user.email
         region = request.GET.get('region')
-        subaction = utils.delEmail(email, region)
-        return JsonResponse({'action':subaction,'region':region})
+        try:
+            level = int(request.GET.get('level'))
+        except Exception as e:
+            return JsonResponse({'action':'Error','region':region, 'level':level})
+        subaction = utils.delEmail(email, region, level)
+        return JsonResponse({'action':subaction,'region':region, 'level':level})
 
 def getSubs(request):
     user = request.user

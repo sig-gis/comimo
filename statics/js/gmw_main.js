@@ -20,7 +20,7 @@ class OuterShell extends React.Component{
     subscribehidden:true,
     validatehidden:true,
     searchhidden:true,
-    apponfohidden:false
+    apponfohidden:true
   }
   // combining everything to app state
   state = {...this.appparams, ...this.appstates}

@@ -6,7 +6,7 @@ class SideIcons extends React.Component{
       title: this.props.tooltip
     }
     return <button {...parentProps}>
-      <span className={'glyphicon '+this.props.glyphicon} t="qweqwe"></span>
+      <span className={'glyphicon '+this.props.glyphicon}></span>
     </button>
   }
 }
