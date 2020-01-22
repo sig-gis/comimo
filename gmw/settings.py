@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'accounts.apps.AccountsConfig',
     'api.apps.ApiConfig',
     'subscribe.apps.SubscribeConfig',
+    'django_cron'
 ]
 
 MIDDLEWARE = [
@@ -142,3 +143,7 @@ CORS_ORIGIN_ALLOW_ALL = True
 #     'http://localhost:8000',
 #     'http://localhost:8080',
 # ]
+
+CRON_CLASSES = [
+    'subscribe.cron.GoldAlerts'
+]

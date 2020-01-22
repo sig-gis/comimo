@@ -45,7 +45,7 @@ def getfeatures(request):
         level = 0
 
     if (level == 0):
-        level0 = fiona.open(os.path.join(module_dir,'shapes','Level3.shp'))
+        level0 = fiona.open(os.path.join(module_dir,'shapes','Level0.shp'))
         return JsonResponse(level0.next());
     elif (level == 1):
         level1 = fiona.open(os.path.join(module_dir,'shapes','Level1.shp'))
@@ -57,6 +57,6 @@ def getfeatures(request):
         level2 = fiona.open(os.path.join(module_dir,'shapes','Level2.shp'))
         fcoll = {'type':'FeatureCollection', 'features':[]}
         for feature in level2:
-            if (feature['properties']['admin1Name']==focus):
+            if (feature['properties']['admin1RefN']==focus):
                 fcoll['features'].append(feature)
         return JsonResponse(fcoll)
