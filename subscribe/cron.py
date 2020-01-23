@@ -1,5 +1,6 @@
 from django_cron import CronJobBase, Schedule
 from .models import SubscribeModel
+from .mailhelper import sendmails
 import ee
 import os
 import fiona
@@ -29,8 +30,9 @@ def getShape(region, level):
     module_dir = os.path.dirname(__file__)
     shapefile = os.path.join(os.path.dirname(module_dir),'api','shapes','Level'+str(level)+'.shp')
     iterator = fiona.open(shapefile)
+
     if (level == 0):
-        return iterator.next();
+        return next(iter(iterator))
     elif (level == 1):
         for feature in iterator:
             if (feature['properties']['admin1RefN'] == region):
@@ -42,47 +44,38 @@ def getShape(region, level):
 
 
 def reduceRegion(shapeObj,raster):
-
-    sadasd
+    polygon = ee.Geometry.MultiPolygon(shapeObj['coordinates']);
+    value = raster.gte(FLAG_THRESHOLD).reduceRegion(ee.Reducer.sum(), polygon, 30, bestEffort = True)
+    return value.getInfo()['b1']>0
 
 class GoldAlerts(CronJobBase):
     RUN_EVERY_MINS = 0.001 # every 1 min
-    REPOSITORY = 'users/nk-sig/GoldMineProbabilities'
 
     schedule = Schedule(run_every_mins=RUN_EVERY_MINS)
     code = 'gmw.cronalerts'    # a unique code
-
-
-    def getLatestImage(self):
-        print('here')
-        # imgList = ee.data.getList({'id':REPOSITORY})
-        # print(imgList)
-        # return imgList
 
     def do(self):
         authGEE()
         subscribe_instances = SubscribeModel.objects.all().values()
         # print('Fetching instances ... Done')
         latest_image, latest_date = getLatestImage()
-        print('Fetching latest image ... Done')
         emails = {}
         values = {}
         for instance in iter(subscribe_instances):
             last_alert = instance['last_alert_for']
             if (latest_date>last_alert):
                 try:
-                    ad = str(instance['email'])
-                    if ad in emails:
-                        emails[ad] += ','+instance['region']+'_'+str(instance['level'])
-                    else:
-                        emails[ad] = instance['region']+'_'+str(instance['level'])
-
                     region = instance['region']
                     level = instance['level']
                     shapeObj = getShape(region, level)
                     flag = reduceRegion(shapeObj['geometry'], latest_image)
-                    # print(shapeObj)
+                    if (flag):
+                        ad = str(instance['email'])
+                        if ad in emails:
+                            emails[ad] += ','+instance['region']+'_'+str(instance['level'])
+                        else:
+                            emails[ad] = instance['region']+'_'+str(instance['level'])
                 except Exception as e:
-                    print('error occured!!', instance, e)
-        # print(emails)
+                    print('error occured!!', e)
+        sendmails(emails)
         pass    # do your thing here

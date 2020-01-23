@@ -16,7 +16,7 @@ def test(request):
     maxp = int(request.GET.get('maxp'))/100.
     miny = int(request.GET.get('miny'))
     maxy = int(request.GET.get('maxy'))
-    img = ee.Image('users/nk-sig/example-gold')
+    img = ee.Image('users/nk-sig/GoldMineProbabilities/2020-01-22')
     img = img.updateMask(img.gte(minp))
     visparams = {'min':minp,'max':maxp,'palette':['225ea8','41b6c4','a1dab4','ffffcc']}
     mapid = ee.data.getTileUrl(img.getMapId(visparams),0,0,0)[:-5]+'{z}/{x}/{y}'
@@ -43,7 +43,6 @@ def getfeatures(request):
         level = int(request.GET.get('level'))
     except Exception as e:
         level = 0
-
     if (level == 0):
         level0 = fiona.open(os.path.join(module_dir,'shapes','Level0.shp'))
         return JsonResponse(level0.next());
@@ -57,6 +56,6 @@ def getfeatures(request):
         level2 = fiona.open(os.path.join(module_dir,'shapes','Level2.shp'))
         fcoll = {'type':'FeatureCollection', 'features':[]}
         for feature in level2:
-            if (feature['properties']['admin1RefN']==focus):
+            if (feature['properties']['admin1Name']==focus):
                 fcoll['features'].append(feature)
         return JsonResponse(fcoll)
