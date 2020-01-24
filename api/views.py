@@ -1,9 +1,9 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import JsonResponse, HttpResponse
 import ee
 import json, fiona
 import os
-from api.utils import authGEE, IMAGE_REPO, getImageList, getDefaultStyled
+from api.utils import authGEE, IMAGE_REPO, getImageList, getComposite, getDefaultStyled
 
 
 
@@ -21,13 +21,27 @@ def test(request):
     resp['minp'] = minp
     return JsonResponse(resp)
 
+def getCompositeImage(request):
+    try:
+        # parse request parameters
+        minp = int(request.GET.get('minp'))/100.
+        maxp = int(request.GET.get('maxp'))/100.
+        miny = request.GET.get('miny')
+        maxy = request.GET.get('maxy')
+        authGEE()
+        image = getComposite(minp, maxp, miny, maxy)
+        resp = getDefaultStyled(image)
+        resp['params'] = [minp, maxp, miny, maxy]
+        return JsonResponse(resp)
+    except TypeError as e:
+        print(e)
+        # return redirect('login')
+
 def getSingleImage(request):
     authGEE()
     img = ee.Image(IMAGE_REPO+'/'+request.GET.get('id'))
     resp = getDefaultStyled(img)
     return JsonResponse(resp)
-
-
 
 def getImageNames(request):
     authGEE()

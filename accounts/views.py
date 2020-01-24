@@ -17,7 +17,7 @@ def signupView(request):
         user.profile.idtype = form.cleaned_data.get('idtype')
         user.profile.idnumber = form.cleaned_data.get('idnumber')
         user.profile.email = form.cleaned_data.get('email')
-        user.is_active = False
+        user.is_active = True
         user.save()
         return redirect('home')
     else:

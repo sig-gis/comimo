@@ -70,8 +70,16 @@ class OpacityControl {
         });
 
         // レイヤ名追加
+
         const layerName = document.createElement('span');
         layerName.appendChild(document.createTextNode(this._overLayersOption[layerId]));
+        var vis = this._map.getSource(layerId)._options.vis
+        if (vis){
+          const icon = document.createElement('span');
+          icon.className = "legend-icon";
+          icon.style = "background:#"+vis.palette[0];
+          this._container.appendChild(icon);
+        }
         this._container.appendChild(layerName);
     }
 

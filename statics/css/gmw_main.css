@@ -126,3 +126,8 @@
 .select-image-date{
     width:100%;
 }
+
+.rs-tooltip{
+  padding:0px;
+  font-size:10px;
+}

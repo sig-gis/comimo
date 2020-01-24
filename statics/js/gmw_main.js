@@ -9,7 +9,7 @@ class OuterShell extends React.Component{
   URLS = {
     IMG_DATES:'/api/getimagenames',
     SINGLE_IMAGE: '/api/getsingleimage',
-    ENSEMBLE_IMAGE: '/api/test'
+    COMPOSITE_IMAGE: '/api/getcompositeimage'
   }
   // overall app parameters
   appparams = {
@@ -29,7 +29,7 @@ class OuterShell extends React.Component{
     appinfohidden:true
   }
   persistentstates = {
-    showensemble:false,
+    showcomposite:false,
     imageDates:[]
   }
   // combining everything to app state
@@ -47,24 +47,24 @@ class OuterShell extends React.Component{
   }
 
   imagetypechanged(){
-    this.setState({showensemble:!this.state.showensemble})
+    this.setState({showcomposite:!this.state.showcomposite})
   }
 
   // function to call when slider values are changed
   slidersadjusted(){
-    if (this.state.showensemble){
+    if (this.state.showcomposite){
       var probvals = this.probSlider.getValue().split(',').map((val)=>parseInt(val));
-      var yearvals = this.yearSlider.getValue().split(',').map((val)=>parseInt(val));
+      var yearvals = this.yearSlider.getValue().split(',');
       var newappparams = {
         minprobability:probvals[0],
         maxprobability:probvals[1],
         minyear:yearvals[0],
         maxyear:yearvals[1]
       }
-      var tileURL = this.URLS.ENSEMBLE_IMAGE+'?minp='+appparams.minprobability+
-                      '&maxp='+appparams.maxprobability+
-                      '&miny='+appparams.minyear+
-                      '&maxy='+appparams.maxyear
+      var tileURL = this.URLS.COMPOSITE_IMAGE+'?minp='+newappparams.minprobability+
+                      '&maxp='+newappparams.maxprobability+
+                      '&miny='+newappparams.minyear+
+                      '&maxy='+newappparams.maxyear
     }else{
       var iid =document.getElementById('selectimagedate').value
       var tileURL = this.URLS.SINGLE_IMAGE+'?id='+iid
@@ -79,7 +79,18 @@ class OuterShell extends React.Component{
       .then(res => res.json())
       .then(
         (result) => {
-          this.setState({imageDates:result.ids.sort().reverse()})
+          result.ids.sort();
+          this.yearSlider = new rSlider({
+              target: '#yearSlider',
+              values:result.ids.slice(),
+              step:1,
+              range: true,
+              scale: false,
+              labels:false,
+              set: [this.appparams.minyear, this.appparams.maxyear]
+          });
+          this.setState({imageDates:result.ids.reverse()})
+
           var tileURL = this.URLS.SINGLE_IMAGE+'?id='+result.ids[0]
           this.refreshlayers(tileURL)
         },
@@ -98,6 +109,7 @@ class OuterShell extends React.Component{
             this.map.addSource('ee-Layer',{'type': 'raster',
               'tiles': [result.url],
               'tileSize': 256,
+              'vis': result.visparams
             });
             this.map.addLayer({
               'id': 'ee-Layer',
@@ -109,7 +121,7 @@ class OuterShell extends React.Component{
             this.flags.layeradded = true;
             const overlays = {
               'ee-Layer': 'Prediction',
-              'mapbox-satellite':'Mapbox Satellite Imagery'
+              'mapbox-streets':'Mapbox Streets'
             }
             var opacity = new OpacityControl({
               // baseLayers:baseLayers,
@@ -121,6 +133,7 @@ class OuterShell extends React.Component{
           } else {
             t = this.map//.getSource('ee-Layer')
             this.map.getSource('ee-Layer').tiles = [result.url];
+            // clear existing tile cache and force map refresh
             this.map.style.sourceCaches['ee-Layer'].clearTiles()
             this.map.style.sourceCaches['ee-Layer'].update(this.map.transform)
             this.map.triggerRepaint()
@@ -139,7 +152,7 @@ class OuterShell extends React.Component{
     // render maps
     this.map = new mapboxgl.Map({
       container: this.mapContainer,
-      style: 'mapbox://styles/mapbox/streets-v9',
+      style: 'mapbox://styles/mapbox/satellite-streets-v9',
       center: [-73.5609339,4.6371205],
       zoom: 5
     });
@@ -147,15 +160,15 @@ class OuterShell extends React.Component{
     this.map.on('load', (e) => {
       this.map.addControl(new mapboxgl.NavigationControl({showCompass:false}));
       t = this.map
-      this.map.addSource("mapbox-satellite", {
+      this.map.addSource("mapbox-streets", {
         "type": "raster",
-        "url": "mapbox://mapbox.satellite",
+        "url": "mapbox://mapbox.streets",
         "tileSize": 256
       });
       this.map.addLayer({
-        'id': 'mapbox-satellite',
+        'id': 'mapbox-streets',
         'type': 'raster',
-        'source': 'mapbox-satellite'
+        'source': 'mapbox-streets'
       });
     });
     // render sliders
@@ -168,16 +181,6 @@ class OuterShell extends React.Component{
         labels:false,
         set: [this.appparams.minprobability, this.appparams.maxprobability]
     });
-    this.yearSlider = new rSlider({
-        target: '#yearSlider',
-        values: {min:2000, max:2019},
-        step:1,
-        range: true,
-        scale: false,
-        labels:false,
-        set: [this.appparams.minyear, this.appparams.maxyear]
-    });
-
 
     this.getImageDates();
     // call initial state functions
@@ -190,7 +193,7 @@ class OuterShell extends React.Component{
       <SliderPanel ishidden = {this.state.slidershidden}
           slideradjusted = {this.slidersadjusted.bind(this)}
           oncheckchange = {this.imagetypechanged.bind(this)}
-          showensemble = {this.state.showensemble}
+          showcomposite = {this.state.showcomposite}
           imageDates = {this.state.imageDates}
           />
       <StatsPanel ishidden = {this.state.statshidden} />

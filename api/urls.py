@@ -10,4 +10,5 @@ urlpatterns = [
     path('getfeatures/', views.getFeatures, name='getfeatures'),
     path('getimagenames/', views.getImageNames, name='getimagenames'),
     path('getsingleimage/', views.getSingleImage, name='getsingleimage'),
+    path('getcompositeimage/', views.getCompositeImage, name='getcompositeimage'),
 ]
