@@ -20,7 +20,7 @@ class OuterShell extends React.Component{
   }
   // initial component states
   appstates = {
-    slidershidden:false,
+    slidershidden:true,
     statshidden:true,
     downloadhidden:true,
     subscribehidden:true,
