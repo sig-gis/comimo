@@ -18,15 +18,40 @@ class PlaceHolder extends React.Component{
 }
 
 class SliderPanel extends React.Component{
+
+  getOptions(list){
+    var options = []
+    for (let i = 0; i < list.length; i++) {
+      options.push(<option value={list[i]} key={i}>{list[i]}</option>);
+    }
+    return options
+  }
+
   render(){
-    return <div className={['popup-container ',this.props.ishidden?'see-through':''].join(' ')} style={{'top':'50px'}}>
-      <h1><b>Change sliders to control data</b></h1>
+    // var imageDates = this.props.imageDates;
+
+    var singledate = <div className={this.props.showensemble?'see-through ht_0':''}>
+      <br/>Select a date of prediction
+      <select className='select-image-date' id='selectimagedate'>
+        {this.getOptions(this.props.imageDates)}
+      </select>
+      <br/><br/>
+    </div>
+
+    var range = <div className={this.props.showensemble?'':'see-through ht_0'}>
+      {/*Change sliders to control data*/}
       <br/>
       <div className='inputLabel'>Sliders to change probability %</div>
       <div className='slider-div'><input type="text" id="probabilitySlider" /></div>
       <br/>
       <div className='inputLabel'>Sliders to change years </div>
       <div className='slider-div'><input type="text" id="yearSlider" /></div>
+    </div>
+    return <div className={['popup-container ',this.props.ishidden?'see-through':''].join(' ')} style={{'top':'50px'}}>
+      <input type="checkbox" className="form-check-input" id="showensemble" onChange={this.props.oncheckchange} defaultChecked={this.props.showensemble}/>
+      <label className="form-check-label" htmlFor="showensemble">&nbsp;SHOW ENSEMBLE</label>
+      {singledate}
+      {range}
       <div style={{'textAlign':'center','width':'100%'}}>
         <button type="button" className="btn btn-warning map-upd-btn" onClick={this.props.slideradjusted}>Update Map</button>
       </div>

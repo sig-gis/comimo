@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect, reverse
 from django.contrib.auth import login, authenticate
 from django.views.generic.base import TemplateView
 from django.http import JsonResponse, HttpResponse
-from . import utils
+from subscribe import utils
 
 def requestLogin(request):
     return redirect(reverse('login')+'?next='+request.build_absolute_uri())

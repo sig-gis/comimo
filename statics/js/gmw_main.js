@@ -5,6 +5,12 @@ class OuterShell extends React.Component{
     updatelayers : true,
     layeradded : false
   }
+  // API URLS
+  URLS = {
+    IMG_DATES:'/api/getimagenames',
+    SINGLE_IMAGE: '/api/getsingleimage',
+    ENSEMBLE_IMAGE: '/api/test'
+  }
   // overall app parameters
   appparams = {
     minprobability:props.minprobability,
@@ -14,16 +20,20 @@ class OuterShell extends React.Component{
   }
   // initial component states
   appstates = {
-    slidershidden:true,
+    slidershidden:false,
     statshidden:true,
     downloadhidden:true,
     subscribehidden:true,
     validatehidden:true,
     searchhidden:true,
-    apponfohidden:true
+    appinfohidden:true
+  }
+  persistentstates = {
+    showensemble:false,
+    imageDates:[]
   }
   // combining everything to app state
-  state = {...this.appparams, ...this.appstates}
+  state = {...this.appparams, ...this.appstates, ...this.persistentstates}
 
   constructor(props){
     super(props)
@@ -35,49 +45,81 @@ class OuterShell extends React.Component{
     var newstate = {[panelkey]:!this.state[panelkey]};
     this.setState({...this.appstates,...newstate});
   }
-  // function to toggle disclaimer [WIP]
-  showAppInfo(){
-    l('maybe show a disclaimer modal');
+
+  imagetypechanged(){
+    this.setState({showensemble:!this.state.showensemble})
   }
 
   // function to call when slider values are changed
   slidersadjusted(){
-    var probvals = this.probSlider.getValue().split(',').map((val)=>parseInt(val));
-    var yearvals = this.yearSlider.getValue().split(',').map((val)=>parseInt(val));
-    var newappparams = {
-      minprobability:probvals[0],
-      maxprobability:probvals[1],
-      minyear:yearvals[0],
-      maxyear:yearvals[1]
+    if (this.state.showensemble){
+      var probvals = this.probSlider.getValue().split(',').map((val)=>parseInt(val));
+      var yearvals = this.yearSlider.getValue().split(',').map((val)=>parseInt(val));
+      var newappparams = {
+        minprobability:probvals[0],
+        maxprobability:probvals[1],
+        minyear:yearvals[0],
+        maxyear:yearvals[1]
+      }
+      var tileURL = this.URLS.ENSEMBLE_IMAGE+'?minp='+appparams.minprobability+
+                      '&maxp='+appparams.maxprobability+
+                      '&miny='+appparams.minyear+
+                      '&maxy='+appparams.maxyear
+    }else{
+      var iid =document.getElementById('selectimagedate').value
+      var tileURL = this.URLS.SINGLE_IMAGE+'?id='+iid
     }
-    this.refreshlayers(newappparams);
+    this.refreshlayers(tileURL);
+
   }
 
-  refreshlayers(appparams){
-    var tileURL = '/api/test?minp='+appparams.minprobability+
-                    '&maxp='+appparams.maxprobability+
-                    '&miny='+appparams.minyear+
-                    '&maxy='+appparams.maxyear
+  getImageDates(){
+    var tileURL = this.URLS.IMG_DATES;
     fetch(tileURL)
       .then(res => res.json())
       .then(
         (result) => {
-          l(result);
+          this.setState({imageDates:result.ids.sort().reverse()})
+          var tileURL = this.URLS.SINGLE_IMAGE+'?id='+result.ids[0]
+          this.refreshlayers(tileURL)
+        },
+        (error) => {
+          l(error);
+        }
+      )
+  }
+
+  refreshlayers(tileURL){
+    fetch(tileURL)
+      .then(res => res.json())
+      .then(
+        (result) => {
           if (!this.flags.layeradded){
             this.map.addSource('ee-Layer',{'type': 'raster',
               'tiles': [result.url],
               'tileSize': 256,
             });
             this.map.addLayer({
-              'id': 'simple-tiles',
+              'id': 'ee-Layer',
               'type': 'raster',
               'source': 'ee-Layer',
               'minzoom': 0,
               'maxzoom': 22
             });
             this.flags.layeradded = true;
+            const overlays = {
+              'ee-Layer': 'Prediction',
+              'mapbox-satellite':'Mapbox Satellite Imagery'
+            }
+            var opacity = new OpacityControl({
+              // baseLayers:baseLayers,
+              overLayers:overlays,
+              opacityControl:true
+            })
+            this.map.addControl(opacity, 'bottom-right')
+
           } else {
-            t = this.map.getSource('ee-Layer')
+            t = this.map//.getSource('ee-Layer')
             this.map.getSource('ee-Layer').tiles = [result.url];
             this.map.style.sourceCaches['ee-Layer'].clearTiles()
             this.map.style.sourceCaches['ee-Layer'].update(this.map.transform)
@@ -104,6 +146,17 @@ class OuterShell extends React.Component{
 
     this.map.on('load', (e) => {
       this.map.addControl(new mapboxgl.NavigationControl({showCompass:false}));
+      t = this.map
+      this.map.addSource("mapbox-satellite", {
+        "type": "raster",
+        "url": "mapbox://mapbox.satellite",
+        "tileSize": 256
+      });
+      this.map.addLayer({
+        'id': 'mapbox-satellite',
+        'type': 'raster',
+        'source': 'mapbox-satellite'
+      });
     });
     // render sliders
     this.probSlider = new rSlider({
@@ -125,22 +178,29 @@ class OuterShell extends React.Component{
         set: [this.appparams.minyear, this.appparams.maxyear]
     });
 
+
+    this.getImageDates();
     // call initial state functions
-    this.refreshlayers(this.appparams);
   }
 
   // set up actions to render app
   render(){
     return <div className='shell' {...this.props}>
       <div ref={el => this.mapContainer = el}></div>
-      <SliderPanel ishidden = {this.state.slidershidden} slideradjusted = {this.slidersadjusted.bind(this)} />
+      <SliderPanel ishidden = {this.state.slidershidden}
+          slideradjusted = {this.slidersadjusted.bind(this)}
+          oncheckchange = {this.imagetypechanged.bind(this)}
+          showensemble = {this.state.showensemble}
+          imageDates = {this.state.imageDates}
+          />
       <StatsPanel ishidden = {this.state.statshidden} />
       <DownloadPanel ishidden = {this.state.downloadhidden} />
       <SubscribePanel ishidden = {this.state.subscribehidden} />
       <ValidatePanel ishidden = {this.state.validatehidden} />
       <SearchPanel ishidden = {this.state.searchhidden} />
       <div className='sidebar' >
-        <SideIcons parentclass='gold-drop' glyphicon='glyphicon-question-sign' />
+        <div className='sidebar-icon gold-drop app-icon'></div>
+        {/* <SideIcons parentclass='gold-drop' glyphicon='glyphicon-question-sign' />*/}
         <SideIcons
           parentclass={this.state.slidershidden?'':'active-icon'}
           glyphicon='glyphicon-globe'

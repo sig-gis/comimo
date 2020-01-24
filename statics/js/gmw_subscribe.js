@@ -6,16 +6,18 @@ class LevelControl {
     this.zoomIn = document.createElement('button');
       this.zoomIn.className = 'mapboxgl-ctrl-zoom-in';
       this.zoomIn.type = 'button';
+      this.zoomIn.style = 'text-align:center;font-size:15px';
       var inspan = document.createElement('span');
-      inspan.className = 'glyphicon glyphicon-search';
+      inspan.className = 'glyphicon glyphicon-zoom-in';
       this.zoomIn.appendChild(inspan)
       this.zoomIn.onclick = map.bindDeeper;
 
     this.zoomOut = document.createElement('button');
       this.zoomOut.className = 'mapboxgl-ctrl-zoom-out';
       this.zoomOut.type = 'button';
+      this.zoomOut.style = 'text-align:center;font-size:15px';
       var outspan = document.createElement('span');
-      outspan.className = 'glyphicon glyphicon-search';
+      outspan.className = 'glyphicon glyphicon-zoom-out';
       this.zoomOut.appendChild(outspan);
       this.zoomOut.onclick = map.bindShallower;
 
@@ -88,7 +90,7 @@ class SubscribedList extends React.Component{
 
     this.map.on('load', (e) => {
       this.map.bindDeeper = (e)=>{this.goDeeper(e)}
-      this.map.bindShallower = (e)=>{this.testfunction(e,'shallow')}
+      this.map.bindShallower = (e)=>{this.goShallower(e)}
       this.map.addControl(new mapboxgl.NavigationControl({showCompass:false}));
       const levelcontrol = new LevelControl();
       this.map.addControl(levelcontrol);
@@ -98,14 +100,25 @@ class SubscribedList extends React.Component{
   }
 
   goDeeper(e){
-    if(this.selectedfeature){
-      var region = document.getElementById('regionBox').value;
-      this.map.setFeatureState({source:'activelayer', id:this.selectedfeature.id},{clicked:false})
-      this.selectedfeature = '';
-      this.setState({selectedfeature:''})
-      if (this.currentlevel < 2){
+    if (this.currentlevel < 2){
+      if(this.selectedfeature){
+        var region = document.getElementById('regionBox').value;
+        this.map.setFeatureState({source:'activelayer', id:this.selectedfeature.id},{clicked:false})
+        this.selectedfeature = '';
+        this.setState({selectedfeature:''})
         this.getFeatures(this.currentlevel+1, region);
       }
+    }
+  }
+
+  goShallower(e){
+    if (this.currentlevel > 0){
+      if(this.selectedfeature){
+        this.map.setFeatureState({source:'activelayer', id:this.selectedfeature.id},{clicked:false})
+      }
+      this.selectedfeature = '';
+      this.setState({selectedfeature:''})
+      this.getFeatures(this.currentlevel-1);
     }
   }
 

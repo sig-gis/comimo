@@ -1,13 +1,11 @@
 from django.shortcuts import render
 from django.http import JsonResponse, HttpResponse
 import ee
-import json
+import json, fiona
 import os
-import fiona
+from api.utils import authGEE, IMAGE_REPO, getImageList, getDefaultStyled
 
-def authGEE():
-    ee.Initialize()
-    return True
+
 
 def test(request):
     authGEE()
@@ -16,13 +14,27 @@ def test(request):
     maxp = int(request.GET.get('maxp'))/100.
     miny = int(request.GET.get('miny'))
     maxy = int(request.GET.get('maxy'))
-    img = ee.Image('users/nk-sig/GoldMineProbabilities/2020-01-22')
-    img = img.updateMask(img.gte(minp))
-    visparams = {'min':minp,'max':maxp,'palette':['225ea8','41b6c4','a1dab4','ffffcc']}
-    mapid = ee.data.getTileUrl(img.getMapId(visparams),0,0,0)[:-5]+'{z}/{x}/{y}'
-    return JsonResponse({'url':mapid,'visparams':visparams,'minp':minp})
+    img = ee.Image(IMAGE_REPO+'/2020-01-22')
+    # img = img.updateMask(img.gte(minp))
+    # visparams = {'min':minp,'max':maxp,'palette':['fff','f00']}
+    resp = getDefaultStyled()
+    resp['minp'] = minp
+    return JsonResponse(resp)
 
-def getfeaturenames(request):
+def getSingleImage(request):
+    authGEE()
+    img = ee.Image(IMAGE_REPO+'/'+request.GET.get('id'))
+    resp = getDefaultStyled(img)
+    return JsonResponse(resp)
+
+
+
+def getImageNames(request):
+    authGEE()
+    return JsonResponse({'ids':getImageList()})
+    # return HttpResponse('T')
+
+def getFeatureNames(request):
     module_dir = os.path.dirname(__file__)
 
     l1list = []
@@ -36,7 +48,7 @@ def getfeaturenames(request):
         l2list.append(feat['properties']['admin2RefN'])
     return JsonResponse({'action':'FeatureNames', 'l0':'Colombia', 'l1':l1list, 'l2': l2list});
 
-def getfeatures(request):
+def getFeatures(request):
     module_dir = os.path.dirname(__file__)
     focus = request.GET.get('focus')
     try:
@@ -45,7 +57,7 @@ def getfeatures(request):
         level = 0
     if (level == 0):
         level0 = fiona.open(os.path.join(module_dir,'shapes','Level0.shp'))
-        return JsonResponse(level0.next());
+        return JsonResponse(next(iter(level0)));
     elif (level == 1):
         level1 = fiona.open(os.path.join(module_dir,'shapes','Level1.shp'))
         fcoll = {'type':'FeatureCollection', 'features':[]}
