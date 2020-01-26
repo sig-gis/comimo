@@ -100,6 +100,10 @@ class OuterShell extends React.Component{
       )
   }
 
+  pointmapto(lat,lng){
+    this.map.flyTo({center:[lng, lat], zoom:11, essential:true});
+  }
+
   refreshlayers(tileURL){
     fetch(tileURL)
       .then(res => res.json())
@@ -147,8 +151,6 @@ class OuterShell extends React.Component{
 
   // set up parameters after components are mounted
   componentDidMount(){
-    mapboxgl.accessToken = 'pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4M29iazA2Z2gycXA4N2pmbDZmangifQ.-g_vE53SD2WrJ6tFX7QHmA';
-
     // render maps
     this.map = new mapboxgl.Map({
       container: this.mapContainer,
@@ -200,7 +202,8 @@ class OuterShell extends React.Component{
       <DownloadPanel ishidden = {this.state.downloadhidden} />
       <SubscribePanel ishidden = {this.state.subscribehidden} />
       <ValidatePanel ishidden = {this.state.validatehidden} />
-      <SearchPanel ishidden = {this.state.searchhidden} />
+      <SearchPanel ishidden = {this.state.searchhidden}
+          pointmapto={this.pointmapto.bind(this)}/>
       <div className='sidebar' >
         <div className='sidebar-icon gold-drop app-icon'></div>
         {/* <SideIcons parentclass='gold-drop' glyphicon='glyphicon-question-sign' />*/}
