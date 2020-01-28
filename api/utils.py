@@ -3,7 +3,8 @@ import datetime, pytz
 import fiona
 
 # repository containing all the gold mine rasters
-IMAGE_REPO = 'users/nk-sig/GoldMineProbabilities'
+# IMAGE_REPO = 'users/nk-sig/GoldMineProbabilities'
+IMAGE_REPO = 'projects/sig-ee/goldmining/dummydata/omnibusqtest'
 
 
 #function to authenticate GEE
@@ -62,7 +63,7 @@ def reduceRegion(shapeObj,raster):
 
 
 def getDefaultStyled(img):
-    img = img.selfMask()
+    img = img.select(0).selfMask()
     visparams = {'palette':['f00']}
     mapid = ee.data.getTileUrl(img.getMapId(visparams),0,0,0)[:-5]+'{z}/{x}/{y}'
     return {'url':mapid,'visparams':visparams}
