@@ -8,6 +8,10 @@ IMAGE_REPO = 'users/nk-sig/GoldMineProbabilities'
 
 #function to authenticate GEE
 def authGEE():
+    # module_dir = os.path.dirname(__file__)
+    # service_account = 'gee-auth@earthengine-228009.iam.gserviceaccount.com'
+    # credentials = ee.ServiceAccountCredentials(service_account, os.path.join(module_dir,'earthengine-228009-93955aaedaa4.json'))
+    # ee.Initialize(credentials)
     ee.Initialize()
     return True
 
