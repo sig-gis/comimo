@@ -1,0 +1,50 @@
+html, body {
+  height:100%;
+  width:100%;
+  margin:0;
+  padding:0;
+}
+
+#main-container{
+  height:100%;
+  width:100%;
+  margin:0;
+  padding:0;
+}
+
+.shell {
+  height:100%;
+  width:100%;
+  margin:0;
+  padding:0;
+}
+
+.see-through{
+  opacity:0;
+  pointer-events:none;
+}
+
+.gold-drop{
+  background:gold;
+}
+
+.heading1{
+  text-transform: uppercase;
+  font-weight: 500;
+  line-height: 1.1;
+  margin-top: 20px;
+  margin-bottom: 10px;
+}
+
+.heading3{
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.ht_0{
+  height:0;
+}
+
+.w_100{
+  width:100%;
+}

@@ -1,0 +1,143 @@
+.mapboxgl-map {
+  height: 100%;
+  width: calc(100% - 50px);
+  margin: 0;
+  padding:0;
+  float:right;
+}
+
+.leaflet-container{
+  height:100%;
+  width:100%;
+}
+
+.sidebar {
+  height:100%;
+  width:50px;
+  background:#ffffee;
+  /* background:#000000;
+  color:#ffe100; */
+  margin:0;
+  padding:0;
+  box-shadow:0px 0px 0px 1px rgba(0,0,0,.1);
+  float:left;
+  position:relative;
+}
+
+.sidebar-icon {
+  height:50px;
+  width:50px;
+  margin:0;
+  padding:0;
+}
+
+.app-icon{
+  background-image: url('/static/images/app-logo.jpg');
+  background-size: cover
+}
+
+.sidebar-icon span {
+  height:50px;
+  width:50px;
+  margin:0;
+  padding:10px;
+  font-size:30px;
+}
+
+.active-icon{
+  background:#e8e8e8;
+}
+
+.popup-container{
+  /* height:100%; */
+  margin-left:10px;
+  transition-duration: 0.3s;
+  background:#fffff8;
+  width:300px;
+  margin: 0px;
+  padding:15px 10px 15px 10px;
+  left:50px;
+  position:absolute;
+  box-shadow:0px 0px 0px 1px rgba(0,0,0,.1);
+}
+
+.slider-div{
+  padding:50px 30px 10px 30px;
+}
+
+.map-upd-btn{
+  color: #fff;
+  background-color: #f0ad4e;
+  border-color: #eea236;
+  border-radius: 3px;
+}
+
+.map-upd-btn:hover{
+  color: #fff;
+  background-color: #ff9f17;
+  border-color: #eea236;
+  border-radius: 3px;
+}
+
+.disclaimer{
+  position:absolute;
+  left:0%;
+  bottom:0%;
+}
+
+.mapboxgl-ctrl-group{
+  border-radius:0;
+}
+
+.mapboxgl-ctrl-group:not(:empty){
+  box-shadow:0px 0px 0px 1px rgba(0,0,0,.1);
+}
+
+.mapboxgl-ctrl-group button+button{
+  border: 0;
+}
+
+.placeholder{
+  height:400px;
+}
+
+.info-modal{
+  position:absolute;
+  height:100%;
+  width:100%;
+  padding:0;
+  margin:0;
+  top:0;
+  left:0;
+  z-index:99;
+  background:#0000009e;
+}
+
+.info-modal .inner-container{
+  border-radius:5px;
+  margin:50px auto;
+  left:0;
+  right:0;
+  width:50%;
+  padding:10px;
+  background:white;
+}
+
+.select-image-date{
+    width:100%;
+}
+
+.rs-tooltip{
+  padding:0px;
+  font-size:10px;
+}
+
+.search-results:hover{
+  background:#eee;
+  cursor:pointer;
+}
+
+.search-results:active{
+  background:#ddd;
+  cursor:pointer;
+}
