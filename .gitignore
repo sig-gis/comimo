@@ -3,3 +3,5 @@ api/shapes/*
 config.py
 appconfigs.js
 *.pyc
+venv
+venv/*
