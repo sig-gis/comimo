@@ -3,7 +3,7 @@ from django.http import JsonResponse, HttpResponse
 import ee
 import json, fiona
 import os
-from api.utils import authGEE, IMAGE_REPO, getImageList, getComposite, getDefaultStyled
+from api.utils import authGEE, IMAGE_REPO, getImageList, getComposite, getDefaultStyled, getLegalMineTiles, bounds
 
 
 
@@ -54,13 +54,14 @@ def getFeatureNames(request):
     l1list = []
     l2list = []
 
+    level0 = fiona.open(os.path.join(module_dir,'shapes','Level0.shp'))
     level1 = fiona.open(os.path.join(module_dir,'shapes','Level1.shp'))
     level2 = fiona.open(os.path.join(module_dir,'shapes','Level2.shp'))
     for feat in level1:
-        l1list.append(feat['properties']['admin1RefN'])
+        l1list.append([feat['properties']['admin1RefN'], bounds(feat)])
     for feat in level2:
-        l2list.append(feat['properties']['admin2RefN'])
-    return JsonResponse({'action':'FeatureNames', 'l0':'Colombia', 'l1':l1list, 'l2': l2list});
+        l2list.append([feat['properties']['admin2RefN'], bounds(feat)])
+    return JsonResponse({'action':'FeatureNames', 'l0':['Colombia',bounds(next(iter(level0)))], 'l1':l1list, 'l2': l2list});
 
 def getFeatures(request):
     module_dir = os.path.dirname(__file__)
@@ -85,3 +86,10 @@ def getFeatures(request):
             if (feature['properties']['admin1Name']==focus):
                 fcoll['features'].append(feature)
         return JsonResponse(fcoll)
+
+def getLegalMines(request):
+    authGEE()
+    return JsonResponse(getLegalMineTiles())
+
+def searchMunicipalities(request):
+    return JsonResponse({'asdasd':'qweqwe'})

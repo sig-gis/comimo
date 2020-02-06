@@ -19,7 +19,7 @@ class PlaceHolder extends React.Component{
 
 class StatsPanel extends React.Component{
   render(){
-    return <div className={['popup-container ',this.props.ishidden?'see-through':''].join(' ')} style={{'top':'100px'}}>
+    return <div className={['popup-container ',this.props.ishidden?'see-through':''].join(' ')} style={{'top':'200px'}}>
       <PlaceHolder />
     </div>
   }
@@ -27,7 +27,7 @@ class StatsPanel extends React.Component{
 
 class DownloadPanel extends React.Component{
   render(){
-    return <div className={['popup-container ',this.props.ishidden?'see-through':''].join(' ')} style={{'top':'150px'}}>
+    return <div className={['popup-container ',this.props.ishidden?'see-through':''].join(' ')} style={{'top':'300px'}}>
       <PlaceHolder />
     </div>
   }
@@ -35,7 +35,7 @@ class DownloadPanel extends React.Component{
 
 class SubscribePanel extends React.Component{
   render(){
-    return <div className={['popup-container ',this.props.ishidden?'see-through':''].join(' ')} style={{'top':'200px'}}>
+    return <div className={['popup-container ',this.props.ishidden?'see-through':''].join(' ')} style={{'top':'50px'}}>
       <h1><b> Your Subscriptions </b></h1><br/>
       <p> See and manage which regions you are getting alert from!</p><br/>
       <div style={{'textAlign':'center','width':'100%'}}>
@@ -47,7 +47,7 @@ class SubscribePanel extends React.Component{
 
 class ValidatePanel extends React.Component{
   render(){
-    return <div className={['popup-container ',this.props.ishidden?'see-through':''].join(' ')} style={{'top':'250px'}}>
+    return <div className={['popup-container ',this.props.ishidden?'see-through':''].join(' ')} style={{'top':'100px'}}>
       <PlaceHolder />
     </div>
   }

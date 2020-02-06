@@ -9,7 +9,8 @@ class OuterShell extends React.Component{
   URLS = {
     IMG_DATES:'/api/getimagenames',
     SINGLE_IMAGE: '/api/getsingleimage',
-    COMPOSITE_IMAGE: '/api/getcompositeimage'
+    COMPOSITE_IMAGE: '/api/getcompositeimage',
+    LEGAL_MINES: 'api/getlegalmines',
   }
   // overall app parameters
   appparams = {
@@ -30,7 +31,7 @@ class OuterShell extends React.Component{
   }
   persistentstates = {
     showcomposite:false,
-    imageDates:[]
+    imageDates:[],
   }
   // combining everything to app state
   state = {...this.appparams, ...this.appstates, ...this.persistentstates}
@@ -100,8 +101,26 @@ class OuterShell extends React.Component{
       )
   }
 
-  pointmapto(lat,lng){
-    this.map.flyTo({center:[lng, lat], zoom:11, essential:true});
+  pointmapto(type,arg){
+    if(type == 'point') this.map.flyTo({center:arg, zoom:11, essential:true});
+    else if(type == 'bbox') this.map.fitBounds(arg);
+  }
+
+  getLegalMinesLayer(){
+    fetch(this.URLS.LEGAL_MINES)
+      .then(res => res.json())
+      .then(
+        (result) => {
+          this.map.getSource('legal-mines').tiles = [result.url];
+          // clear existing tile cache and force map refresh
+          this.map.style.sourceCaches['legal-mines'].clearTiles()
+          this.map.style.sourceCaches['legal-mines'].update(this.map.transform)
+          document.getElementsByClassName("vis-legal-mines")[0].style["background"] = result.style.color;
+          this.map.triggerRepaint()
+        }, (error) => {
+          l(error);
+        }
+      );
   }
 
   refreshlayers(tileURL){
@@ -109,39 +128,12 @@ class OuterShell extends React.Component{
       .then(res => res.json())
       .then(
         (result) => {
-          if (!this.flags.layeradded){
-            this.map.addSource('ee-Layer',{'type': 'raster',
-              'tiles': [result.url],
-              'tileSize': 256,
-              'vis': result.visparams
-            });
-            this.map.addLayer({
-              'id': 'ee-Layer',
-              'type': 'raster',
-              'source': 'ee-Layer',
-              'minzoom': 0,
-              'maxzoom': 22
-            });
-            this.flags.layeradded = true;
-            const overlays = {
-              'ee-Layer': 'Prediction',
-              'mapbox-streets':'Mapbox Streets'
-            }
-            var opacity = new OpacityControl({
-              // baseLayers:baseLayers,
-              overLayers:overlays,
-              opacityControl:true
-            })
-            this.map.addControl(opacity, 'bottom-right')
-
-          } else {
-            t = this.map//.getSource('ee-Layer')
-            this.map.getSource('ee-Layer').tiles = [result.url];
-            // clear existing tile cache and force map refresh
-            this.map.style.sourceCaches['ee-Layer'].clearTiles()
-            this.map.style.sourceCaches['ee-Layer'].update(this.map.transform)
-            this.map.triggerRepaint()
-          }
+          this.map.getSource('ee-Layer').tiles = [result.url];
+          // clear existing tile cache and force map refresh
+          this.map.style.sourceCaches['ee-Layer'].clearTiles()
+          this.map.style.sourceCaches['ee-Layer'].update(this.map.transform)
+          document.getElementsByClassName("vis-ee-Layer")[0].style["background"] = '#'+result.visparams.palette[0];
+          this.map.triggerRepaint()
         },
         (error) => {
           l(error);
@@ -172,6 +164,43 @@ class OuterShell extends React.Component{
         'type': 'raster',
         'source': 'mapbox-streets'
       });
+      this.map.addSource('ee-Layer',{'type': 'raster',
+        'tiles': [],
+        'tileSize': 256,
+        'vis': {'palette':[]}//result.visparams
+      });
+      this.map.addLayer({
+        'id': 'ee-Layer',
+        'type': 'raster',
+        'source': 'ee-Layer',
+        'minzoom': 0,
+        'maxzoom': 22
+      });
+      this.map.addSource('legal-mines',{'type': 'raster',
+        'tiles': [],
+        'tileSize': 256,
+        'vis':{'palette':[]}
+      });
+      this.map.addLayer({
+        'id': 'legal-mines',
+        'type': 'raster',
+        'source': 'legal-mines',
+        'minzoom': 0,
+        'maxzoom': 22
+      });
+      this.flags.layeradded = true;
+      const overlays = {
+        'ee-Layer': 'Prediction',
+        'legal-mines': 'Legal Mining Sites',
+        'mapbox-streets':'Mapbox Streets'
+      }
+      var opacity = new OpacityControl({
+        // baseLayers:baseLayers,
+        overLayers:overlays,
+        opacityControl:true
+      })
+      this.map.addControl(opacity, 'bottom-right');
+      this.getLegalMinesLayer();
     });
     // render sliders
     this.probSlider = new rSlider({
@@ -208,21 +237,6 @@ class OuterShell extends React.Component{
         <div className='sidebar-icon gold-drop app-icon'></div>
         {/* <SideIcons parentclass='gold-drop' glyphicon='glyphicon-question-sign' />*/}
         <SideIcons
-          parentclass={this.state.slidershidden?'':'active-icon'}
-          glyphicon='glyphicon-globe'
-          clickhandler={((e) => this.togglePanel(e, 'slidershidden')).bind(this)}
-          tooltip='Sliders'/>
-        <SideIcons
-          parentclass={this.state.statshidden?'':'active-icon'}
-          glyphicon='glyphicon-stats'
-          clickhandler={((e) => this.togglePanel(e, 'statshidden')).bind(this)}
-          tooltip='Stats'/>
-        <SideIcons
-          parentclass={this.state.downloadhidden?'':'active-icon'}
-          glyphicon='glyphicon-download-alt'
-          clickhandler={((e) => this.togglePanel(e, 'downloadhidden')).bind(this)}
-          tooltip='Download data'/>
-        <SideIcons
           parentclass={this.state.subscribehidden?'':'active-icon'}
           glyphicon='glyphicon-envelope'
           clickhandler={((e) => this.togglePanel(e, 'subscribehidden')).bind(this)}
@@ -237,6 +251,22 @@ class OuterShell extends React.Component{
           glyphicon='glyphicon-search'
           clickhandler={((e) => this.togglePanel(e, 'searchhidden')).bind(this)}
           tooltip='Search'/>
+        <SideIcons
+          parentclass={this.state.statshidden?'':'active-icon'}
+          glyphicon='glyphicon-stats'
+          clickhandler={((e) => this.togglePanel(e, 'statshidden')).bind(this)}
+          tooltip='Stats'/>
+        <SideIcons
+          parentclass={this.state.slidershidden?'':'active-icon'}
+          glyphicon='glyphicon-globe'
+          clickhandler={((e) => this.togglePanel(e, 'slidershidden')).bind(this)}
+          tooltip='Sliders'/>
+        <SideIcons
+          parentclass={this.state.downloadhidden?'':'active-icon'}
+          glyphicon='glyphicon-download-alt'
+          clickhandler={((e) => this.togglePanel(e, 'downloadhidden')).bind(this)}
+          tooltip='Download data'/>
+
         <SideIcons
           parentclass='disclaimer'
           glyphicon='glyphicon-info-sign'

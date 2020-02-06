@@ -76,7 +76,7 @@ class OpacityControl {
         var vis = this._map.getSource(layerId)._options.vis
         if (vis){
           const icon = document.createElement('span');
-          icon.className = "legend-icon";
+          icon.className = "legend-icon vis-"+layerId;
           icon.style = "background:#"+vis.palette[0];
           this._container.appendChild(icon);
         }
