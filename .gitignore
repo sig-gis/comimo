@@ -5,3 +5,5 @@ appconfigs.js
 *.pyc
 venv
 venv/*
+
+__pycache__
