@@ -35,9 +35,9 @@ def buildHTMLcontnet(regions):
       <body>
         <h3>Alert!</h3>
         There are some potential illegal mining activities happening in the area that you are subscribed to.
-
+        <br/><br/>
         Take a look at those area <a href='http://216.218.220.160'>here</a>.
-
+        <br/><br/>
         To validate the data, navigate to the validation control on the application above or directly go to the
         <a href='https://collect.earth/collection?projectId=5439'>CEO project</a>.
     </html>

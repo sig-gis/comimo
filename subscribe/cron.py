@@ -2,7 +2,8 @@ from django_cron import CronJobBase, Schedule
 from subscribe.models import SubscribeModel
 import os
 import datetime, pytz
-from api.utils import getLatestImage, getShape, reduceRegion
+from api.utils import authGEE, getLatestImage, getShape, reduceRegion
+from .mailhelper import sendmails
 
 
 class GoldAlerts(CronJobBase):
@@ -12,7 +13,7 @@ class GoldAlerts(CronJobBase):
     code = 'gmw.cronalerts'    # a unique code
 
     def do(self):
-
+        authGEE()
         try:
             subscribe_instances = SubscribeModel.objects.all().values()
             latest_image, latest_date = getLatestImage()
