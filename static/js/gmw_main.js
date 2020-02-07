@@ -32,6 +32,7 @@ class OuterShell extends React.Component{
   persistentstates = {
     showcomposite:false,
     imageDates:[],
+    regionSelected:false
   }
   // combining everything to app state
   state = {...this.appparams, ...this.appstates, ...this.persistentstates}
@@ -102,8 +103,20 @@ class OuterShell extends React.Component{
   }
 
   pointmapto(type,arg){
-    if(type == 'point') this.map.flyTo({center:arg, zoom:11, essential:true});
-    else if(type == 'bbox') this.map.fitBounds(arg);
+    if(type == 'point') {
+      try{
+        this.map.flyTo({center:arg, zoom:11, essential:true});
+      }catch(err){
+        l('Please enter valid coordinates.')
+      }
+    }
+    else if(type == 'bbox'){
+      try{
+        this.map.fitBounds(arg);
+      }catch(error){
+        l('Please enter valid bounds.')
+      }
+    }
   }
 
   getLegalMinesLayer(){
@@ -228,7 +241,7 @@ class OuterShell extends React.Component{
           imageDates = {this.state.imageDates}
           />
       <StatsPanel ishidden = {this.state.statshidden} />
-      <DownloadPanel ishidden = {this.state.downloadhidden} />
+      <DownloadPanel ishidden = {this.state.downloadhidden} regionSelected = {this.state.regionSelected}/>
       <SubscribePanel ishidden = {this.state.subscribehidden} />
       <ValidatePanel ishidden = {this.state.validatehidden} />
       <SearchPanel ishidden = {this.state.searchhidden}
@@ -236,6 +249,11 @@ class OuterShell extends React.Component{
       <div className='sidebar' >
         <div className='sidebar-icon gold-drop app-icon'></div>
         {/* <SideIcons parentclass='gold-drop' glyphicon='glyphicon-question-sign' />*/}
+        {/*<SelectRegion
+          parentclass={this.state.selregionhidden?'':'active-icon'}
+          glyphicon='glyphicon-globe'
+          clickhandler={((e) => this.togglePanel(e, 'selregionhidden')).bind(this)}
+          tooltip='Subscribe'/>*/}
         <SideIcons
           parentclass={this.state.subscribehidden?'':'active-icon'}
           glyphicon='glyphicon-envelope'
@@ -258,7 +276,7 @@ class OuterShell extends React.Component{
           tooltip='Stats'/>
         <SideIcons
           parentclass={this.state.slidershidden?'':'active-icon'}
-          glyphicon='glyphicon-globe'
+          glyphicon='glyphicon-filter'
           clickhandler={((e) => this.togglePanel(e, 'slidershidden')).bind(this)}
           tooltip='Sliders'/>
         <SideIcons

@@ -23,25 +23,23 @@ def sendmails(mailobj):
 
 def buildTextcontent(regions):
     text = "Alert! \n\n"
-    text += "There are some potential illegal mining activities happening in your area. \n Click on the links below to take a look."
-    for region in regions:
-        (name, level) = region.split('_')
-        text += name+" : "+C.APP_URL+"region="+name+"&level="+level
-
+    text += "There are some potential illegal mining activities happening in the area that you are subscribed to.\n\n"
+    text += "Take a look at those area here : http://216.218.220.160'\n\n"
+    text += "To validate the data, navigate to the validation control on the application above or directly\
+            go to the CEO project : https://collect.earth/collection?projectId=5439"
+    return text
 
 def buildHTMLcontnet(regions):
     html = """\
     <html>
       <body>
         <h3>Alert!</h3>
-        There are some potential illegal mining activities happening in your area
-        Click on the links below to take a look. <br/>
-    """
-    for region in regions:
-        (name, level) = region.split('_')
-        html += """<p><a href="""+C.APP_URL+"region="+name+"&level="+level+""">"""+name+"""</a><p>"""
-    html += """
-      </body>
+        There are some potential illegal mining activities happening in the area that you are subscribed to.
+
+        Take a look at those area <a href='http://216.218.220.160'>here</a>.
+
+        To validate the data, navigate to the validation control on the application above or directly go to the
+        <a href='https://collect.earth/collection?projectId=5439'>CEO project</a>.
     </html>
     """
     return html

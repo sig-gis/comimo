@@ -48,3 +48,7 @@ html, body {
 .w_100{
   width:100%;
 }
+.w_50{
+  width:50%;
+  display:inline-block;
+}

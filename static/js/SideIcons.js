@@ -28,19 +28,10 @@ class StatsPanel extends React.Component{
 class DownloadPanel extends React.Component{
   render(){
     return <div className={['popup-container ',this.props.ishidden?'see-through':''].join(' ')} style={{'top':'300px'}}>
-      <PlaceHolder />
-    </div>
-  }
-}
-
-class SubscribePanel extends React.Component{
-  render(){
-    return <div className={['popup-container ',this.props.ishidden?'see-through':''].join(' ')} style={{'top':'50px'}}>
-      <h1><b> Your Subscriptions </b></h1><br/>
-      <p> See and manage which regions you are getting alert from!</p><br/>
-      <div style={{'textAlign':'center','width':'100%'}}>
-        <button type="button" className="btn btn-warning map-upd-btn" onClick={()=>{location.href = './subscribe'}}>Manage Subscriptions</button>
-      </div>
+      <h1><b> DOWNLOAD DATA </b></h1>
+      <b>Select Region</b><br/>
+      <input type='radio' name='downloadRegion' value={0}/> Complete Data <br/>
+      <input type='radio' name='downloadRegion' value={1} disabled={!this.props.regionSelected}/> Selected Municipality <br/>
     </div>
   }
 }
@@ -48,7 +39,9 @@ class SubscribePanel extends React.Component{
 class ValidatePanel extends React.Component{
   render(){
     return <div className={['popup-container ',this.props.ishidden?'see-through':''].join(' ')} style={{'top':'100px'}}>
-      <PlaceHolder />
+      <h1><b> Validation </b></h1>
+      In order to validate the project, go to the following
+      &nbsp;<a href="https://collect.earth/collection?projectId=5439">CEO project </a>.
     </div>
   }
 }

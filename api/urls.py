@@ -12,4 +12,5 @@ urlpatterns = [
     path('getsingleimage/', views.getSingleImage, name='getsingleimage'),
     path('getcompositeimage/', views.getCompositeImage, name='getcompositeimage'),
     path('getlegalmines/', views.getLegalMines, name='getlegalmines'),
+    path('getcascadingnames/', views.getCascadingFeatureNames, name='getcascadingnames'),
 ]

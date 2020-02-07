@@ -3,8 +3,7 @@ from django.http import JsonResponse, HttpResponse
 import ee
 import json, fiona
 import os
-from api.utils import authGEE, IMAGE_REPO, getImageList, getComposite, getDefaultStyled, getLegalMineTiles, bounds
-
+from api.utils import *
 
 
 def test(request):
@@ -62,6 +61,25 @@ def getFeatureNames(request):
     for feat in level2:
         l2list.append([feat['properties']['admin2RefN'], bounds(feat)])
     return JsonResponse({'action':'FeatureNames', 'l0':['Colombia',bounds(next(iter(level0)))], 'l1':l1list, 'l2': l2list});
+
+def getCascadingFeatureNames(request):
+    authGEE()
+    fc = ee.FeatureCollection(MUNICIPAL_BOUNDS)
+    fclist = fc.toList(fc.size());
+
+    def getCascadingList(feature, passedObject):
+        passedObject = ee.Dictionary(passedObject)
+        feature = ee.Feature(feature)
+        l1 = feature.get('admin1Name')
+        l2 = feature.get('admin2Name')
+        subset = passedObject.get(l1, False)
+        list = ee.Algorithms.If(subset,ee.List(subset).add(l2),[l2])
+        return passedObject.set(l1,list)
+
+    fci = fclist.iterate(getCascadingList, {});
+
+    return JsonResponse(fci.getInfo())
+
 
 def getFeatures(request):
     module_dir = os.path.dirname(__file__)

@@ -12,7 +12,7 @@ class SliderPanel extends React.Component{
     // var imageDates = this.props.imageDates;
 
     var singledate = <div className={this.props.showcomposite?'see-through ht_0':''}>
-      <br/>Select a date of prediction
+      Select a date of prediction
       <select className='select-image-date' id='selectimagedate'>
         {this.getOptions(this.props.imageDates)}
       </select>
@@ -21,7 +21,6 @@ class SliderPanel extends React.Component{
 
     var range = <div className={this.props.showcomposite?'':'see-through ht_0'}>
       {/*Change sliders to control data*/}
-      <br/>
       <div className='inputLabel'>Sliders to change time-series agreement(%) range</div>
       <div className='slider-div'><input type="text" id="probabilitySlider" /></div>
       <br/>
@@ -29,8 +28,9 @@ class SliderPanel extends React.Component{
       <div className='slider-div'><input type="text" id="yearSlider" /></div>
     </div>
     return <div className={['popup-container ',this.props.ishidden?'see-through':''].join(' ')} style={{'top':'250px'}}>
+      <b>FILTER DATA</b><br/>
       <input type="checkbox" className="form-check-input" id="showcomposite" onChange={this.props.oncheckchange} defaultChecked={this.props.showcomposite}/>
-      <label className="form-check-label" htmlFor="showcomposite">&nbsp;SHOW COMPOSITE</label><br/>
+      &nbsp;Show Composite <br/>
       <small className="form-text text-muted">time series agreement (%)</small>
       {singledate}
       {range}
