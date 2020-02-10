@@ -13,7 +13,7 @@ def manageSubscriptions(request):
     if not(user.is_authenticated):
         return requestLogin(request);
     else :
-        queryset = utils.getSubscribedRegions(user.email);
+        queryset = utils.getSubscribedRegions(user);
         context = {'rows':queryset}
         return render(request, 'manageSubscriptions.html', context=context)
 
@@ -23,13 +23,12 @@ def addSubs(request):
     if not(user.is_authenticated):
         return requestLogin(request);
     else:
-        email = user.email
         region = request.GET.get('region')
         try:
             level = int(request.GET.get('level'))
         except Exception as e:
             return JsonResponse({'action':'Error','region':region, 'level':level})
-        subaction = utils.saveEmail(email, region, level)
+        subaction = utils.saveEmail(user, region, level)
         return JsonResponse({'action':subaction,'region':region, 'level':level})
 
 def deleteSubs(request):
@@ -37,13 +36,12 @@ def deleteSubs(request):
     if not(user.is_authenticated):
         return requestLogin(request);
     else:
-        email = user.email
         region = request.GET.get('region')
         try:
             level = int(request.GET.get('level'))
         except Exception as e:
             return JsonResponse({'action':'Error','region':region, 'level':level})
-        subaction = utils.delEmail(email, region, level)
+        subaction = utils.delEmail(user, region, level)
         return JsonResponse({'action':subaction,'region':region, 'level':level})
 
 def getSubs(request):
@@ -51,7 +49,7 @@ def getSubs(request):
     if not(user.is_authenticated):
             return requestLogin(request);
     else:
-        queryset = utils.getSubscribedRegions(user.email)
+        queryset = utils.getSubscribedRegions(user)
         if queryset!='Error':
             fields = ['region']
             regionList = list(queryset.values(*fields))
