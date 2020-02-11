@@ -27,7 +27,8 @@ class OuterShell extends React.Component{
     subscribehidden:true,
     validatehidden:true,
     searchhidden:true,
-    appinfohidden:true
+    appinfohidden:true,
+    selregionhidden:false
   }
   persistentstates = {
     showcomposite:false,
@@ -154,6 +155,10 @@ class OuterShell extends React.Component{
       )
   }
 
+  regionSelected(level,e){
+    l(level)
+    l(document.getElementById("selectl2").value)
+  }
   // set up parameters after components are mounted
   componentDidMount(){
     // render maps
@@ -234,12 +239,15 @@ class OuterShell extends React.Component{
   render(){
     return <div className='shell' {...this.props}>
       <div ref={el => this.mapContainer = el}></div>
+      <SelectRegion ishidden = {this.state.selregionhidden}
+        regionSelected = {this.regionSelected.bind(this)}
+        />
       <SliderPanel ishidden = {this.state.slidershidden}
-          slideradjusted = {this.slidersadjusted.bind(this)}
-          oncheckchange = {this.imagetypechanged.bind(this)}
-          showcomposite = {this.state.showcomposite}
-          imageDates = {this.state.imageDates}
-          />
+        slideradjusted = {this.slidersadjusted.bind(this)}
+        oncheckchange = {this.imagetypechanged.bind(this)}
+        showcomposite = {this.state.showcomposite}
+        imageDates = {this.state.imageDates}
+        />
       <StatsPanel ishidden = {this.state.statshidden} />
       <DownloadPanel ishidden = {this.state.downloadhidden} regionSelected = {this.state.regionSelected}/>
       <SubscribePanel ishidden = {this.state.subscribehidden} />
@@ -249,11 +257,11 @@ class OuterShell extends React.Component{
       <div className='sidebar' >
         <div className='sidebar-icon gold-drop app-icon'></div>
         {/* <SideIcons parentclass='gold-drop' glyphicon='glyphicon-question-sign' />*/}
-        {/*<SelectRegion
+        <SideIcons
           parentclass={this.state.selregionhidden?'':'active-icon'}
           glyphicon='glyphicon-globe'
           clickhandler={((e) => this.togglePanel(e, 'selregionhidden')).bind(this)}
-          tooltip='Subscribe'/>*/}
+          tooltip='Subscribe'/>
         <SideIcons
           parentclass={this.state.subscribehidden?'':'active-icon'}
           glyphicon='glyphicon-envelope'
