@@ -11,6 +11,7 @@ class OuterShell extends React.Component{
     SINGLE_IMAGE: '/api/getsingleimage',
     COMPOSITE_IMAGE: '/api/getcompositeimage',
     LEGAL_MINES: 'api/getlegalmines',
+    MUNS: 'api/getmunicipallayer'
   }
   // overall app parameters
   appparams = {
@@ -129,7 +130,25 @@ class OuterShell extends React.Component{
           // clear existing tile cache and force map refresh
           this.map.style.sourceCaches['legal-mines'].clearTiles()
           this.map.style.sourceCaches['legal-mines'].update(this.map.transform)
-          document.getElementsByClassName("vis-legal-mines")[0].style["background"] = result.style.color;
+          document.getElementsByClassName("vis-legal-mines")[0].style["border"] = "solid 1px "+result.style.color;
+          document.getElementsByClassName("vis-legal-mines")[0].style["background"] = result.style.fillColor;
+          this.map.triggerRepaint()
+        }, (error) => {
+          l(error);
+        }
+      );
+  }
+
+  getMunicipalLayer(){
+    fetch(this.URLS.MUNS)
+      .then(res => res.json())
+      .then(
+        (result) => {
+          this.map.getSource('municipalities').tiles = [result.url];
+          // clear existing tile cache and force map refresh
+          this.map.style.sourceCaches['municipalities'].clearTiles()
+          this.map.style.sourceCaches['municipalities'].update(this.map.transform)
+          document.getElementsByClassName("vis-municipalities")[0].style["border"] = "solid 1px "+result.style.color;
           this.map.triggerRepaint()
         }, (error) => {
           l(error);
@@ -155,9 +174,10 @@ class OuterShell extends React.Component{
       )
   }
 
-  regionSelected(level,e){
-    l(level)
-    l(document.getElementById("selectl2").value)
+  regionSelected(level,name){
+    this.setState({
+      regionSelected:[level,name]
+    });
   }
   // set up parameters after components are mounted
   componentDidMount(){
@@ -206,10 +226,23 @@ class OuterShell extends React.Component{
         'minzoom': 0,
         'maxzoom': 22
       });
+      this.map.addSource('municipalities',{'type': 'raster',
+        'tiles': [],
+        'tileSize': 256,
+        'vis':{'palette':[]}
+      });
+      this.map.addLayer({
+        'id': 'municipalities',
+        'type': 'raster',
+        'source': 'municipalities',
+        'minzoom': 0,
+        'maxzoom': 22
+      });
       this.flags.layeradded = true;
       const overlays = {
         'ee-Layer': 'Prediction',
         'legal-mines': 'Legal Mining Sites',
+        'municipalities': 'Municipal Boundaries',
         'mapbox-streets':'Mapbox Streets'
       }
       var opacity = new OpacityControl({
@@ -219,6 +252,7 @@ class OuterShell extends React.Component{
       })
       this.map.addControl(opacity, 'bottom-right');
       this.getLegalMinesLayer();
+      this.getMunicipalLayer();
     });
     // render sliders
     this.probSlider = new rSlider({
@@ -239,29 +273,22 @@ class OuterShell extends React.Component{
   render(){
     return <div className='shell' {...this.props}>
       <div ref={el => this.mapContainer = el}></div>
-      <SelectRegion ishidden = {this.state.selregionhidden}
-        regionSelected = {this.regionSelected.bind(this)}
-        />
       <SliderPanel ishidden = {this.state.slidershidden}
         slideradjusted = {this.slidersadjusted.bind(this)}
         oncheckchange = {this.imagetypechanged.bind(this)}
         showcomposite = {this.state.showcomposite}
-        imageDates = {this.state.imageDates}
-        />
+        imageDates = {this.state.imageDates}/>
       <StatsPanel ishidden = {this.state.statshidden} />
       <DownloadPanel ishidden = {this.state.downloadhidden} regionSelected = {this.state.regionSelected}/>
-      <SubscribePanel ishidden = {this.state.subscribehidden} />
+      <SubscribePanel ishidden = {this.state.subscribehidden}
+        selectedRegion = {this.state.regionSelected}/>
       <ValidatePanel ishidden = {this.state.validatehidden} />
       <SearchPanel ishidden = {this.state.searchhidden}
-          pointmapto={this.pointmapto.bind(this)}/>
+          pointmapto={this.pointmapto.bind(this)}
+          regionSelected={this.regionSelected.bind(this)}/>
       <div className='sidebar' >
         <div className='sidebar-icon gold-drop app-icon'></div>
         {/* <SideIcons parentclass='gold-drop' glyphicon='glyphicon-question-sign' />*/}
-        <SideIcons
-          parentclass={this.state.selregionhidden?'':'active-icon'}
-          glyphicon='glyphicon-globe'
-          clickhandler={((e) => this.togglePanel(e, 'selregionhidden')).bind(this)}
-          tooltip='Subscribe'/>
         <SideIcons
           parentclass={this.state.subscribehidden?'':'active-icon'}
           glyphicon='glyphicon-envelope'

@@ -25,7 +25,7 @@ def addSubs(request):
     else:
         region = request.GET.get('region')
         try:
-            level = int(request.GET.get('level'))
+            level = request.GET.get('level')
         except Exception as e:
             return JsonResponse({'action':'Error','region':region, 'level':level})
         subaction = utils.saveEmail(user, region, level)
@@ -38,7 +38,7 @@ def deleteSubs(request):
     else:
         region = request.GET.get('region')
         try:
-            level = int(request.GET.get('level'))
+            level = request.GET.get('level')
         except Exception as e:
             return JsonResponse({'action':'Error','region':region, 'level':level})
         subaction = utils.delEmail(user, region, level)
@@ -51,9 +51,9 @@ def getSubs(request):
     else:
         queryset = utils.getSubscribedRegions(user)
         if queryset!='Error':
-            fields = ['region']
+            fields = ['region','level']
             regionList = list(queryset.values(*fields))
-            regionList = [x['region'] for x in regionList]
+            regionList = [x['level']+'_'+x['region'] for x in regionList]
             return JsonResponse({'action':'Success','regions':regionList})
         else:
             return JsonResponse({'action':'Error'})

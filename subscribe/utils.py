@@ -2,11 +2,13 @@ from django.core.exceptions import ObjectDoesNotExist
 import logging, traceback
 from datetime import datetime
 
-from .models import SubscribeModel
+from subscribe.models import SubscribeModel
+from accounts.models import Profile
 
 # function to add entry to model
 def saveEmail(user, region, level):
     try:
+        user = Profile.objects.get(user=user)
         subscribe_model_instance = SubscribeModel.objects.get(user=user, region=region, level=level)
         return 'Exists'
     except ObjectDoesNotExist as e:
@@ -27,6 +29,7 @@ def saveEmail(user, region, level):
 
 def delEmail(user, region, level):
     try:
+        user = Profile.objects.get(user=user)
         subscribe_model_instance = SubscribeModel.objects.get(user=user, region=region, level=level)
     except Exception as e:
         return 'Error'
@@ -36,6 +39,7 @@ def delEmail(user, region, level):
 
 def getSubscribedRegions(user):
     try:
+        user = Profile.objects.get(user=user)
         fields = ['region']
         queryset = SubscribeModel.objects.filter(user=user).values_list(*fields)
         return queryset

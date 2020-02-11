@@ -8,7 +8,8 @@ class SearchPanel extends React.Component{
     super(props);
     this.state={
       geocodedsearch:[],
-      featureNames:[],
+      featureNames:{},
+      activeMuns:{},
       datasetsearch:[]
     }
   }
@@ -56,17 +57,22 @@ class SearchPanel extends React.Component{
     }
   }
 
+  stateSelected(e){
+    this.setState({
+      activeMuns:this.state.featureNames[e.target.value]
+    });
+  }
 
   getFeatureNames(){
     fetch(this.URLS.FEATURE_NAMES)
       .then(res => res.json())
       .then(
         (result) => {
-          this.setState({
-            featureNames:result.l2.sort((a,b)=>{
-              return (a[0]>b[0])?1:-1;
-            })
-          })
+          if (result.action == "FeatureNames"){
+            this.setState({
+              featureNames:result.features
+            });
+          }
         }, (error) => {
           l(error)
         }
@@ -99,18 +105,43 @@ class SearchPanel extends React.Component{
       {gsearchitems}
     </ul>
 
-    var selectMun = []
-    if (this.state.featureNames.length==0) selectMun.push(<option key={-1}>Loading Municipalities</option>);
-    else{selectMun.push(<option key={-1} value={0} disabled>Select a Municipality</option>)}
-    this.state.featureNames.forEach((item, i) => {
-      selectMun.push(<option key={i} value={item[1]}>
-        {item[0]}
-      </option>);
-    });
+    var selectl1='Loading ...', selectl2='';
+    var l1names = Object.keys(this.state.featureNames).sort();
+    if (l1names.length > 0){
+      var selectl1options = [<option key={-1} value={0} disabled>Select a State</option>];
+      l1names.forEach((item, i) => {
+        selectl1options.push(<option key={i} value={item}>
+          {item}
+        </option>);
+      });
+      selectl1 = <div className="w_100">
+        <small>State</small>
+        <select className='w_100' defaultValue={0} onChange={this.stateSelected.bind(this)}>
+          {selectl1options}
+        </select>
+      </div>
+    }
+    var l2objects = this.state.activeMuns;
+    var l2names = Object.keys(l2objects).sort()
+    if (l2names.length>0){
+      var selectl2options = [<option key={-1} value={0} disabled>Select a Municipality</option>];
+      l2names.forEach((item, i) => {
+        selectl2options.push(<option key={i} value={l2objects[item]} name={item}>
+          {item}
+        </option>)
+      });
+      selectl2 = <div className="w_100">
+        <small>Municipality</small>
+        <select className='w_100' defaultValue={0} onChange={(e) => {
+              this.munSelected(e,this.props.pointmapto);
+              this.props.regionSelected('mun',e.target.selectedOptions[0].getAttribute('name'));
+            }}
+          >
+          {selectl2options}
+        </select>
+      </div>
+    }
 
-    var selectInput = <select className='w_100' onChange={(e) => {this.munSelected(e,this.props.pointmapto)}}>
-      {selectMun}
-    </select>
 
     return <div className={['popup-container ',this.props.ishidden?'see-through':''].join(' ')} style={{'top':'150px'}}>
       <b>SEARCH LOCATION</b><br/>
@@ -119,8 +150,9 @@ class SearchPanel extends React.Component{
       {gsearchul}
       <b>Lat Long Search</b>
       <input className='w_100' onKeyUp={(e) => {this.latlngChanged(e,this.props.pointmapto)}} />
-      <b>Select Municipality</b>
-      {selectInput}
+      <b>Select Municipality</b><br/>
+      {selectl1}
+      {selectl2}
     </div>
   }
 }

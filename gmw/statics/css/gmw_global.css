@@ -52,3 +52,8 @@ html, body {
   width:50%;
   display:inline-block;
 }
+
+input{
+  border:solid 1px darkgray;
+  border-radius:3px;
+}

@@ -1,12 +1,7 @@
 import ee, os
 import datetime, pytz
 import fiona
-
-# repository containing all the gold mine rasters
-IMAGE_REPO = 'users/nk-sig/GoldMineProbabilities'
-# IMAGE_REPO = 'projects/sig-ee/goldmining/dummydata/omnibusqtest'
-MUNICIPAL_BOUNDS = 'users/nk-sig/Shapes/Level2'
-LEGAL_MINES = 'users/nk-sig/Shapes/Legal_Mines'
+from api.config import *
 
 #function to authenticate GEE
 def authGEE():
@@ -38,6 +33,13 @@ def getLatestImage():
 def getLegalMineTiles():
     table = ee.FeatureCollection(LEGAL_MINES)
     style = {'color':'#ff0', 'fillColor':'#ffff0011', 'width':1}
+    table = table.style(color=style['color'],fillColor=style['fillColor'],width=style['width'])
+    mapid = ee.data.getTileUrl(table.getMapId(),0,0,0)[:-5]+'{z}/{x}/{y}'
+    return {'url':mapid,'style':style}
+
+def getMunicipalTiles():
+    table = ee.FeatureCollection(LEVEL['mun'])
+    style = {'color':'#f00', 'fillColor':'#0000', 'width':1}
     table = table.style(color=style['color'],fillColor=style['fillColor'],width=style['width'])
     mapid = ee.data.getTileUrl(table.getMapId(),0,0,0)[:-5]+'{z}/{x}/{y}'
     return {'url':mapid,'style':style}

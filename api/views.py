@@ -50,17 +50,16 @@ def getImageNames(request):
 def getFeatureNames(request):
     module_dir = os.path.dirname(__file__)
 
-    l1list = []
-    l2list = []
-
-    level0 = fiona.open(os.path.join(module_dir,'shapes','Level0.shp'))
-    level1 = fiona.open(os.path.join(module_dir,'shapes','Level1.shp'))
     level2 = fiona.open(os.path.join(module_dir,'shapes','Level2.shp'))
-    for feat in level1:
-        l1list.append([feat['properties']['admin1RefN'], bounds(feat)])
+    dict = {}
+    l2list = []
     for feat in level2:
-        l2list.append([feat['properties']['admin2RefN'], bounds(feat)])
-    return JsonResponse({'action':'FeatureNames', 'l0':['Colombia',bounds(next(iter(level0)))], 'l1':l1list, 'l2': l2list});
+        l1name = feat['properties']['admin1Name']
+        if l1name in dict:
+            dict[l1name][feat['properties']['admin2Name']] = bounds(feat)
+        else:
+            dict[l1name] = {feat['properties']['admin2Name'] : bounds(feat)}
+    return JsonResponse({'action':'FeatureNames', 'features': dict});
 
 def getCascadingFeatureNames(request):
     authGEE()
@@ -108,6 +107,11 @@ def getFeatures(request):
 def getLegalMines(request):
     authGEE()
     return JsonResponse(getLegalMineTiles())
+
+def getMunicipalLayer(request):
+    authGEE()
+    return JsonResponse(getMunicipalTiles())
+
 
 def searchMunicipalities(request):
     return JsonResponse({'asdasd':'qweqwe'})
