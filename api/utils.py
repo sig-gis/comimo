@@ -38,8 +38,8 @@ def getLegalMineTiles():
     return {'url':mapid,'style':style}
 
 def getMunicipalTiles():
-    table = ee.FeatureCollection(LEVEL['mun'])
-    style = {'color':'#f00', 'fillColor':'#0000', 'width':1}
+    table = ee.FeatureCollection(LEVELS['mun'])
+    style = {'color':'#7f00ff', 'fillColor':'#0000', 'width':1}
     table = table.style(color=style['color'],fillColor=style['fillColor'],width=style['width'])
     mapid = ee.data.getTileUrl(table.getMapId(),0,0,0)[:-5]+'{z}/{x}/{y}'
     return {'url':mapid,'style':style}
