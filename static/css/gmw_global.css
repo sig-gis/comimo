@@ -3,6 +3,7 @@ html, body {
   width:100%;
   margin:0;
   padding:0;
+  font-family:'Roboto Condensed', sans-serif !important;
 }
 
 #main-container{
@@ -56,4 +57,8 @@ html, body {
 input{
   border:solid 1px darkgray;
   border-radius:3px;
+}
+
+.center{
+  text-align:center;
 }

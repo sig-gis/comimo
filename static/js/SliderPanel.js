@@ -27,7 +27,7 @@ class SliderPanel extends React.Component{
       <div className='inputLabel'>Sliders to change years </div>
       <div className='slider-div'><input type="text" id="yearSlider" /></div>
     </div>
-    return <div className={['popup-container ',this.props.ishidden?'see-through':''].join(' ')} style={{'top':'250px'}}>
+    return <div className={['popup-container ',this.props.ishidden?'see-through':''].join(' ')} style={{'top':'300px'}}>
       <b>FILTER DATA</b><br/>
       <input type="checkbox" className="form-check-input" id="showcomposite" onChange={this.props.oncheckchange} defaultChecked={this.props.showcomposite}/>
       &nbsp;Show Composite <br/>

@@ -22,7 +22,6 @@ class OuterShell extends React.Component{
   }
   // initial component states
   appstates = {
-    advancedoptions:false,
     slidershidden:true,
     statshidden:true,
     downloadhidden:true,
@@ -32,6 +31,7 @@ class OuterShell extends React.Component{
     appinfohidden:true
   }
   persistentstates = {
+    advancedoptions:false,
     showcomposite:false,
     imageDates:[],
     regionSelected:false
@@ -269,8 +269,27 @@ class OuterShell extends React.Component{
     // call initial state functions
   }
 
+
   // set up actions to render app
   render(){
+    var advancedbuttons = '';
+    if (this.state.advancedoptions) advancedbuttons= <div>
+        <SideIcons
+          parentclass={this.state.statshidden?'':'active-icon'}
+          glyphicon='glyphicon-stats'
+          clickhandler={((e) => this.togglePanel(e, 'statshidden')).bind(this)}
+          tooltip='Stats'/>
+        <SideIcons
+          parentclass={this.state.slidershidden?'':'active-icon'}
+          glyphicon='glyphicon-filter'
+          clickhandler={((e) => this.togglePanel(e, 'slidershidden')).bind(this)}
+          tooltip='Sliders'/>
+        <SideIcons
+          parentclass={this.state.downloadhidden?'':'active-icon'}
+          glyphicon='glyphicon-download-alt'
+          clickhandler={((e) => this.togglePanel(e, 'downloadhidden')).bind(this)}
+          tooltip='Download data'/>
+      </div>
     return <div className='shell' {...this.props}>
       <div ref={el => this.mapContainer = el}></div>
       <SliderPanel ishidden = {this.state.slidershidden}
@@ -304,21 +323,16 @@ class OuterShell extends React.Component{
           glyphicon='glyphicon-search'
           clickhandler={((e) => this.togglePanel(e, 'searchhidden')).bind(this)}
           tooltip='Search'/>
-        <SideIcons
-          parentclass={this.state.statshidden?'':'active-icon'}
-          glyphicon='glyphicon-stats'
-          clickhandler={((e) => this.togglePanel(e, 'statshidden')).bind(this)}
-          tooltip='Stats'/>
-        <SideIcons
-          parentclass={this.state.slidershidden?'':'active-icon'}
-          glyphicon='glyphicon-filter'
-          clickhandler={((e) => this.togglePanel(e, 'slidershidden')).bind(this)}
-          tooltip='Sliders'/>
-        <SideIcons
-          parentclass={this.state.downloadhidden?'':'active-icon'}
-          glyphicon='glyphicon-download-alt'
-          clickhandler={((e) => this.togglePanel(e, 'downloadhidden')).bind(this)}
-          tooltip='Download data'/>
+        <button className='sidebar-icon' onClick={(e)=>{this.setState({
+          advancedoptions: !(this.state.advancedoptions),
+          ...this.appstates
+        })}}>
+          <div className='center'>
+            <span className={'glyphicon advanced-icon '+(this.state.advancedoptions?'glyphicon-minus':'glyphicon-plus')}></span>
+            <span className='advanced-text'>Advanced</span>
+          </div>
+        </button>
+        {advancedbuttons}
 
         <SideIcons
           parentclass='disclaimer'

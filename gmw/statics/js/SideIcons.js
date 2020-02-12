@@ -19,7 +19,7 @@ class PlaceHolder extends React.Component{
 
 class StatsPanel extends React.Component{
   render(){
-    return <div className={['popup-container ',this.props.ishidden?'see-through':''].join(' ')} style={{'top':'200px'}}>
+    return <div className={['popup-container ',this.props.ishidden?'see-through':''].join(' ')} style={{'top':'250px'}}>
       <PlaceHolder />
     </div>
   }
@@ -27,7 +27,7 @@ class StatsPanel extends React.Component{
 
 class DownloadPanel extends React.Component{
   render(){
-    return <div className={['popup-container ',this.props.ishidden?'see-through':''].join(' ')} style={{'top':'300px'}}>
+    return <div className={['popup-container ',this.props.ishidden?'see-through':''].join(' ')} style={{'top':'350px'}}>
       <h1><b> DOWNLOAD DATA </b></h1>
       <b>Select Region</b><br/>
       <input type='radio' name='downloadRegion' value={0}/> Complete Data <br/>
@@ -38,10 +38,19 @@ class DownloadPanel extends React.Component{
 
 class ValidatePanel extends React.Component{
   render(){
-    return <div className={['popup-container ',this.props.ishidden?'see-through':''].join(' ')} style={{'top':'100px'}}>
-      <h1><b> Validation </b></h1>
+    var content = <div>
       In order to validate the project, go to the following
       &nbsp;<a href="https://collect.earth/collection?projectId=5439">CEO project </a>.
+    </div>
+    if (!USER_STATE){
+      content = <div style={{'textAlign':'center','width':'100%'}}>
+        <p> Login to validate the data </p>
+        <button type="button" className="btn btn-warning map-upd-btn" onClick={()=>{location.href = 'accounts/login'}}>Login</button>
+      </div>
+    }
+    return <div className={['popup-container ',this.props.ishidden?'see-through':''].join(' ')} style={{'top':'100px'}}>
+      <h1><b> Validation </b></h1>
+      {content}
     </div>
   }
 }

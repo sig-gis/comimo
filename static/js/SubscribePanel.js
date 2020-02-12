@@ -104,13 +104,22 @@ class SubscribePanel extends React.Component{
         </button>
       </div>
     }
-    return <div className={['popup-container ',this.props.ishidden?'see-through':''].join(' ')} style={{'top':'50px','maxHeight':'500px'}}>
-      <h1><b> YOUR SUBSCRIPTIONS </b></h1>
+    var content = <div>
       {list}
       {/*// <div style={{'textAlign':'center','width':'100%'}}>
       //   <button type="button" className="btn btn-warning map-upd-btn" onClick={()=>{location.href = './subscribe'}}>Manage Subscriptions</button>
       // </div>*/}
       {subtocurrent}
+    </div>
+    if (!USER_STATE){
+      content = <div style={{'textAlign':'center','width':'100%'}}>
+        <p> Login to view your subscriptions </p>
+        <button type="button" className="btn btn-warning map-upd-btn" onClick={()=>{location.href = 'accounts/login'}}>Login</button>
+      </div>
+    }
+    return <div className={['popup-container ',this.props.ishidden?'see-through':''].join(' ')} style={{'top':'50px','maxHeight':'500px'}}>
+      <h1><b> YOUR SUBSCRIPTIONS </b></h1>
+      {content}
     </div>
   }
 }
