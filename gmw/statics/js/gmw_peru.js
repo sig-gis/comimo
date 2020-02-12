@@ -1,5 +1,5 @@
 var t;
-var count='COLOMBIA'
+var count = "PERU"
 class OuterShell extends React.Component{
   // set up class flags so each component update doesn't do redundant JS tasks
   flags = {
@@ -12,7 +12,9 @@ class OuterShell extends React.Component{
     SINGLE_IMAGE: '/api/getsingleimage',
     COMPOSITE_IMAGE: '/api/getcompositeimage',
     LEGAL_MINES: 'api/getlegalmines',
-    MUNS: 'api/getmunicipallayer'
+    MUNS: 'api/getmunicipallayer',
+    ANP: 'api/getanpperu',
+    CATMIN: 'api/getcatmin'
   }
   // overall app parameters
   appparams = {
@@ -122,8 +124,8 @@ class OuterShell extends React.Component{
     }
   }
 
-  getLegalMinesLayer(){
-    fetch(this.URLS.LEGAL_MINES)
+  getLegalMinesLayer(){ //ANP
+    fetch(this.URLS.ANP)
       .then(res => res.json())
       .then(
         (result) => {
@@ -140,8 +142,8 @@ class OuterShell extends React.Component{
       );
   }
 
-  getMunicipalLayer(){
-    fetch(this.URLS.MUNS)
+  getMunicipalLayer(){ //catastro minero
+    fetch(this.URLS.CATMIN)
       .then(res => res.json())
       .then(
         (result) => {
@@ -186,8 +188,8 @@ class OuterShell extends React.Component{
     this.map = new mapboxgl.Map({
       container: this.mapContainer,
       style: 'mapbox://styles/mapbox/satellite-streets-v9',
-      center: [-73.5609339,4.6371205],
-      zoom: 5
+      center: [-74.88281250000001,-8.276727101164033],
+      zoom: 6
     });
 
     this.map.on('load', (e) => {
@@ -242,8 +244,8 @@ class OuterShell extends React.Component{
       this.flags.layeradded = true;
       const overlays = {
         'ee-Layer': 'Prediction',
-        'legal-mines': 'Legal Mining Sites',
-        'municipalities': 'Municipal Boundaries',
+        'legal-mines': 'National Parks',
+        'municipalities': 'Catastro Minero',
         'mapbox-streets':'Mapbox Streets'
       }
       var opacity = new OpacityControl({

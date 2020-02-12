@@ -24,4 +24,5 @@ urlpatterns = [
     path('api/', include('api.urls')),
     path('subscribe/', include('subscribe.urls', namespace='subscribe')),
     path('', TemplateView.as_view(template_name='home.html'), name='home'),
+    path('peru', TemplateView.as_view(template_name='peru.html'), name='peru-home'),
 ]

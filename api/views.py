@@ -61,6 +61,21 @@ def getFeatureNames(request):
             dict[l1name] = {feat['properties']['admin2Name'] : bounds(feat)}
     return JsonResponse({'action':'FeatureNames', 'features': dict});
 
+def getPeruFeatureNames(request):
+    module_dir = os.path.dirname(__file__)
+
+    level2 = fiona.open(os.path.join(module_dir,'shapes','PERU','per_admbnda_adm2_2018.shp'))
+    dict = {}
+    l2list = []
+    for feat in level2:
+        l1name = feat['properties']['ADM1_ES']
+        if l1name in dict:
+            dict[l1name][feat['properties']['ADM2_ES']] = bounds(feat)
+        else:
+            dict[l1name] = {feat['properties']['ADM2_ES'] : bounds(feat)}
+    return JsonResponse({'action':'FeatureNames', 'features': dict});
+
+
 def getCascadingFeatureNames(request):
     authGEE()
     fc = ee.FeatureCollection(MUNICIPAL_BOUNDS)
@@ -78,7 +93,6 @@ def getCascadingFeatureNames(request):
     fci = fclist.iterate(getCascadingList, {});
 
     return JsonResponse(fci.getInfo())
-
 
 def getFeatures(request):
     module_dir = os.path.dirname(__file__)
@@ -111,6 +125,14 @@ def getLegalMines(request):
 def getMunicipalLayer(request):
     authGEE()
     return JsonResponse(getMunicipalTiles())
+
+def getANPeru(request):
+    authGEE()
+    return JsonResponse(getANPeruLayer())
+
+def getCatMinPeru(request):
+    authGEE()
+    return JsonResponse(getCatMinPeruLayer())
 
 
 def searchMunicipalities(request):

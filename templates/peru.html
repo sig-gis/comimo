@@ -1,0 +1,40 @@
+<!-- templates/home.html-->
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Peru Mining Watch{% endblock %}
+
+{% block content %}
+<div id = 'main-container'>
+</div>
+{% endblock %}
+
+{% block pagescripts %}
+<!-- <script src='https://api.mapbox.com/mapbox-assembly/mbx/v0.18.0/assembly.js'></script> -->
+<script src="https://api.tiles.mapbox.com/mapbox-gl-js/v1.6.1/mapbox-gl.js"></script>
+
+<!-- add classes for the application -->
+<script type='text/javascript' src='{% static "js/rSlider.min.js" %}'></script>
+<script type='text/javascript' src='{% static "js/OpacityControl.js" %}'></script>
+<script type='text/babel' src='{% static "js/SideIcons.js" %}'></script>
+<script type='text/babel' src='{% static "js/SliderPanel.js" %}'></script>
+<script type='text/babel' src='{% static "js/SearchPanel.js" %}'></script>
+<script type='text/babel' src='{% static "js/SubscribePanel.js" %}'></script>
+<script type='text/babel' src='{% static "js/AppInfo.js" %}'></script>
+<script type='text/javascript' src='{% static "js/appconfigs.js" %}'></script>
+<script type='text/babel' src='{% static "js/gmw_peru.js" %}'></script>
+{% endblock %}
+
+{% block pagestyles %}
+<link href='https://api.mapbox.com/mapbox-assembly/mbx/v0.18.0/assembly.min.css' rel='stylesheet'>
+<link href='https://api.tiles.mapbox.com/mapbox-gl-js/v1.6.1/mapbox-gl.css' rel='stylesheet' />
+<link rel='stylesheet' href='{% static "css/rSlider.min.css" %}' />
+<link rel='stylesheet' href='{% static "css/OpacityControl.css" %}' />
+<link rel='stylesheet' href='{% static "css/gmw_main.css" %}' />
+<style>
+  .app-icon{
+    background-image: url('{% static "images/app-logo.jpg" %}');
+    background-size: cover
+  }
+</style>
+{% endblock %}
