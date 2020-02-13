@@ -1,7 +1,8 @@
 class SearchPanel extends React.Component{
   URLS = {
     GEOCODE: "http://open.mapquestapi.com/geocoding/v1/address?",
-    FEATURE_NAMES: 'api/getfeaturenames'
+    FEATURE_NAMES: 'api/getfeaturenames',
+    PERU_F_NAMES: 'api/getperufnames'
   }
 
   constructor(props){
@@ -64,7 +65,9 @@ class SearchPanel extends React.Component{
   }
 
   getFeatureNames(){
-    fetch(this.URLS.FEATURE_NAMES)
+    var url = (count=='PERU')?this.URLS.PERU_F_NAMES:this.URLS.FEATURE_NAMES;
+    l(url)
+    fetch(url)
       .then(res => res.json())
       .then(
         (result) => {
