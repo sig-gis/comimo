@@ -97,6 +97,20 @@ def getDefaultStyled(img):
     mapid = ee.data.getTileUrl(img.getMapId(visparams),0,0,0)[:-5]+'{z}/{x}/{y}'
     return {'url':mapid,'visparams':visparams}
 
+def getPointsWithin(regions,date):
+    fc = ee.FeatureCollection([])
+    for region in regions:
+        r = region.split("_")
+        f = ee.FeatureCollection(LEVELS[r[0]]).filter(ee.Filter.eq(FIELDS[r[0]],r[1]))
+        fc = fc.merge(f)
+    try:
+        points = ee.FeatureCollection(POINTS_FOL+'/'+date.strftime("%Y-%m-%d"))
+        return points.filterBounds(fc)
+    except Exception as e:
+        print(e)
+    # points = ee.FeatureCollection(POINTS_FOL+'/'+date.strftime("%Y-%m-%d"))
+    # print(points.first().getInfo())
+
 
 # helper functions
 def explode(coords):

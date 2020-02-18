@@ -2,7 +2,7 @@ from django.core.exceptions import ObjectDoesNotExist
 import logging, traceback
 from datetime import datetime
 
-from subscribe.models import SubscribeModel
+from subscribe.models import SubscribeModel, ProjectsModel
 from accounts.models import Profile
 
 # function to add entry to model
@@ -42,6 +42,47 @@ def getSubscribedRegions(user):
         user = Profile.objects.get(user=user)
         fields = ['region']
         queryset = SubscribeModel.objects.filter(user=user).values_list(*fields)
+        return queryset
+    except ObjectDoesNotExist as e:
+        print('no row')
+        return 'Error'
+    except Exception as e:
+        print(e)
+        return 'Error'
+
+# function to add entry to model
+def saveProject(email, projurl, data_date):
+    user = Profile.objects.get(email=email)
+    try:
+        projects_model_instance = ProjectsModel.objects.get(user=user, data_date=data_date, status='active')
+        return 'Exists'
+    except ObjectDoesNotExist as e:
+        projects_model_instance = ProjectsModel()
+        projects_model_instance.user = user
+        projects_model_instance.projurl = projurl
+        projects_model_instance.data_date = data_date
+        projects_model_instance.created_date = datetime.now()
+        projects_model_instance.status = 'active'
+        projects_model_instance.save()
+        return 'Created'
+    except Exception as e:
+        logging.getLogger("error").error(traceback.format_exc())
+        return 'Error'
+
+def archiveProject(user, region, level):
+    try:
+        user = Profile.objects.get(user=user)
+        projects_model_instance = ProjectsModel.objects.get(user=user, data_date=data_date, status='archived')
+    except Exception as e:
+        return 'Error'
+    projects_model_instance.delete()
+    return 'Archived'
+
+def getActiveProjects(user):
+    try:
+        user = Profile.objects.get(user=user)
+        fields = ['data_date','projurl']
+        queryset = ProjectsModel.objects.filter(user=user, data_date=data_date).values_list(*fields)
         return queryset
     except ObjectDoesNotExist as e:
         print('no row');

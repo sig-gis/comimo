@@ -13,7 +13,7 @@ class Profile(models.Model):
     institution = models.CharField(max_length=100, blank=True)
     idtype = models.CharField(max_length=100, blank=True)
     idnumber = models.CharField(max_length=100, blank=True)
-    email = models.EmailField(max_length=150)
+    email = models.EmailField(max_length=150, unique=True)
     bio = models.TextField(blank=True)
 
     def __str__(self):

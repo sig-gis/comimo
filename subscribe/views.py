@@ -57,3 +57,17 @@ def getSubs(request):
             return JsonResponse({'action':'Success','regions':regionList})
         else:
             return JsonResponse({'action':'Error'})
+
+def getProjects(request):
+    user = request.user
+    if not(user.is_authenticated):
+            return requestLogin(request);
+    else:
+        queryset = utils.getActiveProjects(user)
+        if queryset!='Error':
+            fields = ['data_date','projurl']
+            regionList = list(queryset.values(*fields))
+            regionList = [x['data_date']+'__'+x['projurl'] for x in regionList]
+            return JsonResponse({'action':'Success','regions':regionList})
+        else:
+            return JsonResponse({'action':'Error'})
