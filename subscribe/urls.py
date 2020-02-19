@@ -9,5 +9,6 @@ urlpatterns = [
     path('', views.manageSubscriptions, name='managesubs'),
     path('addsubs/', views.addSubs, name='addsubs'),
     path('delsubs/', views.deleteSubs, name='delsubs'),
-    path('getsubs/', views.getSubs, name='getsubs')
+    path('getsubs/', views.getSubs, name='getsubs'),
+    path('getprojects/', views.getProjects, name='getprojects')
 ]

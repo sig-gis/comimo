@@ -23,6 +23,7 @@ class SubscribeModel(models.Model):
 class ProjectsModel(models.Model):
     id = models.AutoField(primary_key=True, null=False)
     user = models.ForeignKey(Profile, on_delete=models.CASCADE)
+    projid = models.IntegerField(null=False)
     projurl = models.TextField(null=False)
     data_date =  models.DateTimeField(null=False, blank=True)
     created_date =  models.DateTimeField(null=False, blank=True)

@@ -3,8 +3,8 @@ from . import config as C
 
 def sendmail(email, projurl):
     try:
-        textContent = buildTextcontent()
-        htmlContent = buildHTMLcontnet()
+        textContent = buildTextcontent(projurl)
+        htmlContent = buildHTMLcontnet(projurl)
         sendSuccess = send_mail(
             'Illegal mining activity detected in subscribed region',
             textContent,
@@ -19,15 +19,15 @@ def sendmail(email, projurl):
     except Exception as e:
         print(e)
 
-def buildTextcontent():
+def buildTextcontent(projurl):
     text = "Alert! \n\n"
     text += "There are some potential illegal mining activities happening in the area that you are subscribed to.\n\n"
     text += "Take a look at those area here : http://comimo.sig-gis.com'\n\n"
     text += "To validate the data, navigate to the validation control on the application above or directly\
-            go to the CEO project : https://collect.earth/collection?projectId=5439"
+            go to the CEO project : "+projurl
     return text
 
-def buildHTMLcontnet():
+def buildHTMLcontnet(projurl):
     html = """\
     <html>
       <body>
@@ -37,7 +37,7 @@ def buildHTMLcontnet():
         Take a look at those area <a href='http://comimo.sig-gis.com'>here</a>.
         <br/><br/>
         To validate the data, navigate to the validation control on the application above or directly go to the
-        <a href='https://collect.earth/collection?projectId=5439'>CEO project</a>.
+        <a href='"""+projurl+"""'>CEO project</a>.
     </html>
     """
     return html

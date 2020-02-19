@@ -50,15 +50,21 @@ def getSubscribedRegions(user):
         print(e)
         return 'Error'
 
-# function to add entry to model
-def saveProject(email, projurl, data_date):
+def projectExists(email, data_date):
     user = Profile.objects.get(email=email)
     try:
         projects_model_instance = ProjectsModel.objects.get(user=user, data_date=data_date, status='active')
-        return 'Exists'
+        return True
     except ObjectDoesNotExist as e:
+        return False
+
+# function to add entry to model
+def saveProject(email, projurl, projid, data_date):
+    user = Profile.objects.get(email=email)
+    try:
         projects_model_instance = ProjectsModel()
         projects_model_instance.user = user
+        projects_model_instance.projid = int(projid)
         projects_model_instance.projurl = projurl
         projects_model_instance.data_date = data_date
         projects_model_instance.created_date = datetime.now()
@@ -66,6 +72,7 @@ def saveProject(email, projurl, data_date):
         projects_model_instance.save()
         return 'Created'
     except Exception as e:
+        print(e)
         logging.getLogger("error").error(traceback.format_exc())
         return 'Error'
 

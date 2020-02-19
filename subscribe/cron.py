@@ -1,11 +1,12 @@
 from django_cron import CronJobBase, Schedule
 from subscribe.models import SubscribeModel, ProjectsModel
-from subscribe.utils import saveProject
+from subscribe.utils import saveProject, projectExists
 from accounts.models import Profile
 import os, json
 import datetime, pytz
 from api.utils import authGEE, getLatestImage, getShape, reduceRegion, getPointsWithin
 from subscribe.mailhelper import sendmail
+from subscribe.ceohelper import getCeoProjectURL
 from api.config import *
 
 class GoldAlerts(CronJobBase):
@@ -19,17 +20,23 @@ class GoldAlerts(CronJobBase):
         latest_image, latest_date = getLatestImage()
         sub_dict = getSubsDict(latest_date)
         for email in sub_dict:
-            points = getPointsWithin(sub_dict[email],latest_date)
-            number = points.size().getInfo()
-            if (number > 0):
-                points = points.getInfo()
-                projecturl = getCeoProjectURL(points)
-                print(email, projecturl, latest_date)
-                entry_added = saveProject(email, projecturl, latest_date)
-                print(entry_added)
-                if (entry_added == "Created"):
-                    sendmail(email, projecturl)
-                    print('mail sent to ', email)
+            if (not projectExists(email, latest_date)):
+                points = getPointsWithin(sub_dict[email],latest_date)
+                number = points.size().getInfo()
+                if (number > 0):
+                    try:
+                        points = points.getInfo()
+                        proj = getCeoProjectURL(points, latest_date, email)
+                        projid = proj['projectId']
+                        projurl = proj['ceoCollectionUrl']
+                        entry_added = saveProject(email, projurl, projid, latest_date)
+                        if (entry_added == "Created"):
+                            sendmail(email, projurl)
+                            print('mail sent to ', email)
+                    except Exception as e:
+                        print("Exception",e)
+            else:
+                print('Project already exists')
 
 def getSubsDict(latest_date):
     try:
@@ -53,6 +60,3 @@ def getSubsDict(latest_date):
             except Exception as e:
                 print(e)
     return sub_dict
-
-def getCeoProjectURL(points):
-    return 'https://collect.earth/collection?projectId=5439'
