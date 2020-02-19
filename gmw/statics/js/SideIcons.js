@@ -35,22 +35,3 @@ class DownloadPanel extends React.Component{
     </div>
   }
 }
-
-class ValidatePanel extends React.Component{
-  render(){
-    var content = <div>
-      In order to validate the project, go to the following
-      &nbsp;<a href="https://collect.earth/collection?projectId=5439">CEO project </a>.
-    </div>
-    if (!USER_STATE){
-      content = <div style={{'textAlign':'center','width':'100%'}}>
-        <p> Login to validate the data </p>
-        <button type="button" className="btn btn-warning map-upd-btn" onClick={()=>{location.href = 'accounts/login'}}>Login</button>
-      </div>
-    }
-    return <div className={['popup-container ',this.props.ishidden?'see-through':''].join(' ')} style={{'top':'100px'}}>
-      <h1><b> Validation </b></h1>
-      {content}
-    </div>
-  }
-}

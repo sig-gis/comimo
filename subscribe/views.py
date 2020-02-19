@@ -65,9 +65,9 @@ def getProjects(request):
     else:
         queryset = utils.getActiveProjects(user)
         if queryset!='Error':
-            fields = ['data_date','projurl']
-            regionList = list(queryset.values(*fields))
-            regionList = [x['data_date']+'__'+x['projurl'] for x in regionList]
-            return JsonResponse({'action':'Success','regions':regionList})
+            fields = ['data_date','projurl','projid']
+            projList = list(queryset.values(*fields))
+            projList = [str(x['projid'])+'__'+x['data_date'].strftime('%Y-%m-%d')+'__'+x['projurl'] for x in projList]
+            return JsonResponse({'action':'Success','projects':projList})
         else:
             return JsonResponse({'action':'Error'})

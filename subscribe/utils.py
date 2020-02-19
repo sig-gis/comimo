@@ -88,8 +88,9 @@ def archiveProject(user, region, level):
 def getActiveProjects(user):
     try:
         user = Profile.objects.get(user=user)
+        print(user)
         fields = ['data_date','projurl']
-        queryset = ProjectsModel.objects.filter(user=user, data_date=data_date).values_list(*fields)
+        queryset = ProjectsModel.objects.filter(user=user).values_list(*fields)
         return queryset
     except ObjectDoesNotExist as e:
         print('no row');
