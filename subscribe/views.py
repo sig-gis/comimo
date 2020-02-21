@@ -49,14 +49,8 @@ def getSubs(request):
     if not(user.is_authenticated):
             return requestLogin(request);
     else:
-        queryset = utils.getSubscribedRegions(user)
-        if queryset!='Error':
-            fields = ['region','level']
-            regionList = list(queryset.values(*fields))
-            regionList = [x['level']+'_'+x['region'] for x in regionList]
-            return JsonResponse({'action':'Success','regions':regionList})
-        else:
-            return JsonResponse({'action':'Error'})
+        regionList = utils.getSubscribedRegions(user)
+        return JsonResponse({'action':'Success','regions':regionList})
 
 def getProjects(request):
     user = request.user

@@ -40,20 +40,6 @@ def delEmail(user, region, level):
     subscribe_model_instance.delete()
     return 'Deleted'
 
-
-def getSubscribedRegions(user):
-    try:
-        user = Profile.objects.get(user=user)
-        fields = ['region']
-        queryset = SubscribeModel.objects.filter(user=user).values_list(*fields)
-        return queryset
-    except ObjectDoesNotExist as e:
-        print('no row')
-        return 'Error'
-    except Exception as e:
-        print(e)
-        return 'Error'
-
 def projectExists(user, data_date):
     try:
         projects_model_instance = ProjectsModel.objects.get(user=user, data_date=data_date, status='active')
@@ -81,6 +67,8 @@ def saveProject(email, projurl, projid, data_date):
 
 
 def getSubscribedRegions(user):
+    if (not isinstance(user, Profile)):
+        user = Profile.objects.get(user=user)
     try:
         subscribe_instances = SubscribeModel.objects.all().filter(user=user)
         sub_list = []
