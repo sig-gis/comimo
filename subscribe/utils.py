@@ -2,8 +2,12 @@ from django.core.exceptions import ObjectDoesNotExist
 import logging, traceback
 from datetime import datetime
 
-from subscribe.models import SubscribeModel, ProjectsModel
+from subscribe.models import SubscribeModel, ProjectsModel, ExtractedData
+from subscribe.ceohelper import getProjectInfo, deleteProject, getCollectedData, getCeoProjectURL
+from subscribe.mailhelper import sendmail
 from accounts.models import Profile
+
+from api import utils as apiutils
 
 # function to add entry to model
 def saveEmail(user, region, level):
@@ -50,8 +54,7 @@ def getSubscribedRegions(user):
         print(e)
         return 'Error'
 
-def projectExists(email, data_date):
-    user = Profile.objects.get(email=email)
+def projectExists(user, data_date):
     try:
         projects_model_instance = ProjectsModel.objects.get(user=user, data_date=data_date, status='active')
         return True
@@ -76,25 +79,98 @@ def saveProject(email, projurl, projid, data_date):
         logging.getLogger("error").error(traceback.format_exc())
         return 'Error'
 
-def archiveProject(user, region, level):
+
+def getSubscribedRegions(user):
     try:
-        user = Profile.objects.get(user=user)
-        projects_model_instance = ProjectsModel.objects.get(user=user, data_date=data_date, status='archived')
+        subscribe_instances = SubscribeModel.objects.all().filter(user=user)
+        sub_list = []
+        for instance in iter(subscribe_instances):
+            region = instance.region
+            level = instance.level
+            sub_list.append(level+'_'+region)
+        return sub_list
     except Exception as e:
+        print(e)
         return 'Error'
-    projects_model_instance.delete()
-    return 'Archived'
+
+def createProject(user, data_date):
+    user = Profile.objects.get(user=user)
+    if (not projectExists(user, data_date)):
+        apiutils.authGEE()
+        regions = getSubscribedRegions(user)
+        points = apiutils.getPointsWithin(regions,data_date)
+        number = points.size().getInfo()
+        if (number > 0):
+            points = points.getInfo()
+            proj = getCeoProjectURL(points, data_date,user.email)
+            projid = proj['projectId']
+            projurl = proj['ceoCollectionUrl']
+            entry_added = saveProject(user.email, projurl, projid, data_date)
+            return {'action':entry_added, 'proj':data_date.strftime('%Y-%m-%d')+'__'+projid+'__'+projurl}
+        else:
+            return {'action':'Error', 'message':'No mines detected within your subscribed region! Maybe subscribe to other regions.'}
+    else:
+        return {'action':'Error', 'message':'Project Already exists for the day! Close the existing one to create another.'}
+
+def delProject(user, pid):
+    try:
+        result = deleteProject(pid)
+        if (result == 'OK'):
+            projects_model_instance = ProjectsModel.objects.get(user=user, projid=pid)
+            projects_model_instance.delete()
+            return 'Archived'
+        else:
+            return 'Error'
+    except Exception as e:
+        print(e)
+        return 'Error'
+
 
 def getActiveProjects(user):
     try:
         user = Profile.objects.get(user=user)
-        print(user)
         fields = ['data_date','projurl']
-        queryset = ProjectsModel.objects.filter(user=user).values_list(*fields)
+        queryset = ProjectsModel.objects.filter(user=user,status='active').values_list(*fields)
         return queryset
     except ObjectDoesNotExist as e:
-        print('no row');
+        print('no row')
         return 'Error'
     except Exception as e:
         print(e)
         return 'Error'
+
+def insertCollectedData(data, user, date):
+    try:
+        data_instance = ExtractedData()
+        data_instance.user = user
+        data_instance.y =float(data[1])
+        data_instance.x =float(data[2])
+        data_instance.data_date = date
+        data_instance.class_num = data[3]
+        data_instance.class_name = data[4]
+        data_instance.save()
+        return 'Created'
+    except Exception as e:
+        print(e)
+        logging.getLogger("error").error(traceback.format_exc())
+        return 'Error'
+
+def archiveProject(user, pid, pdate):
+    try:
+        user = Profile.objects.get(user=user)
+        project = ProjectsModel.objects.get(user=user,projid=pid,status='active')
+        collectedSamples =  getCollectedData(pid)
+        collectedSamples =  collectedSamples[1:]
+        for sample in collectedSamples:
+            insertCollectedData(sample, user, pdate)
+        status = delProject(user, pid)
+        if (status == 'Archived'):
+            project.status='archived'
+            project.save()
+        return {'action':status}
+    except ObjectDoesNotExist as e:
+        print('no user/project')
+        return {'action':'Error','message':'Project does not exist!'}
+    except Exception as e:
+        print(e)
+        return {'action':'Error', 'message':'Something went wrong!'}

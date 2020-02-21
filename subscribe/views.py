@@ -61,13 +61,40 @@ def getSubs(request):
 def getProjects(request):
     user = request.user
     if not(user.is_authenticated):
-            return requestLogin(request);
+        return requestLogin(request);
     else:
         queryset = utils.getActiveProjects(user)
         if queryset!='Error':
             fields = ['data_date','projurl','projid']
             projList = list(queryset.values(*fields))
-            projList = [str(x['projid'])+'__'+x['data_date'].strftime('%Y-%m-%d')+'__'+x['projurl'] for x in projList]
+            projList = [x['data_date'].strftime('%Y-%m-%d')+'__'+str(x['projid'])+'__'+x['projurl'] for x in projList]
             return JsonResponse({'action':'Success','projects':projList})
         else:
-            return JsonResponse({'action':'Error'})
+            return JsonResponse({'action':'Error', 'message':'No active projects.'})
+
+def closeProject(request):
+    user = request.user
+    if not(user.is_authenticated):
+        return requestLogin(request)
+    else:
+        pid = request.GET.get('pid')
+        pdate = request.GET.get('pdate')
+        if (pid and pdate):
+            result = utils.archiveProject(user, pid, pdate)
+            return JsonResponse(result)
+        else:
+            return JsonResponse({'action':'Error', 'message':'Make sure project id and date are supplied'})
+
+def createProject(request):
+    user = request.user
+    if not(user.is_authenticated):
+        return requestLogin(request)
+    else:
+        pdate = request.GET.get('pdate')
+        if (pdate):
+            from datetime import datetime
+            pdate = datetime.strptime(pdate, "%Y-%m-%d")
+            result = utils.createProject(user, pdate)
+            return JsonResponse(result)
+        else:
+            return JsonResponse({'action':'Error', 'message':'Make sure projet date is supplied'})
