@@ -4,7 +4,7 @@ import ee
 import json, fiona
 import os
 from api.utils import *
-
+from api.config import LEVELS
 
 def test(request):
     authGEE()
@@ -137,14 +137,19 @@ def getCatMinPeru(request):
 def getDownloadURL(request):
     region = request.GET.get('region')
     level = request.GET.get('level')
-    if (region and region != 'undefined'):
+    date = request.GET.get('date')
+    if (region and date and region != 'undefined' and date!='undefined'):
+        authGEE()
+        img = ee.Image(IMAGE_REPO+'/'+date)
         if (region == 'all'):
-            return HttpResponse('all')
+            region = ee.FeatureCollection(LEVELS['l0'])
         else:
-            return HttpResponse(region)
+            region = ee.FeatureCollection(LEVELS[level]).filter(ee.Filter.eq(FIELDS[level],region))
+        img = img.clip(region)
+        url = img.toByte().getDownloadURL({})
+        return JsonResponse({'action':'success', 'url':url})
     else:
-        return HttpResponse("123123")
-    return JsonResponse({'region':region,'level':level})
+        return JsonResponse({'action':'error','message':'Insufficient Parameters! Malformed URL!'}, status=500)
 
 def searchMunicipalities(request):
     return JsonResponse({'asdasd':'qweqwe'})
