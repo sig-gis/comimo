@@ -17,5 +17,6 @@ urlpatterns = [
     path('getcascadingnames/', views.getCascadingFeatureNames, name='getcascadingnames'),
     path('getanpperu/', views.getANPeru, name='getANPPeru'),
     path('getcatmin/', views.getCatMinPeru, name='getcatminperu'),
+    path('getdownloadurl/', views.getDownloadURL, name='getdownloadurl'),
 
 ]

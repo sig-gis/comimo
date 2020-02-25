@@ -309,7 +309,9 @@ class OuterShell extends React.Component{
         showcomposite = {this.state.showcomposite}
         imageDates = {this.state.imageDates}/>
       <StatsPanel ishidden = {this.state.statshidden} />
-      <DownloadPanel ishidden = {this.state.downloadhidden} regionSelected = {this.state.regionSelected}/>
+      <DownloadPanel ishidden = {this.state.downloadhidden}
+        regionSelected = {this.state.regionSelected}
+        selectedDate = {this.state.selectedDate}/>
       <SubscribePanel ishidden = {this.state.subscribehidden}
         selectedRegion = {this.state.regionSelected}/>
       <ValidatePanel ishidden = {this.state.validatehidden}

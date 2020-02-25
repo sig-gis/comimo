@@ -134,6 +134,17 @@ def getCatMinPeru(request):
     authGEE()
     return JsonResponse(getCatMinPeruLayer())
 
+def getDownloadURL(request):
+    region = request.GET.get('region')
+    level = request.GET.get('level')
+    if (region and region != 'undefined'):
+        if (region == 'all'):
+            return HttpResponse('all')
+        else:
+            return HttpResponse(region)
+    else:
+        return HttpResponse("123123")
+    return JsonResponse({'region':region,'level':level})
 
 def searchMunicipalities(request):
     return JsonResponse({'asdasd':'qweqwe'})

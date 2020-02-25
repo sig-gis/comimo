@@ -24,14 +24,3 @@ class StatsPanel extends React.Component{
     </div>
   }
 }
-
-class DownloadPanel extends React.Component{
-  render(){
-    return <div className={['popup-container ',this.props.ishidden?'see-through':''].join(' ')} style={{'top':'350px'}}>
-      <h1><b> DOWNLOAD DATA </b></h1>
-      <b>Select Region</b><br/>
-      <input type='radio' name='downloadRegion' value={0}/> Complete Data <br/>
-      <input type='radio' name='downloadRegion' value={1} disabled={!this.props.regionSelected}/> Selected Municipality <br/>
-    </div>
-  }
-}
