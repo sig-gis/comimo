@@ -4,7 +4,7 @@ import ee
 import json, fiona
 import os
 from api.utils import *
-from api.config import LEVELS
+from api.config import LEVELS, FIELDS
 
 def test(request):
     authGEE()
