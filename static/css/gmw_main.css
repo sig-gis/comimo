@@ -74,6 +74,12 @@
   border-radius: 3px;
 }
 
+.map-upd-btn:disabled{
+  background: #ddd;
+  color: #aaa;
+  border:none;
+}
+
 .disclaimer{
   position:absolute;
   left:0%;
@@ -158,6 +164,10 @@
 }
 .del-btn:focus{
   outline:none;
+}
+.del-btn:disabled{
+  background: #ddd;
+  color: #aaa;
 }
 .sub-list{
   margin-left:10px;

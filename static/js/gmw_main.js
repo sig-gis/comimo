@@ -35,6 +35,7 @@ class OuterShell extends React.Component{
     advancedoptions:false,
     showcomposite:false,
     imageDates:[],
+    selectedDate:false,
     regionSelected:false
   }
   // combining everything to app state
@@ -70,12 +71,17 @@ class OuterShell extends React.Component{
                       '&maxp='+newappparams.maxprobability+
                       '&miny='+newappparams.minyear+
                       '&maxy='+newappparams.maxyear
+      this.setState({
+        selectedDate:false
+      });
     }else{
       var iid =document.getElementById('selectimagedate').value
       var tileURL = this.URLS.SINGLE_IMAGE+'?id='+iid
+      this.setState({
+        selectedDate:iid
+      });
     }
     this.refreshlayers(tileURL);
-
   }
 
   getImageDates(){
@@ -94,7 +100,11 @@ class OuterShell extends React.Component{
               labels:false,
               set: [this.appparams.minyear, this.appparams.maxyear]
           });
-          this.setState({imageDates:result.ids.reverse()})
+          result.ids.reverse()
+          this.setState({
+            imageDates: result.ids,
+            selectedDate: result.ids[0]
+          })
 
           var tileURL = this.URLS.SINGLE_IMAGE+'?id='+result.ids[0]
           this.refreshlayers(tileURL)
@@ -299,10 +309,13 @@ class OuterShell extends React.Component{
         showcomposite = {this.state.showcomposite}
         imageDates = {this.state.imageDates}/>
       <StatsPanel ishidden = {this.state.statshidden} />
-      <DownloadPanel ishidden = {this.state.downloadhidden} regionSelected = {this.state.regionSelected}/>
+      <DownloadPanel ishidden = {this.state.downloadhidden}
+        regionSelected = {this.state.regionSelected}
+        selectedDate = {this.state.selectedDate}/>
       <SubscribePanel ishidden = {this.state.subscribehidden}
         selectedRegion = {this.state.regionSelected}/>
-      <ValidatePanel ishidden = {this.state.validatehidden} />
+      <ValidatePanel ishidden = {this.state.validatehidden}
+        selectedDate = {this.state.selectedDate}/>
       <SearchPanel ishidden = {this.state.searchhidden}
           pointmapto={this.pointmapto.bind(this)}
           regionSelected={this.regionSelected.bind(this)}/>
