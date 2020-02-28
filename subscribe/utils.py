@@ -103,12 +103,11 @@ def createProject(user, data_date):
 def delProject(user, pid):
     try:
         result = deleteProject(pid)
+        print(result)
         if (result == 'OK'):
-            projects_model_instance = ProjectsModel.objects.get(user=user, projid=pid)
-            projects_model_instance.delete()
             return 'Archived'
         else:
-            return 'Error'
+            return 'Error-'+result
     except Exception as e:
         print(e)
         return 'Error'

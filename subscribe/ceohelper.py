@@ -11,7 +11,6 @@ def getCeoProjectURL(points, latest_date, email):
             "title": "_".join([PROJ_TITLE_PREFIX, datetime.today().strftime("%Y-%m-%d"), email]),
             "plotSize": PLOT_SIZE
         }
-        print(reqobj)
         headers = {'Content-type': 'application/json', 'Accept': 'text/plain'}
         resp = requests.post(CEO_GATEWAY_URL+CEO_CREATE, data=json.dumps(reqobj), headers=headers)
         proj = resp.text
@@ -48,4 +47,4 @@ def deleteProject(pid):
     headers = {'Content-type': 'application/json', 'Accept': 'text/plain'}
     print(CEO_GATEWAY_URL+CEO_DELETE+pid)
     resp = requests.get(CEO_GATEWAY_URL+CEO_DELETE+pid, headers=headers)
-    return json.loads(resp.text)
+    return resp.text
