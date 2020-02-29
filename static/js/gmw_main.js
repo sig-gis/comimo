@@ -308,7 +308,8 @@ class OuterShell extends React.Component{
         oncheckchange = {this.imagetypechanged.bind(this)}
         showcomposite = {this.state.showcomposite}
         imageDates = {this.state.imageDates}/>
-      <StatsPanel ishidden = {this.state.statshidden} />
+      <StatsPanel ishidden = {this.state.statshidden}
+        selectedDate = {this.state.selectedDate}/>
       <DownloadPanel ishidden = {this.state.downloadhidden}
         regionSelected = {this.state.regionSelected}
         selectedDate = {this.state.selectedDate}/>

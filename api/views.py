@@ -5,6 +5,8 @@ import json, fiona
 import os
 from api.utils import *
 from api.config import LEVELS, FIELDS
+from accounts.models import Profile
+from subscribe.utils import getSubscribedRegions
 
 def test(request):
     authGEE()
@@ -153,3 +155,30 @@ def getDownloadURL(request):
 
 def searchMunicipalities(request):
     return JsonResponse({'asdasd':'qweqwe'})
+
+def getAreaPredicted(request):
+    user = request.user
+    date = request.GET.get('date')
+    if not(user.is_authenticated):
+        return requestLogin(request)
+    else:
+        try:
+            user = Profile.objects.get(user=user)
+            regions = getSubscribedRegions(user)
+            authGEE()
+            fc = subscribedRegionsToFC(regions)
+            image = ee.Image(IMAGE_REPO+'/'+date)
+            pa = ee.Image.pixelArea()
+            image = image.selfMask().multiply(pa)
+            rr = image.reduceRegions(collection=fc,
+                reducer=ee.Reducer.sum(),
+                scale=500,
+                crs='EPSG:4326')
+            area = rr.aggregate_array('sum')
+            names = rr.aggregate_array('admin2Name')
+            dict = ee.Dictionary({'area':area,'names':names}).getInfo()
+            dict['action'] = 'Success'
+            return JsonResponse(dict)
+        except Exception as e:
+            print(e)
+            return JsonResponse({'action':'Error','message':'Something went wrong!'},status=500)

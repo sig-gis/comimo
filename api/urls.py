@@ -18,5 +18,6 @@ urlpatterns = [
     path('getanpperu/', views.getANPeru, name='getANPPeru'),
     path('getcatmin/', views.getCatMinPeru, name='getcatminperu'),
     path('getdownloadurl/', views.getDownloadURL, name='getdownloadurl'),
+    path('getareapredicted/', views.getAreaPredicted, name='getareapredicted'),
 
 ]

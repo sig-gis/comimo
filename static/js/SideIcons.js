@@ -16,11 +16,3 @@ class PlaceHolder extends React.Component{
     return <div className="placeholder"><b> Work in Progress ... </b></div>
   }
 }
-
-class StatsPanel extends React.Component{
-  render(){
-    return <div className={['popup-container ',this.props.ishidden?'see-through':''].join(' ')} style={{'top':'250px'}}>
-      <PlaceHolder />
-    </div>
-  }
-}
