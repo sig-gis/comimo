@@ -112,13 +112,13 @@ map.on('load', function() {
       if (e.features[i].properties.class == 1) positive += 1;
       if (users.indexOf(e.features[i].properties.user) == -1) users.push(e.features[i].properties.user);
     }
-    var percent = count/positive*100+'%';
+    var percent = positive/count*100+'%';
     var coordinates = e.features[0].geometry.coordinates.slice();
     console.log(percent)
 
     new mapboxgl.Popup()
       .setLngLat(coordinates)
-      .setHTML("Collected by: " + users.join(',') + "<br>% agreement: " + percent + "<br>Total point: " +count)
+      .setHTML("<table><tr><td>Collected by: </td><td>" + users.join(',') + "</td></tr><tr><td>% agreement:</td><td>" + percent + "</td></tr><tr><td>Total points:</td><td>" +count+"</td></tr></table>")
       .addTo(map);
   });
 
@@ -144,7 +144,7 @@ function formatToGeoJson(data){
         "coordinates": [item.y, item.x]
       },
       "properties": {
-        "user": item.user,
+        "user": item.id,
         "date": item.dataDate,
         "class": item.classNum,
         "label": item.className
