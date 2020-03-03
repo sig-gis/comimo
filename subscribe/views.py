@@ -92,3 +92,26 @@ def createProject(request):
             return JsonResponse(result)
         else:
             return JsonResponse({'action':'Error', 'message':'Make sure projet date is supplied'})
+
+def downloadData(request):
+    user = request.user
+    if not(user.is_authenticated):
+        return requestLogin(request)
+    else:
+        from subscribe.models import ExtractedData
+        from accounts.models import Profile
+        data = ExtractedData.objects.all().values()
+        user = Profile.objects.get(user=user)
+        d = []
+        for point in iter(data):
+            prof = Profile.objects.get(user=point['user_id'])
+            temp = {}
+            temp['id'] = prof.user
+            temp['y'] = point['y']
+            temp['x'] = point['x']
+            temp['data_date'] = point['data_date']
+            temp['class_num'] = point['class_num']
+            temp['class_name'] = point['class_name']
+            d.append(temp)
+        context = {'data':d}
+        return render(request, 'dlData.html', context)
