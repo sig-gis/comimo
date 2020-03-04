@@ -20,6 +20,9 @@
 <script type="text/javascript"
   {% if user.is_authenticated %}
   data-auth = 'true'
+  {% endif %}
+  {% if user.is_superuser %}
+  data-admin = 'true'
   {% endif %}>
   // global helpers
   const l = function(message){
@@ -31,6 +34,7 @@
   DJANGO_JS_FOLDER = 'js/';
   DJANGO_CSS_FOLDER = 'css/';
   USER_STATE = document.currentScript.dataset.auth;
+  USER_ADM = document.currentScript.dataset.admin;
 </script>
 {% block pagescripts %}
 {% endblock %}
