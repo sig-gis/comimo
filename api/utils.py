@@ -44,20 +44,6 @@ def getMunicipalTiles():
     mapid = ee.data.getTileUrl(table.getMapId(),0,0,0)[:-5]+'{z}/{x}/{y}'
     return {'url':mapid,'style':style}
 
-def getANPeruLayer():
-    table = ee.FeatureCollection(PERU['ANP'])
-    style = {'color':'#ff0', 'fillColor':'#ffff0011', 'width':1}
-    table = table.style(color=style['color'],fillColor=style['fillColor'],width=style['width'])
-    mapid = ee.data.getTileUrl(table.getMapId(),0,0,0)[:-5]+'{z}/{x}/{y}'
-    return {'url':mapid,'style':style}
-
-def getCatMinPeruLayer():
-    table = ee.FeatureCollection(PERU['CATMIN'])
-    style = {'color':'#7f00ff', 'fillColor':'#0000', 'width':1}
-    table = table.style(color=style['color'],fillColor=style['fillColor'],width=style['width'])
-    mapid = ee.data.getTileUrl(table.getMapId(),0,0,0)[:-5]+'{z}/{x}/{y}'
-    return {'url':mapid,'style':style}
-
 def getComposite(minp, maxp, miny, maxy):
     imageDates = getImageList()
     validDates = [ee.Image(IMAGE_REPO+'/'+imageDates[i]).selfMask() for i in range(len(imageDates)) if (imageDates[i]>=miny and imageDates[i]<= maxy)]

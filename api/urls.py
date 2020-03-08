@@ -7,7 +7,6 @@ from . import views
 urlpatterns = [
     path('test/', views.test, name='test'),
     path('getfeaturenames/', views.getFeatureNames, name='getfeaturenames'),
-    path('getperufnames/', views.getPeruFeatureNames, name='getperufnames'),
     path('getfeatures/', views.getFeatures, name='getfeatures'),
     path('getimagenames/', views.getImageNames, name='getimagenames'),
     path('getsingleimage/', views.getSingleImage, name='getsingleimage'),
@@ -15,8 +14,6 @@ urlpatterns = [
     path('getlegalmines/', views.getLegalMines, name='getlegalmines'),
     path('getmunicipallayer/', views.getMunicipalLayer, name='getmunicipallayer'),
     path('getcascadingnames/', views.getCascadingFeatureNames, name='getcascadingnames'),
-    path('getanpperu/', views.getANPeru, name='getANPPeru'),
-    path('getcatmin/', views.getCatMinPeru, name='getcatminperu'),
     path('getdownloadurl/', views.getDownloadURL, name='getdownloadurl'),
     path('getareapredicted/', views.getAreaPredicted, name='getareapredicted'),
 
