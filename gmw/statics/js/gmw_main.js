@@ -1,5 +1,5 @@
 var t;
-var count='COLOMBIA';
+
 class OuterShell extends React.Component{
   // set up class flags so each component update doesn't do redundant JS tasks
   flags = {
