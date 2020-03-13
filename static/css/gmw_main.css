@@ -188,3 +188,9 @@ span.advanced-text{
   line-height:10px;
   height:auto;
 }
+#opacity-control{
+  width:200px;
+}
+#opacity-control input[type="range"]{
+  width:calc(100% - 5px);
+}

@@ -65,7 +65,7 @@ class SearchPanel extends React.Component{
   }
 
   getFeatureNames(){
-    var url = (count=='PERU')?this.URLS.PERU_F_NAMES:this.URLS.FEATURE_NAMES;
+    var url = this.URLS.FEATURE_NAMES;
     fetch(url)
       .then(res => res.json())
       .then(
