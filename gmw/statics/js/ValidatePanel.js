@@ -5,7 +5,9 @@ class ValidatePanel extends React.Component{
     CRTPROJ: 'subscribe/createproject'
   }
   state = {
-    projects : []
+    projects : [],
+    createstate: true,
+    errormsg : false
   }
 
   componentDidMount(){
@@ -24,6 +26,7 @@ class ValidatePanel extends React.Component{
   }
 
   createProject(e,pdate){
+    this.setState({createstate:false,errormsg:false});
     e.target.disabled = true;
     var url = this.URLS.CRTPROJ+"?pdate="+pdate;
     if (USER_STATE){
@@ -33,13 +36,15 @@ class ValidatePanel extends React.Component{
           var projects = this.state.projects;
           projects.push(res.proj);
           this.setState({
+            createstate:true,
             projects:projects.sort().reverse()
           });
+        }else{
+          this.setState({createstate:true,errormsg:res.message});
         }
-        e.target.disabled = false;
       },(err)=>{
         l(err);
-        e.target.disabled = false;
+        this.setState({createstate:true});
       });
     }
   }
@@ -92,14 +97,14 @@ class ValidatePanel extends React.Component{
         if (match.length == 0){
           var button = <div style={{'textAlign':'center','width':'100%'}}>
           <br/>
-            <button type="button" className="btn btn-warning map-upd-btn" onClick={(e)=>{this.createProject(e,selDate);}}>
+            <button type="button" className="btn btn-warning map-upd-btn" onClick={(e)=>{this.createProject(e,selDate);}} disabled={!this.state.createstate}>
               Create new project for {selDate}</button>
           </div>
         }
       }
       if (this.state.projects.length == 0){
         var content = <div>
-          Yo don't have any active projects at the moment.
+          You don't have any active projects at the moment.
           {button}
         </div>
       }else{
@@ -119,6 +124,7 @@ class ValidatePanel extends React.Component{
     return <div className={['popup-container ',this.props.ishidden?'see-through':''].join(' ')} style={{'top':'100px'}}>
       <h1><b> Validation </b></h1>
       {content}
+      {this.state.errormsg}
     </div>
   }
 }

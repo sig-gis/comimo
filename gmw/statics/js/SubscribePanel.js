@@ -14,7 +14,8 @@ class SubscribePanel extends React.Component{
     .then((res)=>{
       if (res.action == 'Success'){
         this.setState({
-          list:res.regions.sort()
+          list:res.regions.sort(),
+          subsloaded:true
         });
       }
     },(err)=>{
