@@ -8,20 +8,7 @@ from api.config import LEVELS, FIELDS
 from accounts.models import Profile
 from subscribe.utils import getSubscribedRegions
 
-def test(request):
-    authGEE()
-    # parse request parameters
-    minp = int(request.GET.get('minp'))/100.
-    maxp = int(request.GET.get('maxp'))/100.
-    miny = int(request.GET.get('miny'))
-    maxy = int(request.GET.get('maxy'))
-    img = ee.Image(IMAGE_REPO+'/2020-01-22')
-    # img = img.updateMask(img.gte(minp))
-    # visparams = {'min':minp,'max':maxp,'palette':['fff','f00']}
-    resp = getDefaultStyled()
-    resp['minp'] = minp
-    return JsonResponse(resp)
-
+# view to get composite image between two dates
 def getCompositeImage(request):
     try:
         # parse request parameters
@@ -38,17 +25,20 @@ def getCompositeImage(request):
         print(e)
         # return redirect('login')
 
+# view to get a single image (prediction) of a certain date
 def getSingleImage(request):
     authGEE()
     img = ee.Image(IMAGE_REPO+'/'+request.GET.get('id'))
     resp = getDefaultStyled(img)
     return JsonResponse(resp)
 
+# get get the list of available images
 def getImageNames(request):
     authGEE()
     return JsonResponse({'ids':getImageList()})
     # return HttpResponse('T')
 
+# get the names of features (municipality) and their bounding boxes
 def getFeatureNames(request):
     module_dir = os.path.dirname(__file__)
 
@@ -63,6 +53,7 @@ def getFeatureNames(request):
             dict[l1name] = {feat['properties']['admin2Name'] : bounds(feat)}
     return JsonResponse({'action':'FeatureNames', 'features': dict});
 
+# get features in a cascading pattern
 def getCascadingFeatureNames(request):
     authGEE()
     fc = ee.FeatureCollection(MUNICIPAL_BOUNDS)
@@ -81,6 +72,7 @@ def getCascadingFeatureNames(request):
 
     return JsonResponse(fci.getInfo())
 
+# get features in a geojson format
 def getFeatures(request):
     module_dir = os.path.dirname(__file__)
     focus = request.GET.get('focus')
@@ -105,14 +97,17 @@ def getFeatures(request):
                 fcoll['features'].append(feature)
         return JsonResponse(fcoll)
 
+# get mapid for the legal mines layer
 def getLegalMines(request):
     authGEE()
     return JsonResponse(getLegalMineTiles())
 
+# get mapid for municipal boundaries layer
 def getMunicipalLayer(request):
     authGEE()
     return JsonResponse(getMunicipalTiles())
 
+# get the downloadurl for images
 def getDownloadURL(request):
     region = request.GET.get('region')
     level = request.GET.get('level')
@@ -130,9 +125,7 @@ def getDownloadURL(request):
     else:
         return JsonResponse({'action':'error','message':'Insufficient Parameters! Malformed URL!'}, status=500)
 
-def searchMunicipalities(request):
-    return JsonResponse({'asdasd':'qweqwe'})
-
+# get area of predicted mineswithin study region
 def getAreaPredicted(request):
     user = request.user
     date = request.GET.get('date')
