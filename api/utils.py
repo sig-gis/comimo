@@ -3,6 +3,8 @@ import datetime, pytz
 import fiona
 from api.config import *
 
+#codes to interface with GEE
+
 #function to authenticate GEE
 def authGEE():
     module_dir = os.path.dirname(__file__)

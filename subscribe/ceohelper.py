@@ -9,7 +9,8 @@ def getCeoProjectURL(points, latest_date, email):
             "classes": PROJ_CLASSES,
             "plots": getPlots(points),
             "title": "_".join([PROJ_TITLE_PREFIX, datetime.today().strftime("%Y-%m-%d"), email]),
-            "plotSize": PLOT_SIZE
+            "plotSize": PLOT_SIZE,
+            "baseMapSource": PROJ_DEFAULT_BM
         }
         headers = {'Content-type': 'application/json', 'Accept': 'text/plain'}
         resp = requests.post(CEO_GATEWAY_URL+CEO_CREATE, data=json.dumps(reqobj), headers=headers)
