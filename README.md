@@ -1,4 +1,3 @@
-
 # Colombian Mining Monitoring
 
 ## Cannonical source
@@ -112,9 +111,13 @@ PLOT_SIZE = 500 # size of plots in meters for CEO Project
 
 #### Running django through IIS
 Feed the application through wfastcgi and IIS
+
 Some resources on how-to:
+
 [https://medium.com/@Jonny_Waffles/deploy-django-on-iis-def658beae92](https://medium.com/@Jonny_Waffles/deploy-django-on-iis-def658beae92)
+
 [https://nitinnain.com/setting-up-and-running-django-on-windows-iis-server/](https://nitinnain.com/setting-up-and-running-django-on-windows-iis-server/)
+
 [https://medium.com/@ayushi21095/steps-to-deploy-python-django-web-application-on-windows-iis-server-379b2b87fcf9](https://medium.com/@ayushi21095/steps-to-deploy-python-django-web-application-on-windows-iis-server-379b2b87fcf9)
 
 ### Setting up cronjobs/scheduled tasks
