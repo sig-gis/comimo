@@ -12,12 +12,12 @@ var table = new Tabulator("#datTable", {
 	movableColumns:true,      //allow column order to be changed
 	resizableRows:true,       //allow row order to be changed
 	columns:[                 //define the table columns
-		{title:"User", field:"id", headerFilter:"number"},
-    {title:"Longitude", field:"y", headerFilter:"input"},
-    {title:"Latitude", field:"x", headerFilter:"input"},
-    {title:"Date", field:"dataDate", headerFilter:"number"},
-    {title:"Class Value", field:"classNum", headerFilter:"number"},
-		{title:"Label", field:"className", headerFilter:"input"},
+		{title:"user", field:"id", headerFilter:"number"},
+    {title:"longitude", field:"y", headerFilter:"input"},
+    {title:"latitude", field:"x", headerFilter:"input"},
+    {title:"date", field:"dataDate", headerFilter:"number"},
+    {title:"mine", field:"classNum", headerFilter:"number"},
+		{title:"label", field:"className", headerFilter:"input"},
 	],
 });
 
