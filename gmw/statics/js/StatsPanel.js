@@ -20,14 +20,18 @@ class StatsPanel extends React.Component{
         for (var i=0; i<res.names.length;i++){
           if (res.area[i]!=0) data.push([res.names[i],res.area[i]/1e6]);
         }
-        var data = google.visualization.arrayToDataTable(data);
+        if (res.names.length>0){
+          var data = google.visualization.arrayToDataTable(data);
 
-        // Optional; add a title and set the width and height of the chart
-        var options = {'title':'For '+date, 'width':290, 'height':200, 'legend': { position: "none" }};
+          // Optional; add a title and set the width and height of the chart
+          var options = {'title':'For '+date, 'width':290, 'height':200, 'legend': { position: "none" }};
 
-        // Display the chart inside the <div> element with id="piechart"
-        var chart = new google.visualization.ColumnChart(document.getElementById('stats1'));
-        chart.draw(data, options);
+          // Display the chart inside the <div> element with id="piechart"
+          var chart = new google.visualization.ColumnChart(document.getElementById('stats1'));
+          chart.draw(data, options);
+        }else{
+          document.getElementById('stats1').innerHTML = '<i>No data found! Subscribe to more regions!</i>';
+        }
       },(err)=>{
         console.log('Error loading stats!', e);
       });
@@ -37,23 +41,29 @@ class StatsPanel extends React.Component{
     fetch(url).then(res => res.json())
       .then((res)=>{
         var data = [['Municipality','Area']]
+        var nonzero = false;
         for (var i=0; i<res.names.length;i++){
           data.push([res.names[i].substring(5),res.area[i]/1e6]);
+          if (res.area[i]>0) nonzero = true;
         }
-        var data = google.visualization.arrayToDataTable(data);
+        if (nonzero){
+          var data = google.visualization.arrayToDataTable(data);
 
-        // Optional; add a title and set the width and height of the chart
-        var options = {
-          'title':'From '+res.names[0]+' to '+res.names[res.names.length-1],
-          'width':290,
-          'height':200,
-          'legend': { position: "none" },
-          'hAxis': { slantedText:true,}
-        };
+          // Optional; add a title and set the width and height of the chart
+          var options = {
+            'title':'From '+res.names[0]+' to '+res.names[res.names.length-1],
+            'width':290,
+            'height':200,
+            'legend': { position: "none" },
+            'hAxis': { slantedText:true,}
+          };
 
-        // Display the chart inside the <div> element with id="piechart"
-        var chart = new google.visualization.ColumnChart(document.getElementById('stats2'));
-        chart.draw(data, options);
+          // Display the chart inside the <div> element with id="piechart"
+          var chart = new google.visualization.ColumnChart(document.getElementById('stats2'));
+          chart.draw(data, options);
+        }else {
+          document.getElementById('stats2').innerHTML = '<i>No data found! Subscribe to more regions!</i>';
+        }
       },(err)=>{
         console.log('Error loading stats!', e);
       });
@@ -85,7 +95,7 @@ class StatsPanel extends React.Component{
     }
     else{
       var content = <div>
-        <b>Area per subscribed regions </b>
+        <b>Area per subscribed regions </b><br/>
         Note: Regions with no mines are not shown. Please subscribe to more regions to view area of mines predicted within.
         <div id="stats1">
         <b>Loading data...</b>
