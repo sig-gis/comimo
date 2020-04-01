@@ -15,5 +15,5 @@ urlpatterns = [
     path('getcascadingnames/', views.getCascadingFeatureNames, name='getcascadingnames'),
     path('getdownloadurl/', views.getDownloadURL, name='getdownloadurl'),
     path('getareapredicted/', views.getAreaPredicted, name='getareapredicted'),
-
+    path('getareats/', views.getAreaPredictedTS, name='getareats'),
 ]

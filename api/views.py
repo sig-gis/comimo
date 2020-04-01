@@ -152,3 +152,38 @@ def getAreaPredicted(request):
         except Exception as e:
             print(e)
             return JsonResponse({'action':'Error','message':'Something went wrong!'},status=500)
+
+# get area of predicted mineswithin study region
+def getAreaPredictedTS(request):
+    user = request.user
+    if not(user.is_authenticated):
+        return requestLogin(request)
+    else:
+        try:
+            user = Profile.objects.get(user=user)
+            regions = getSubscribedRegions(user)
+            authGEE()
+            fc = subscribedRegionsToFC(regions)
+
+            def asBands(image, passedImage):
+                image = ee.Image(image)
+                id = image.id()
+                pa = ee.Image.pixelArea()
+                image = image.selfMask().multiply(pa)
+                passedImage = ee.Image(passedImage)
+                return passedImage.addBands(image.rename(id))
+            image =  ee.Image(ee.ImageCollection(IMAGE_REPO).iterate(asBands,ee.Image()))
+            image = image.select(image.bandNames().remove('constant'))
+            rr = image.reduceRegion(geometry=fc.geometry(),
+                reducer=ee.Reducer.sum(),
+                scale=500,
+                crs='EPSG:4326',
+                bestEffort=True)
+            area = rr.values()
+            names = rr.keys()
+            dict = ee.Dictionary({'area':area,'names':names}).getInfo()
+            dict['action'] = 'Success'
+            return JsonResponse(dict)
+        except Exception as e:
+            print(e)
+            return JsonResponse({'action':'Error','message':'Something went wrong!'},status=500)

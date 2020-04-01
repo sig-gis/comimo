@@ -2,10 +2,13 @@ class StatsPanel extends React.Component{
   state = {
     names:[],
     series:[],
+    c2_dates:[],
+    c2_series:[],
     libloaded:false
   }
   URL = {
-    ARSTATS : '/api/getareapredicted/'
+    ARSTATS : '/api/getareapredicted/',
+    ARTS : '/api/getareats/',
   }
   fetchedFor=false;
 
@@ -20,10 +23,36 @@ class StatsPanel extends React.Component{
         var data = google.visualization.arrayToDataTable(data);
 
         // Optional; add a title and set the width and height of the chart
-        var options = {'title':'Predicted Area for '+date+' (in sq km)', 'width':290, 'height':400, 'legend': { position: "none" }};
+        var options = {'title':'For '+date, 'width':290, 'height':200, 'legend': { position: "none" }};
 
         // Display the chart inside the <div> element with id="piechart"
         var chart = new google.visualization.ColumnChart(document.getElementById('stats1'));
+        chart.draw(data, options);
+      },(err)=>{
+        console.log('Error loading stats!', e);
+      });
+  }
+  getAreaTS(){
+    var url = this.URL.ARTS
+    fetch(url).then(res => res.json())
+      .then((res)=>{
+        var data = [['Municipality','Area']]
+        for (var i=0; i<res.names.length;i++){
+          data.push([res.names[i].substring(5),res.area[i]/1e6]);
+        }
+        var data = google.visualization.arrayToDataTable(data);
+
+        // Optional; add a title and set the width and height of the chart
+        var options = {
+          'title':'From '+res.names[0]+' to '+res.names[res.names.length-1],
+          'width':290,
+          'height':200,
+          'legend': { position: "none" },
+          'hAxis': { slantedText:true,}
+        };
+
+        // Display the chart inside the <div> element with id="piechart"
+        var chart = new google.visualization.ColumnChart(document.getElementById('stats2'));
         chart.draw(data, options);
       },(err)=>{
         console.log('Error loading stats!', e);
@@ -33,6 +62,7 @@ class StatsPanel extends React.Component{
   componentDidUpdate(){
     if (USER_STATE && this.state.libloaded && this.fetchedFor != this.props.selectedDate){
       this.getAreaStats(this.props.selectedDate);
+      this.getAreaTS();
       this.fetchedFor = this.props.selectedDate;
     }
   }
@@ -55,13 +85,18 @@ class StatsPanel extends React.Component{
     }
     else{
       var content = <div>
-        {"Regions with no mines are not shown. Please subscribe to more regions to view area of mines predicted within."}
+        <b>Area per subscribed regions </b>
+        Note: Regions with no mines are not shown. Please subscribe to more regions to view area of mines predicted within.
         <div id="stats1">
+        <b>Loading data...</b>
+        </div>
+        <b>Total area under subscribed regions </b>
+        <div id="stats2">
         <b>Loading data...</b>
         </div>
       </div>
     }
-    return <div className={['popup-container ',this.props.ishidden?'see-through':''].join(' ')} style={{'top':'250px'}}>
+    return <div className={['popup-container ',this.props.ishidden?'see-through':''].join(' ')} style={{'top':'250px','max-height':'calc( 100% - 250px )','overflow-y':'auto'}}>
       {content}
     </div>
   }
