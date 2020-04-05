@@ -19,7 +19,11 @@ def signupView(request):
         user.profile.email = form.cleaned_data.get('email')
         user.is_active = True
         user.save()
+        raw_pass = form.cleaned_data.get('password1')
+        user = authenticate(username=user.username,password=raw_pass)
+        login(request,user)
         return redirect('home')
     else:
-        form = SignUpForm()
+        # form = SignUpForm()
+        pass
     return render(request, 'registration/signup.html', {'form': form})
