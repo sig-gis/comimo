@@ -10,6 +10,7 @@ class SearchPanel extends React.Component{
     this.state={
       geocodedsearch:[],
       featureNames:{},
+      activel1:false,
       activeMuns:{},
       datasetsearch:[]
     }
@@ -60,6 +61,7 @@ class SearchPanel extends React.Component{
 
   stateSelected(e){
     this.setState({
+      activel1:e.target.value,
       activeMuns:this.state.featureNames[e.target.value]
     });
   }
@@ -135,8 +137,9 @@ class SearchPanel extends React.Component{
       selectl2 = <div className="w_100">
         <small>Municipality</small>
         <select className='w_100' defaultValue={0} onChange={(e) => {
+            console.log(this.state.activel1+'_'+e.target.selectedOptions[0].getAttribute('name'))
               this.munSelected(e,this.props.pointmapto);
-              this.props.regionSelected('mun',e.target.selectedOptions[0].getAttribute('name'));
+              this.props.regionSelected('mun',this.state.activel1+'_'+e.target.selectedOptions[0].getAttribute('name'));
             }}
           >
           {selectl2options}
