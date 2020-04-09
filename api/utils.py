@@ -89,7 +89,12 @@ def subscribedRegionsToFC(regions):
     fc = ee.FeatureCollection([])
     for region in regions:
         r = region.split("_")
-        f = ee.FeatureCollection(LEVELS[r[0]]).filter(ee.Filter.eq(FIELDS[r[0]],r[1]))
+        f = ee.FeatureCollection([])
+        if (r[0] == 'mun'):
+            # filter by level 1 name and then by mun name
+            f = ee.FeatureCollection(LEVELS[r[0]])\
+                .filter(ee.Filter.eq(FIELDS['mun_l1'],r[1]))\
+                .filter(ee.Filter.eq(FIELDS['mun'],r[2]))
         fc = fc.merge(f)
     return fc
 
