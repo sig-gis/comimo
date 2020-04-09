@@ -48,22 +48,26 @@ class SubscribePanel extends React.Component{
 
   delSubs(e, data){
     var arr = data.split('_');
-    fetch(this.URLS.DELSUBS+'?region='+arr[1]+'_'+arr[2]+'&level='+arr[0]).then(res => res.json())
-    .then(
-      (result) => {
-        l(result)
-        if (result.action != 'Error') {
-          var currentList = this.state.list;
-          currentList.splice(currentList.indexOf(result.region),1)
-          this.setState({
-            list: currentList
-          });
+    var level = arr.splice(0,1);
+    var delconfirm = confirm('Are you sure you want to stop subscribing to '+arr.reverse().join(', ')+'? You will stop receiving alerts for this region.');
+    if (delconfirm){
+      fetch(this.URLS.DELSUBS+'?region='+arr.join('_')+'&level='+level).then(res => res.json())
+      .then(
+        (result) => {
+          l(result)
+          if (result.action != 'Error') {
+            var currentList = this.state.list;
+            currentList.splice(currentList.indexOf(result.region),1)
+            this.setState({
+              list: currentList
+            });
+          }
+        },
+        (error) => {
+          l(error);
         }
-      },
-      (error) => {
-        l(error);
-      }
-    )
+      )
+    }
   }
 
   createList(list){
