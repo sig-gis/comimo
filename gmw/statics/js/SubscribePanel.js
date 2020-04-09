@@ -75,24 +75,20 @@ class SubscribePanel extends React.Component{
     for (let i = 0; i < list.length; i++) {
       var arr = list[i].split('_');
       ul.push(<tr key={i}>
-        <td>{i+1}</td>
-        <td>
+        <td style={{width:'20px'}}>{i+1}</td>
+        <td style={{width:'calc(100% - 50px)'}}>
         {arr[2]+', '}<i>{arr[1]}</i>
-        </td><td><input type="submit" value="X" data={list[i]} className="del-btn" title="delete" onClick={(e)=>this.delSubs(e, list[i])}/>
+        </td><td style={{width:'30px'}}><input type="submit" value="X" data={list[i]} className="del-btn" title="delete" onClick={(e)=>this.delSubs(e, list[i])}/>
         </td>
       </tr>);
     }
     return <table style={{width:'100%',textAlign:'left'}}>
-      <colgroup>
-         <col span="1" style={{width:'20px'}}/>
-         <col span="1" style={{width:'calc(100% - 50px)'}}/>
-         <col span="1" style={{width:'30px',textAlign:'right'}}/>
-      </colgroup>
+
       <thead>
         <tr>
-          <th>SN</th>
-          <th>Municipality</th>
-          <th>Del</th>
+          <th style={{width:'20px'}}>SN</th>
+          <th style={{width:'calc(100% - 50px)'}}>Municipality</th>
+          <th style={{width:'30px'}}>Del</th>
         </tr>
       </thead>
       <tbody>{ul}</tbody>
