@@ -8,6 +8,7 @@ class OuterShell extends React.Component{
   }
   // API URLS
   URLS = {
+    FEATURE_NAMES: 'api/getfeaturenames',
     IMG_DATES:'/api/getimagenames',
     SINGLE_IMAGE: '/api/getsingleimage',
     COMPOSITE_IMAGE: '/api/getcompositeimage',
@@ -36,7 +37,9 @@ class OuterShell extends React.Component{
     showcomposite:false,
     imageDates:[],
     selectedDate:false,
-    regionSelected:false
+    regionSelected:false,
+    featureNames:{},
+    sublist:[]
   }
   // combining everything to app state
   state = {...this.appparams, ...this.appstates, ...this.persistentstates}
@@ -113,6 +116,29 @@ class OuterShell extends React.Component{
           l(error);
         }
       )
+  }
+
+  getFeatureNames(){
+    var url = this.URLS.FEATURE_NAMES;
+    fetch(url)
+      .then(res => res.json())
+      .then(
+        (result) => {
+          if (result.action == "FeatureNames"){
+            this.setState({
+              featureNames:result.features
+            });
+          }
+        }, (error) => {
+          l(error)
+        }
+      );
+  }
+
+  updateSubList(list){
+    this.setState({
+      sublist:list
+    })
   }
 
   pointmapto(type,arg){
@@ -277,6 +303,8 @@ class OuterShell extends React.Component{
     });
 
     this.getImageDates();
+
+    this.getFeatureNames();
     // call initial state functions
   }
 
@@ -314,12 +342,17 @@ class OuterShell extends React.Component{
         regionSelected = {this.state.regionSelected}
         selectedDate = {this.state.selectedDate}/>
       <SubscribePanel ishidden = {this.state.subscribehidden}
-        selectedRegion = {this.state.regionSelected}/>
+        selectedRegion = {this.state.regionSelected}
+        updateSubList = {this.updateSubList.bind(this)}
+        list = {this.state.sublist}/>
       <ValidatePanel ishidden = {this.state.validatehidden}
-        selectedDate = {this.state.selectedDate}/>
+        selectedDate = {this.state.selectedDate}
+        featureNames = {this.state.featureNames}
+        sublist = {this.state.sublist}/>
       <SearchPanel ishidden = {this.state.searchhidden}
           pointmapto={this.pointmapto.bind(this)}
-          regionSelected={this.regionSelected.bind(this)}/>
+          regionSelected={this.regionSelected.bind(this)}
+          featureNames={this.state.featureNames}/>
       <div className='sidebar' >
         <div className='sidebar-icon gold-drop app-icon'></div>
         {/* <SideIcons parentclass='gold-drop' glyphicon='glyphicon-question-sign' />*/}

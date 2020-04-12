@@ -59,9 +59,9 @@ def getProjects(request):
     else:
         queryset = utils.getActiveProjects(user)
         if queryset!='Error':
-            fields = ['data_date','projurl','projid']
+            fields = ['data_date','created_date','projurl','projid','name','regions']
             projList = list(queryset.values(*fields))
-            projList = [x['data_date'].strftime('%Y-%m-%d')+'__'+str(x['projid'])+'__'+x['projurl'] for x in projList]
+            projList = [[x['data_date'].strftime('%Y-%m-%d'), x['created_date'].strftime('%Y-%m-%d'), x['projid'], x['projurl'], x['name'], x['regions']] for x in projList]
             return JsonResponse({'action':'Success','projects':projList})
         else:
             return JsonResponse({'action':'Error', 'message':'No active projects.'})
@@ -85,10 +85,12 @@ def createProject(request):
         return requestLogin(request)
     else:
         pdate = request.GET.get('pdate')
+        name = request.GET.get('name')
+        regions = request.GET.get('regions')
         if (pdate):
             from datetime import datetime
             pdate = datetime.strptime(pdate, "%Y-%m-%d")
-            result = utils.createProject(user, pdate)
+            result = utils.createProject(user, pdate, name, regions)
             return JsonResponse(result)
         else:
             return JsonResponse({'action':'Error', 'message':'Make sure projet date is supplied'})

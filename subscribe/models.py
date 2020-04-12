@@ -25,6 +25,8 @@ class ProjectsModel(models.Model):
     user = models.ForeignKey(Profile, on_delete=models.CASCADE)
     projid = models.IntegerField(null=False)
     projurl = models.TextField(null=False)
+    name = models.TextField(null=False)
+    regions = models.TextField(null=False)
     data_date =  models.DateTimeField(null=False)
     created_date =  models.DateTimeField(null=False, blank=True)
     status =  models.TextField(null=False, default='active')

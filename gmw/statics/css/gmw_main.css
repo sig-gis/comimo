@@ -194,3 +194,7 @@ span.advanced-text{
 #opacity-control input[type="range"]{
   width:calc(100% - 5px);
 }
+select[multiple] optgroup option:checked::before{
+  content:'\2713';
+  font-weight:bold;
+}
