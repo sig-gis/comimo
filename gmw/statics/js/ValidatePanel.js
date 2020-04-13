@@ -15,7 +15,6 @@ class ValidatePanel extends React.Component{
     if (USER_STATE){
       fetch(this.URLS.PROJS).then(res => res.json())
       .then((res)=>{
-        l(res)
         if (res.action == 'Success'){
           this.setState({
             projects:res.projects

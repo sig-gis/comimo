@@ -290,6 +290,17 @@ class OuterShell extends React.Component{
       this.map.addControl(opacity, 'bottom-right');
       this.getLegalMinesLayer();
       this.getMunicipalLayer();
+      this.map.on('mousemove',(e)=>{
+        var lat = Math.round(e.lngLat.lat*10000)/10000;
+        var lng = Math.round(e.lngLat.lng*10000)/10000;
+        var hud = document.getElementById('lnglathud');
+        hud.style.display = 'inherit';
+        hud.innerHTML = [lat,lng].join(', ');
+      })
+      this.map.on('mouseout',(e)=>{
+        var hud = document.getElementById('lnglathud');
+        hud.style.display = 'none';
+      })
     });
     // render sliders
     this.probSlider = new rSlider({
@@ -389,6 +400,8 @@ class OuterShell extends React.Component{
           tooltip='App Info'/>
       </div>
       <AppInfo ishidden={this.state.appinfohidden} onOuterClick={((e) => this.togglePanel(e, 'appinfohidden')).bind(this)}/>
+      <div id="lnglathud">
+      </div>
     </div>
   }
 };
