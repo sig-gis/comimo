@@ -3,12 +3,12 @@ import requests
 from datetime import datetime
 import json
 
-def getCeoProjectURL(points, latest_date, email):
+def getCeoProjectURL(points, latest_date, email, name):
     try:
         reqobj = {
             "classes": PROJ_CLASSES,
             "plots": getPlots(points),
-            "title": "_".join([PROJ_TITLE_PREFIX, datetime.today().strftime("%Y-%m-%d"), email]),
+            "title": "_".join([PROJ_TITLE_PREFIX, datetime.today().strftime("%Y-%m-%d"), email, name]),
             "plotSize": PLOT_SIZE,
             "baseMapSource": PROJ_DEFAULT_BM
         }

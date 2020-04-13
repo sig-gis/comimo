@@ -40,21 +40,23 @@ def delEmail(user, region, level):
     subscribe_model_instance.delete()
     return 'Deleted'
 
-def projectExists(user, data_date):
+def projectExists(user, data_date, regions):
     try:
-        projects_model_instance = ProjectsModel.objects.get(user=user, data_date=data_date, status='active')
-        return True
+        projects_model_instance = ProjectsModel.objects.get(user=user, data_date=data_date, regions=regions, status='active')
+        return True, projects_model_instance.name
     except ObjectDoesNotExist as e:
-        return False
+        return False, 'NA'
 
 # function to add entry to model
-def saveProject(email, projurl, projid, data_date):
+def saveProject(email, projurl, projid, data_date, name, regions):
     user = Profile.objects.get(email=email)
     try:
         projects_model_instance = ProjectsModel()
         projects_model_instance.user = user
         projects_model_instance.projid = int(projid)
         projects_model_instance.projurl = projurl
+        projects_model_instance.name = name
+        projects_model_instance.regions = regions
         projects_model_instance.data_date = data_date
         projects_model_instance.created_date = datetime.now()
         projects_model_instance.status = 'active'
@@ -81,24 +83,27 @@ def getSubscribedRegions(user):
         print(e)
         return 'Error'
 
-def createProject(user, data_date):
+def createProject(user, data_date, name, regions):
     user = Profile.objects.get(user=user)
-    if (not projectExists(user, data_date)):
+    exists, ename = projectExists(user, data_date, regions)
+    if (not exists):
         apiutils.authGEE()
-        regions = getSubscribedRegions(user)
+        regions = regions.split('__')
+        regions.sort()
         points = apiutils.getPointsWithin(regions,data_date)
         number = points.size().getInfo()
         if (number > 0):
             points = points.getInfo()
-            proj = getCeoProjectURL(points, data_date,user.email)
+            proj = getCeoProjectURL(points,data_date,user.email,name)
             projid = proj['projectId']
             projurl = proj['ceoCollectionUrl']
-            entry_added = saveProject(user.email, projurl, projid, data_date)
-            return {'action':entry_added, 'proj':data_date.strftime('%Y-%m-%d')+'__'+projid+'__'+projurl}
+            regions = '__'.join(regions)
+            entry_added = saveProject(user.email, projurl, projid, data_date, name, regions)
+            return {'action':entry_added, 'proj':[data_date.strftime('%Y-%m-%d'),datetime.today().strftime("%Y-%m-%d"),projid,projurl,name,regions]}
         else:
             return {'action':'Error', 'message':'No mines detected within your subscribed region! Maybe subscribe to other regions.'}
     else:
-        return {'action':'Error', 'message':'Project Already exists for the day! Close the existing one to create another.'}
+        return {'action':'Error', 'message':'Project for those regions already exists for the day! It\'s name is "'+ename+'". Close that one to create another.'}
 
 def delProject(user, pid):
     try:
