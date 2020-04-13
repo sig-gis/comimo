@@ -36,7 +36,7 @@ class ProjectsModel(models.Model):
         db_table = "gmw_projects"
 
     def __str__(self):
-        return self.user.user.username+' : '+self.projurl
+        return '('+self.status+') '+self.name+' : '+self.user.user.username+' - '+self.data_date.strftime('%Y-%m-%d')
 
 class ExtractedData(models.Model):
     id = models.AutoField(primary_key=True, null=False)

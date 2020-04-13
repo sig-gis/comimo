@@ -97,7 +97,8 @@ def createProject(user, data_date, name, regions):
             proj = getCeoProjectURL(points,data_date,user.email,name)
             projid = proj['projectId']
             projurl = proj['ceoCollectionUrl']
-            entry_added = saveProject(user.email, projurl, projid, data_date, name, '__'.join(regions))
+            regions = '__'.join(regions)
+            entry_added = saveProject(user.email, projurl, projid, data_date, name, regions)
             return {'action':entry_added, 'proj':[data_date.strftime('%Y-%m-%d'),datetime.today().strftime("%Y-%m-%d"),projid,projurl,name,regions]}
         else:
             return {'action':'Error', 'message':'No mines detected within your subscribed region! Maybe subscribe to other regions.'}
