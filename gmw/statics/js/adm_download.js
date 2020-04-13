@@ -12,7 +12,7 @@ var table = new Tabulator("#datTable", {
 	movableColumns:true,      //allow column order to be changed
 	resizableRows:true,       //allow row order to be changed
 	columns:[                 //define the table columns
-		{title:"user", field:"id", headerFilter:"number"},
+		{title:"user", field:"id", headerFilter:"input"},
     {title:"longitude", field:"y", headerFilter:"input"},
     {title:"latitude", field:"x", headerFilter:"input"},
     {title:"date", field:"dataDate", headerFilter:"number"},
