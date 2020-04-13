@@ -65,7 +65,7 @@ class RegionFilter(InputFilter):
             return queryset
 
 class ProjectsAdmin(admin.ModelAdmin):
-    search_fields = ('name', 'status', 'data_date', 'user')
+    search_fields = ('name', 'status', 'data_date', 'user__user__username')
     list_filter = (
         NameFilter,
         UserFilter,
@@ -74,6 +74,13 @@ class ProjectsAdmin(admin.ModelAdmin):
         ('data_date', DateFieldListFilter)
     )
 
+class ExtractedAdmin(admin.ModelAdmin):
+    search_fields = ('user__user__username', 'data_date', 'class_name')
+    list_filter = (
+        UserFilter,
+        ('data_date',DateFieldListFilter),
+    )
+
 admin.site.register(models.SubscribeModel)
 admin.site.register(models.ProjectsModel,ProjectsAdmin)
-admin.site.register(models.ExtractedData)
+admin.site.register(models.ExtractedData,ExtractedAdmin)

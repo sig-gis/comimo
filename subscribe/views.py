@@ -106,7 +106,11 @@ def downloadData(request):
         user = Profile.objects.get(user=user)
         d = []
         for point in iter(data):
-            prof = Profile.objects.get(user=point['user_id'])
+            try:
+                prof = Profile.objects.get(user=point['user_id'])
+                id = prof.user
+            except Exception as e:
+                id = 'N/A'
             temp = {}
             temp['id'] = prof.user
             temp['y'] = point['y']
