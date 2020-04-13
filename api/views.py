@@ -41,17 +41,20 @@ def getImageNames(request):
 # get the names of features (municipality) and their bounding boxes
 def getFeatureNames(request):
     module_dir = os.path.dirname(__file__)
+    f = open(os.path.join(module_dir,'shapes','featureNames.json'),'r').read()
+    return JsonResponse(json.loads(f))
 
-    level2 = fiona.open(os.path.join(module_dir,'shapes','Level2.shp'))
-    dict = {}
-    l2list = []
-    for feat in level2:
-        l1name = feat['properties']['admin1Name']
-        if l1name in dict:
-            dict[l1name][feat['properties']['admin2Name']] = bounds(feat)
-        else:
-            dict[l1name] = {feat['properties']['admin2Name'] : bounds(feat)}
-    return JsonResponse({'action':'FeatureNames', 'features': dict});
+
+    # level2 = fiona.open(os.path.join(module_dir,'shapes','Level2.shp'))
+    # dict = {}
+    # l2list = []
+    # for feat in level2:
+    #     l1name = feat['properties']['admin1Name']
+    #     if l1name in dict:
+    #         dict[l1name][feat['properties']['admin2Name']] = bounds(feat)
+    #     else:
+    #         dict[l1name] = {feat['properties']['admin2Name'] : bounds(feat)}
+    # return JsonResponse({'action':'FeatureNames', 'features': dict});
 
 # get features in a cascading pattern
 def getCascadingFeatureNames(request):
