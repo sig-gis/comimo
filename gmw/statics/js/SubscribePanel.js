@@ -51,7 +51,6 @@ class SubscribePanel extends React.Component{
       fetch(this.URLS.DELSUBS+'?region='+arr.reverse().join('_')+'&level='+level).then(res => res.json())
       .then(
         (result) => {
-          l(result)
           if (result.action != 'Error') {
             var currentList = this.props.list;
             currentList.splice(currentList.indexOf(result.level+'_'+result.region),1);
