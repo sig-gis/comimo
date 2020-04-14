@@ -54,7 +54,7 @@ class SubscribePanel extends React.Component{
           l(result)
           if (result.action != 'Error') {
             var currentList = this.props.list;
-            currentList.splice(currentList.indexOf(result.region),1)
+            currentList.splice(currentList.indexOf(result.level+'_'+result.region),1);
             this.props.updateSubList(currentList);
           }
         },
