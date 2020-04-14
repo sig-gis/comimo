@@ -74,7 +74,7 @@ class ValidatePanel extends React.Component{
             }
           },(err)=>{
             l(err);
-            this.setState({createstate:true});
+            this.setState({createstate:true,errormsg:'Something went wrong!'});
           });
         }
       }else this.setState({createstate:true});
