@@ -87,16 +87,17 @@ class ValidatePanel extends React.Component{
     var intent = confirm(template.replace('%pdate',pdate));
     var url = this.URLS.CLPROJ+"?pid="+pid+"&pdate="+pdate;
     if(intent){
+      var p = this.state.projects[i];
       fetch(url).then(res => res.json())
         .then((res)=>{
           if(res.action=='Archived'){
             var projects = this.state.projects;
-            projects.splice(i,1);
+            var j = projects.indexOf(p);
+            projects.splice(j,1);
             this.setState({
               projects: projects
             });
-          }
-          else{
+          }else{
             l('Could not delete project.');
           }
         },(err)=>{
