@@ -18,6 +18,7 @@ class GoldAlerts(CronJobBase):
     code = 'gmw.cronalerts'    # a unique code
 
     def do(self):
+        return
         try:
             authGEE()
             latest_image, latest_date = getLatestImage()
@@ -29,5 +30,24 @@ class GoldAlerts(CronJobBase):
                     print('mail sent to ', email)
                 else:
                     print(proj_created)
+        except Exception as e:
+            print(e)
+
+
+class CleanStaleProjects(CronJobBase):
+    RUN_EVERY_MINS = 0.01  # every 0.001 min (doesn't run on it's timer but blocks if executed in less that that interval)
+
+    schedule = Schedule(run_every_mins=RUN_EVERY_MINS)
+    code = 'gmw.cleanstaleprojects'
+
+    def do(self):
+        try:
+            import datetime
+            fields = ['user','projid','data_date']
+            bardate = datetime.datetime.now() + datetime.timedelta(days = -15)
+            staleprojects = list(ProjectsModel.objects.filter(status='active',created_date__lt=bardate).values_list(*fields))
+            for project in staleprojects:
+                result = subutils.archiveProject(project[0],str(project[1]),project[2]);
+                print(result)
         except Exception as e:
             print(e)
