@@ -194,3 +194,22 @@ span.advanced-text{
 #opacity-control input[type="range"]{
   width:calc(100% - 5px);
 }
+select[multiple] optgroup option:checked::before{
+  content:'\2713';
+  font-weight:bold;
+}
+#lnglathud{
+  position: absolute;
+  top: 5px;
+  left: 0;
+  right: 0;
+  margin: auto;
+  width: 150px;
+  height: 20px;
+  font-size: 15px;
+  line-height: 20px;
+  background: rgba(255,255,255,.7);
+  border-radius: 2px;
+  text-align:center;
+  display:none;
+}

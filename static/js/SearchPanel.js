@@ -10,6 +10,7 @@ class SearchPanel extends React.Component{
     this.state={
       geocodedsearch:[],
       featureNames:{},
+      activel1:false,
       activeMuns:{},
       datasetsearch:[]
     }
@@ -27,7 +28,7 @@ class SearchPanel extends React.Component{
 
   searchDataset(searchString){
     var regexp = new RegExp('^'+searchString.toUpperCase()+'[A-Z]*');
-    var mapped = this.state.featureNames.filter(feat => feat[0].toUpperCase().match(regexp));
+    var mapped = this.props.featureNames.filter(feat => feat[0].toUpperCase().match(regexp));
     this.setState({
       datasetsearch:mapped.sort()
     });
@@ -60,35 +61,15 @@ class SearchPanel extends React.Component{
 
   stateSelected(e){
     this.setState({
-      activeMuns:this.state.featureNames[e.target.value]
+      activel1:e.target.value,
+      activeMuns:this.props.featureNames[e.target.value]
     });
-  }
-
-  getFeatureNames(){
-    var url = this.URLS.FEATURE_NAMES;
-    fetch(url)
-      .then(res => res.json())
-      .then(
-        (result) => {
-          if (result.action == "FeatureNames"){
-            this.setState({
-              featureNames:result.features
-            });
-          }
-        }, (error) => {
-          l(error)
-        }
-      );
   }
 
   munSelected(e,f){
     if(e.target.value === 0) return;
     var coords = e.target.value.split(',');
     f('bbox',[[coords[0],coords[1]],[coords[2],coords[3]]]);
-  }
-
-  componentDidMount(){
-    this.getFeatureNames();
   }
 
   render(){
@@ -108,7 +89,7 @@ class SearchPanel extends React.Component{
     </ul>
 
     var selectl1='Loading ...', selectl2='';
-    var l1names = Object.keys(this.state.featureNames).sort();
+    var l1names = Object.keys(this.props.featureNames).sort();
     if (l1names.length > 0){
       var selectl1options = [<option key={-1} value={0} disabled>Select a State</option>];
       l1names.forEach((item, i) => {
@@ -135,8 +116,9 @@ class SearchPanel extends React.Component{
       selectl2 = <div className="w_100">
         <small>Municipality</small>
         <select className='w_100' defaultValue={0} onChange={(e) => {
+            console.log(this.state.activel1+'_'+e.target.selectedOptions[0].getAttribute('name'))
               this.munSelected(e,this.props.pointmapto);
-              this.props.regionSelected('mun',e.target.selectedOptions[0].getAttribute('name'));
+              this.props.regionSelected('mun',this.state.activel1+'_'+e.target.selectedOptions[0].getAttribute('name'));
             }}
           >
           {selectl2options}

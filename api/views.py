@@ -49,11 +49,11 @@ def getFeatureNames(request):
     # dict = {}
     # l2list = []
     # for feat in level2:
-    #     l1name = feat['properties']['admin1Name']
+    #     l1name = feat['properties']['DPTO_CNMBR']
     #     if l1name in dict:
-    #         dict[l1name][feat['properties']['admin2Name']] = bounds(feat)
+    #         dict[l1name][feat['properties']['MPIO_CNMBR']] = bounds(feat)
     #     else:
-    #         dict[l1name] = {feat['properties']['admin2Name'] : bounds(feat)}
+    #         dict[l1name] = {feat['properties']['MPIO_CNMBR'] : bounds(feat)}
     # return JsonResponse({'action':'FeatureNames', 'features': dict});
 
 # get features in a cascading pattern
