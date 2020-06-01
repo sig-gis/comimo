@@ -174,7 +174,7 @@ def getAreaPredicted(request):
                 scale=500,
                 crs='EPSG:4326')
             area = rr.aggregate_array('sum')
-            names = rr.aggregate_array('admin2Name')
+            names = rr.aggregate_array('MPIO_CNMBR')
             dict = ee.Dictionary({'area':area,'names':names}).getInfo()
             dict['action'] = 'Success'
             return JsonResponse(dict)
