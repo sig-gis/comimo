@@ -110,6 +110,32 @@ def getMunicipalLayer(request):
     authGEE()
     return JsonResponse(getMunicipalTiles())
 
+def getGEETiles(request):
+    name = request.GET.get('name')
+    if (name == "national_parks"):
+        table = ee.FeatureCollection("users/nk-sig/GoldMineShapes/National_Parks")
+        style = {'color':'#6f6', 'fillColor':'#0000', 'width':1}
+    elif (name == "municipal_bounds"):
+        table = ee.FeatureCollection("users/nk-sig/GoldMineShapes/Municipal_Bounds")
+        style = {'color':'#f66', 'fillColor':'#0000', 'width':1}
+    elif (name == "other_authorizations"):
+        table = ee.FeatureCollection("users/nk-sig/GoldMineShapes/Solicitudes_de_Legalizacion_2001")\
+                  .merge(ee.FeatureCollection("users/nk-sig/GoldMineShapes/Solicitudes_de_Legalizacion_2010"))
+        style = {"color":"#047", "fillColor":"#00447711", "width":1}
+    elif (name == "legal_mines"):
+        table = ee.FeatureCollection("users/nk-sig/Shapes/Legal_Mines")
+        style = {'color':'#ff0', 'fillColor':'#ffff0011', 'width':1}
+    elif (name == 'tierras_de_com'):
+        table = ee.FeatureCollection("users/nk-sig/GoldMineShapes/Tierras_de_comunidades_negras")
+        style = {'color':'#fd9', 'fillColor':'#ffdd9911', 'width':1}
+    elif (name == 'resguardos'):
+        table = ee.FeatureCollection("users/nk-sig/GoldMineShapes/Resguardos_Indigenas")
+        style = {'color':'#d9d', 'fillColor':'#dd99dd11', 'width':1}
+
+    layer = table.style(color=style['color'],fillColor=style['fillColor'],width=style['width'])
+    mapid = ee.data.getTileUrl(layer.getMapId(),0,0,0)[:-5]+'{z}/{x}/{y}'
+    return JsonResponse({'url':mapid,'style':style})
+
 # get the downloadurl for images
 def getDownloadURL(request):
     region = request.GET.get('region')

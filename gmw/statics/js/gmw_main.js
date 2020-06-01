@@ -13,6 +13,7 @@ class OuterShell extends React.Component{
     SINGLE_IMAGE: '/api/getsingleimage',
     COMPOSITE_IMAGE: '/api/getcompositeimage',
     LEGAL_MINES: 'api/getlegalmines',
+    GEE_LAYER: 'api/getgeetiles',
     MUNS: 'api/getmunicipallayer'
   }
   // overall app parameters
@@ -158,39 +159,42 @@ class OuterShell extends React.Component{
     }
   }
 
-  getLegalMinesLayer(){
-    fetch(this.URLS.LEGAL_MINES)
+  getGEELayers(list){
+    var name = list.shift();
+    fetch(this.URLS.GEE_LAYER+"?name="+name)
       .then(res => res.json())
       .then(
         (result) => {
-          this.map.getSource('legal-mines').tiles = [result.url];
+          this.map.getSource(name).tiles = [result.url];
           // clear existing tile cache and force map refresh
-          this.map.style.sourceCaches['legal-mines'].clearTiles()
-          this.map.style.sourceCaches['legal-mines'].update(this.map.transform)
-          document.getElementsByClassName("vis-legal-mines")[0].style["border"] = "solid 1px "+result.style.color;
-          document.getElementsByClassName("vis-legal-mines")[0].style["background"] = result.style.fillColor;
+          this.map.style.sourceCaches[name].clearTiles()
+          this.map.style.sourceCaches[name].update(this.map.transform)
+          document.getElementsByClassName("vis-"+name)[0].style["border"] = "solid 1px "+result.style.color;
+          document.getElementsByClassName("vis-"+name)[0].style["background"] = result.style.fillColor;
           this.map.triggerRepaint()
+          if (list.length > 0) this.getGEELayers(list);
         }, (error) => {
           l(error);
+          if (list.length > 0) this.getGEELayers(list);
         }
       );
   }
 
-  getMunicipalLayer(){
-    fetch(this.URLS.MUNS)
-      .then(res => res.json())
-      .then(
-        (result) => {
-          this.map.getSource('municipalities').tiles = [result.url];
-          // clear existing tile cache and force map refresh
-          this.map.style.sourceCaches['municipalities'].clearTiles()
-          this.map.style.sourceCaches['municipalities'].update(this.map.transform)
-          document.getElementsByClassName("vis-municipalities")[0].style["border"] = "solid 1px "+result.style.color;
-          this.map.triggerRepaint()
-        }, (error) => {
-          l(error);
-        }
-      );
+  addLayerSources(list){
+    var name = list.shift();
+    this.map.addSource(name,{'type': 'raster',
+      'tiles': [],
+      'tileSize': 256,
+      'vis':{'palette':[]}
+    });
+    this.map.addLayer({
+      'id': name,
+      'type': 'raster',
+      'source': name,
+      'minzoom': 0,
+      'maxzoom': 22
+    });
+    if (list.length > 0) this.addLayerSources(list);
   }
 
   refreshlayers(tileURL){
@@ -239,47 +243,19 @@ class OuterShell extends React.Component{
         'type': 'raster',
         'source': 'mapbox-streets'
       });
-      this.map.addSource('ee-Layer',{'type': 'raster',
-        'tiles': [],
-        'tileSize': 256,
-        'vis': {'palette':[]}//result.visparams
-      });
-      this.map.addLayer({
-        'id': 'ee-Layer',
-        'type': 'raster',
-        'source': 'ee-Layer',
-        'minzoom': 0,
-        'maxzoom': 22
-      });
-      this.map.addSource('legal-mines',{'type': 'raster',
-        'tiles': [],
-        'tileSize': 256,
-        'vis':{'palette':[]}
-      });
-      this.map.addLayer({
-        'id': 'legal-mines',
-        'type': 'raster',
-        'source': 'legal-mines',
-        'minzoom': 0,
-        'maxzoom': 22
-      });
-      this.map.addSource('municipalities',{'type': 'raster',
-        'tiles': [],
-        'tileSize': 256,
-        'vis':{'palette':[]}
-      });
-      this.map.addLayer({
-        'id': 'municipalities',
-        'type': 'raster',
-        'source': 'municipalities',
-        'minzoom': 0,
-        'maxzoom': 22
-      });
+
+      this.addLayerSources(['ee-Layer','municipal_bounds','national_parks','other_authorizations',
+                            'tierras_de_com','resguardos','legal_mines']);
+
       this.flags.layeradded = true;
       const overlays = {
         'ee-Layer': 'Prediction',
-        'legal-mines': 'Legal Mining Sites',
-        'municipalities': 'Municipal Boundaries',
+        'municipal_bounds': 'Municipal Boundaries',
+        'legal_mines' : 'Legal mines',
+        'national_parks': 'National Parks',
+        'other_authorizations': 'Other Authorizations',
+        'tierras_de_com': 'Ethnic territories I',
+        'resguardos' : 'Ethnic territories II',
         'mapbox-streets':'Mapbox Streets'
       }
       var opacity = new OpacityControl({
@@ -288,8 +264,9 @@ class OuterShell extends React.Component{
         opacityControl:true
       })
       this.map.addControl(opacity, 'bottom-right');
-      this.getLegalMinesLayer();
-      this.getMunicipalLayer();
+      this.getGEELayers(['municipal_bounds','national_parks','other_authorizations',
+                         'tierras_de_com','resguardos','legal_mines']);
+
       this.map.on('mousemove',(e)=>{
         var lat = Math.round(e.lngLat.lat*10000)/10000;
         var lng = Math.round(e.lngLat.lng*10000)/10000;
