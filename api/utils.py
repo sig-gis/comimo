@@ -8,7 +8,7 @@ from api.config import *
 #function to authenticate GEE
 def authGEE():
     module_dir = os.path.dirname(__file__)
-    service_account = 'gee-auth@earthengine-228009.iam.gserviceaccount.com'
+    service_account = 'comimo@earth-engine-comimo.iam.gserviceaccount.com'
     credentials = ee.ServiceAccountCredentials(service_account, os.path.join(module_dir,'gee-auth-key.json'))
     ee.Initialize(credentials)
     # ee.Initialize()
@@ -75,12 +75,13 @@ def subscribedRegionsToFC(regions):
     fc = ee.FeatureCollection([])
     for region in regions:
         r = region.split("_")
+        print(r)
         f = ee.FeatureCollection([])
         if (r[0] == 'mun'):
             # filter by level 1 name and then by mun name
             f = ee.FeatureCollection(LEVELS[r[0]])\
-                .filter(ee.Filter.eq(FIELDS['mun_l1'],r[1]))\
-                .filter(ee.Filter.eq(FIELDS['mun'],r[2]))
+                .filter(ee.Filter.eq(FIELDS['mun_l1'],r[1].upper()))\
+                .filter(ee.Filter.eq(FIELDS['mun'],r[2].upper()))
         fc = fc.merge(f)
     return fc
 
