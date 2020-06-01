@@ -10,6 +10,7 @@ urlpatterns = [
     path('getimagenames/', views.getImageNames, name='getimagenames'),
     path('getsingleimage/', views.getSingleImage, name='getsingleimage'),
     path('getcompositeimage/', views.getCompositeImage, name='getcompositeimage'),
+    path('getgeetiles/', views.getGEETiles, name='getgeetiles'),
     path('getlegalmines/', views.getLegalMines, name='getlegalmines'),
     path('getmunicipallayer/', views.getMunicipalLayer, name='getmunicipallayer'),
     path('getcascadingnames/', views.getCascadingFeatureNames, name='getcascadingnames'),
