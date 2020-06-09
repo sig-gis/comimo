@@ -193,7 +193,7 @@ def getAreaPredictedTS(request):
             regions = getSubscribedRegions(user)
             authGEE()
             fc = subscribedRegionsToFC(regions)
-            print(fc.getInfo())
+            # print(fc.getInfo())
 
             def asBands(image, passedImage):
                 image = ee.Image(image)

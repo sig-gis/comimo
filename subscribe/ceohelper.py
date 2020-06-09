@@ -15,7 +15,7 @@ def getCeoProjectURL(points, latest_date, email, name):
         headers = {'Content-type': 'application/json', 'Accept': 'text/plain'}
         resp = requests.post(CEO_GATEWAY_URL+CEO_CREATE, data=json.dumps(reqobj), headers=headers)
         proj = resp.text
-        print(reqobj)
+        # print(reqobj)
         print("proj",proj)
         return json.loads(proj)
     except Exception as e:
