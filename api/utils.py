@@ -75,7 +75,7 @@ def subscribedRegionsToFC(regions):
     fc = ee.FeatureCollection([])
     for region in regions:
         r = region.split("_")
-        print(r)
+        # print(r)
         f = ee.FeatureCollection([])
         if (r[0] == 'mun'):
             # filter by level 1 name and then by mun name
