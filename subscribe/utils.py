@@ -96,8 +96,8 @@ def createProject(user, data_date, name, regions):
             points = points.getInfo()
             proj = getCeoProjectURL(points,data_date,user.email,name)
             projid = proj['projectId']
-            if (projurl and projurn != ""):
-                projurl = proj['ceoCollectionUrl']
+            projurl = proj['ceoCollectionUrl']
+            if (projurl and projurl != ""):
                 regions = '__'.join(regions)
                 entry_added = saveProject(user.email, projurl, projid, data_date, name, regions)
                 return {'action':entry_added, 'proj':[data_date.strftime('%Y-%m-%d'),datetime.today().strftime("%Y-%m-%d"),projid,projurl,name,regions]}
