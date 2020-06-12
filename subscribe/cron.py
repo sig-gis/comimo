@@ -13,7 +13,7 @@ from subscribe import utils as subutils
 
 class GoldAlerts(CronJobBase):
     RUN_EVERY_MINS = 0.001 # every 0.001 min (doesn't run on it's timer but blocks if executed in less that that interval)
-
+    
     schedule = Schedule(run_every_mins=RUN_EVERY_MINS)
     code = 'gmw.cronalerts'    # a unique code
 
@@ -49,5 +49,20 @@ class CleanStaleProjects(CronJobBase):
             for project in staleprojects:
                 result = subutils.archiveProject(project[0],str(project[1]),project[2]);
                 print(result)
+        except Exception as e:
+            print(e)
+
+class CleanCorruptProjects(CronJobBase):
+    RUN_EVERY_MINS = 0.01
+
+    schedule = Schedule(run_every_mins=RUN_EVERY_MINS)
+    code = 'gmw.cleancorruptprojects'
+    def do(self):
+        try:
+            import datetime
+            fields = ['user','name','data_date','projurl']
+            corruptProjects = ProjectsModel.objects.filter(projurl='')
+            corruptProjects.delete()
+            print("done")
         except Exception as e:
             print(e)

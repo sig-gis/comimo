@@ -147,6 +147,7 @@ CORS_ORIGIN_ALLOW_ALL = True
 CRON_CLASSES = [
     'subscribe.cron.GoldAlerts',
     'subscribe.cron.CleanStaleProjects'
+    'subscribe.cron.CleanCorruptProjects'
 ]
 
 #EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
