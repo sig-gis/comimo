@@ -6,6 +6,7 @@ class ValidatePanel extends React.Component{
   }
   state = {
     projects : [],
+    delete : [],
     createstate: true,
     errormsg : false,
     region: 1,
@@ -82,7 +83,10 @@ class ValidatePanel extends React.Component{
   }
 
   closeProject(e, pdate, pid, i){
-    e.target.disabled = true;
+    // e.target.disabled = true;
+    this.setState({
+      delete: this.state.delete.concat([pid])
+    })
     var template = 'Are you sure you want to close the project for %pdate? Closing the project means you will no longer be able to validate the points unless you set up another project.'
     var intent = confirm(template.replace('%pdate',pdate));
     var url = this.URLS.CLPROJ+"?pid="+pid+"&pdate="+pdate;
@@ -94,8 +98,14 @@ class ValidatePanel extends React.Component{
             var projects = this.state.projects;
             var j = projects.indexOf(p);
             projects.splice(j,1);
+            var itemIndex = this.state.delete.indexOf(pid);
+            var del = this.state.delete;
+            if (itemIndex>-1){
+              del.splice(itemIndex,1)
+            }
             this.setState({
-              projects: projects
+              projects: projects,
+              delete: del
             });
           }else{
             l('Could not delete project.');
@@ -119,7 +129,7 @@ class ValidatePanel extends React.Component{
         <br/><small>Created date:{el[1]}</small>
         <br/><small>Regions:{r}</small>
       </td>
-      <td style={{width:'30px'}}><input type="submit" value="X" className="del-btn" title={"Delete "+el[4]} onClick={(e)=>this.closeProject(e, el[0], el[2], i)}/></td>
+      <td style={{width:'30px'}}><input type="submit" value="X" className="del-btn" disabled={this.state.delete.includes(el[2])} title={"Delete "+el[4]} onClick={(e)=>this.closeProject(e, el[0], el[2], i)}/></td>
     </tr>
 
   }
