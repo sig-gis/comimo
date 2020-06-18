@@ -51,3 +51,9 @@ def deleteProject(pid):
     print(CEO_GATEWAY_URL+CEO_DELETE+pid)
     resp = requests.get(CEO_GATEWAY_URL+CEO_DELETE+pid, headers=headers)
     return resp.text
+
+def deleteDevProject(pid):
+    headers = {'Content-type': 'application/json', 'Accept': 'text/plain'}
+    print(CEODEV_GATEWAY_URL+CEO_DELETE+pid)
+    resp = requests.get(CEO_GATEWAY_URL+CEO_DELETE+pid, headers=headers)
+    return resp.text

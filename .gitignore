@@ -6,6 +6,7 @@ appconfigs.js
 venv
 venv/*
 ceo-gateway
+ceodev-gateway
 
 __pycache__
 __pycache__/*
