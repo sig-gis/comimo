@@ -33,12 +33,27 @@
   <body>
     <div class="container-fl">
       <div class="row">
-        <div class="col-lg-6">
+        <!-- <div class="col-lg-6">
           <div id="map">
           </div>
-        </div>
-        <div class="col-lg-6">
+        </div> -->
+        <div class="col-lg-12">
           <div class="padright">
+            <!-- <form>
+              <div class="form-group">
+                <label for="exampleInputEmail1">Email address</label>
+                <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email">
+                <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
+              </div>
+              <div class="form-group">
+                <label for="exampleInputPassword1">Password</label>
+                <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
+              </div>
+              <div class="form-check">
+                <input type="checkbox" class="form-check-input" id="exampleCheck1">
+                <label class="form-check-label" for="exampleCheck1">Check me out</label>
+              </div>
+            </form> -->
             <div id="datTable"></div>
             <div class="button-pane">
               <button id="download-csv" class="btn btn-primary" type="button" name="button">Download CSV</button>
@@ -55,20 +70,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0-alpha.4/css/bootstrap.min.css" integrity="sha256-SC9pI7daKIBEHzXq0JEtOr9yMl5V7yMMqoowsw8uzNs=" crossorigin="anonymous" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tabulator/4.4.3/css/bootstrap/tabulator_bootstrap4.min.css" integrity="sha256-+AmauyGZPl0HNTBQ5AMZBxfzP+rzXJjraezMKpWwWSE=" crossorigin="anonymous" />
     <link href="https://api.mapbox.com/mapbox-gl-js/v1.8.1/mapbox-gl.css" rel="stylesheet" />
-    <script type='text/javascript'>
-      var data  = [
-      {% if data %}
-        {% for item in data %}
-          {"id":"{{item.id}}",
-          "y":{{item.y}},
-          "x":{{item.x}},
-          "dataDate":'{{item.data_date|date:'Y-m-d'}}',
-          "classNum":{{item.class_num}},
-          "className":"{{item.class_name}}"},
-        {% endfor %}
-      {% endif %}
-      ];
-    </script>
     <script
       src="https://code.jquery.com/jquery-3.4.1.min.js"
       integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="

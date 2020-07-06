@@ -100,6 +100,13 @@ def downloadData(request):
     if not(user.is_authenticated):
         return requestLogin(request)
     else:
+        return render(request, 'dlData.html')
+
+def downloadAllInCSV(request):
+    user = request.user
+    if not(user.is_authenticated):
+        return requestLogin(request)
+    else:
         from subscribe.models import ExtractedData
         from accounts.models import Profile
         data = ExtractedData.objects.all().values()
@@ -108,16 +115,57 @@ def downloadData(request):
         for point in iter(data):
             try:
                 prof = Profile.objects.get(user=point['user_id'])
-                id = prof.user
+                id = str(prof.user)
             except Exception as e:
                 id = 'N/A'
             temp = {}
-            temp['id'] = prof.user
+            temp['id'] = id
             temp['y'] = point['y']
             temp['x'] = point['x']
-            temp['data_date'] = point['data_date']
-            temp['class_num'] = point['class_num']
-            temp['class_name'] = point['class_name']
+            temp['dataDate'] = point['data_date']
+            temp['classNum'] = point['class_num']
+            temp['className'] = point['class_name']
             d.append(temp)
-        context = {'data':d}
-        return render(request, 'dlData.html', context)
+        # context = {'data':d}
+        return JsonResponse(d, safe=False)
+
+
+
+# def downloadAllInCSV1(request):
+#     user = request.user
+#     if not(user.is_authenticated):
+#         return requestLogin(request)
+#     else:
+#         from subscribe.models import ExtractedData
+#         from accounts.models import Profile
+#         import csv
+#         output = []
+#         response = HttpResponse (content_type='text/csv')
+#         writer = csv.writer(response)
+#         writer.writerow(['id','y','x','data_date','class_num','class_name'])
+#
+#         data = ExtractedData.objects.all().values()[:10]
+#         user = Profile.objects.get(user=user)
+#         for point in iter(data):
+#             try:
+#                 prof = Profile.objects.get(user=point['user_id'])
+#                 id = prof.user
+#             except Exception as e:
+#                 id = 'N/A'
+#             output.append([prof.user,point['y'],point['x'],point['data_date'],point['class_num'],point['class_name']])
+#         writer.writerows(output)
+#         return response
+#         # import os
+#         # import datetime
+#         # dlbase = "static"
+#         # dlfolder = "/csv"
+#         # if (not os.path.exists(dlbase+dlfolder)):
+#         #     os.mkdir(dlbase+dlfolder)
+#         # now = datetime.datetime.now()
+#         # format = "%Y_%m_%dT%H_%M_%S"
+#         # csv = now.strftime(format)+".csv"
+#
+#         # csv = os.listdir(dlbbase+dlfolder)
+#         # dd = datetime.datetime.strptime(d,"%Y_%m_%dT%H_%M_%S")
+#         print(dd)
+#         return JsonResponse({"action":"success","file":csv});
