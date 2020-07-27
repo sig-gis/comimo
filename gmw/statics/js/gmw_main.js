@@ -245,7 +245,7 @@ class OuterShell extends React.Component{
       });
 
       this.addLayerSources(['ee-Layer','municipal_bounds','national_parks','other_authorizations',
-                            'tierras_de_com','resguardos','legal_mines']);
+                            'tierras_de_com','resguardos','legal_mines','protected_areas']);
 
       this.flags.layeradded = true;
       const overlays = {
@@ -256,6 +256,7 @@ class OuterShell extends React.Component{
         'other_authorizations': 'Other Authorizations',
         'tierras_de_com': 'Ethnic territories I',
         'resguardos' : 'Ethnic territories II',
+        'protected_areas': 'Protected Areas',
         'mapbox-streets':'Mapbox Streets'
       }
       var opacity = new OpacityControl({
@@ -265,7 +266,7 @@ class OuterShell extends React.Component{
       })
       this.map.addControl(opacity, 'bottom-right');
       this.getGEELayers(['municipal_bounds','national_parks','other_authorizations',
-                         'tierras_de_com','resguardos','legal_mines']);
+                         'tierras_de_com','resguardos','legal_mines','protected_areas']);
 
       this.map.on('mousemove',(e)=>{
         var lat = Math.round(e.lngLat.lat*10000)/10000;

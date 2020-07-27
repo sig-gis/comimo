@@ -131,6 +131,10 @@ def getGEETiles(request):
     elif (name == 'resguardos'):
         table = ee.FeatureCollection("users/comimoapp/Shapes/Resguardos_Indigenas")
         style = {'color':'#d9d', 'fillColor':'#dd99dd11', 'width':1}
+    elif (name == 'protected_areas'):
+        # bounds = ee.FeatureCollection('users/comimoapp/Shapes/Level0')
+        table = ee.FeatureCollection("users/comimoapp/Shapes/RUNAP")#.filterBounds(bounds)
+        style = {'color':'#35f0ab', 'fillColor':'#dd99dd11', 'width':1}
 
     layer = table.style(color=style['color'],fillColor=style['fillColor'],width=style['width'])
     mapid = ee.data.getTileUrl(layer.getMapId(),0,0,0)[:-5]+'{z}/{x}/{y}'
