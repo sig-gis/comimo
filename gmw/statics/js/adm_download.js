@@ -29,6 +29,7 @@ $.ajax({
 		$('#projectDate').html("<option value=false selected='selected' disabled>Select Date</option>"+options.join(''));
 		$('#projectDate').on('change', (e) => {
 			let date = e.target.value;
+			table.clearData();
 			$.ajax({
 					url:'/download-all',
 					data: {date:date},
