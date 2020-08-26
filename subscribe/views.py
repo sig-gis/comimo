@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect, reverse
 from django.contrib.auth import login, authenticate
 from django.views.generic.base import TemplateView
 from django.http import JsonResponse, HttpResponse
+from django.core import serializers
 from subscribe import utils
 
 def requestLogin(request):
@@ -109,7 +110,8 @@ def downloadAllInCSV(request):
     else:
         from subscribe.models import ExtractedData
         from accounts.models import Profile
-        data = ExtractedData.objects.all().values()
+        date = request.GET.get('date')
+        data = ExtractedData.objects.filter(data_date__startswith=date).values()
         user = Profile.objects.get(user=user)
         d = []
         for point in iter(data):
@@ -126,10 +128,22 @@ def downloadAllInCSV(request):
             temp['classNum'] = point['class_num']
             temp['className'] = point['class_name']
             d.append(temp)
-        # context = {'data':d}
+        context = {'data':d}
         return JsonResponse(d, safe=False)
 
+def getDataDates(request):
+    user = request.user
+    if not(user.is_authenticated):
+        return requestLogin(request)
+    else:
+        from subscribe.models import ExtractedData
+        data = ExtractedData.objects.order_by().values_list('data_date',flat=True).distinct()
+        list = []
+        for d in data:
+            list.append(d)
+        return JsonResponse(list, safe=False)
 
+        # return render(request, 'dlData.html')
 
 # def downloadAllInCSV1(request):
 #     user = request.user

@@ -21,7 +21,27 @@ var table = new Tabulator("#datTable", {
 	],
 });
 
-table.setData("/download-all")
+$.ajax({
+	url:'/getDataDates',
+	success:function(resp){
+		resp = resp.map(x => x.split('T')[0]);
+		let options = resp.map(x => "<option value='"+x+"'>"+x+"</option>")
+		$('#projectDate').html("<option value=false selected='selected' disabled>Select Date</option>"+options.join(''));
+		$('#projectDate').on('change', (e) => {
+			let date = e.target.value;
+			$.ajax({
+					url:'/download-all',
+					data: {date:date},
+					success: function(tabledata){
+						// console.log(tabledata);
+						table.setData(tabledata)
+					}
+			});
+		});
+	}
+})
+
+// table.setData("/download-all")
 //trigger download of data.csv file
 $("#download-csv").click(function(){
     table.download("csv", "data.csv");
