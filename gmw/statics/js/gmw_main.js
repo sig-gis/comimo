@@ -44,6 +44,8 @@ class OuterShell extends React.Component{
   }
   // combining everything to app state
   state = {...this.appparams, ...this.appstates, ...this.persistentstates}
+  // reload limit for layers thatt could not be loaded
+  reloadCount = 0
 
   constructor(props){
     super(props)
@@ -175,6 +177,8 @@ class OuterShell extends React.Component{
           if (list.length > 0) this.getGEELayers(list);
         }, (error) => {
           l(error);
+          reloadCount++;
+          if (reloadCount < 30) list.push(name);
           if (list.length > 0) this.getGEELayers(list);
         }
       );
