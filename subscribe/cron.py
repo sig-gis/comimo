@@ -26,17 +26,21 @@ class GoldAlerts(CronJobBase):
             users = SubscribeModel.objects.all().values('user').annotate(alert = Min('last_alert_for'))
             alertables = filter(lambda x: x['alert'] < latest_date, users)
             for alertable in iter(alertables):
-                user = alertable['user']
-                email = Profile.objects.filter(user=user).values().first()['email']
-                regions = '__'.join(subutils.getSubscribedRegions(user))
-                proj_created = subutils.createProject(user, latest_date, 'Alert-for-'+today, regions)
+                try:
+                    user = alertable['user']
+                    email = Profile.objects.filter(user=user).values().first()['email']
+                    regions = '__'.join(subutils.getSubscribedRegions(user))
+                    if regions and email:
+                        proj_created = subutils.createProject(user, latest_date, 'Alert-for-'+today, regions)
 
-                if (proj_created['action'] == "Created"):
-                    SubscribeModel.objects.filter(user=user).update(last_alert_for=latest_date)
-                    sendmail(email, proj_created['proj'][3])
-                    print('mail sent to ', email)
-                else:
-                    print(proj_created)
+                        if (proj_created['action'] == "Created"):
+                            SubscribeModel.objects.filter(user=user).update(last_alert_for=latest_date)
+                            sendmail(email, proj_created['proj'][3])
+                            print('mail sent to ', email)
+                        else:
+                            print(proj_created)
+                except Exception as ee:
+                    print(ee)
         except Exception as e:
             print(e)
 
