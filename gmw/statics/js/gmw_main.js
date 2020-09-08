@@ -256,7 +256,7 @@ class OuterShell extends React.Component{
         'ee-Layer': 'Prediction',
         'municipal_bounds': 'Municipal Boundaries',
         'legal_mines' : 'Legal mines',
-        'national_parks': 'National Parks',
+        // 'national_parks': 'National Parks',
         'other_authorizations': 'Other Authorizations',
         'tierras_de_com': 'Ethnic territories I',
         'resguardos' : 'Ethnic territories II',

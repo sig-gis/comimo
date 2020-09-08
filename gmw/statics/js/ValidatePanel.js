@@ -10,6 +10,7 @@ class ValidatePanel extends React.Component{
     createstate: true,
     errormsg : false,
     region: 1,
+    scrolltop:0
   }
 
   componentDidMount(){
@@ -136,7 +137,13 @@ class ValidatePanel extends React.Component{
 
   handleSelectClick(e){
     e.preventDefault();
+    // e.target.selected = !e.target.selected;
+    var select = e.target.parentElement.parentElement;
+    console.log(select);
+    var scroll = select.scrollTop;
+    console.log(scroll);
     e.target.selected = !e.target.selected;
+    setTimeout(()=>{select.scrollTop = scroll},0);
   }
 
   generateMunicipalOptions(){
@@ -157,7 +164,10 @@ class ValidatePanel extends React.Component{
         options.push(<optgroup key={'s'+s} label={state}>{munopts}</optgroup>)
       }
     }
-    return <select multiple id="selectProjRegions" size='8' style={{width:'100%',float:'left',marginBottom:'10px'}}>
+    return <select multiple
+                   id="selectProjRegions"
+                   size='8'
+                   style={{width:'100%',float:'left',marginBottom:'10px'}}>
       {options}
     </select>
   }
