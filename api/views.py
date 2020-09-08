@@ -151,9 +151,13 @@ def getDownloadURL(request):
         if (region == 'all'):
             region = ee.FeatureCollection(LEVELS['l0'])
         else:
-            region = ee.FeatureCollection(LEVELS[level]).filter(ee.Filter.eq(FIELDS[level],region))
+            l1, l2 = region.split("_");
+            region = ee.FeatureCollection(LEVELS[level])\
+                        .filter(ee.Filter.eq(FIELDS['mun_l1'],l1.upper()))\
+                        .filter(ee.Filter.eq(FIELDS['mun'],l2.upper()))
         img = img.clip(region)
-        url = img.toByte().getDownloadURL({})
+        print(img.reduceRegion(ee.Reducer.sum(),region.first().geometry(),510, bestEffort=True).getInfo())
+        url = img.toByte().getDownloadURL({'region':region.geometry(),'scale':510})
         return JsonResponse({'action':'success', 'url':url})
     else:
         return JsonResponse({'action':'error','message':'Insufficient Parameters! Malformed URL!'}, status=500)
