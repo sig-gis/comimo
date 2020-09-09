@@ -269,7 +269,7 @@ class OuterShell extends React.Component{
         opacityControl:true
       })
       this.map.addControl(opacity, 'bottom-right');
-      this.getGEELayers(['municipal_bounds','national_parks','other_authorizations',
+      this.getGEELayers(['municipal_bounds','other_authorizations',//'national_parks',
                          'tierras_de_com','resguardos','legal_mines','protected_areas']);
 
       this.map.on('mousemove',(e)=>{
