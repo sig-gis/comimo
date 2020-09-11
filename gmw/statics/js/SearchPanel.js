@@ -116,7 +116,6 @@ class SearchPanel extends React.Component{
       selectl2 = <div className="w_100">
         <small>Municipality</small>
         <select className='w_100' defaultValue={0} onChange={(e) => {
-            console.log(this.state.activel1+'_'+e.target.selectedOptions[0].getAttribute('name'))
               this.munSelected(e,this.props.pointmapto);
               this.props.regionSelected('mun',this.state.activel1+'_'+e.target.selectedOptions[0].getAttribute('name'));
             }}

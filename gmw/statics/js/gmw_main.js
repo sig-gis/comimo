@@ -248,7 +248,7 @@ class OuterShell extends React.Component{
         'source': 'mapbox-streets'
       });
 
-      this.addLayerSources(['ee-Layer','municipal_bounds','national_parks','other_authorizations',
+      this.addLayerSources(['ee-Layer','municipal_bounds','other_authorizations',//'national_parks',
                             'tierras_de_com','resguardos','legal_mines','protected_areas']);
 
       this.flags.layeradded = true;
