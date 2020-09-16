@@ -21,23 +21,51 @@ var table = new Tabulator("#datTable", {
 	],
 });
 
+var dates = [];
+var dl_data = {};
+
+function fetchDataFor(date){
+	$.ajax({
+		url:'/download-all',
+		data: {date:date},
+		success: function(tabledata){
+			dl_data[date]= tabledata;
+			$('option[value='+date+']').prop('disabled',false);
+			var so_far = dates.map(d => dl_data[d])
+			var notfetched =  so_far.filter(x => !x).length;
+			if (notfetched == 0){
+				dl_data['all'] = so_far.flat()
+				$('option[value=all]').prop('disabled',false);
+			}
+		},
+		error: function(err){
+			fetchDataFor(date);
+		}
+	});
+}
+
+
 $.ajax({
 	url:'/getDataDates',
 	success:function(resp){
-		resp = resp.map(x => x.split('T')[0]);
-		let options = resp.map(x => "<option value='"+x+"'>"+x+"</option>")
-		$('#projectDate').html("<option value=false selected='selected' disabled>Select Date</option>"+options.join(''));
+		dates = resp.map(x => x.split('T')[0]);
+		let options = dates.map(x => "<option value='"+x+"' disabled=true>"+x+"</option>")
+		$('#projectDate').html("<option value=false selected='selected' disabled>Select Date</option>"+
+													 "<option value=all disabled>All Dates</option>"+
+													 options.join(''));
+		dates.map(date => fetchDataFor(date));
 		$('#projectDate').on('change', (e) => {
 			let date = e.target.value;
 			table.clearData();
-			$.ajax({
-					url:'/download-all',
-					data: {date:date},
-					success: function(tabledata){
-						// console.log(tabledata);
-						table.setData(tabledata)
-					}
-			});
+			table.setData(dl_data[date])
+			// $.ajax({
+			// 		url:'/download-all',
+			// 		data: {date:date},
+			// 		success: function(tabledata){
+			// 			// console.log(tabledata);
+			// 			table.setData(tabledata)
+			// 		}
+			// });
 		});
 	}
 })
