@@ -16,6 +16,7 @@
   height:110px;
   width:100%;
   padding:5px;
+  padding-left:15px;
   margin:0;
   background:#fed700;
   display:none;
@@ -253,6 +254,9 @@ select[multiple] optgroup option:checked::before{
 .expand-legend-div button{
   text-align:center;
 }
+#legend-div{
+  margin-top:15px;
+}
 
 @media only screen and (orientation:portrait) {
   .app-bar{
@@ -295,7 +299,7 @@ select[multiple] optgroup option:checked::before{
   }
   .popup-container{
     width:100%;
-    font-size:1.2rem;
+    font-size:1.5rem;
   }
   .subs-panel{
     left:0;
@@ -340,10 +344,25 @@ select[multiple] optgroup option:checked::before{
     width:100%;
     top:0;
     left:0;
-    font-size:1.2rem;
+    padding:10px 40px 10px 50px;
+    font-size:1.5rem;
+    max-height:calc(100% - 300px);
+    overflow-y:auto;
   }
   .mapboxgl-ctrl-attrib{
     display:none;
   }
-
+  #legend-div div input[type="checkbox"]{
+    width:20px;
+    height:20px;
+  }
+  #legend-div div input[type="range"]{
+    margin-bottom:20px;
+    height:15px;
+    padding:5px 0px;
+  }
+  .legend-icon{
+    height:20px;
+    width:20px;
+  }
 }
