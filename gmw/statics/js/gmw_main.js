@@ -323,6 +323,9 @@ class OuterShell extends React.Component{
           tooltip='Download data'/>
       </div>
     return <div className='shell' {...this.props}>
+      <div className="app-bar">
+        <div className='sidebar-icon gold-drop app-icon'></div>
+      </div>
       <div ref={el => this.mapContainer = el}></div>
       <SliderPanel ishidden = {this.state.slidershidden}
         slideradjusted = {this.slidersadjusted.bind(this)}

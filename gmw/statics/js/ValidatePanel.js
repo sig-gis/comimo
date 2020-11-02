@@ -240,7 +240,7 @@ class ValidatePanel extends React.Component{
       </div>
     }
 
-    return <div className={['popup-container ',this.props.ishidden?'see-through':''].join(' ')} style={{'top':'100px',maxHeight:'calc(100% - 100px)',overflowY:'auto'}}>
+    return <div className={['popup-container validate-panel ',this.props.ishidden?'see-through':''].join(' ')} >
       <h1><b> VALIDATION </b></h1>
       {content}
     </div>

@@ -126,7 +126,7 @@ class SearchPanel extends React.Component{
     }
 
 
-    return <div className={['popup-container ',this.props.ishidden?'see-through':''].join(' ')} style={{'top':'150px'}}>
+    return <div className={['popup-container search-panel ',this.props.ishidden?'see-through':''].join(' ')}>
       <b>SEARCH LOCATION</b><br/>
       <b>Internet Search</b>
       <input className='w_100' onKeyUp={this.inputChanged.bind(this)} />

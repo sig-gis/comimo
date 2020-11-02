@@ -106,7 +106,7 @@ class StatsPanel extends React.Component{
         </div>
       </div>
     }
-    return <div className={['popup-container ',this.props.ishidden?'see-through':''].join(' ')} style={{'top':'250px','maxHeight':'calc( 100% - 250px )','overflowY':'auto'}}>
+    return <div className={['popup-container stat-panel ',this.props.ishidden?'see-through':''].join(' ')}>
       {content}
     </div>
   }

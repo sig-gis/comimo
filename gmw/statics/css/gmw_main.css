@@ -10,6 +10,16 @@
   height:100%;
   width:100%;
 }
+.app-bar{
+  position:absolute;
+  top:0;
+  height:60px;
+  width:100%;
+  padding:5px;
+  margin:0;
+  background:#fed700;
+  display:none;
+}
 
 .sidebar {
   height:100%;
@@ -54,6 +64,7 @@
   left:50px;
   position:absolute;
   box-shadow:0px 0px 0px 1px rgba(0,0,0,.1);
+  z-index:99;
 }
 
 .slider-div{
@@ -212,4 +223,111 @@ select[multiple] optgroup option:checked::before{
   border-radius: 2px;
   text-align:center;
   display:none;
+}
+
+.subs-panel{
+  top:50px;
+  max-height:500px
+}
+.validate-panel{
+  top:100px;
+  max-height:calc(100% - 100px);
+  overflow-y:auto
+}
+.search-panel{
+  top:150px;
+}
+.stat-panel{
+  top:250px;
+  max-height:calc( 100% - 250px );
+  overflow-y:auto
+}
+.filter-panel{
+  top:300px;
+  overflow-y: hidden;
+}
+.download-panel{
+  top:350px;
+}
+
+.expand-legend-div button{
+  text-align:center;
+}
+
+@media only screen and (orientation:portrait) {
+  .app-bar{
+    display:block;
+  }
+  .sidebar{
+    position: absolute;
+    height: 50px;
+    width: 100%;
+    bottom: 0;
+    left:0;
+  }
+  .sidebar-icon{
+    float:left;
+  }
+  .sidebar .app-icon{
+    display:none;
+  }
+  .disclaimer{
+    position: relative;
+  }
+  .mapboxgl-map{
+    height:calc(100% - 110px);
+    width:100%;
+    margin:60px 0px;
+  }
+  .popup-container{
+    width:100%;
+  }
+  .subs-panel{
+    left:0;
+    top:unset;
+    bottom:50px;
+  }
+  .validate-panel{
+    top:unset;
+    left:0;
+    bottom:50px;
+    max-height:calc(100% - 150px);
+  }
+  .search-panel{
+    top:unset;
+    left:0;
+    bottom:50px;
+  }
+  .stat-panel{
+    top:unset;
+    left:0;
+    bottom:50px;
+  }
+  .filter-panel{
+    top:unset;
+    left:0;
+    bottom:50px;
+  }
+  .download-panel{
+    top:unset;
+    left:0;
+    bottom:50px;
+  }
+  .mapboxgl-ctrl-bottom-right{
+    height:100%;
+    width:100%;
+  }
+  .mapboxgl-ctrl-top-right{
+    top:50px;
+  }
+  #opacity-control{
+    position:absolute;
+    width:100%;
+    top:0;
+    left:0;
+  }
+  .mapboxgl-ctrl-attrib{
+    display:none;
+  }
+
 }
