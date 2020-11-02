@@ -300,6 +300,7 @@ select[multiple] optgroup option:checked::before{
   .popup-container{
     width:100%;
     font-size:1.5rem;
+    padding: 20px 40px 20px 40px;
   }
   .subs-panel{
     left:0;
