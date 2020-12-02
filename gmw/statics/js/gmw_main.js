@@ -215,6 +215,7 @@ class OuterShell extends React.Component{
         },
         (error) => {
           l(error);
+          refreshlayers(tileURL);
         }
       )
   }
