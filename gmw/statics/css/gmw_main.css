@@ -263,17 +263,32 @@ select[multiple] optgroup option:checked::before{
     display:block;
   }
   .sidebar{
+    white-space: nowrap;
     position: absolute;
     height: 100px;
     width: 100%;
     bottom: 0;
     left:0;
     overflow-x:auto;
+    overflow-y:hidden;
   }
   .sidebar-icon{
-    float:left;
+    display:inline-block;
+    text-align: center;
     height:100px;
+    width:20%;
+    white-space:normal;
+  }
+  .sidebar-icon.app-icon{
     width:100px;
+  }
+  .advanced-icons{
+    display:inline-block;
+    white-space:nowrap;
+    width: 60%;
+  }
+  .advanced-icons .sidebar-icon{
+    width: 33.33%;
   }
   .sidebar-icon span{
     padding:20px;
@@ -355,8 +370,8 @@ select[multiple] optgroup option:checked::before{
     display:none;
   }
   #legend-div div input[type="checkbox"]{
-    width:20px;
-    height:20px;
+    width:30px;
+    height:30px;
   }
   #legend-div div input[type="range"]{
     margin-bottom:20px;

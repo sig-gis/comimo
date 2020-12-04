@@ -206,12 +206,17 @@ class OuterShell extends React.Component{
       .then(res => res.json())
       .then(
         (result) => {
-          this.map.getSource('ee-Layer').tiles = [result.url];
-          // clear existing tile cache and force map refresh
-          this.map.style.sourceCaches['ee-Layer'].clearTiles()
-          this.map.style.sourceCaches['ee-Layer'].update(this.map.transform)
-          document.getElementsByClassName("vis-ee-Layer")[0].style["background"] = '#'+result.visparams.palette[0];
-          this.map.triggerRepaint()
+          try{
+            this.map.getSource('ee-Layer').tiles = [result.url];
+            // clear existing tile cache and force map refresh
+            this.map.style.sourceCaches['ee-Layer'].clearTiles()
+            this.map.style.sourceCaches['ee-Layer'].update(this.map.transform)
+            document.getElementsByClassName("vis-ee-Layer")[0].style["background"] = '#'+result.visparams.palette[0];
+            this.map.triggerRepaint()
+          }catch(err){
+            console.log(err)
+            setTimeout(refreshlayers(tileURL),1000);
+          }
         },
         (error) => {
           l(error);
@@ -306,7 +311,7 @@ class OuterShell extends React.Component{
   // set up actions to render app
   render(){
     var advancedbuttons = '';
-    if (this.state.advancedoptions) advancedbuttons= <div>
+    if (this.state.advancedoptions) advancedbuttons= <div class="advanced-icons">
         <SideIcons
           parentclass={this.state.statshidden?'':'active-icon'}
           glyphicon='glyphicon-stats'
