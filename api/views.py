@@ -225,3 +225,26 @@ def getAreaPredictedTS(request):
         except Exception as e:
             print(e)
             return JsonResponse({'action':'Error','message':'Something went wrong!'},status=500)
+
+def getInfo(request):
+    try:
+        lat = float(request.GET.get('lat'))
+        lng = float(request.GET.get('lon'))
+        image = request.GET.get('image')
+        authGEE()
+        image = ee.Image(IMAGE_REPO+'/'+image).select([0],['cval'])
+        dist = ee.FeatureCollection(LEVELS['mun'])
+        point = ee.Geometry.Point(lng,lat)
+        pt = image.sampleRegions(ee.Feature(point))
+        f = dist.filterBounds(point)
+        classval = ee.Algorithms.If(pt.size().gt(0),pt.first().get('cval'),0)
+        admnames = ee.Algorithms.If(f.size().gt(0),[f.first().get('MPIO_CNMBR'),
+                                                f.first().get('DPTO_CNMBR')],[False,False])
+        pa = ee.FeatureCollection("users/comimoapp/Shapes/RUNAP").filterBounds(point)
+        pa = ee.Algorithms.If(pa.size().gt(0),[pa.first().get('categoria'),
+                                               pa.first().get('nombre')],[False,False])
+        vals = ee.List([classval]).cat(admnames).cat(pa).getInfo()
+        return JsonResponse({'action':'Success','value':vals})
+    except Exception as e:
+        print(e)
+        return JsonResponse({'action':'Error','message':'Something went wrong!'},status=500)

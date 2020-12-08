@@ -19,7 +19,8 @@ class OuterShell extends React.Component{
     COMPOSITE_IMAGE: '/api/getcompositeimage',
     LEGAL_MINES: 'api/getlegalmines',
     GEE_LAYER: 'api/getgeetiles',
-    MUNS: 'api/getmunicipallayer'
+    MUNS: 'api/getmunicipallayer',
+    INFO: 'api/getinfo'
   }
   // overall app parameters
   appparams = {
@@ -292,6 +293,34 @@ class OuterShell extends React.Component{
       this.map.on('mouseout',(e)=>{
         var hud = document.getElementById('lnglathud');
         hud.style.display = 'none';
+      })
+      this.map.on('click',(e)=>{
+        let lat = e.lngLat.lat, lng = e.lngLat.lng;
+        fetch(this.URLS.INFO+"?lat="+e.lngLat.lat+"&lon="+e.lngLat.lng+"&image="+this.state.selectedDate)
+          .then(resp => resp.json())
+          .then((resp) => {
+            console.log(resp)
+            let ln = Math.ceil(lng*10000)/10000;
+            let lt = Math.ceil(lat*10000)/10000;
+            let innerHTML = '';
+            if (resp.action == 'Error'){
+              innerHTML = `<b>${lt},${ln}</b>:<br/> ${resp.message}`;
+            } else{
+              innerHTML = `<b>${lt},${ln}</b><br/>`;
+              let cl = resp.value[0]?'Detected':"Not Detected";
+              innerHTML += `<b>Mining Activity</b>: ${cl}<br/>`;
+              let loc = resp.value[1]?[resp.value[1],resp.value[2]].join(', '):'Outside Region of Interest';
+              innerHTML += `<b>Located In</b>:${loc}`;
+              if(resp.value[3]){
+                let pa = `Category: ${resp.value[3]} <br/> Name: ${resp.value[4]}`
+                innerHTML += `<br/><b>Protected Area</b><br>${pa}`
+              }
+            }
+            var popup = new mapboxgl.Popup({ closeOnClick: false })
+                            .setLngLat([lng, lat])
+                            .setHTML(innerHTML)
+                            .addTo(this.map);
+          });
       })
     });
     // render sliders
