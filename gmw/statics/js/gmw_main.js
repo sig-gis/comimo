@@ -173,15 +173,23 @@ class OuterShell extends React.Component{
       .then(res => res.json())
       .then(
         (result) => {
-          this.map.getSource(name).tiles = [result.url];
-          // clear existing tile cache and force map refresh
-          this.map.style.sourceCaches[name].clearTiles()
-          this.map.style.sourceCaches[name].update(this.map.transform)
-          document.getElementsByClassName("vis-"+name)[0].style["border"] = "solid 1px "+result.style.color;
-          document.getElementsByClassName("vis-"+name)[0].style["background"] = result.style.fillColor;
-          this.map.triggerRepaint()
-          if (list.length > 0) this.getGEELayers(list);
-        }, (error) => {
+          try{
+              this.map.getSource(name).tiles = [result.url];
+            // clear existing tile cache and force map refresh
+            this.map.style.sourceCaches[name].clearTiles()
+            this.map.style.sourceCaches[name].update(this.map.transform)
+            document.getElementsByClassName("vis-"+name)[0].style["border"] = "solid 1px "+result.style.color;
+            document.getElementsByClassName("vis-"+name)[0].style["background"] = result.style.fillColor;
+            this.map.triggerRepaint()
+            if (list.length > 0) this.getGEELayers(list);
+          }catch(err){
+            console.log(err)
+            this.reloadCount++;
+            if (this.reloadCount < 30) list.push(name);
+            if (list.length > 0) this.getGEELayers(list);
+          }
+        },
+        (error) => {
           l(error);
           this.reloadCount++;
           if (this.reloadCount < 30) list.push(name);
@@ -221,12 +229,12 @@ class OuterShell extends React.Component{
             this.map.triggerRepaint()
           }catch(err){
             console.log(err)
-            setTimeout(refreshlayers(tileURL),1000);
+            setTimeout(this.refreshlayers(tileURL),1000);
           }
         },
         (error) => {
           l(error);
-          refreshlayers(tileURL);
+          this.refreshlayers(tileURL);
         }
       )
   }
