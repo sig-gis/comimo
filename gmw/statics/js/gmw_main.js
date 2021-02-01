@@ -318,10 +318,22 @@ class OuterShell extends React.Component{
               let cl = resp.value[0]?'Detected':"Not Detected";
               innerHTML += `<b>Mining Activity</b>: ${cl}<br/>`;
               let loc = resp.value[1]?[resp.value[1],resp.value[2]].join(', '):'Outside Region of Interest';
-              innerHTML += `<b>Located In</b>:${loc}`;
+              innerHTML += `<b>Located In</b>:${loc}<br/>`;
               if(resp.value[3]){
                 let pa = `Category: ${resp.value[3]} <br/> Name: ${resp.value[4]}`
-                innerHTML += `<br/><b>Protected Area</b><br>${pa}`
+                innerHTML += `<b>Protected Area</b><br>${pa}<br/>`
+              }
+              if(resp.value[5]){
+                innerHTML += `<b>National Park:</b> ${resp.value[5]} <br/>`
+              }
+              if(resp.value[6]){
+                innerHTML += `<b>Other Authorizatitons:</b> ${resp.value[6]} <br/>`
+              }
+              if(resp.value[7]){
+                innerHTML += `<b>Legal Mine:</b> ${resp.value[7]} <br/>`
+              }
+              if(resp.value[8]){
+                innerHTML += `<b>Ethnic Territories I:</b> ${resp.value[8]} <br/>`
               }
             }
             var popup = new mapboxgl.Popup({ closeOnClick: false })
