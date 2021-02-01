@@ -37,7 +37,7 @@ def getComposite(minp, maxp, miny, maxy):
     validDates = [ee.Image(IMAGE_REPO+'/'+imageDates[i]).selfMask() for i in range(len(imageDates)) if (imageDates[i]>=miny and imageDates[i]<= maxy)]
     icoll = ee.ImageCollection.fromImages(validDates)
     count = icoll.count()
-    percent = icoll.sum().reproject(crs='EPSG:4326', scale=30).divide(count)
+    percent = icoll.sum().reproject(crs='EPSG:4326', scale=540).divide(count)
     thresholded = percent.gte(minp).And(percent.lte(maxp))
     return thresholded
 
