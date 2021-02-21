@@ -17,7 +17,8 @@ def getCompositeImage(request):
         miny = request.GET.get('miny')
         maxy = request.GET.get('maxy')
         authGEE()
-        image = getComposite(minp, maxp, miny, maxy)
+        percent = getComposite(miny, maxy)
+        image = percent.gte(minp).And(percent.lte(maxp))
         resp = getDefaultStyled(image)
         resp['params'] = [minp, maxp, miny, maxy]
         return JsonResponse(resp)
@@ -232,10 +233,18 @@ def getInfo(request):
         lng = float(request.GET.get('lon'))
         image = request.GET.get('image')
         authGEE()
-        image = ee.Image(IMAGE_REPO+'/'+image).select([0],['cval'])
+        if image != "false":
+            image = ee.Image(IMAGE_REPO+'/'+image).select([0],['cval'])
+        else:
+            minp = int(request.GET.get('minp'))/100.
+            maxp = int(request.GET.get('maxp'))/100.
+            miny = request.GET.get('miny')
+            maxy = request.GET.get('maxy')
+            image = getComposite(miny, maxy).select([0],['cval'])
         dist = ee.FeatureCollection(LEVELS['mun'])
         point = ee.Geometry.Point(lng,lat)
         pt = image.sampleRegions(ee.Feature(point))
+        print(pt.getInfo())
         # f = dist.filterBounds(point)
         classval = ee.Algorithms.If(pt.size().gt(0),pt.first().get('cval'),0)
 

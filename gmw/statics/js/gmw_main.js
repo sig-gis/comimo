@@ -39,6 +39,7 @@ class OuterShell extends React.Component{
     searchhidden:true,
     appinfohidden:true
   }
+  compositeparams = {}
   persistentstates = {
     advancedoptions:false,
     showcomposite:false,
@@ -73,16 +74,16 @@ class OuterShell extends React.Component{
     if (this.state.showcomposite){
       var probvals = this.probSlider.getValue().split(',').map((val)=>parseInt(val));
       var yearvals = this.yearSlider.getValue().split(',');
-      var newappparams = {
+      this.compositeparams = {
         minprobability:probvals[0],
         maxprobability:probvals[1],
         minyear:yearvals[0],
         maxyear:yearvals[1]
       }
-      var tileURL = this.URLS.COMPOSITE_IMAGE+'?minp='+newappparams.minprobability+
-                      '&maxp='+newappparams.maxprobability+
-                      '&miny='+newappparams.minyear+
-                      '&maxy='+newappparams.maxyear
+      var tileURL = this.URLS.COMPOSITE_IMAGE+'?minp='+this.compositeparams.minprobability+
+                      '&maxp='+this.compositeparams.maxprobability+
+                      '&miny='+this.compositeparams.minyear+
+                      '&maxy='+this.compositeparams.maxyear
       this.setState({
         selectedDate:false
       });
@@ -292,19 +293,29 @@ class OuterShell extends React.Component{
                          'tierras_de_com','resguardos','legal_mines','protected_areas']);
 
       this.map.on('mousemove',(e)=>{
-        var lat = Math.round(e.lngLat.lat*10000)/10000;
-        var lng = Math.round(e.lngLat.lng*10000)/10000;
+        var lat = e.lngLat.lat;
+        var lng = e.lngLat.lng;
+        // var lat = Math.round(e.lngLat.lat*10000)/10000;
+        // var lng = Math.round(e.lngLat.lng*10000)/10000;
+        var hud_shell = document.getElementById('lnglathud-shell');
         var hud = document.getElementById('lnglathud');
-        hud.style.display = 'inherit';
+        hud_shell.style.display = 'inherit';
         hud.innerHTML = [lat,lng].join(', ');
       })
       this.map.on('mouseout',(e)=>{
-        var hud = document.getElementById('lnglathud');
-        hud.style.display = 'none';
+        var hud_shell = document.getElementById('lnglathud-shell');
+        hud_shell.style.display = 'none';
       })
       this.map.on('click',(e)=>{
         let lat = e.lngLat.lat, lng = e.lngLat.lng;
-        fetch(this.URLS.INFO+"?lat="+e.lngLat.lat+"&lon="+e.lngLat.lng+"&image="+this.state.selectedDate)
+        let url = this.URLS.INFO+"?lat="+e.lngLat.lat+"&lon="+e.lngLat.lng+"&image="+this.state.selectedDate
+        if (!this.state.selectedDate){
+          url += '&minp='+this.compositeparams.minprobability+
+                 '&maxp='+this.compositeparams.maxprobability+
+                 '&miny='+this.compositeparams.minyear+
+                 '&maxy='+this.compositeparams.maxyear
+        }
+        fetch(url)
           .then(resp => resp.json())
           .then((resp) => {
             console.log(resp)
@@ -444,7 +455,8 @@ class OuterShell extends React.Component{
           tooltip='App Info'/>
       </div>
       <AppInfo ishidden={this.state.appinfohidden} onOuterClick={((e) => this.togglePanel(e, 'appinfohidden')).bind(this)}/>
-      <div id="lnglathud">
+      <div id="lnglathud-shell">
+        <span id="lnglathud"></span>
       </div>
     </div>
   }
