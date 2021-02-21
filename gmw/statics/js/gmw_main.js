@@ -154,7 +154,8 @@ class OuterShell extends React.Component{
   pointmapto(type,arg){
     if(type == 'point') {
       try{
-        this.map.flyTo({center:arg, zoom:11, essential:true});
+        // this.map.flyTo({center:arg, zoom:11, essential:true});
+        this.map.flyTo({center:arg, essential:true});
       }catch(err){
         l('Please enter valid coordinates.')
       }
