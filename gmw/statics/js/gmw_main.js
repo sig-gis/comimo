@@ -293,10 +293,10 @@ class OuterShell extends React.Component{
                          'tierras_de_com','resguardos','legal_mines','protected_areas']);
 
       this.map.on('mousemove',(e)=>{
-        var lat = e.lngLat.lat;
-        var lng = e.lngLat.lng;
-        // var lat = Math.round(e.lngLat.lat*10000)/10000;
-        // var lng = Math.round(e.lngLat.lng*10000)/10000;
+        // var lat = e.lngLat.lat;
+        // var lng = e.lngLat.lng;
+        var lat = Math.round(e.lngLat.lat*10000)/10000;
+        var lng = Math.round(e.lngLat.lng*10000)/10000;
         var hud_shell = document.getElementById('lnglathud-shell');
         var hud = document.getElementById('lnglathud');
         hud_shell.style.display = 'inherit';

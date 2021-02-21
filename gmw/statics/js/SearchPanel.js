@@ -54,7 +54,7 @@ class SearchPanel extends React.Component{
   latlngChanged(e, f){
     if (e.key == 'Enter'){
       var pair = e.target.value.split(',');
-      var nump = pair.map((a)=>{return parseInt(a)}).slice(0,2);
+      var nump = pair.map((a)=>{return parseFloat(a)}).slice(0,2);
       f('point',[nump[1],nump[0]])
     }
   }
