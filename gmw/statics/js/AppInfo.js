@@ -17,7 +17,7 @@ class AppInfo extends React.Component{
     }
     if (USER_STATE){
       var user_section = <div className="user-section" style={{float:'right'}}>
-        {adm_links} 
+        {adm_links}
         <span>
           <a href='/accounts/logout'>Log out</a>
         </span>
@@ -28,9 +28,13 @@ class AppInfo extends React.Component{
       <div className='inner-container'>
         {user_section}
         <h3 className='heading3'> APP INFO </h3>
-        <p>Here goes information about the applicaiton</p>
-        <br/><b> DISCLAIMER </b>
-        <p> Here goes disclaimer </p>
+        {/*<p>Here goes information about the applicaiton</p>*/}
+        <iframe
+          width="100%"
+          height="90%"
+          src="https://docs.google.com/document/d/e/2PACX-1vRUnM5cb_rZpx5TTnMYUK66IaKkdcm6J2PhSiorxyTGSGU7z7eaAEc76JTjFNO6uYWCGV_t5xmPXFUO/pub?embedded=true"></iframe>
+        {/*<br/><b> DISCLAIMER </b>
+        <p> Here goes disclaimer </p>*/}
       </div>
     </div>
   }

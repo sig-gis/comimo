@@ -176,13 +176,13 @@ def getAreaPredicted(request):
             authGEE()
             fc = subscribedRegionsToFC(regions)
             image = ee.Image(IMAGE_REPO+'/'+date)
-            pa = ee.Image.pixelArea()
-            image = image.selfMask().multiply(pa)
+            # pa = ee.Image.pixelArea()
+            image = image.selfMask()#.multiply(1)
             rr = image.reduceRegions(collection=fc,
-                reducer=ee.Reducer.sum(),
-                scale=500,
+                reducer=ee.Reducer.count(),
+                scale=540,
                 crs='EPSG:4326')
-            area = rr.aggregate_array('sum')
+            area = rr.aggregate_array('count')
             names = rr.aggregate_array('MPIO_CNMBR')
             dict = ee.Dictionary({'area':area,'names':names}).getInfo()
             dict['action'] = 'Success'
@@ -207,15 +207,15 @@ def getAreaPredictedTS(request):
             def asBands(image, passedImage):
                 image = ee.Image(image)
                 id = image.id()
-                pa = ee.Image.pixelArea()
-                image = image.selfMask().multiply(pa)
+                # pa = ee.Image.pixelArea()
+                image = image.selfMask()#.multiply(pa)
                 passedImage = ee.Image(passedImage)
                 return passedImage.addBands(image.rename(id))
             image =  ee.Image(ee.ImageCollection(IMAGE_REPO).iterate(asBands,ee.Image()))
             image = image.select(image.bandNames().remove('constant'))
             rr = image.reduceRegion(geometry=fc.geometry(),
-                reducer=ee.Reducer.sum(),
-                scale=500,
+                reducer=ee.Reducer.count(),
+                scale=540,
                 crs='EPSG:4326',
                 bestEffort=True)
             area = rr.values()

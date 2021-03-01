@@ -18,7 +18,8 @@ class StatsPanel extends React.Component{
       .then((res)=>{
         var data = [['Municipality','Area']]
         for (var i=0; i<res.names.length;i++){
-          if (res.area[i]!=0) data.push([res.names[i],res.area[i]/1e6]);
+          // if (res.area[i]!=0) data.push([res.names[i],res.area[i]/1e6]);
+          if (res.area[i]!=0) data.push([res.names[i],res.area[i]/1]);
         }
         if (res.names.length>0){
           var data = google.visualization.arrayToDataTable(data);
@@ -43,7 +44,8 @@ class StatsPanel extends React.Component{
         var data = [['Municipality','Area']]
         var nonzero = false;
         for (var i=0; i<res.names.length;i++){
-          data.push([res.names[i].substring(5),res.area[i]/1e6]);
+          // data.push([res.names[i].substring(5),res.area[i]/1e6]);
+          data.push([res.names[i].substring(5),res.area[i]]);
           if (res.area[i]>0) nonzero = true;
         }
         if (nonzero){
@@ -95,15 +97,16 @@ class StatsPanel extends React.Component{
     }
     else{
       var content = <div>
-        <b>Area per subscribed regions </b><br/>
+        <b># per subscribed regions </b><br/>
         Note: Regions with no mines are not shown. Please subscribe to more regions to view area of mines predicted within.
         <div id="stats1">
         <b>Loading data...</b>
         </div>
-        <b>Total area under subscribed regions </b>
+        <b>Total # under subscribed regions </b>
         <div id="stats2">
         <b>Loading data...</b>
         </div>
+        <small> Note: each prediction equals an area of 540x540m. Mining activity is not always present in the entire prediction area </small>
       </div>
     }
     return <div className={['popup-container stat-panel ',this.props.ishidden?'see-through':''].join(' ')}>
