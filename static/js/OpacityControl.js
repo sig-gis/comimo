@@ -11,11 +11,14 @@ class OpacityControl {
         this._baseLayersOption = options.baseLayers || defaultOptions.baseLayers;
         this._overLayersOption = options.overLayers || defaultOptions.overLayers;
         this._opacityControlOption = options.opacityControl || defaultOptions.opacityControl;
+        this._expanded = false;
     }
 
     // ラジオボタン作成
     _radioButtonControlAdd(layerId) {
         // ラジオボタン追加
+        var element = document.createElement('div');
+
         const radioButton = document.createElement('input');
         radioButton.setAttribute('type', 'radio');
         radioButton.id = layerId;
@@ -26,7 +29,7 @@ class OpacityControl {
         } else {
             this._map.setLayoutProperty(layerId, 'visibility', 'none');
         }
-        this._container.appendChild(radioButton);
+        element.appendChild(radioButton);
 
         // ラジオボタンイベント
         radioButton.addEventListener('change', (event) => {
@@ -45,18 +48,20 @@ class OpacityControl {
         // レイヤ名追加
         const layerName = document.createElement('span');
         layerName.appendChild(document.createTextNode(this._baseLayersOption[layerId]));
-        this._container.appendChild(layerName);
+        element.appendChild(layerName);
+        return element;
     }
 
     // チェックボックス作成
     _checkBoxControlAdd(layerId) {
+        var element = document.createElement('div');
         // チェックボックス追加
         const checkBox = document.createElement('input');
         checkBox.setAttribute('type', 'checkbox');
         checkBox.id = layerId;
         // 全レイヤ非表示
         this._map.setLayoutProperty(layerId, 'visibility', 'none');
-        this._container.appendChild(checkBox);
+        element.appendChild(checkBox);
 
         // チェックボックスイベント
         checkBox.addEventListener('change', (event) => {
@@ -78,20 +83,22 @@ class OpacityControl {
           const icon = document.createElement('span');
           icon.className = "legend-icon vis-"+layerId;
           icon.style = "background:#"+vis.palette[0];
-          this._container.appendChild(icon);
+          element.appendChild(icon);
         }
-        this._container.appendChild(layerName);
+        element.appendChild(layerName);
+        return element
     }
 
     // スライドバー作成
     _rangeControlAdd(layerId) {
+        var element = document.createElement('div')
         // スライドバー追加
         const range = document.createElement('input');
         range.type = 'range';
         range.min = 0;
         range.max = 100;
         range.value = 100;
-        this._container.appendChild(range);
+        element.appendChild(range);
 
         // スライドバースイベント
         range.addEventListener('input', (event) => {
@@ -99,6 +106,7 @@ class OpacityControl {
             // 透過度設定
             this._map.setPaintProperty(layerId, 'raster-opacity', Number(rgValue / 100));
         });
+        return element;
 
     }
 
@@ -109,38 +117,65 @@ class OpacityControl {
         this._container.className = 'mapboxgl-ctrl mapboxgl-ctrl-group';
         this._container.id = 'opacity-control';
 
+        var expandDiv = document.createElement('div');
+        expandDiv.className = "expand-legend-div";
+
+        var expandBtn = document.createElement('button');
+        expandBtn.style.width = "calc(100% - 10px)";
+
+        var expandIco = document.createElement('span');
+        expandIco.id = "expand-legend-ico";
+        expandIco.className = "glyphicon glyphicon-plus";
+        var expandTxt = document.createElement('span');
+        expandTxt.innerHTML = " Legend";
+
+        expandBtn.appendChild(expandIco);
+        expandBtn.appendChild(expandTxt);
+
+        expandBtn.onclick = (e)=>{
+          var legend = document.getElementById('legend-div');
+          var ico = document.getElementById('expand-legend-ico');
+          this._expanded = !this._expanded;
+          legend.style.display = this._expanded?"block":"none";
+          var glyphclass = this._expanded?"glyphicon-minus":"glyphicon-plus";
+          ico.className = "glyphicon "+glyphclass;
+        }
+
+        expandDiv.appendChild(expandBtn);
+
+        var legendDiv = document.createElement('div')
+        legendDiv.id = "legend-div";
+        legendDiv.style.display = this._expanded?"block":"none";
+
         // 背景レイヤ設定
         if (this._baseLayersOption !== null) {
             Object.keys(this._baseLayersOption).forEach((layer) => {
                 const layerId = layer;
-                const br = document.createElement('br');
                 // ラジオボタン作成
-                this._radioButtonControlAdd(layerId);
-                this._container.appendChild(br);
+                legendDiv.appendChild(this._radioButtonControlAdd(layerId));
             });
         }
 
         // 区切り線
         if (this._baseLayersOption !== null && this._overLayersOption !== null) {
             const hr = document.createElement('hr');
-            this._container.appendChild(hr);
+            legendDiv.appendChild(hr);
         }
 
         // オーバーレイヤ設定
         if (this._overLayersOption !== null) {
             Object.keys(this._overLayersOption).forEach((layer) => {
                 const layerId = layer;
-                const br = document.createElement('br');
                 // チェックボックス作成
-                this._checkBoxControlAdd(layerId);
-                this._container.appendChild(br);
+                legendDiv.appendChild(this._checkBoxControlAdd(layerId));
                 // スライドバー作成
                 if (this._opacityControlOption) {
-                    this._rangeControlAdd(layerId);
-                    this._container.appendChild(br);
+                    legendDiv.appendChild(this._rangeControlAdd(layerId));
                 }
             });
         }
+        this._container.appendChild(expandDiv);
+        this._container.appendChild(legendDiv)
     }
 
     onAdd(map) {

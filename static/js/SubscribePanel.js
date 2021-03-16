@@ -130,7 +130,7 @@ class SubscribePanel extends React.Component{
         <button type="button" className="btn btn-warning map-upd-btn" onClick={()=>{location.href = 'accounts/login'}}>Login</button>
       </div>
     }
-    return <div className={['popup-container ',this.props.ishidden?'see-through':''].join(' ')} style={{'top':'50px','maxHeight':'500px'}}>
+    return <div className={['popup-container subs-panel ',this.props.ishidden?'see-through':''].join(' ')}>
       <h1><b> YOUR SUBSCRIPTIONS </b></h1>
       {content}
     </div>

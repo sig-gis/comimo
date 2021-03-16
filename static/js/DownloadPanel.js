@@ -56,7 +56,7 @@ class DownloadPanel extends React.Component{
       </p>
     }
 
-    return <div className={['popup-container ',this.props.ishidden?'see-through':''].join(' ')} style={{'top':'350px'}}>
+    return <div className={['popup-container download-panel ',this.props.ishidden?'see-through':''].join(' ')}>
       <h1><b> DOWNLOAD DATA </b></h1>
       <b>Select Region</b><br/>
       <input type='radio' name='downloadRegion' value={1} onChange={this.radioChange.bind(this)}/> Complete Data <br/>

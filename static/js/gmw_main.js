@@ -1,10 +1,15 @@
-var t;
+window.mobileAndTabletCheck = function() {
+  let check = false;
+  (function(a){if(/(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od)|iris|kindle|lge |maemo|midp|mmp|mobile.+firefox|netfront|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\/|plucker|pocket|psp|series(4|6)0|symbian|treo|up\.(browser|link)|vodafone|wap|windows ce|xda|xiino|android|ipad|playbook|silk/i.test(a)||/1207|6310|6590|3gso|4thp|50[1-6]i|770s|802s|a wa|abac|ac(er|oo|s\-)|ai(ko|rn)|al(av|ca|co)|amoi|an(ex|ny|yw)|aptu|ar(ch|go)|as(te|us)|attw|au(di|\-m|r |s )|avan|be(ck|ll|nq)|bi(lb|rd)|bl(ac|az)|br(e|v)w|bumb|bw\-(n|u)|c55\/|capi|ccwa|cdm\-|cell|chtm|cldc|cmd\-|co(mp|nd)|craw|da(it|ll|ng)|dbte|dc\-s|devi|dica|dmob|do(c|p)o|ds(12|\-d)|el(49|ai)|em(l2|ul)|er(ic|k0)|esl8|ez([4-7]0|os|wa|ze)|fetc|fly(\-|_)|g1 u|g560|gene|gf\-5|g\-mo|go(\.w|od)|gr(ad|un)|haie|hcit|hd\-(m|p|t)|hei\-|hi(pt|ta)|hp( i|ip)|hs\-c|ht(c(\-| |_|a|g|p|s|t)|tp)|hu(aw|tc)|i\-(20|go|ma)|i230|iac( |\-|\/)|ibro|idea|ig01|ikom|im1k|inno|ipaq|iris|ja(t|v)a|jbro|jemu|jigs|kddi|keji|kgt( |\/)|klon|kpt |kwc\-|kyo(c|k)|le(no|xi)|lg( g|\/(k|l|u)|50|54|\-[a-w])|libw|lynx|m1\-w|m3ga|m50\/|ma(te|ui|xo)|mc(01|21|ca)|m\-cr|me(rc|ri)|mi(o8|oa|ts)|mmef|mo(01|02|bi|de|do|t(\-| |o|v)|zz)|mt(50|p1|v )|mwbp|mywa|n10[0-2]|n20[2-3]|n30(0|2)|n50(0|2|5)|n7(0(0|1)|10)|ne((c|m)\-|on|tf|wf|wg|wt)|nok(6|i)|nzph|o2im|op(ti|wv)|oran|owg1|p800|pan(a|d|t)|pdxg|pg(13|\-([1-8]|c))|phil|pire|pl(ay|uc)|pn\-2|po(ck|rt|se)|prox|psio|pt\-g|qa\-a|qc(07|12|21|32|60|\-[2-7]|i\-)|qtek|r380|r600|raks|rim9|ro(ve|zo)|s55\/|sa(ge|ma|mm|ms|ny|va)|sc(01|h\-|oo|p\-)|sdk\/|se(c(\-|0|1)|47|mc|nd|ri)|sgh\-|shar|sie(\-|m)|sk\-0|sl(45|id)|sm(al|ar|b3|it|t5)|so(ft|ny)|sp(01|h\-|v\-|v )|sy(01|mb)|t2(18|50)|t6(00|10|18)|ta(gt|lk)|tcl\-|tdg\-|tel(i|m)|tim\-|t\-mo|to(pl|sh)|ts(70|m\-|m3|m5)|tx\-9|up(\.b|g1|si)|utst|v400|v750|veri|vi(rg|te)|vk(40|5[0-3]|\-v)|vm40|voda|vulc|vx(52|53|60|61|70|80|81|83|85|98)|w3c(\-| )|webc|whit|wi(g |nc|nw)|wmlb|wonu|x700|yas\-|your|zeto|zte\-/i.test(a.substr(0,4))) check = true;})(navigator.userAgent||navigator.vendor||window.opera);
+  return check;
+};
 
 class OuterShell extends React.Component{
   // set up class flags so each component update doesn't do redundant JS tasks
   flags = {
     updatelayers : true,
-    layeradded : false
+    layeradded : false,
+    isMobile : mobileAndTabletCheck()
   }
   // API URLS
   URLS = {
@@ -13,7 +18,9 @@ class OuterShell extends React.Component{
     SINGLE_IMAGE: '/api/getsingleimage',
     COMPOSITE_IMAGE: '/api/getcompositeimage',
     LEGAL_MINES: 'api/getlegalmines',
-    MUNS: 'api/getmunicipallayer'
+    GEE_LAYER: 'api/getgeetiles',
+    MUNS: 'api/getmunicipallayer',
+    INFO: 'api/getinfo'
   }
   // overall app parameters
   appparams = {
@@ -43,6 +50,8 @@ class OuterShell extends React.Component{
   }
   // combining everything to app state
   state = {...this.appparams, ...this.appstates, ...this.persistentstates}
+  // reload limit for layers thatt could not be loaded
+  reloadCount = 0
 
   constructor(props){
     super(props)
@@ -158,39 +167,52 @@ class OuterShell extends React.Component{
     }
   }
 
-  getLegalMinesLayer(){
-    fetch(this.URLS.LEGAL_MINES)
+  getGEELayers(list){
+    var name = list.shift();
+    fetch(this.URLS.GEE_LAYER+"?name="+name)
       .then(res => res.json())
       .then(
         (result) => {
-          this.map.getSource('legal-mines').tiles = [result.url];
-          // clear existing tile cache and force map refresh
-          this.map.style.sourceCaches['legal-mines'].clearTiles()
-          this.map.style.sourceCaches['legal-mines'].update(this.map.transform)
-          document.getElementsByClassName("vis-legal-mines")[0].style["border"] = "solid 1px "+result.style.color;
-          document.getElementsByClassName("vis-legal-mines")[0].style["background"] = result.style.fillColor;
-          this.map.triggerRepaint()
-        }, (error) => {
+          try{
+              this.map.getSource(name).tiles = [result.url];
+            // clear existing tile cache and force map refresh
+            this.map.style.sourceCaches[name].clearTiles()
+            this.map.style.sourceCaches[name].update(this.map.transform)
+            document.getElementsByClassName("vis-"+name)[0].style["border"] = "solid 1px "+result.style.color;
+            document.getElementsByClassName("vis-"+name)[0].style["background"] = result.style.fillColor;
+            this.map.triggerRepaint()
+            if (list.length > 0) this.getGEELayers(list);
+          }catch(err){
+            console.log(err)
+            this.reloadCount++;
+            if (this.reloadCount < 30) list.push(name);
+            if (list.length > 0) this.getGEELayers(list);
+          }
+        },
+        (error) => {
           l(error);
+          this.reloadCount++;
+          if (this.reloadCount < 30) list.push(name);
+          if (list.length > 0) this.getGEELayers(list);
         }
       );
   }
 
-  getMunicipalLayer(){
-    fetch(this.URLS.MUNS)
-      .then(res => res.json())
-      .then(
-        (result) => {
-          this.map.getSource('municipalities').tiles = [result.url];
-          // clear existing tile cache and force map refresh
-          this.map.style.sourceCaches['municipalities'].clearTiles()
-          this.map.style.sourceCaches['municipalities'].update(this.map.transform)
-          document.getElementsByClassName("vis-municipalities")[0].style["border"] = "solid 1px "+result.style.color;
-          this.map.triggerRepaint()
-        }, (error) => {
-          l(error);
-        }
-      );
+  addLayerSources(list){
+    var name = list.shift();
+    this.map.addSource(name,{'type': 'raster',
+      'tiles': [],
+      'tileSize': 256,
+      'vis':{'palette':[]}
+    });
+    this.map.addLayer({
+      'id': name,
+      'type': 'raster',
+      'source': name,
+      'minzoom': 0,
+      'maxzoom': 22
+    });
+    if (list.length > 0) this.addLayerSources(list);
   }
 
   refreshlayers(tileURL){
@@ -198,15 +220,21 @@ class OuterShell extends React.Component{
       .then(res => res.json())
       .then(
         (result) => {
-          this.map.getSource('ee-Layer').tiles = [result.url];
-          // clear existing tile cache and force map refresh
-          this.map.style.sourceCaches['ee-Layer'].clearTiles()
-          this.map.style.sourceCaches['ee-Layer'].update(this.map.transform)
-          document.getElementsByClassName("vis-ee-Layer")[0].style["background"] = '#'+result.visparams.palette[0];
-          this.map.triggerRepaint()
+          try{
+            this.map.getSource('ee-Layer').tiles = [result.url];
+            // clear existing tile cache and force map refresh
+            this.map.style.sourceCaches['ee-Layer'].clearTiles()
+            this.map.style.sourceCaches['ee-Layer'].update(this.map.transform)
+            document.getElementsByClassName("vis-ee-Layer")[0].style["background"] = '#'+result.visparams.palette[0];
+            this.map.triggerRepaint()
+          }catch(err){
+            console.log(err)
+            setTimeout(this.refreshlayers(tileURL),1000);
+          }
         },
         (error) => {
           l(error);
+          this.refreshlayers(tileURL);
         }
       )
   }
@@ -221,14 +249,13 @@ class OuterShell extends React.Component{
     // render maps
     this.map = new mapboxgl.Map({
       container: this.mapContainer,
-      style: 'mapbox://styles/mapbox/satellite-streets-v9',
+      style: 'mapbox://styles/mapbox/'+(this.flags.isMobile?'dark-v10':'satellite-streets-v9'),
       center: [-73.5609339,4.6371205],
       zoom: 5
     });
 
     this.map.on('load', (e) => {
       this.map.addControl(new mapboxgl.NavigationControl({showCompass:false}));
-      t = this.map
       this.map.addSource("mapbox-streets", {
         "type": "raster",
         "url": "mapbox://mapbox.streets",
@@ -239,47 +266,20 @@ class OuterShell extends React.Component{
         'type': 'raster',
         'source': 'mapbox-streets'
       });
-      this.map.addSource('ee-Layer',{'type': 'raster',
-        'tiles': [],
-        'tileSize': 256,
-        'vis': {'palette':[]}//result.visparams
-      });
-      this.map.addLayer({
-        'id': 'ee-Layer',
-        'type': 'raster',
-        'source': 'ee-Layer',
-        'minzoom': 0,
-        'maxzoom': 22
-      });
-      this.map.addSource('legal-mines',{'type': 'raster',
-        'tiles': [],
-        'tileSize': 256,
-        'vis':{'palette':[]}
-      });
-      this.map.addLayer({
-        'id': 'legal-mines',
-        'type': 'raster',
-        'source': 'legal-mines',
-        'minzoom': 0,
-        'maxzoom': 22
-      });
-      this.map.addSource('municipalities',{'type': 'raster',
-        'tiles': [],
-        'tileSize': 256,
-        'vis':{'palette':[]}
-      });
-      this.map.addLayer({
-        'id': 'municipalities',
-        'type': 'raster',
-        'source': 'municipalities',
-        'minzoom': 0,
-        'maxzoom': 22
-      });
+
+      this.addLayerSources(['ee-Layer','municipal_bounds','other_authorizations',//'national_parks',
+                            'tierras_de_com','resguardos','legal_mines','protected_areas']);
+
       this.flags.layeradded = true;
       const overlays = {
         'ee-Layer': 'Prediction',
-        'legal-mines': 'Legal Mining Sites',
-        'municipalities': 'Municipal Boundaries',
+        'municipal_bounds': 'Municipal Boundaries',
+        'legal_mines' : 'Legal mines',
+        // 'national_parks': 'National Parks',
+        'other_authorizations': 'Other Authorizations',
+        'tierras_de_com': 'Ethnic territories I',
+        'resguardos' : 'Ethnic territories II',
+        'protected_areas': 'Protected Areas',
         'mapbox-streets':'Mapbox Streets'
       }
       var opacity = new OpacityControl({
@@ -288,8 +288,9 @@ class OuterShell extends React.Component{
         opacityControl:true
       })
       this.map.addControl(opacity, 'bottom-right');
-      this.getLegalMinesLayer();
-      this.getMunicipalLayer();
+      this.getGEELayers(['municipal_bounds','other_authorizations',//'national_parks',
+                         'tierras_de_com','resguardos','legal_mines','protected_areas']);
+
       this.map.on('mousemove',(e)=>{
         var lat = Math.round(e.lngLat.lat*10000)/10000;
         var lng = Math.round(e.lngLat.lng*10000)/10000;
@@ -300,6 +301,46 @@ class OuterShell extends React.Component{
       this.map.on('mouseout',(e)=>{
         var hud = document.getElementById('lnglathud');
         hud.style.display = 'none';
+      })
+      this.map.on('click',(e)=>{
+        let lat = e.lngLat.lat, lng = e.lngLat.lng;
+        fetch(this.URLS.INFO+"?lat="+e.lngLat.lat+"&lon="+e.lngLat.lng+"&image="+this.state.selectedDate)
+          .then(resp => resp.json())
+          .then((resp) => {
+            console.log(resp)
+            let ln = Math.ceil(lng*10000)/10000;
+            let lt = Math.ceil(lat*10000)/10000;
+            let innerHTML = '';
+            if (resp.action == 'Error'){
+              innerHTML = `<b>${lt},${ln}</b>:<br/> ${resp.message}`;
+            } else{
+              innerHTML = `<b>${lt},${ln}</b><br/>`;
+              let cl = resp.value[0]?'Detected':"Not Detected";
+              innerHTML += `<b>Mining Activity</b>: ${cl}<br/>`;
+              let loc = resp.value[1]?[resp.value[1],resp.value[2]].join(', '):'Outside Region of Interest';
+              innerHTML += `<b>Located In</b>:${loc}<br/>`;
+              if(resp.value[3]){
+                let pa = `Category: ${resp.value[3]} <br/> Name: ${resp.value[4]}`
+                innerHTML += `<b>Protected Area</b><br>${pa}<br/>`
+              }
+              if(resp.value[5]){
+                innerHTML += `<b>National Park:</b> ${resp.value[5]} <br/>`
+              }
+              if(resp.value[6]){
+                innerHTML += `<b>Other Authorizatitons:</b> ${resp.value[6]} <br/>`
+              }
+              if(resp.value[7]){
+                innerHTML += `<b>Legal Mine:</b> ${resp.value[7]} <br/>`
+              }
+              if(resp.value[8]){
+                innerHTML += `<b>Ethnic Territories I:</b> ${resp.value[8]} <br/>`
+              }
+            }
+            var popup = new mapboxgl.Popup({ closeOnClick: false })
+                            .setLngLat([lng, lat])
+                            .setHTML(innerHTML)
+                            .addTo(this.map);
+          });
       })
     });
     // render sliders
@@ -323,7 +364,7 @@ class OuterShell extends React.Component{
   // set up actions to render app
   render(){
     var advancedbuttons = '';
-    if (this.state.advancedoptions) advancedbuttons= <div>
+    if (this.state.advancedoptions) advancedbuttons= <div class="advanced-icons">
         <SideIcons
           parentclass={this.state.statshidden?'':'active-icon'}
           glyphicon='glyphicon-stats'
@@ -341,6 +382,9 @@ class OuterShell extends React.Component{
           tooltip='Download data'/>
       </div>
     return <div className='shell' {...this.props}>
+      <div className="app-bar">
+        <div className='sidebar-icon gold-drop app-icon'></div>
+      </div>
       <div ref={el => this.mapContainer = el}></div>
       <SliderPanel ishidden = {this.state.slidershidden}
         slideradjusted = {this.slidersadjusted.bind(this)}

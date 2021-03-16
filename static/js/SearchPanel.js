@@ -116,7 +116,6 @@ class SearchPanel extends React.Component{
       selectl2 = <div className="w_100">
         <small>Municipality</small>
         <select className='w_100' defaultValue={0} onChange={(e) => {
-            console.log(this.state.activel1+'_'+e.target.selectedOptions[0].getAttribute('name'))
               this.munSelected(e,this.props.pointmapto);
               this.props.regionSelected('mun',this.state.activel1+'_'+e.target.selectedOptions[0].getAttribute('name'));
             }}
@@ -127,7 +126,7 @@ class SearchPanel extends React.Component{
     }
 
 
-    return <div className={['popup-container ',this.props.ishidden?'see-through':''].join(' ')} style={{'top':'150px'}}>
+    return <div className={['popup-container search-panel ',this.props.ishidden?'see-through':''].join(' ')}>
       <b>SEARCH LOCATION</b><br/>
       <b>Internet Search</b>
       <input className='w_100' onKeyUp={this.inputChanged.bind(this)} />
