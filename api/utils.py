@@ -7,11 +7,13 @@ from api.config import *
 
 #function to authenticate GEE
 def authGEE():
-    module_dir = os.path.dirname(__file__)
-    service_account = 'comimo@earth-engine-comimo.iam.gserviceaccount.com'
-    credentials = ee.ServiceAccountCredentials(service_account, os.path.join(module_dir,'gee-auth-key.json'))
-    ee.Initialize(credentials)
-    # ee.Initialize()
+    geeAuthKey = os.path.join(os.path.dirname(__file__),'gee-auth-key.json')
+    if os.path.exists(geeAuthKey):
+        service_account = 'comimo@earth-engine-comimo.iam.gserviceaccount.com'
+        credentials = ee.ServiceAccountCredentials(service_account, os.path.join(module_dir,'gee-auth-key.json'))
+        ee.Initialize(credentials)
+    else:
+        ee.Initialize()
     return True
 
 def getImageList():

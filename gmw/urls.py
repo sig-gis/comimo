@@ -28,5 +28,4 @@ urlpatterns = [
     path('download/',downloadData,name='dldata'),
     path('download-all/',downloadAllInCSV,name='dlalldata'),
     path('getDataDates/',getDataDates,name='getDataDates'),
-    path('peru', TemplateView.as_view(template_name='peru.html'), name='peru-home'),
 ]

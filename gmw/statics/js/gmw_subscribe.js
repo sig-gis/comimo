@@ -79,7 +79,6 @@ class SubscribedList extends React.Component{
   componentDidMount(){
     console.log(this.props.list);
     this.getSubList();
-    mapboxgl.accessToken = 'pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4M29iazA2Z2gycXA4N2pmbDZmangifQ.-g_vE53SD2WrJ6tFX7QHmA';
     // render maps
     this.map = new mapboxgl.Map({
       container: this.mapContainer,
