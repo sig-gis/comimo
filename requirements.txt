@@ -15,7 +15,7 @@ earthengine-api==0.1.256
 Fiona==1.8.18
 future==0.18.2
 google-api-core==1.26.1
-google-api-python-client==2.0.2
+google-api-python-client==1.12.1
 google-auth==1.28.0
 google-auth-httplib2==0.1.0
 google-cloud-core==1.6.0
@@ -25,7 +25,7 @@ google-resumable-media==1.2.0
 googleapis-common-protos==1.53.0
 httplib2==0.19.0
 httplib2shim==0.0.3
-idna==3.1
+idna==2.10
 munch==2.5.0
 numpy==1.20.1
 packaging==20.9
