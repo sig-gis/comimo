@@ -52,7 +52,7 @@ class OuterShell extends React.Component{
   }
   // combining everything to app state
   state = {...this.appparams, ...this.appstates, ...this.persistentstates}
-  // reload limit for layers thatt could not be loaded
+  // reload limit for layers that could not be loaded
   reloadCount = 0
 
   constructor(props){
@@ -387,7 +387,7 @@ class OuterShell extends React.Component{
   // set up actions to render app
   render(){
     var advancedbuttons = '';
-    if (this.state.advancedoptions) advancedbuttons= <div class="advanced-icons">
+    if (this.state.advancedoptions) advancedbuttons= <div className="advanced-icons">
         <SideIcons
           parentclass={this.state.statshidden?'':'active-icon'}
           glyphicon='glyphicon-stats'

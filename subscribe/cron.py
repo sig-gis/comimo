@@ -58,7 +58,7 @@ class CleanStaleProjects(CronJobBase):
             bardate = datetime.datetime.now() + datetime.timedelta(days = -15)
             staleprojects = list(ProjectsModel.objects.filter(status='active',created_date__lt=bardate).values_list(*fields))
             for project in staleprojects:
-                result = subutils.archiveProject(project[0],str(project[1]),project[2]);
+                result = subutils.archiveProject(project[0],str(project[1]),project[2])
                 print(result)
         except Exception as e:
             print(e)

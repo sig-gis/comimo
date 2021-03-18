@@ -12,9 +12,9 @@ def requestLogin(request):
 def manageSubscriptions(request):
     user = request.user
     if not(user.is_authenticated):
-        return requestLogin(request);
+        return requestLogin(request)
     else :
-        queryset = utils.getSubscribedRegions(user);
+        queryset = utils.getSubscribedRegions(user)
         context = {'rows':queryset}
         return render(request, 'manageSubscriptions.html', context=context)
 
@@ -22,7 +22,7 @@ def manageSubscriptions(request):
 def addSubs(request):
     user = request.user
     if not(user.is_authenticated):
-        return requestLogin(request);
+        return requestLogin(request)
     else:
         region = request.GET.get('region')
         try:
@@ -35,7 +35,7 @@ def addSubs(request):
 def deleteSubs(request):
     user = request.user
     if not(user.is_authenticated):
-        return requestLogin(request);
+        return requestLogin(request)
     else:
         region = request.GET.get('region')
         try:
@@ -48,7 +48,7 @@ def deleteSubs(request):
 def getSubs(request):
     user = request.user
     if not(user.is_authenticated):
-            return requestLogin(request);
+            return requestLogin(request)
     else:
         regionList = utils.getSubscribedRegions(user)
         return JsonResponse({'action':'Success','regions':regionList})
@@ -56,7 +56,7 @@ def getSubs(request):
 def getProjects(request):
     user = request.user
     if not(user.is_authenticated):
-        return requestLogin(request);
+        return requestLogin(request)
     else:
         queryset = utils.getActiveProjects(user)
         if queryset!='Error':
@@ -90,7 +90,8 @@ def createProject(request):
         regions = request.GET.get('regions')
         if (pdate):
             from datetime import datetime
-            pdate = datetime.strptime(pdate, "%Y-%m-%d")
+            import pytz
+            pdate = datetime.strptime(pdate, "%Y-%m-%d").replace(tzinfo=pytz.UTC)
             result = utils.createProject(user, pdate, name, regions)
             return JsonResponse(result)
         else:
@@ -182,4 +183,4 @@ def getDataDates(request):
 #         # csv = os.listdir(dlbbase+dlfolder)
 #         # dd = datetime.datetime.strptime(d,"%Y_%m_%dT%H_%M_%S")
 #         print(dd)
-#         return JsonResponse({"action":"success","file":csv});
+#         return JsonResponse({"action":"success","file":csv})

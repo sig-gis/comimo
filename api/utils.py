@@ -28,10 +28,10 @@ def getRenderedMunicipalBounds():
     return {'url':mapid,'style':style}
 
 def getLatestImage():
-    imgList = getImageList();
+    imgList = getImageList()
     imgList.sort(reverse=True)
     latest = imgList[0]
-    y, m, d = list(map(lambda x: int(x), latest.split('-')));
+    y, m, d = list(map(lambda x: int(x), latest.split('-')))
     return ee.Image(IMAGE_REPO+'/'+latest), datetime.datetime(y,m,d).replace(tzinfo=pytz.UTC)
 
 def getComposite(miny, maxy):
@@ -61,7 +61,7 @@ def getShape(region, level):
 
 def reduceRegion(shapeObj,raster):
     authGEE()
-    polygon = ee.Geometry.MultiPolygon(shapeObj['coordinates']);
+    polygon = ee.Geometry.MultiPolygon(shapeObj['coordinates'])
     value = raster.reduceRegion(ee.Reducer.sum(), polygon, 30, bestEffort = True)
     return value.getInfo()['b1']>0
 

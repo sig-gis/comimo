@@ -98,16 +98,19 @@ def createProject(user, data_date, name, regions):
             else:
                 points = points.getInfo()
             proj = getCeoProjectURL(points,data_date,user.email,name)
-            projid = proj['projectId']
-            projurl = proj['ceoCollectionUrl']
-            if (projurl and projurl != ""):
-                regions = '__'.join(regions)
-                entry_added = saveProject(user.email, projurl, projid, data_date, name, regions)
-                return {'action':entry_added, 'proj':[data_date.strftime('%Y-%m-%d'),datetime.today().strftime("%Y-%m-%d"),projid,projurl,name,regions]}
+            if proj is not None:
+                projid = proj['projectId']
+                projurl = proj['ceoCollectionUrl']
+                if (projurl and projurl != ""):
+                    regions = '__'.join(regions)
+                    entry_added = saveProject(user.email, projurl, projid, data_date, name, regions)
+                    return {'action':entry_added, 'proj':[data_date.strftime('%Y-%m-%d'),datetime.today().strftime("%Y-%m-%d"),projid,projurl,name,regions]}
+                else:
+                    return {'action':'Error', 'message':'Error creating CEO project. Please try again later.'}
             else:
-                return {'action':'Error', 'message':'Error creating CEO project. Please try again later.'}
+                    return {'action':'Error', 'message':'Error with CEO Gateway. Please contact support.'}
         else:
-            return {'action':'Error', 'message':'No mines detected within your subscribed region! Maybe subscribe to other regions.'}
+            return {'action':'Error', 'message':'No mines detected within specified region(s)! Subscribe to other regions, or use custom regions.'}
     else:
         return {'action':'Error', 'message':'Project for those regions already exists for the day! It\'s name is "'+ename+'". Close that one to create another.'}
 

@@ -121,6 +121,12 @@ required for the application to run and function  properly. There are some files
 that are not included in git repository but are essential to the working of the
 application.
 
+```shell
+nano gmw/statics/js/appconfigs.js
+nano api/config.py
+nano subscribe/config.py
+```
+
 1. gmw/statics/js/appconfigs.js
 
 This file contains the access details to your mapbox and mapquest accounts.
@@ -137,15 +143,15 @@ and should look something like this
 
 ```text
 # repository containing all the gold mine rasters
-IMAGE_REPO = 'users/nk-sig/GoldMineProbabilities'
+IMAGE_REPO = 'users/[user]/GoldMineProbabilities'
 # asset for legal mines to load as layer
-LEGAL_MINES = 'users/nk-sig/Shapes/Legal_Mines'
+LEGAL_MINES = 'users/[user]/Shapes/Legal_Mines'
 # asset folder that stores
-POINTS_FOL = 'users/nk-sig/GoldMinePoints'
+POINTS_FOL = 'users/[user]/GoldMinePoints'
 # levels refer to identifier prefixes for the application
 LEVELS = {
-    'mun' : 'users/nk-sig/Shapes/Level2',
-    'l0' : 'users/nk-sig/Shapes/Level0'
+    'mun' : 'users/[user]/Shapes/Level2',
+    'l0' : 'users/[user]/Shapes/Level0'
 }
 # fields are the field names that contain names of the units
 FIELDS = {

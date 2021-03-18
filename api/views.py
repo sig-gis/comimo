@@ -55,13 +55,13 @@ def getFeatureNames(request):
     #         dict[l1name][feat['properties']['MPIO_CNMBR']] = bounds(feat)
     #     else:
     #         dict[l1name] = {feat['properties']['MPIO_CNMBR'] : bounds(feat)}
-    # return JsonResponse({'action':'FeatureNames', 'features': dict});
+    # return JsonResponse({'action':'FeatureNames', 'features': dict})
 
 # get features in a cascading pattern
 def getCascadingFeatureNames(request):
     authGEE()
     fc = ee.FeatureCollection(MUNICIPAL_BOUNDS)
-    fclist = fc.toList(fc.size());
+    fclist = fc.toList(fc.size())
 
     def getCascadingList(feature, passedObject):
         passedObject = ee.Dictionary(passedObject)
@@ -72,7 +72,7 @@ def getCascadingFeatureNames(request):
         list = ee.Algorithms.If(subset,ee.List(subset).add(l2),[l2])
         return passedObject.set(l1,list)
 
-    fci = fclist.iterate(getCascadingList, {});
+    fci = fclist.iterate(getCascadingList, {})
 
     return JsonResponse(fci.getInfo())
 
@@ -86,13 +86,13 @@ def getFeatures(request):
         level = 0
     if (level == 0):
         level0 = fiona.open(os.path.join(module_dir,'shapes','Level0.shp'))
-        return JsonResponse(next(iter(level0)));
+        return JsonResponse(next(iter(level0)))
     elif (level == 1):
         level1 = fiona.open(os.path.join(module_dir,'shapes','Level1.shp'))
         fcoll = {'type':'FeatureCollection', 'features':[]}
         for feature in level1:
-            fcoll['features'].append(feature);
-        return JsonResponse(fcoll);
+            fcoll['features'].append(feature)
+        return JsonResponse(fcoll)
     elif (level == 2):
         level2 = fiona.open(os.path.join(module_dir,'shapes','Level2.shp'))
         fcoll = {'type':'FeatureCollection', 'features':[]}
@@ -152,7 +152,7 @@ def getDownloadURL(request):
         if (region == 'all'):
             region = ee.FeatureCollection(LEVELS['l0'])
         else:
-            l1, l2 = region.split("_");
+            l1, l2 = region.split("_")
             region = ee.FeatureCollection(LEVELS[level])\
                         .filter(ee.Filter.eq(FIELDS['mun_l1'],l1.upper()))\
                         .filter(ee.Filter.eq(FIELDS['mun'],l2.upper()))

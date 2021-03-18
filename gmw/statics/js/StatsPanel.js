@@ -7,8 +7,8 @@ class StatsPanel extends React.Component{
     libloaded:false
   }
   URL = {
-    ARSTATS : '/api/getareapredicted/',
-    ARTS : '/api/getareats/',
+    ARSTATS : '/api/getareapredicted',
+    ARTS : '/api/getareats',
   }
   fetchedFor=false;
 

@@ -12,7 +12,7 @@ class SignUpForm(UserCreationForm):
         widget=forms.Select(choices=[('academic','Academic'),('government','Government'),('ngo','NGO')]),
         required=False,
         help_text='Optional.')
-    institution = forms.CharField(label="Institution", help_text='Which institution are you from?');
+    institution = forms.CharField(label="Institution", help_text='Which institution are you from?')
     idtype = forms.CharField(label="ID type",
         widget=forms.Select(choices=[('citizenship','citizenship'),('passport','Passport')]),
         required=False,
