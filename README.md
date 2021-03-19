@@ -24,52 +24,6 @@ virtualenv venv
 
 *venv* can be replaced witht the name of your choice.
 
-### Install gdal and fiona
-
-The next step is to install  gdal which can get complicated pretty quickly.
-
-For a windows system a good guide can be [this stack exchange answer]
-(<https://gis.stackexchange.com/questions/44958/gdal-importerror-in-python-on-windows>).
-This requires Visual C++ to be installed so install build tools from microsoft
-and make sure C++ build tools is checked. It can be downloaded
-[here](https://www.scivision.dev/python-windows-visual-c-14-required/). After
-gdal is installed, fiona can be installed using pip command.
-
-```shell
-pip install fiona
-```
-
-There can be a number of issues while installing fiona because of gdal or  other
-issues, a short troubleshooting list is below:
-
-1. If there is an error on importing gdal or fiona saying
-
-> Can't load requested DLL: C:\ProgramFiles\GDAL\gdalplugins\ogr_MSSQLSpatial.dll
-126: The specified module could not be found.
-
-Then delete the file C:\ProgramFiles\GDAL\gdalplugins\ogr_MSSQLSpatial.dll.
-
-2. If there is another error about proj.db
-
-> ERROR 1: PROJ: proj_create_from_database: Cannot find proj.db
-PROJ: proj_create_from_database: Cannot find proj.db
-
-Then make sure the projlib folder inside gdal folder is in environment variables
-with the variable name PROJ_LIB
-
-3. If gdal.h is not found, install fiona directly from a whl file instead which
-   can be downloaded from
-   [https://www.lfd.uci.edu/~gohlke/pythonlibs/#fiona](https://www.lfd.uci.edu/~gohlke/pythonlibs/#fiona)
-   .
-
-```shell
-pip install <filename>.whl
-```
-
-4. Also, install numpy. No idea why not having it doesn’t tell you- you need it or simply installs it like every other library.
-   If there are still problems then you should probably go and pray to god and
-   ask why you chose this career.
-
 ### Clone the repo Install requirements
 
 Now clone this repository into the system. Activate the virtual environment and
@@ -96,9 +50,7 @@ Some resources on how-to:
 ### Required packages
 
 ```shell
-sudo add-apt-repository -y ppa:ubuntugis/ppa
-sudo apt update
-sudo apt install python3 python3-venv gdal-bin python3-gdal
+sudo apt install python3 python3-venv
 ```
 
 ### Clone the repo and initialize virtual env
@@ -160,15 +112,16 @@ FIELDS = {
 ```
 
 3. subscribe/config.py
-   This file contains the configurations for all the email client to be used as
-   well as the CEO related configurations.
+
+This file contains the configurations for all the email client to be used as
+well as the CEO related configurations.
 
 ```text
 EMAIL_HOST_USER = '<your email address>'
 EMAIL_HOST_PASSWORD = '<your password>'
 APP_URL = '<your app URL>'
 
-CEO_GATEWAY_URL = '<CEO gateway app URL>'
+CEO_GATEWAY_URL = 'http://127.0.0.1:3000/'
 CEO_CREATE = "create-project/"
 CEO_INFO = "get-project-stats/"
 CEO_DELETE = "delete-project/"
@@ -228,17 +181,29 @@ npm run start
 
 ## Starting and running the django server
 
-1. Navigate to the project directory, and enter the virtual environment.
+### Enter virtual environment
+
+Navigate to the project directory, and enter the virtual environment.
 
 ```shell
 cd gold-mine-watch
 source venv/bin/activate
 ```
 
-2. Run `python manage.py collectstatic` to collect the static files. Type yes to
+### Initialize Django
+
+These steps only need to be done once after the server is set up.
+
+1. Run `python manage.py migrate` to create the sqlite DB
+2. Run `python manage.py createsuperuser` to create the initial super user.
+
+### Run Django
+
+1. Run `python manage.py collectstatic` to collect the static files. Type yes to
    replace the existing files on prompt.
-3. Run `python manage.py migrate` to create the sqlite DB
-4. Run `python manage.py runserver [port, default 8000]` to start the server
+2. Run `python manage.py runserver [ip, default 127.0.0.1]:[port, default 8000]`
+   to start the server. To have access to the server outside the local
+   environment start with the ip 0.0.0.0.
 
 ### Setting up cronjobs/scheduled tasks
 

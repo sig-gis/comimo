@@ -12,7 +12,6 @@ django-common-helpers==0.9.2
 django-cors-headers==3.7.0
 django-cron==0.5.1
 earthengine-api==0.1.256
-Fiona==1.8.18
 future==0.18.2
 google-api-core==1.26.1
 google-api-python-client==1.12.1
