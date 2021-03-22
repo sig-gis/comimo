@@ -3,7 +3,7 @@ import logging, traceback
 from datetime import datetime
 
 from subscribe.models import SubscribeModel, ProjectsModel, ExtractedData
-from subscribe.ceohelper import getProjectInfo, deleteProject, deleteDevProject, getCollectedData, getCeoProjectURL
+from subscribe.ceohelper import getProjectInfo, deleteProject, getCollectedData, getCeoProjectURL
 from subscribe.mailhelper import sendmail
 from accounts.models import Profile
 
@@ -114,17 +114,14 @@ def createProject(user, data_date, name, regions):
     else:
         return {'action':'Error', 'message':'Project for those regions already exists for the day! It\'s name is "'+ename+'". Close that one to create another.'}
 
-def delProject(user, pid, ceproj):
+def delProject(user, pid):
     try:
-        if(ceproj):
-            result = deleteProject(pid)
-        else:
-            result = deleteDevProject(pid)
+        result = deleteProject(pid)
         print(result)
         if (result == 'OK'):
             return 'Archived'
         else:
-            return 'Error-'+result
+            return 'Error-' + result
     except Exception as e:
         print(e)
         return 'Error'
@@ -163,13 +160,12 @@ def archiveProject(user, pid, pdate):
     try:
         user = Profile.objects.get(user=user)
         project = ProjectsModel.objects.get(user=user,projid=pid,status='active')
-        print(project.projurl.split("/")[2] == 'collect.earth')
         p=project.projurl
         collectedSamples =  getCollectedData(pid)
         collectedSamples =  collectedSamples[1:]
         for sample in collectedSamples:
             insertCollectedData(sample, user, pdate)
-        status = delProject(user, pid, project.projurl.split("/")[2] == 'collect.earth')
+        status = delProject(user, pid)
         if (status == 'Archived'):
             project.status='archived'
             project.save()
