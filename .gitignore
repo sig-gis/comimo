@@ -6,6 +6,7 @@ venv
 venv/*
 ceo-gateway
 ceodev-gateway
+logs
 
 __pycache__
 __pycache__/*
