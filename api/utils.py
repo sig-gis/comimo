@@ -93,9 +93,6 @@ def getPointsWithin(regions,date):
         return points.filterBounds(fc)
     except Exception as e:
         print(e)
-    # points = ee.FeatureCollection(POINTS_FOL+'/'+date.strftime("%Y-%m-%d"))
-    # print(points.first().getInfo())
-
 
 # helper functions
 def explode(coords):

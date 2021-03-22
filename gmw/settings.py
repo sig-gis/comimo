@@ -40,7 +40,7 @@ INSTALLED_APPS = [
     'accounts.apps.AccountsConfig',
     'api.apps.ApiConfig',
     'subscribe.apps.SubscribeConfig',
-    'django_cron'
+    'django_crontab'
 ]
 
 MIDDLEWARE = [
@@ -144,6 +144,10 @@ CRON_CLASSES = [
     'subscribe.cron.GoldAlerts',
     # 'subscribe.cron.CleanStaleProjects'
     # 'subscribe.cron.CleanCorruptProjects'
+]
+
+CRONJOBS = [
+    ('* * * * *', 'subscribe.cron.GoldAlerts')
 ]
 
 #EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"

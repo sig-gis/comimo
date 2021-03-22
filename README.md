@@ -196,6 +196,7 @@ These steps only need to be done once after the server is set up.
 
 1. Run `python manage.py migrate` to create the sqlite DB
 2. Run `python manage.py createsuperuser` to create the initial super user.
+3. Run `python manage.py crontab add` to register cron events.
 
 ### Run Django
 
