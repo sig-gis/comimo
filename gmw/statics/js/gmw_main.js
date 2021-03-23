@@ -335,11 +335,11 @@ class OuterShell extends React.Component{
             } else{
               innerHTML = `<b>${lt},${ln}</b><br/>`;
               if (this.isLayerVisible("ee-Layer")) {
-                let cl = resp.value[0]?'Detected':"Not Detected";
+                let cl = resp.value[0] ? 'Detected' : "Not Detected";
                 innerHTML += `<b>Mining Activity</b>: ${cl}<br/>`;
               }
               if (this.isLayerVisible("municipal_bounds")) {
-                let loc = resp.value[1]?[resp.value[1],resp.value[2]].join(', '):'Outside Region of Interest';
+                let loc = resp.value[1] ? [resp.value[1],resp.value[2]].join(', ') : 'Outside Region of Interest';
                 innerHTML += `<b>Located In</b>:${loc}<br/>`;
               }
               if (this.isLayerVisible("protected_areas") && resp.value[3]){

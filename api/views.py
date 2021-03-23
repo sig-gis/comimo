@@ -251,19 +251,25 @@ def getInfo(request):
         admnames = ee.FeatureCollection("users/comimoapp/Shapes/Municipal_Bounds").filterBounds(point)
         admnames = ee.Algorithms.If(admnames.size().gt(0),[admnames.first().get('MPIO_CNMBR'),
                                                         admnames.first().get('DPTO_CNMBR')],[False,False])
+
         pa = ee.FeatureCollection("users/comimoapp/Shapes/RUNAP").filterBounds(point)
         pa = ee.Algorithms.If(pa.size().gt(0),[pa.first().get('categoria'),
                                                pa.first().get('nombre')],[False,False])
+
         npark = ee.FeatureCollection("users/comimoapp/Shapes/National_Parks").filterBounds(point)
         npark = ee.Algorithms.If(npark.size().gt(0),[npark.first().get('Name')],[False])
+
         oth_auth = ee.FeatureCollection("users/comimoapp/Shapes/Solicitudes_de_Legalizacion_2001")\
                   .merge(ee.FeatureCollection("users/comimoapp/Shapes/Solicitudes_de_Legalizacion_2010"))\
                   .filterBounds(point)
         oth_auth = ee.Algorithms.If(oth_auth.size().gt(0),[oth_auth.first().get('Name')],[False])
+
         legal_mine = ee.FeatureCollection("users/comimoapp/Shapes/Legal_Mines").filterBounds(point)
         legal_mine = ee.Algorithms.If(legal_mine.size().gt(0),[legal_mine.first().get('CODIGO_RMN')],[False])
+
         et1 = ee.FeatureCollection("users/comimoapp/Shapes/Tierras_de_comunidades_negras").filterBounds(point)
         et1 = ee.Algorithms.If(et1.size().gt(0),[et1.first().get('Name')],[False])
+
         vals = ee.List([classval]).cat(admnames).cat(pa).cat(npark).cat(oth_auth).cat(legal_mine).cat(et1).getInfo()
         return JsonResponse({'action':'Success','value':vals})
     except Exception as e:
