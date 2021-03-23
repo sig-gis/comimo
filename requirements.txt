@@ -10,7 +10,7 @@ cligj==0.7.1
 Django==3.1.7
 django-common-helpers==0.9.2
 django-cors-headers==3.7.0
-django-cron==0.5.1
+django-crontab==0.7.1
 earthengine-api==0.1.256
 future==0.18.2
 google-api-core==1.26.1

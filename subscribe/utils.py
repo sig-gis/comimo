@@ -2,7 +2,7 @@ from django.core.exceptions import ObjectDoesNotExist
 import logging, traceback
 from datetime import datetime
 
-from subscribe.models import SubscribeModel, ProjectsModel, ExtractedData
+from subscribe.models import SubscribeModel, ProjectsModel, ExtractedData, CronJobs
 from subscribe.ceohelper import getProjectInfo, deleteProject, getCollectedData, getCeoProjectURL
 from subscribe.mailhelper import sendmail
 from accounts.models import Profile
@@ -176,3 +176,16 @@ def archiveProject(user, pid, pdate):
     except Exception as e:
         print(e)
         return {'action':'Error', 'message':'Something went wrong!'}
+
+def saveCron(jobType, message):
+    try:
+        cron_jobs_instance = CronJobs()
+        cron_jobs_instance.job_date = datetime.now()
+        cron_jobs_instance.job_type = jobType
+        cron_jobs_instance.finish_message = message
+        cron_jobs_instance.save()
+        return 'Created'
+    except Exception as e:
+        print(e)
+        logging.getLogger("error").error(traceback.format_exc())
+        return 'Error'
