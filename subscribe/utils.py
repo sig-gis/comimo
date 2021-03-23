@@ -1,10 +1,9 @@
 from django.core.exceptions import ObjectDoesNotExist
-import logging, traceback
+import logging, traceback, pytz
 from datetime import datetime
 
 from subscribe.models import SubscribeModel, ProjectsModel, ExtractedData, CronJobs
 from subscribe.ceohelper import getProjectInfo, deleteProject, getCollectedData, getCeoProjectURL
-from subscribe.mailhelper import sendmail
 from accounts.models import Profile
 
 from api import utils as apiutils
@@ -83,8 +82,8 @@ def getSubscribedRegions(user):
         print(e)
         return 'Error'
 
-def createProject(user, data_date, name, regions):
-    user = Profile.objects.get(user=user)
+def createProject(userId, data_date, name, regions):
+    user = Profile.objects.get(user=userId)
     exists, ename = projectExists(user, data_date, regions)
     if (not exists):
         apiutils.authGEE()
@@ -180,7 +179,7 @@ def archiveProject(user, pid, pdate):
 def saveCron(jobType, message):
     try:
         cron_jobs_instance = CronJobs()
-        cron_jobs_instance.job_date = datetime.now()
+        cron_jobs_instance.job_date = datetime.now().replace(tzinfo=pytz.UTC)
         cron_jobs_instance.job_type = jobType
         cron_jobs_instance.finish_message = message
         cron_jobs_instance.save()

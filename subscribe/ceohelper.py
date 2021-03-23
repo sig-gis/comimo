@@ -12,13 +12,9 @@ def getCeoProjectURL(points, latest_date, email, name):
             "plotSize": PLOT_SIZE,
             # "baseMapSource": PROJ_DEFAULT_BM
         }
-        print(reqobj)
-        print(json.dumps(reqobj))
         headers = {'Content-type': 'application/json', 'Accept': 'text/plain'}
         resp = requests.post(CEO_GATEWAY_URL+CEO_CREATE, data=json.dumps(reqobj), headers=headers)
-        print("resp",resp)
         proj = resp.text
-        print("proj",proj)
         return json.loads(proj)
     except Exception as e:
         print(e)

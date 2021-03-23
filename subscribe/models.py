@@ -17,7 +17,7 @@ class SubscribeModel(models.Model):
         db_table = "gmw_subscribe"
 
     def __str__(self):
-        return self.user.user.username+' : '+self.region
+        return str(self.user.user.id)+ ' ' +self.user.user.username+' : '+self.region
 
 
 class ProjectsModel(models.Model):

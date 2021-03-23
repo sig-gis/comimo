@@ -17,7 +17,7 @@ class Profile(models.Model):
     bio = models.TextField(blank=True)
 
     def __str__(self):
-        return self.user.username
+        return str(self.user_id) + ' ' + self.user.username
 
 @receiver(post_save, sender=User)
 def update_profile_signal(sender, instance, created, **kwargs):
