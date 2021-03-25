@@ -92,10 +92,7 @@ def createProject(userId, data_date, name, regions):
         points = apiutils.getPointsWithin(regions,data_date)
         number = points.size().getInfo()
         if (number > 0):
-            if(number > 1840): # 1848 seems to be the max number that the gateway is able to handle correctly
-                points = points.randomColumn().sort('random').limit(1840).getInfo()
-            else:
-                points = points.getInfo()
+            points = points.getInfo()
             proj = getCeoProjectURL(points,data_date,user.email,name)
             if proj is not None:
                 projid = proj['projectId']

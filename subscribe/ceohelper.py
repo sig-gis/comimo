@@ -13,7 +13,7 @@ def getCeoProjectURL(points, latest_date, email, name):
             "imageryId": PROJ_IMAGERY
         }
         headers = {'Content-type': 'application/json', 'Accept': 'text/plain'}
-        resp = requests.post(CEO_GATEWAY_URL+CEO_CREATE, data=json.dumps(reqobj), headers=headers)
+        resp = requests.post(CEO_GATEWAY_URL+CEO_CREATE, data=json.dumps(reqobj), headers=headers, timeout=300)
         proj = resp.text
         return json.loads(proj)
     except Exception as e:
