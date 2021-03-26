@@ -325,10 +325,8 @@ class OuterShell extends React.Component{
         fetch(url)
           .then(resp => resp.json())
           .then((resp) => {
-            let layerids = this.map.getStyle().layers.map((e) => e.id);
-            console.log(layerids)
-            let ln = Math.ceil(lng*10000)/10000;
-            let lt = Math.ceil(lat*10000)/10000;
+            let ln = Math.ceil(lng * 10000) / 10000;
+            let lt = Math.ceil(lat * 10000) / 10000;
             let innerHTML = '';
             if (resp.action == 'Error'){
               innerHTML = `<b>${lt},${ln}</b>:<br/> ${resp.message}`;
