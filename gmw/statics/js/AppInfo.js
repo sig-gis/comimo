@@ -3,39 +3,46 @@ class AppInfo extends React.Component{
     super(props);
   }
 
-  triggerFunction(e, handler){
-    if(e.target == e.currentTarget){
-      handler();
-    }
-  }
-
   render(){
-    if (USER_ADM){
-      var adm_links = <span>
-        <a href='/download'>Download Validated data </a> |
-      </span>
-    }
-    if (USER_STATE){
-      var user_section = <div className="user-section" style={{float:'right'}}>
-        {adm_links}
-        <span>
-          <a href='/accounts/logout'>Log out</a>
-        </span>
+    return (
+      <div
+        className={["info-modal ", this.props.ishidden ? "see-through" : ""].join(" ")}
+        onClick={this.props.onOuterClick}
+      >
+        <div className="inner-container" onClick={e => e.stopPropagation()}>
+          <div className="user-section" style={{float: "right"}}>
+            {USER_ADM &&
+              <a
+                style={{marginRight: "1rem"}}
+                href="/download">Download Validated data
+              </a>
+            }
+            <a href="/accounts/logout">Log out</a>
+          </div>
+          <h3 className="heading3"> APP INFO </h3>
+          <label style={{margin: "1rem 0"}}>Condiciones De Uso</label>
+          <p>Bienvenidos a la Plataforma Colombian Mining Monitoring (COMIMO). Todos los servicios disponibles a través de nuestro sitio web son operados por la Universidad del Rosario, y ésta es su única propietaria. Al acceder a COMIMO y usar sus servicios, acepta cumplir con nuestros Términos de Uso y evitar cualquier utilización indebida de la plataforma y su contenido.</p>
+          <a
+            href="https://docs.google.com/document/d/1xrLgL_Ai8lR8E4ZsF0AnzjlZESMVwKuUjOgSBJE3bqo"
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{margin: ".5rem 0"}}
+          >
+            Hacer clic aquí del condiciones de uso
+          </a>
+          <br/>
+          <label style={{margin: "1rem 0"}}>Terms of Use</label>
+          <p>Welcome to Colombian Mining Monitoring. All services available through our website are owned and operated by Universidad del Rosario. By accessing and using the Colombian Mining Monitoring platform, you agree to comply with our Terms of Service and avoid any misuse of its contents.</p>
+          <a
+            href="https://docs.google.com/document/d/1kJrlXUlyDRVeVEb1WcPOWBNnzJ1s-9spLTHCxnk8o5E"
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{margin: ".5rem 0"}}
+          >
+            Click here for the terms of use
+          </a>
+        </div>
       </div>
-    }
-
-    return <div className={['info-modal ',this.props.ishidden?'see-through':''].join(' ')} onClick={(e)=>{this.triggerFunction(e,this.props.onOuterClick)}}>
-      <div className='inner-container'>
-        {user_section}
-        <h3 className='heading3'> APP INFO </h3>
-        {/*<p>Here goes information about the applicaiton</p>*/}
-        <iframe
-          width="100%"
-          height="90%"
-          src="https://docs.google.com/document/d/e/2PACX-1vRUnM5cb_rZpx5TTnMYUK66IaKkdcm6J2PhSiorxyTGSGU7z7eaAEc76JTjFNO6uYWCGV_t5xmPXFUO/pub?embedded=true"></iframe>
-        {/*<br/><b> DISCLAIMER </b>
-        <p> Here goes disclaimer </p>*/}
-      </div>
-    </div>
+    )
   }
 }
