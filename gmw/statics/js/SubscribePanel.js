@@ -5,7 +5,7 @@ class SubscribePanel extends React.Component{
     ADDSUBS: 'subscribe/addsubs'
   }
   state = {
-    subsloaded:false
+    subsLoaded:false
   }
 
   getSubs(){
@@ -13,7 +13,7 @@ class SubscribePanel extends React.Component{
     .then((res)=>{
       if (res.action == 'Success'){
         this.setState({
-          subsloaded:true
+          subsLoaded:true
         });
         this.props.updateSubList(res.regions.sort());
       }
@@ -97,7 +97,7 @@ class SubscribePanel extends React.Component{
     var list = <div></div>
     if (this.props.list.length == 0){
       list = <div className="subs-header"><p>
-      {this.state.subsloaded?"You don't seem to be subscribed to alerts from any region!":"Loading the regions that you are subscribed to" }
+      {this.state.subsLoaded ? "You don't seem to be subscribed to alerts from any region!":"Loading the regions that you are subscribed to" }
       </p></div>
     }
     else{
@@ -117,22 +117,21 @@ class SubscribePanel extends React.Component{
         </button>
       </div>
     }
-    var content = <div>
-      {list}
-      {/*// <div style={{'textAlign':'center','width':'100%'}}>
-      //   <button type="button" className="btn btn-warning map-upd-btn" onClick={()=>{location.href = './subscribe'}}>Manage Subscriptions</button>
-      // </div>*/}
-      {subtocurrent}
-    </div>
-    if (!USER_STATE){
-      content = <div style={{'textAlign':'center','width':'100%'}}>
-        <p> Login to view your subscriptions </p>
-        <button type="button" className="btn btn-warning map-upd-btn" onClick={()=>{location.href = 'accounts/login'}}>Login</button>
-      </div>
-    }
+
     return <div className={['popup-container subs-panel ',this.props.ishidden?'see-through':''].join(' ')}>
       <h1><b> YOUR SUBSCRIPTIONS </b></h1>
-      {content}
+      {USER_STATE
+      ?
+        <div>
+          {list}
+          {subtocurrent}
+        </div>
+      :
+        <div style={{'textAlign':'center','width':'100%'}}>
+          <p> Login to view your subscriptions </p>
+          <button type="button" className="btn btn-warning map-upd-btn" onClick={()=>{location.href = 'accounts/login'}}>Login</button>
+        </div>
+      }
     </div>
   }
 }

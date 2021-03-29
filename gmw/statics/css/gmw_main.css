@@ -233,7 +233,8 @@ select[multiple] optgroup option:checked::before{
 
 .subs-panel{
   top:50px;
-  max-height:500px
+  max-height:500px;
+  overflow-y:auto
 }
 .validate-panel{
   top:100px;
