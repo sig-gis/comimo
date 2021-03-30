@@ -1,482 +1,568 @@
 var t;
-window.mobileAndTabletCheck = function() {
-  let check = false;
-  (function(a){if(/(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od)|iris|kindle|lge |maemo|midp|mmp|mobile.+firefox|netfront|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\/|plucker|pocket|psp|series(4|6)0|symbian|treo|up\.(browser|link)|vodafone|wap|windows ce|xda|xiino|android|ipad|playbook|silk/i.test(a)||/1207|6310|6590|3gso|4thp|50[1-6]i|770s|802s|a wa|abac|ac(er|oo|s\-)|ai(ko|rn)|al(av|ca|co)|amoi|an(ex|ny|yw)|aptu|ar(ch|go)|as(te|us)|attw|au(di|\-m|r |s )|avan|be(ck|ll|nq)|bi(lb|rd)|bl(ac|az)|br(e|v)w|bumb|bw\-(n|u)|c55\/|capi|ccwa|cdm\-|cell|chtm|cldc|cmd\-|co(mp|nd)|craw|da(it|ll|ng)|dbte|dc\-s|devi|dica|dmob|do(c|p)o|ds(12|\-d)|el(49|ai)|em(l2|ul)|er(ic|k0)|esl8|ez([4-7]0|os|wa|ze)|fetc|fly(\-|_)|g1 u|g560|gene|gf\-5|g\-mo|go(\.w|od)|gr(ad|un)|haie|hcit|hd\-(m|p|t)|hei\-|hi(pt|ta)|hp( i|ip)|hs\-c|ht(c(\-| |_|a|g|p|s|t)|tp)|hu(aw|tc)|i\-(20|go|ma)|i230|iac( |\-|\/)|ibro|idea|ig01|ikom|im1k|inno|ipaq|iris|ja(t|v)a|jbro|jemu|jigs|kddi|keji|kgt( |\/)|klon|kpt |kwc\-|kyo(c|k)|le(no|xi)|lg( g|\/(k|l|u)|50|54|\-[a-w])|libw|lynx|m1\-w|m3ga|m50\/|ma(te|ui|xo)|mc(01|21|ca)|m\-cr|me(rc|ri)|mi(o8|oa|ts)|mmef|mo(01|02|bi|de|do|t(\-| |o|v)|zz)|mt(50|p1|v )|mwbp|mywa|n10[0-2]|n20[2-3]|n30(0|2)|n50(0|2|5)|n7(0(0|1)|10)|ne((c|m)\-|on|tf|wf|wg|wt)|nok(6|i)|nzph|o2im|op(ti|wv)|oran|owg1|p800|pan(a|d|t)|pdxg|pg(13|\-([1-8]|c))|phil|pire|pl(ay|uc)|pn\-2|po(ck|rt|se)|prox|psio|pt\-g|qa\-a|qc(07|12|21|32|60|\-[2-7]|i\-)|qtek|r380|r600|raks|rim9|ro(ve|zo)|s55\/|sa(ge|ma|mm|ms|ny|va)|sc(01|h\-|oo|p\-)|sdk\/|se(c(\-|0|1)|47|mc|nd|ri)|sgh\-|shar|sie(\-|m)|sk\-0|sl(45|id)|sm(al|ar|b3|it|t5)|so(ft|ny)|sp(01|h\-|v\-|v )|sy(01|mb)|t2(18|50)|t6(00|10|18)|ta(gt|lk)|tcl\-|tdg\-|tel(i|m)|tim\-|t\-mo|to(pl|sh)|ts(70|m\-|m3|m5)|tx\-9|up(\.b|g1|si)|utst|v400|v750|veri|vi(rg|te)|vk(40|5[0-3]|\-v)|vm40|voda|vulc|vx(52|53|60|61|70|80|81|83|85|98)|w3c(\-| )|webc|whit|wi(g |nc|nw)|wmlb|wonu|x700|yas\-|your|zeto|zte\-/i.test(a.substr(0,4))) check = true;})(navigator.userAgent||navigator.vendor||window.opera);
-  return check;
+window.mobileAndTabletCheck = function () {
+    let check = false;
+    (function (a) {
+        if (
+            /(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od)|iris|kindle|lge |maemo|midp|mmp|mobile.+firefox|netfront|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\/|plucker|pocket|psp|series(4|6)0|symbian|treo|up\.(browser|link)|vodafone|wap|windows ce|xda|xiino|android|ipad|playbook|silk/i.test(
+                a
+            ) ||
+            /1207|6310|6590|3gso|4thp|50[1-6]i|770s|802s|a wa|abac|ac(er|oo|s\-)|ai(ko|rn)|al(av|ca|co)|amoi|an(ex|ny|yw)|aptu|ar(ch|go)|as(te|us)|attw|au(di|\-m|r |s )|avan|be(ck|ll|nq)|bi(lb|rd)|bl(ac|az)|br(e|v)w|bumb|bw\-(n|u)|c55\/|capi|ccwa|cdm\-|cell|chtm|cldc|cmd\-|co(mp|nd)|craw|da(it|ll|ng)|dbte|dc\-s|devi|dica|dmob|do(c|p)o|ds(12|\-d)|el(49|ai)|em(l2|ul)|er(ic|k0)|esl8|ez([4-7]0|os|wa|ze)|fetc|fly(\-|_)|g1 u|g560|gene|gf\-5|g\-mo|go(\.w|od)|gr(ad|un)|haie|hcit|hd\-(m|p|t)|hei\-|hi(pt|ta)|hp( i|ip)|hs\-c|ht(c(\-| |_|a|g|p|s|t)|tp)|hu(aw|tc)|i\-(20|go|ma)|i230|iac( |\-|\/)|ibro|idea|ig01|ikom|im1k|inno|ipaq|iris|ja(t|v)a|jbro|jemu|jigs|kddi|keji|kgt( |\/)|klon|kpt |kwc\-|kyo(c|k)|le(no|xi)|lg( g|\/(k|l|u)|50|54|\-[a-w])|libw|lynx|m1\-w|m3ga|m50\/|ma(te|ui|xo)|mc(01|21|ca)|m\-cr|me(rc|ri)|mi(o8|oa|ts)|mmef|mo(01|02|bi|de|do|t(\-| |o|v)|zz)|mt(50|p1|v )|mwbp|mywa|n10[0-2]|n20[2-3]|n30(0|2)|n50(0|2|5)|n7(0(0|1)|10)|ne((c|m)\-|on|tf|wf|wg|wt)|nok(6|i)|nzph|o2im|op(ti|wv)|oran|owg1|p800|pan(a|d|t)|pdxg|pg(13|\-([1-8]|c))|phil|pire|pl(ay|uc)|pn\-2|po(ck|rt|se)|prox|psio|pt\-g|qa\-a|qc(07|12|21|32|60|\-[2-7]|i\-)|qtek|r380|r600|raks|rim9|ro(ve|zo)|s55\/|sa(ge|ma|mm|ms|ny|va)|sc(01|h\-|oo|p\-)|sdk\/|se(c(\-|0|1)|47|mc|nd|ri)|sgh\-|shar|sie(\-|m)|sk\-0|sl(45|id)|sm(al|ar|b3|it|t5)|so(ft|ny)|sp(01|h\-|v\-|v )|sy(01|mb)|t2(18|50)|t6(00|10|18)|ta(gt|lk)|tcl\-|tdg\-|tel(i|m)|tim\-|t\-mo|to(pl|sh)|ts(70|m\-|m3|m5)|tx\-9|up(\.b|g1|si)|utst|v400|v750|veri|vi(rg|te)|vk(40|5[0-3]|\-v)|vm40|voda|vulc|vx(52|53|60|61|70|80|81|83|85|98)|w3c(\-| )|webc|whit|wi(g |nc|nw)|wmlb|wonu|x700|yas\-|your|zeto|zte\-/i.test(
+                a.substr(0, 4)
+            )
+        )
+            check = true;
+    })(navigator.userAgent || navigator.vendor || window.opera);
+    return check;
 };
 
-class OuterShell extends React.Component{
-  // set up class flags so each component update doesn't do redundant JS tasks
-  flags = {
-    updatelayers : true,
-    layeradded : false,
-    isMobile : mobileAndTabletCheck()
-  }
-  // API URLS
-  URLS = {
-    FEATURE_NAMES: 'api/getfeaturenames',
-    IMG_DATES:'/api/getimagenames',
-    SINGLE_IMAGE: '/api/getsingleimage',
-    COMPOSITE_IMAGE: '/api/getcompositeimage',
-    LEGAL_MINES: 'api/getlegalmines',
-    GEE_LAYER: 'api/getgeetiles',
-    MUNS: 'api/getmunicipallayer',
-    INFO: 'api/getinfo'
-  }
-  // overall app parameters
-  appparams = {
-    minprobability:props.minprobability,
-    maxprobability:props.maxprobability,
-    minyear:props.minyear,
-    maxyear:props.maxyear
-  }
-  // initial component states
-  appstates = {
-    slidershidden:true,
-    statshidden:true,
-    downloadhidden:true,
-    subscribehidden:true,
-    validatehidden:true,
-    searchhidden:true,
-    appinfohidden:true
-  }
-  compositeparams = {}
-  persistentstates = {
-    advancedoptions:false,
-    showcomposite:false,
-    imageDates:[],
-    selectedDate:false,
-    regionSelected:false,
-    featureNames:{},
-    sublist:[]
-  }
-  // combining everything to app state
-  state = {...this.appparams, ...this.appstates, ...this.persistentstates}
-  // reload limit for layers that could not be loaded
-  reloadCount = 0
+class OuterShell extends React.Component {
+    // set up class flags so each component update doesn't do redundant JS tasks
+    flags = {
+        updatelayers: true,
+        layeradded: false,
+        isMobile: mobileAndTabletCheck(),
+    };
+    // API URLS
+    URLS = {
+        FEATURE_NAMES: "api/getfeaturenames",
+        IMG_DATES: "/api/getimagenames",
+        SINGLE_IMAGE: "/api/getsingleimage",
+        COMPOSITE_IMAGE: "/api/getcompositeimage",
+        LEGAL_MINES: "api/getlegalmines",
+        GEE_LAYER: "api/getgeetiles",
+        MUNS: "api/getmunicipallayer",
+        INFO: "api/getinfo",
+    };
+    // overall app parameters
+    appparams = {
+        minprobability: props.minprobability,
+        maxprobability: props.maxprobability,
+        minyear: props.minyear,
+        maxyear: props.maxyear,
+    };
+    // initial component states
+    appstates = {
+        slidershidden: true,
+        statshidden: true,
+        downloadhidden: true,
+        subscribehidden: true,
+        validatehidden: true,
+        searchhidden: true,
+        appinfohidden: true,
+    };
+    compositeparams = {};
+    persistentstates = {
+        advancedoptions: false,
+        showcomposite: false,
+        imageDates: [],
+        selectedDate: false,
+        regionSelected: false,
+        featureNames: {},
+        sublist: [],
+    };
+    // combining everything to app state
+    state = {...this.appparams, ...this.appstates, ...this.persistentstates};
+    // reload limit for layers that could not be loaded
+    reloadCount = 0;
 
-  constructor(props){
-    super(props)
-  }
-
-  isLayerVisible(layer){
-    return this.map.getLayer(layer).visibility == "visible";
-  }
-
-  // function to toggle between visible panels
-  togglePanel(e, panelkey){
-    document.activeElement.blur();
-    var newstate = {[panelkey]:!this.state[panelkey]};
-    this.setState({...this.appstates,...newstate});
-  }
-
-  imagetypechanged(){
-    this.setState({showcomposite:!this.state.showcomposite})
-  }
-
-  // function to call when slider values are changed
-  slidersadjusted(){
-    if (this.state.showcomposite){
-      var probvals = this.probSlider.getValue().split(',').map((val)=>parseInt(val));
-      var yearvals = this.yearSlider.getValue().split(',');
-      this.compositeparams = {
-        minprobability:probvals[0],
-        maxprobability:probvals[1],
-        minyear:yearvals[0],
-        maxyear:yearvals[1]
-      }
-      var tileURL = this.URLS.COMPOSITE_IMAGE+'?minp='+this.compositeparams.minprobability+
-                      '&maxp='+this.compositeparams.maxprobability+
-                      '&miny='+this.compositeparams.minyear+
-                      '&maxy='+this.compositeparams.maxyear
-      this.setState({
-        selectedDate:false
-      });
-    }else{
-      var iid =document.getElementById('selectimagedate').value
-      var tileURL = this.URLS.SINGLE_IMAGE+'?id='+iid
-      this.setState({
-        selectedDate:iid
-      });
+    constructor(props) {
+        super(props);
     }
-    this.refreshlayers(tileURL);
-  }
 
-  getImageDates(){
-    var tileURL = this.URLS.IMG_DATES;
-    fetch(tileURL)
-      .then(res => res.json())
-      .then(
-        (result) => {
-          result.ids.sort();
-          this.yearSlider = new rSlider({
-              target: '#yearSlider',
-              values:result.ids.slice(),
-              step:1,
-              range: true,
-              scale: false,
-              labels:false,
-              set: [this.appparams.minyear, this.appparams.maxyear]
-          });
-          result.ids.reverse()
-          this.setState({
-            imageDates: result.ids,
-            selectedDate: result.ids[0]
-          })
+    isLayerVisible(layer) {
+        return this.map.getLayer(layer).visibility == "visible";
+    }
 
-          var tileURL = this.URLS.SINGLE_IMAGE+'?id='+result.ids[0]
-          this.refreshlayers(tileURL)
-        },
-        (error) => {
-          l(error);
-        }
-      )
-  }
+    // function to toggle between visible panels
+    togglePanel(e, panelkey) {
+        document.activeElement.blur();
+        var newstate = {[panelkey]: !this.state[panelkey]};
+        this.setState({...this.appstates, ...newstate});
+    }
 
-  getFeatureNames(){
-    var url = this.URLS.FEATURE_NAMES;
-    fetch(url)
-      .then(res => res.json())
-      .then(
-        (result) => {
-          if (result.action == "FeatureNames"){
+    imagetypechanged() {
+        this.setState({showcomposite: !this.state.showcomposite});
+    }
+
+    // function to call when slider values are changed
+    slidersadjusted() {
+        if (this.state.showcomposite) {
+            var probvals = this.probSlider
+                .getValue()
+                .split(",")
+                .map(val => parseInt(val));
+            var yearvals = this.yearSlider.getValue().split(",");
+            this.compositeparams = {
+                minprobability: probvals[0],
+                maxprobability: probvals[1],
+                minyear: yearvals[0],
+                maxyear: yearvals[1],
+            };
+            var tileURL =
+                this.URLS.COMPOSITE_IMAGE +
+                "?minp=" +
+                this.compositeparams.minprobability +
+                "&maxp=" +
+                this.compositeparams.maxprobability +
+                "&miny=" +
+                this.compositeparams.minyear +
+                "&maxy=" +
+                this.compositeparams.maxyear;
             this.setState({
-              featureNames:result.features
+                selectedDate: false,
             });
-          }
-        }, (error) => {
-          l(error)
+        } else {
+            var iid = document.getElementById("selectimagedate").value;
+            var tileURL = this.URLS.SINGLE_IMAGE + "?id=" + iid;
+            this.setState({
+                selectedDate: iid,
+            });
         }
-      );
-  }
-
-  updateSubList(list){
-    this.setState({
-      sublist:list
-    })
-  }
-
-  pointmapto(type,arg){
-    if(type == 'point') {
-      try{
-        // this.map.flyTo({center:arg, zoom:11, essential:true});
-        this.map.flyTo({center:arg, essential:true});
-      }catch(err){
-        l('Please enter valid coordinates.')
-      }
+        this.refreshlayers(tileURL);
     }
-    else if(type == 'bbox'){
-      try{
-        this.map.fitBounds(arg);
-      }catch(error){
-        l('Please enter valid bounds.')
-      }
+
+    getImageDates() {
+        var tileURL = this.URLS.IMG_DATES;
+        fetch(tileURL)
+            .then(res => res.json())
+            .then(
+                result => {
+                    result.ids.sort();
+                    this.yearSlider = new rSlider({
+                        target: "#yearSlider",
+                        values: result.ids.slice(),
+                        step: 1,
+                        range: true,
+                        scale: false,
+                        labels: false,
+                        set: [this.appparams.minyear, this.appparams.maxyear],
+                    });
+                    result.ids.reverse();
+                    this.setState({
+                        imageDates: result.ids,
+                        selectedDate: result.ids[0],
+                    });
+
+                    var tileURL = this.URLS.SINGLE_IMAGE + "?id=" + result.ids[0];
+                    this.refreshlayers(tileURL);
+                },
+                error => {
+                    l(error);
+                }
+            );
     }
-  }
 
-  getGEELayers(list){
-    var name = list.shift();
-    fetch(this.URLS.GEE_LAYER+"?name="+name)
-      .then(res => res.json())
-      .then(
-        (result) => {
-          try{
-              this.map.getSource(name).tiles = [result.url];
-            // clear existing tile cache and force map refresh
-            this.map.style.sourceCaches[name].clearTiles()
-            this.map.style.sourceCaches[name].update(this.map.transform)
-            document.getElementsByClassName("vis-"+name)[0].style["border"] = "solid 1px "+result.style.color;
-            document.getElementsByClassName("vis-"+name)[0].style["background"] = result.style.fillColor;
-            this.map.triggerRepaint()
-            if (list.length > 0) this.getGEELayers(list);
-          }catch(err){
-            console.log(err)
-            this.reloadCount++;
-            if (this.reloadCount < 30) list.push(name);
-            if (list.length > 0) this.getGEELayers(list);
-          }
-        },
-        (error) => {
-          l(error);
-          this.reloadCount++;
-          if (this.reloadCount < 30) list.push(name);
-          if (list.length > 0) this.getGEELayers(list);
-        }
-      );
-  }
-
-  addLayerSources(list){
-    var name = list.shift();
-    this.map.addSource(name,{'type': 'raster',
-      'tiles': [],
-      'tileSize': 256,
-      'vis':{'palette':[]}
-    });
-    this.map.addLayer({
-      'id': name,
-      'type': 'raster',
-      'source': name,
-      'minzoom': 0,
-      'maxzoom': 22
-    });
-    if (list.length > 0) this.addLayerSources(list);
-  }
-
-  refreshlayers(tileURL){
-    fetch(tileURL)
-      .then(res => res.json())
-      .then(
-        (result) => {
-          try{
-            this.map.getSource('ee-Layer').tiles = [result.url];
-            // clear existing tile cache and force map refresh
-            this.map.style.sourceCaches['ee-Layer'].clearTiles()
-            this.map.style.sourceCaches['ee-Layer'].update(this.map.transform)
-            document.getElementsByClassName("vis-ee-Layer")[0].style["background"] = '#'+result.visparams.palette[0];
-            this.map.triggerRepaint()
-          }catch(err){
-            console.log(err)
-            setTimeout(this.refreshlayers(tileURL),1000);
-          }
-        },
-        (error) => {
-          l(error);
-          this.refreshlayers(tileURL);
-        }
-      )
-  }
-
-  regionSelected(level,name){
-    this.setState({
-      regionSelected:[level,name]
-    });
-  }
-  // set up parameters after components are mounted
-  componentDidMount(){
-    // render maps
-    this.map = new mapboxgl.Map({
-      container: this.mapContainer,
-      style: 'mapbox://styles/mapbox/'+(this.flags.isMobile?'dark-v10':'satellite-streets-v9'),
-      center: [-73.5609339,4.6371205],
-      zoom: 5
-    });
-
-    this.map.on('load', (e) => {
-      this.map.addControl(new mapboxgl.NavigationControl({showCompass:false}));
-      this.map.addSource("mapbox-streets", {
-        "type": "raster",
-        "url": "mapbox://mapbox.streets",
-        "tileSize": 256
-      });
-      this.map.addLayer({
-        'id': 'mapbox-streets',
-        'type': 'raster',
-        'source': 'mapbox-streets'
-      });
-
-      this.addLayerSources(['ee-Layer','municipal_bounds','other_authorizations',//'national_parks',
-                            'tierras_de_com','resguardos','legal_mines','protected_areas']);
-
-      this.flags.layeradded = true;
-      const overlays = {
-        'ee-Layer': 'Prediction',
-        'municipal_bounds': 'Municipal Boundaries',
-        'legal_mines' : 'Legal mines',
-        // 'national_parks': 'National Parks',
-        'other_authorizations': 'Other Authorizations',
-        'tierras_de_com': 'Ethnic territories I',
-        'resguardos' : 'Ethnic territories II',
-        'protected_areas': 'Protected Areas',
-        'mapbox-streets':'Mapbox Streets'
-      }
-      var opacity = new OpacityControl({
-        // baseLayers:baseLayers,
-        overLayers:overlays,
-        opacityControl:true
-      })
-      this.map.addControl(opacity, 'bottom-right');
-      this.getGEELayers(['municipal_bounds','other_authorizations',//'national_parks',
-                         'tierras_de_com','resguardos','legal_mines','protected_areas']);
-
-      this.map.on('mousemove',(e)=>{
-        // var lat = e.lngLat.lat;
-        // var lng = e.lngLat.lng;
-        var lat = Math.round(e.lngLat.lat*10000)/10000;
-        var lng = Math.round(e.lngLat.lng*10000)/10000;
-        var hud_shell = document.getElementById('lnglathud-shell');
-        var hud = document.getElementById('lnglathud');
-        hud_shell.style.display = 'inherit';
-        hud.innerHTML = [lat,lng].join(', ');
-      })
-      this.map.on('mouseout',(e)=>{
-        var hud_shell = document.getElementById('lnglathud-shell');
-        hud_shell.style.display = 'none';
-      })
-      this.map.on('click',(e)=>{
-        t = this.map
-        let lat = e.lngLat.lat, lng = e.lngLat.lng;
-        let url = this.URLS.INFO+"?lat="+e.lngLat.lat+"&lon="+e.lngLat.lng+"&image="+this.state.selectedDate
-        if (!this.state.selectedDate){
-          url += '&minp='+this.compositeparams.minprobability+
-                 '&maxp='+this.compositeparams.maxprobability+
-                 '&miny='+this.compositeparams.minyear+
-                 '&maxy='+this.compositeparams.maxyear
-        }
+    getFeatureNames() {
+        var url = this.URLS.FEATURE_NAMES;
         fetch(url)
-          .then(resp => resp.json())
-          .then((resp) => {
-            let ln = Math.ceil(lng * 10000) / 10000;
-            let lt = Math.ceil(lat * 10000) / 10000;
-            let innerHTML = '';
-            if (resp.action == 'Error'){
-              innerHTML = `<b>${lt},${ln}</b>:<br/> ${resp.message}`;
-            } else{
-              innerHTML = `<b>${lt},${ln}</b><br/>`;
-              if (this.isLayerVisible("ee-Layer")) {
-                let cl = resp.value[0] ? 'Detected' : "Not Detected";
-                innerHTML += `<b>Mining Activity</b>: ${cl}<br/>`;
-              }
-              if (this.isLayerVisible("municipal_bounds")) {
-                let loc = resp.value[1] ? [resp.value[1],resp.value[2]].join(', ') : 'Outside Region of Interest';
-                innerHTML += `<b>Located In</b>:${loc}<br/>`;
-              }
-              if (this.isLayerVisible("protected_areas") && resp.value[3]){
-                let pa = `Category: ${resp.value[3]} <br/> Name: ${resp.value[4]}`
-                innerHTML += `<b>Protected Area</b><br>${pa}<br/>`
-              }
-              // if(this.isLayerVisible("protected_areas") && resp.value[5]){
-              //   innerHTML += `<b>National Park:</b> ${resp.value[5]} <br/>`
-              // }
-              if (this.isLayerVisible("other_authorizations") && resp.value[6]){
-                innerHTML += `<b>Other Authorizations:</b> ${resp.value[6]} <br/>`
-              }
-              if (this.isLayerVisible("legal_mines") && resp.value[7]){
-                innerHTML += `<b>Legal Mine:</b> ${resp.value[7]} <br/>`
-              }
-              if (this.isLayerVisible("tierras_de_com") && resp.value[8]){
-                innerHTML += `<b>Ethnic Territories I:</b> ${resp.value[8]} <br/>`
-              }
+            .then(res => res.json())
+            .then(
+                result => {
+                    if (result.action == "FeatureNames") {
+                        this.setState({
+                            featureNames: result.features,
+                        });
+                    }
+                },
+                error => {
+                    l(error);
+                }
+            );
+    }
+
+    updateSubList(list) {
+        this.setState({
+            sublist: list,
+        });
+    }
+
+    pointmapto(type, arg) {
+        if (type == "point") {
+            try {
+                // this.map.flyTo({center:arg, zoom:11, essential:true});
+                this.map.flyTo({center: arg, essential: true});
+            } catch (err) {
+                l("Please enter valid coordinates.");
             }
-            var popup = new mapboxgl.Popup({ closeOnClick: false })
+        } else if (type == "bbox") {
+            try {
+                this.map.fitBounds(arg);
+            } catch (error) {
+                l("Please enter valid bounds.");
+            }
+        }
+    }
+
+    getGEELayers(list) {
+        var name = list.shift();
+        fetch(this.URLS.GEE_LAYER + "?name=" + name)
+            .then(res => res.json())
+            .then(
+                result => {
+                    try {
+                        this.map.getSource(name).tiles = [result.url];
+                        // clear existing tile cache and force map refresh
+                        this.map.style.sourceCaches[name].clearTiles();
+                        this.map.style.sourceCaches[name].update(this.map.transform);
+                        document.getElementsByClassName("vis-" + name)[0].style["border"] =
+                            "solid 1px " + result.style.color;
+                        document.getElementsByClassName("vis-" + name)[0].style["background"] =
+                            result.style.fillColor;
+                        this.map.triggerRepaint();
+                        if (list.length > 0) this.getGEELayers(list);
+                    } catch (err) {
+                        console.log(err);
+                        this.reloadCount++;
+                        if (this.reloadCount < 30) list.push(name);
+                        if (list.length > 0) this.getGEELayers(list);
+                    }
+                },
+                error => {
+                    l(error);
+                    this.reloadCount++;
+                    if (this.reloadCount < 30) list.push(name);
+                    if (list.length > 0) this.getGEELayers(list);
+                }
+            );
+    }
+
+    addLayerSources(list) {
+        var name = list.shift();
+        this.map.addSource(name, {type: "raster", tiles: [], tileSize: 256, vis: {palette: []}});
+        this.map.addLayer({
+            id: name,
+            type: "raster",
+            source: name,
+            minzoom: 0,
+            maxzoom: 22,
+        });
+        if (list.length > 0) this.addLayerSources(list);
+    }
+
+    refreshlayers(tileURL) {
+        fetch(tileURL)
+            .then(res => res.json())
+            .then(
+                result => {
+                    try {
+                        this.map.getSource("ee-Layer").tiles = [result.url];
+                        // clear existing tile cache and force map refresh
+                        this.map.style.sourceCaches["ee-Layer"].clearTiles();
+                        this.map.style.sourceCaches["ee-Layer"].update(this.map.transform);
+                        document.getElementsByClassName("vis-ee-Layer")[0].style["background"] =
+                            "#" + result.visparams.palette[0];
+                        this.map.triggerRepaint();
+                    } catch (err) {
+                        console.log(err);
+                        setTimeout(this.refreshlayers(tileURL), 1000);
+                    }
+                },
+                error => {
+                    l(error);
+                    this.refreshlayers(tileURL);
+                }
+            );
+    }
+
+    regionSelected(level, name) {
+        this.setState({
+            regionSelected: [level, name],
+        });
+    }
+    // set up parameters after components are mounted
+    componentDidMount() {
+        // render maps
+        this.map = new mapboxgl.Map({
+            container: this.mapContainer,
+            style:
+                "mapbox://styles/mapbox/" +
+                (this.flags.isMobile ? "dark-v10" : "satellite-streets-v9"),
+            center: [-73.5609339, 4.6371205],
+            zoom: 5,
+        });
+
+        this.map.on("load", e => {
+            this.map.addControl(new mapboxgl.NavigationControl({showCompass: false}));
+            this.map.addSource("mapbox-streets", {
+                type: "raster",
+                url: "mapbox://mapbox.streets",
+                tileSize: 256,
+            });
+            this.map.addLayer({
+                id: "mapbox-streets",
+                type: "raster",
+                source: "mapbox-streets",
+            });
+
+            this.addLayerSources([
+                "ee-Layer",
+                "municipal_bounds",
+                "other_authorizations", //'national_parks',
+                "tierras_de_com",
+                "resguardos",
+                "legal_mines",
+                "protected_areas",
+            ]);
+
+            this.flags.layeradded = true;
+            const overlays = {
+                "ee-Layer": "Prediction",
+                "municipal_bounds": "Municipal Boundaries",
+                "legal_mines": "Legal mines",
+                // 'national_parks': 'National Parks',
+                "other_authorizations": "Other Authorizations",
+                "tierras_de_com": "Ethnic territories I",
+                "resguardos": "Ethnic territories II",
+                "protected_areas": "Protected Areas",
+                "mapbox-streets": "Mapbox Streets",
+            };
+            var opacity = new OpacityControl({
+                // baseLayers:baseLayers,
+                overLayers: overlays,
+                opacityControl: true,
+            });
+            this.map.addControl(opacity, "bottom-right");
+            this.getGEELayers([
+                "municipal_bounds",
+                "other_authorizations", //'national_parks',
+                "tierras_de_com",
+                "resguardos",
+                "legal_mines",
+                "protected_areas",
+            ]);
+
+            this.map.on("mousemove", e => {
+                // var lat = e.lngLat.lat;
+                // var lng = e.lngLat.lng;
+                var lat = Math.round(e.lngLat.lat * 10000) / 10000;
+                var lng = Math.round(e.lngLat.lng * 10000) / 10000;
+                var hud_shell = document.getElementById("lnglathud-shell");
+                var hud = document.getElementById("lnglathud");
+                hud_shell.style.display = "inherit";
+                hud.innerHTML = [lat, lng].join(", ");
+            });
+            this.map.on("mouseout", e => {
+                var hud_shell = document.getElementById("lnglathud-shell");
+                hud_shell.style.display = "none";
+            });
+            this.map.on("click", e => {
+                t = this.map;
+                let lat = e.lngLat.lat,
+                    lng = e.lngLat.lng;
+                let url =
+                    this.URLS.INFO +
+                    "?lat=" +
+                    e.lngLat.lat +
+                    "&lon=" +
+                    e.lngLat.lng +
+                    "&image=" +
+                    this.state.selectedDate;
+                if (!this.state.selectedDate) {
+                    url +=
+                        "&minp=" +
+                        this.compositeparams.minprobability +
+                        "&maxp=" +
+                        this.compositeparams.maxprobability +
+                        "&miny=" +
+                        this.compositeparams.minyear +
+                        "&maxy=" +
+                        this.compositeparams.maxyear;
+                }
+                fetch(url)
+                    .then(resp => resp.json())
+                    .then(resp => {
+                        let ln = Math.ceil(lng * 10000) / 10000;
+                        let lt = Math.ceil(lat * 10000) / 10000;
+                        let innerHTML = "";
+                        if (resp.action == "Error") {
+                            innerHTML = `<b>${lt},${ln}</b>:<br/> ${resp.message}`;
+                        } else {
+                            innerHTML = `<b>${lt},${ln}</b><br/>`;
+                            if (this.isLayerVisible("ee-Layer")) {
+                                let cl = resp.value[0] ? "Detected" : "Not Detected";
+                                innerHTML += `<b>Mining Activity</b>: ${cl}<br/>`;
+                            }
+                            if (this.isLayerVisible("municipal_bounds")) {
+                                let loc = resp.value[1]
+                                    ? [resp.value[1], resp.value[2]].join(", ")
+                                    : "Outside Region of Interest";
+                                innerHTML += `<b>Located In</b>:${loc}<br/>`;
+                            }
+                            if (this.isLayerVisible("protected_areas") && resp.value[3]) {
+                                let pa = `Category: ${resp.value[3]} <br/> Name: ${resp.value[4]}`;
+                                innerHTML += `<b>Protected Area</b><br>${pa}<br/>`;
+                            }
+                            // if(this.isLayerVisible("protected_areas") && resp.value[5]){
+                            //   innerHTML += `<b>National Park:</b> ${resp.value[5]} <br/>`
+                            // }
+                            if (this.isLayerVisible("other_authorizations") && resp.value[6]) {
+                                innerHTML += `<b>Other Authorizations:</b> ${resp.value[6]} <br/>`;
+                            }
+                            if (this.isLayerVisible("legal_mines") && resp.value[7]) {
+                                innerHTML += `<b>Legal Mine:</b> ${resp.value[7]} <br/>`;
+                            }
+                            if (this.isLayerVisible("tierras_de_com") && resp.value[8]) {
+                                innerHTML += `<b>Ethnic Territories I:</b> ${resp.value[8]} <br/>`;
+                            }
+                        }
+                        var popup = new mapboxgl.Popup({closeOnClick: false})
                             .setLngLat([lng, lat])
                             .setHTML(innerHTML)
                             .addTo(this.map);
-          });
-      })
-    });
-    // render sliders
-    this.probSlider = new rSlider({
-        target: '#probabilitySlider',
-        values: {min:0, max:100},
-        step:1,
-        range: true,
-        scale: false,
-        labels:false,
-        set: [this.appparams.minprobability, this.appparams.maxprobability]
-    });
+                    });
+            });
+        });
+        // render sliders
+        this.probSlider = new rSlider({
+            target: "#probabilitySlider",
+            values: {min: 0, max: 100},
+            step: 1,
+            range: true,
+            scale: false,
+            labels: false,
+            set: [this.appparams.minprobability, this.appparams.maxprobability],
+        });
 
-    this.getImageDates();
+        this.getImageDates();
 
-    this.getFeatureNames();
-    // call initial state functions
-  }
+        this.getFeatureNames();
+        // call initial state functions
+    }
 
+    // set up actions to render app
+    render() {
+        var advancedbuttons = "";
+        if (this.state.advancedoptions)
+            advancedbuttons = (
+                <div className="advanced-icons">
+                    <SideIcons
+                        parentclass={this.state.statshidden ? "" : "active-icon"}
+                        glyphicon="glyphicon-stats"
+                        clickhandler={(e => this.togglePanel(e, "statshidden")).bind(this)}
+                        tooltip="Stats"
+                    />
+                    <SideIcons
+                        parentclass={this.state.slidershidden ? "" : "active-icon"}
+                        glyphicon="glyphicon-filter"
+                        clickhandler={(e => this.togglePanel(e, "slidershidden")).bind(this)}
+                        tooltip="Sliders"
+                    />
+                    <SideIcons
+                        parentclass={this.state.downloadhidden ? "" : "active-icon"}
+                        glyphicon="glyphicon-download-alt"
+                        clickhandler={(e => this.togglePanel(e, "downloadhidden")).bind(this)}
+                        tooltip="Download data"
+                    />
+                </div>
+            );
+        return (
+            <div className="shell" {...this.props}>
+                <div className="app-bar">
+                    <div className="sidebar-icon gold-drop app-icon"></div>
+                </div>
+                <div ref={el => (this.mapContainer = el)}></div>
+                <SliderPanel
+                    ishidden={this.state.slidershidden}
+                    slideradjusted={this.slidersadjusted.bind(this)}
+                    oncheckchange={this.imagetypechanged.bind(this)}
+                    showcomposite={this.state.showcomposite}
+                    imageDates={this.state.imageDates}
+                />
+                <StatsPanel
+                    ishidden={this.state.statshidden}
+                    selectedDate={this.state.selectedDate}
+                />
+                <DownloadPanel
+                    ishidden={this.state.downloadhidden}
+                    regionSelected={this.state.regionSelected}
+                    selectedDate={this.state.selectedDate}
+                />
+                <SubscribePanel
+                    ishidden={this.state.subscribehidden}
+                    selectedRegion={this.state.regionSelected}
+                    updateSubList={this.updateSubList.bind(this)}
+                    list={this.state.sublist}
+                />
+                <ValidatePanel
+                    ishidden={this.state.validatehidden}
+                    selectedDate={this.state.selectedDate}
+                    featureNames={this.state.featureNames}
+                    sublist={this.state.sublist}
+                />
+                <SearchPanel
+                    ishidden={this.state.searchhidden}
+                    pointmapto={this.pointmapto.bind(this)}
+                    regionSelected={this.regionSelected.bind(this)}
+                    featureNames={this.state.featureNames}
+                />
+                <div className="sidebar">
+                    <div className="sidebar-icon gold-drop app-icon"></div>
+                    {/* <SideIcons parentclass='gold-drop' glyphicon='glyphicon-question-sign' />*/}
+                    <SideIcons
+                        parentclass={this.state.subscribehidden ? "" : "active-icon"}
+                        glyphicon="glyphicon-envelope"
+                        clickhandler={(e => this.togglePanel(e, "subscribehidden")).bind(this)}
+                        tooltip="Subscribe"
+                    />
+                    <SideIcons
+                        parentclass={this.state.validatehidden ? "" : "active-icon"}
+                        glyphicon="glyphicon-ok"
+                        clickhandler={(e => this.togglePanel(e, "validatehidden")).bind(this)}
+                        tooltip="Validate"
+                    />
+                    <SideIcons
+                        parentclass={this.state.searchhidden ? "" : "active-icon"}
+                        glyphicon="glyphicon-search"
+                        clickhandler={(e => this.togglePanel(e, "searchhidden")).bind(this)}
+                        tooltip="Search"
+                    />
+                    <button
+                        className="sidebar-icon"
+                        onClick={e => {
+                            this.setState({
+                                advancedoptions: !this.state.advancedoptions,
+                                ...this.appstates,
+                            });
+                        }}
+                    >
+                        <div className="center">
+                            <span
+                                className={
+                                    "glyphicon advanced-icon " +
+                                    (this.state.advancedoptions
+                                        ? "glyphicon-minus"
+                                        : "glyphicon-plus")
+                                }
+                            ></span>
+                            <span className="advanced-text">Advanced</span>
+                        </div>
+                    </button>
+                    {advancedbuttons}
 
-  // set up actions to render app
-  render(){
-    var advancedbuttons = '';
-    if (this.state.advancedoptions) advancedbuttons= <div className="advanced-icons">
-        <SideIcons
-          parentclass={this.state.statshidden?'':'active-icon'}
-          glyphicon='glyphicon-stats'
-          clickhandler={((e) => this.togglePanel(e, 'statshidden')).bind(this)}
-          tooltip='Stats'/>
-        <SideIcons
-          parentclass={this.state.slidershidden?'':'active-icon'}
-          glyphicon='glyphicon-filter'
-          clickhandler={((e) => this.togglePanel(e, 'slidershidden')).bind(this)}
-          tooltip='Sliders'/>
-        <SideIcons
-          parentclass={this.state.downloadhidden?'':'active-icon'}
-          glyphicon='glyphicon-download-alt'
-          clickhandler={((e) => this.togglePanel(e, 'downloadhidden')).bind(this)}
-          tooltip='Download data'/>
-      </div>
-    return <div className='shell' {...this.props}>
-      <div className="app-bar">
-        <div className='sidebar-icon gold-drop app-icon'></div>
-      </div>
-      <div ref={el => this.mapContainer = el}></div>
-      <SliderPanel ishidden = {this.state.slidershidden}
-        slideradjusted = {this.slidersadjusted.bind(this)}
-        oncheckchange = {this.imagetypechanged.bind(this)}
-        showcomposite = {this.state.showcomposite}
-        imageDates = {this.state.imageDates}/>
-      <StatsPanel ishidden = {this.state.statshidden}
-        selectedDate = {this.state.selectedDate}/>
-      <DownloadPanel ishidden = {this.state.downloadhidden}
-        regionSelected = {this.state.regionSelected}
-        selectedDate = {this.state.selectedDate}/>
-      <SubscribePanel ishidden = {this.state.subscribehidden}
-        selectedRegion = {this.state.regionSelected}
-        updateSubList = {this.updateSubList.bind(this)}
-        list = {this.state.sublist}/>
-      <ValidatePanel ishidden = {this.state.validatehidden}
-        selectedDate = {this.state.selectedDate}
-        featureNames = {this.state.featureNames}
-        sublist = {this.state.sublist}/>
-      <SearchPanel ishidden = {this.state.searchhidden}
-          pointmapto={this.pointmapto.bind(this)}
-          regionSelected={this.regionSelected.bind(this)}
-          featureNames={this.state.featureNames}/>
-      <div className='sidebar' >
-        <div className='sidebar-icon gold-drop app-icon'></div>
-        {/* <SideIcons parentclass='gold-drop' glyphicon='glyphicon-question-sign' />*/}
-        <SideIcons
-          parentclass={this.state.subscribehidden?'':'active-icon'}
-          glyphicon='glyphicon-envelope'
-          clickhandler={((e) => this.togglePanel(e, 'subscribehidden')).bind(this)}
-          tooltip='Subscribe'/>
-        <SideIcons
-          parentclass={this.state.validatehidden?'':'active-icon'}
-          glyphicon='glyphicon-ok'
-          clickhandler={((e) => this.togglePanel(e, 'validatehidden')).bind(this)}
-          tooltip='Validate'/>
-        <SideIcons
-          parentclass={this.state.searchhidden?'':'active-icon'}
-          glyphicon='glyphicon-search'
-          clickhandler={((e) => this.togglePanel(e, 'searchhidden')).bind(this)}
-          tooltip='Search'/>
-        <button className='sidebar-icon' onClick={(e)=>{this.setState({
-          advancedoptions: !(this.state.advancedoptions),
-          ...this.appstates
-        })}}>
-          <div className='center'>
-            <span className={'glyphicon advanced-icon '+(this.state.advancedoptions?'glyphicon-minus':'glyphicon-plus')}></span>
-            <span className='advanced-text'>Advanced</span>
-          </div>
-        </button>
-        {advancedbuttons}
-
-        <SideIcons
-          parentclass='disclaimer'
-          glyphicon='glyphicon-info-sign'
-          clickhandler={((e) => this.togglePanel(e, 'appinfohidden')).bind(this)}
-          tooltip='App Info'/>
-      </div>
-      <AppInfo ishidden={this.state.appinfohidden} onOuterClick={((e) => this.togglePanel(e, 'appinfohidden')).bind(this)}/>
-      <div id="lnglathud-shell">
-        <span id="lnglathud"></span>
-      </div>
-    </div>
-  }
-};
+                    <SideIcons
+                        parentclass="disclaimer"
+                        glyphicon="glyphicon-info-sign"
+                        clickhandler={(e => this.togglePanel(e, "appinfohidden")).bind(this)}
+                        tooltip="App Info"
+                    />
+                </div>
+                <AppInfo
+                    ishidden={this.state.appinfohidden}
+                    onOuterClick={(e => this.togglePanel(e, "appinfohidden")).bind(this)}
+                />
+                <div id="lnglathud-shell">
+                    <span id="lnglathud"></span>
+                </div>
+            </div>
+        );
+    }
+}
 
 const props = {
-  minprobability:0,
-  maxprobability:100,
-  minyear:2000,
-  maxyear:2019
+    minprobability: 0,
+    maxprobability: 100,
+    minyear: 2000,
+    maxyear: 2019,
 };
 
-ReactDOM.render(<OuterShell {...props}/>, document.getElementById('main-container'));
+ReactDOM.render(<OuterShell {...props} />, document.getElementById("main-container"));
