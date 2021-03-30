@@ -166,11 +166,9 @@
   background: #ff9e9e9e;
   color: red;
 }
-
 .del-btn:hover{
   background:#ff40409e;
 }
-
 .del-btn:active{
   background:#ff0000;
   color:white;
@@ -182,12 +180,29 @@
   background: #ddd;
   color: #aaa;
 }
+
+
+.del-btn.green-btn {
+  background:#0e96429e;
+  color: black;
+}
+.del-btn.green-btn:hover {
+  background:#0e96429e;
+}
+.del-btn.green-btn:active{
+  background:#096b2f;
+  color:white;
+}
+.del-btn.green-btn:disabled{
+  background: #ddd;
+  color: #aaa;
+}
+
 .sub-list{
   margin-left:10px;
   padding-left:10px;
   list-style:disc;
 }
-
 span.advanced-icon{
   height:30px;
   font-size:20px;

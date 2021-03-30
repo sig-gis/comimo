@@ -109,7 +109,7 @@ class ValidatePanel extends React.Component{
               delete: del
             });
           }else{
-            l('Could not delete project.');
+            l('Could not close project.');
           }
         },(err)=>{
           e.target.disabled = false;
@@ -130,7 +130,16 @@ class ValidatePanel extends React.Component{
         <br/><small>Created date:{el[1]}</small>
         <br/><small>Regions:{r}</small>
       </td>
-      <td style={{width:'30px'}}><input type="submit" value="X" className="del-btn" disabled={this.state.delete.includes(el[2])} title={"Delete "+el[4]} onClick={(e)=>this.closeProject(e, el[0], el[2], i)}/></td>
+      <td style={{textAlign: 'right'}}>
+        <input
+          type="submit"
+          value="X"
+          className="del-btn green-btn"
+          disabled={this.state.delete.includes(el[2])}
+          title={"Close " + el[4]}
+          onClick={e => this.closeProject(e, el[0], el[2], i)}
+        />
+      </td>
     </tr>
 
   }
@@ -184,7 +193,7 @@ class ValidatePanel extends React.Component{
         <p> Login to validate the data </p>
         <button type="button" className="btn btn-warning map-upd-btn" onClick={()=>{location.href = 'accounts/login'}}>Login</button>
       </div>
-    }else{
+    } else {
       var selDate = this.props.selectedDate;
       if (selDate){
         var match = this.state.projects.filter(x => x.includes(selDate+'__'));
@@ -216,7 +225,7 @@ class ValidatePanel extends React.Component{
             <tr>
               <th style={{width:'20px'}}>SN</th>
               <th style={{width:'calc(100% - 50px)'}}>Name</th>
-              <th style={{width:'30px'}}>Del</th>
+              <th style={{width:'30px'}}>Close</th>
             </tr>
           </thead>
           <tbody>{lilist}</tbody>
@@ -225,24 +234,24 @@ class ValidatePanel extends React.Component{
 
       var addOptions = '';
       if (this.state.region == 2) addOptions = this.generateMunicipalOptions();
-
-      var content = <div>
-        {context}
-        <br/><h2><b>Create a new project:</b></h2>
-        Enter Project Name:<br/>
-        <input id='projectName' length="2" style={{width:'100%'}}/><br/>
-        Select Project Region:<br/>
-        <input type='radio' name='projectRegion' value={1} onChange={this.regionRadioChanged.bind(this)} defaultChecked/> Subscribed Regions <br/>
-        <input type='radio' name='projectRegion' value={2} onChange={this.regionRadioChanged.bind(this)}/> Custom Regions <br/>
-        {addOptions}
-        {button}
-        {this.state.errormsg}
-      </div>
     }
 
-    return <div className={['popup-container validate-panel ',this.props.ishidden?'see-through':''].join(' ')} >
-      <h1><b> VALIDATION </b></h1>
-      {content}
-    </div>
+    return (
+      <div className={['popup-container validate-panel ',this.props.ishidden?'see-through':''].join(' ')} >
+        <h1><b> VALIDATION </b></h1>
+        <div>
+          {context}
+          <br/><h2><b>Create a new project:</b></h2>
+          Enter Project Name:<br/>
+          <input id='projectName' length="2" style={{width:'100%'}}/><br/>
+          Select Project Region:<br/>
+          <input type='radio' name='projectRegion' value={1} onChange={this.regionRadioChanged.bind(this)} defaultChecked/> Subscribed Regions <br/>
+          <input type='radio' name='projectRegion' value={2} onChange={this.regionRadioChanged.bind(this)}/> Custom Regions <br/>
+          {addOptions}
+          {button}
+          {this.state.errormsg}
+        </div>
+      </div>
+    )
   }
 }
