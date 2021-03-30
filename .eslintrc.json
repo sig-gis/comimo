@@ -1,0 +1,29 @@
+{
+    "env": {
+        "browser": true,
+        "es2021": true
+    },
+    "extends": [
+        "plugin:react/recommended",
+        "prettier"
+    ],
+    "parserOptions": {
+        "ecmaFeatures": {
+            "jsx": true
+        },
+        "ecmaVersion": 12,
+        "sourceType": "module"
+    },
+    "plugins": [
+        "react",
+        "prettier",
+        "import"
+    ],
+    "rules": {
+      "indent": ["error", 2],
+      "react/prefer-stateless-function": [0],
+      "react/jsx-filename-extension": [0],
+      "react/react-in-jsx-scope": [0],
+      "react/prop-types": [0]
+    }
+}

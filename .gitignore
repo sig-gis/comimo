@@ -7,6 +7,7 @@ venv/*
 ceo-gateway
 ceodev-gateway
 logs
+package-lock.json
 
 __pycache__
 __pycache__/*
@@ -16,3 +17,4 @@ Readme.md
 
 static
 migrations/*
+node_modules

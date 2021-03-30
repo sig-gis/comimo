@@ -1,0 +1,29 @@
+{
+  "name": "gold-mine-watch",
+  "version": "1.0.0",
+  "description": "## Canonical source",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@gitlab.com/sig-gis/gold-mine-watch.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://gitlab.com/sig-gis/gold-mine-watch/issues"
+  },
+  "homepage": "https://gitlab.com/sig-gis/gold-mine-watch#readme",
+  "dependencies": {
+    "@babel/eslint-plugin": "^7.13.0",
+    "eslint": "^7.21.0",
+    "eslint-config-prettier": "^8.1.0",
+    "eslint-plugin-import": "^2.22.1",
+    "eslint-plugin-prettier": "^3.3.1",
+    "eslint-plugin-react": "^7.22.0",
+    "prettier": "^2.2.1"
+  },
+  "scripts": {
+    "lint": "./node_modules/.bin/eslint gmw/statics/js/*",
+    "prettier": "./node_modules/.bin/prettier --write gmw/statics/js/*.*"
+  }
+}
