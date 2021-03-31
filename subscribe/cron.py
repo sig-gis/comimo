@@ -38,7 +38,7 @@ def sendGoldAlerts():
                 if regions and email:
                     proj_created = subutils.createProject(user, latest_date, 'Alert-for-'+today, regions)
                     if (proj_created['action'] == "Created"):
-                        sendmail(email, proj_created['proj'][3])
+                        sendmail('mspencer@sig-gis.com', proj_created['proj'][3])
                         print('mail sent to ', email)
                         SubscribeModel.objects.filter(user=alertable['user']).update(last_alert_for=latest_date)
                     elif (proj_created['action'] == "Error"):
