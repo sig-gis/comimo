@@ -176,17 +176,17 @@ def getAreaPredicted(request):
             authGEE()
             fc = subscribedRegionsToFC(regions)
             image = ee.Image(IMAGE_REPO+'/'+date)
-            # pa = ee.Image.pixelArea()
-            image = image.selfMask()#.multiply(1)
+            pa = ee.Image.pixelArea()
+            image = image.selfMask().multiply(pa)
             rr = image.reduceRegions(collection=fc,
-                reducer=ee.Reducer.count(),
+                reducer=ee.Reducer.sum(),
                 scale=540,
                 crs='EPSG:4326')
-            area = rr.aggregate_array('count')
+            area = rr.aggregate_array('sum')
             names = rr.aggregate_array('MPIO_CNMBR')
-            dict = ee.Dictionary({'area':area,'names':names}).getInfo()
-            dict['action'] = 'Success'
-            return JsonResponse(dict)
+            resp = ee.Dictionary({'area':area,'names':names}).getInfo()
+            resp['action'] = 'Success'
+            return JsonResponse(resp)
         except Exception as e:
             print(e)
             return JsonResponse({'action':'Error','message':'Something went wrong!'},status=500)
@@ -207,22 +207,22 @@ def getAreaPredictedTS(request):
             def asBands(image, passedImage):
                 image = ee.Image(image)
                 id = image.id()
-                # pa = ee.Image.pixelArea()
-                image = image.selfMask()#.multiply(pa)
+                pa = ee.Image.pixelArea()
+                image = image.selfMask().multiply(pa)
                 passedImage = ee.Image(passedImage)
                 return passedImage.addBands(image.rename(id))
             image =  ee.Image(ee.ImageCollection(IMAGE_REPO).iterate(asBands,ee.Image()))
             image = image.select(image.bandNames().remove('constant'))
             rr = image.reduceRegion(geometry=fc.geometry(),
-                reducer=ee.Reducer.count(),
+                reducer=ee.Reducer.sum(),
                 scale=540,
                 crs='EPSG:4326',
                 bestEffort=True)
             area = rr.values()
             names = rr.keys()
-            dict = ee.Dictionary({'area':area,'names':names}).getInfo()
-            dict['action'] = 'Success'
-            return JsonResponse(dict)
+            resp = ee.Dictionary({'area':area,'names':names}).getInfo()
+            resp['action'] = 'Success'
+            return JsonResponse(resp)
         except Exception as e:
             print(e)
             return JsonResponse({'action':'Error','message':'Something went wrong!'},status=500)
