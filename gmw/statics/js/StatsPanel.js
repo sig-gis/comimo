@@ -1,16 +1,37 @@
 class StatsPanel extends React.Component {
-    state = {
-        names: [],
-        series: [],
-        c2_dates: [],
-        c2_series: [],
-        libloaded: false,
-    };
-    URL = {
-        ARSTATS: "/api/getareapredicted",
-        ARTS: "/api/getareats",
-    };
-    fetchedFor = false;
+    constructor(props) {
+        super(props);
+
+        this.URL = {
+            ARSTATS: "/api/getareapredicted",
+            ARTS: "/api/getareats",
+        };
+
+        this.state = {
+            chartsLoaded: false,
+            fetchedFor: null
+        };
+    }
+
+    componentDidMount() {
+        google.charts.load("current", {packages: ["corechart"]});
+        google.charts.setOnLoadCallback(() => {
+            this.setState({
+                chartsLoaded: true,
+            });
+        });
+    }
+
+    componentDidUpdate() {
+        if (USER_STATE
+                && this.state.chartsLoaded
+                && this.props.selectedDate
+                && (this.state.fetchedFor != this.props.selectedDate)) {
+            this.getAreaStats(this.props.selectedDate);
+            this.getAreaTS();
+            this.setState({fetchedFor: this.props.selectedDate})
+        }
+    }
 
     toPrecision(val, n) {
         const factor = Math.pow(10, n);
@@ -21,16 +42,16 @@ class StatsPanel extends React.Component {
         return (
             '<div style="min-width: max-content; display: \
                     flex; flex-direction: column; padding: .4rem; line-height: 1rem"> \
-            <label>' +
-            region +
-            "</label>\n \
-            <label>Area: " +
-            this.toPrecision(area, 1) +
-            " km^2</label>\n \
-            <label>Count: " +
-            this.toPrecision(count, 0) +
-            "</label> \
-        </div>"
+                <label>' +
+                region +
+                "</label>\n \
+                <label>Count: " +
+                this.toPrecision(count, 0) +
+                "</label>\n \
+                <label>Area: " +
+                this.toPrecision(area, 1) +
+                " km^2</label> \
+            </div>"
         );
     }
 
@@ -42,19 +63,20 @@ class StatsPanel extends React.Component {
                 var data = [];
                 for (var i = 0; i < result.names.length; i++) {
                     const area = result.area[i] / 1e6;
+                    const count = area / 0.54 ** 2;
                     const name = result.names[i];
                     if (area > 0.0) {
                         data.push([
                             name,
-                            area,
-                            this.createTooltipHTML(name, area, area / 0.54 ** 2),
+                            count,
+                            this.createTooltipHTML(name, area, count),
                         ]);
                     }
                 }
                 if (data.length > 0) {
                     var dataTable = new google.visualization.DataTable();
                     dataTable.addColumn("string", "Municipality");
-                    dataTable.addColumn("number", "Area");
+                    dataTable.addColumn("number", "Count");
                     dataTable.addColumn({type: "string", role: "tooltip", p: {html: true}});
 
                     dataTable.addRows(data);
@@ -89,18 +111,19 @@ class StatsPanel extends React.Component {
                 var nonzero = false;
                 for (var i = 0; i < result.names.length; i++) {
                     const area = result.area[i] / 1e6;
+                    const count = area / 0.54 ** 2
                     const name = result.names[i];
                     data.push([
                         name.substring(5),
-                        area,
-                        this.createTooltipHTML(name, area, area / 0.54 ** 2),
+                        count,
+                        this.createTooltipHTML(name, area, count),
                     ]);
                     if (area > 0.0) nonzero = true;
                 }
                 if (nonzero) {
                     var dataTable = new google.visualization.DataTable();
                     dataTable.addColumn("string", "Date");
-                    dataTable.addColumn("number", "Area");
+                    dataTable.addColumn("number", "Count");
                     dataTable.addColumn({type: "string", role: "tooltip", p: {html: true}});
 
                     dataTable.addRows(data);
@@ -131,23 +154,6 @@ class StatsPanel extends React.Component {
             .catch(e => console.log("Error loading stats!", e));
     }
 
-    componentDidUpdate() {
-        if (USER_STATE && this.state.libloaded && this.fetchedFor != this.props.selectedDate) {
-            this.getAreaStats(this.props.selectedDate);
-            this.getAreaTS();
-            this.fetchedFor = this.props.selectedDate;
-        }
-    }
-
-    componentDidMount() {
-        google.charts.load("current", {packages: ["corechart"]});
-        google.charts.setOnLoadCallback(() => {
-            this.setState({
-                libloaded: true,
-            });
-        });
-    }
-
     render() {
         return (
             <div
@@ -158,14 +164,14 @@ class StatsPanel extends React.Component {
             >
                 {USER_STATE ? (
                     <div>
-                        <b>Area per subscribed regions (# of mines)</b>
+                        <b>Prediction count per subscribed region</b>
                         <p style={{lineHeight: "1rem", fontSize: ".75rem"}}>
-                            *Note: Regions with no mines are not shown.
+                            *Note: Regions with no predictions are not shown.
                         </p>
                         <div id="stats1">
                             <b>Loading data...</b>
                         </div>
-                        <b>Total area under subscribed regions (# of mines)</b>
+                        <b>Total predictions for subscribed regions per reporting period</b>
                         <div id="stats2">
                             <b>Loading data...</b>
                         </div>
