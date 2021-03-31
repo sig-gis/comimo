@@ -324,7 +324,7 @@ class ValidatePanel extends React.Component {
             <div
                 className={[
                     "popup-container validate-panel ",
-                    this.props.ishidden ? "see-through" : "",
+                    this.props.isHidden ? "see-through" : "",
                 ].join(" ")}
             >
                 <h1>

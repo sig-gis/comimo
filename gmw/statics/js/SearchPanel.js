@@ -173,7 +173,7 @@ class SearchPanel extends React.Component {
             <div
                 className={[
                     "popup-container search-panel ",
-                    this.props.ishidden ? "see-through" : "",
+                    this.props.isHidden ? "see-through" : "",
                 ].join(" ")}
             >
                 <b>SEARCH LOCATION</b>

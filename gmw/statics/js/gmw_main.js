@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-no-undef */
 window.mobileAndTabletCheck = function () {
     let check = false;
     (function (a) {
@@ -36,37 +37,37 @@ class OuterShell extends React.Component {
             INFO: "api/getinfo",
         };
         // overall app parameters
-        this.appparams = {
-            minprobability: props.minprobability,
-            maxprobability: props.maxprobability,
-            minyear: props.minyear,
-            maxyear: props.maxyear,
+        this.appParams = {
+            minProbability: props.minProbability,
+            maxProbability: props.maxProbability,
+            minYear: props.minYear,
+            maxYear: props.maxYear,
         };
         // initial component states
-        this.appstates = {
-            slidershidden: true,
-            statshidden: true,
-            downloadhidden: true,
-            subscribehidden: true,
-            validatehidden: true,
-            searchhidden: true,
-            appinfohidden: true,
+        this.appStates = {
+            slidersHidden: true,
+            statsHidden: true,
+            downloadHidden: true,
+            subscribeHidden: true,
+            validateHidden: true,
+            searchHidden: true,
+            appInfoHidden: true,
         };
-        this.compositeparams = {};
-        this.persistentstates = {
-            advancedoptions: false,
-            showcomposite: false,
+        this.compositeParams = {};
+        this.persistentStates = {
+            advancedOptions: false,
+            showComposite: false,
             imageDates: [],
             selectedDate: false,
             regionSelected: false,
             featureNames: {},
-            sublist: [],
+            subList: [],
         };
         // combining everything to app state
         this.state = {
-            ...this.appparams,
-            ...this.appstates,
-            ...this.persistentstates,
+            ...this.appParams,
+            ...this.appStates,
+            ...this.persistentStates,
             // reload limit for layers that could not be loaded
             reloadCount: 0
         };
@@ -138,17 +139,7 @@ class OuterShell extends React.Component {
             this.map.on("click", e => {
                 const lat = e.lngLat.lat,
                     lng = e.lngLat.lng
-                // if (!this.state.selectedDate) {
-                //     url +=
-                //             "&minp=" +
-                //             this.compositeparams.minprobability +
-                //             "&maxp=" +
-                //             this.compositeparams.maxprobability +
-                //             "&miny=" +
-                //             this.compositeparams.minyear +
-                //             "&maxy=" +
-                //             this.compositeparams.maxyear;
-                // }
+
                 var popup = new mapboxgl.Popup({closeOnClick: true})
                     .setLngLat([lng, lat])
                     .setHTML('<p>Loading...<p>')
@@ -176,6 +167,10 @@ class OuterShell extends React.Component {
                               lat: lat,
                               lng: lng,
                               date: this.state.selectedDate,
+                              minp: this.compositeParams.minProbability,
+                              maxp: this.compositeParams.maxProbability,
+                              miny: this.compositeParams.minYear,
+                              maxy: this.compositeParams.maxYear,
                               visible: visible
                           })
                       }
@@ -238,7 +233,7 @@ class OuterShell extends React.Component {
             range: true,
             scale: false,
             labels: false,
-            set: [this.appparams.minprobability, this.appparams.maxprobability],
+            set: [this.appParams.minProbability, this.appParams.maxProbability],
         });
 
         this.getImageDates();
@@ -253,40 +248,38 @@ class OuterShell extends React.Component {
 
     // function to toggle between visible panels
     togglePanel(panelkey) {
-        document.activeElement.blur();
-        var newstate = {[panelkey]: !this.state[panelkey]};
-        this.setState({...this.appstates, ...newstate});
+        this.setState({...this.appStates, [panelkey]: !this.state[panelkey]});
     }
 
-    imagetypechanged() {
-        this.setState({showcomposite: !this.state.showcomposite});
+    imageTypeChanged() {
+        this.setState({showComposite: !this.state.showComposite});
     }
 
     // function to call when slider values are changed
-    slidersadjusted() {
+    slidersAdjusted() {
         var tileURL
-        if (this.state.showcomposite) {
+        if (this.state.showComposite) {
             var probvals = this.probSlider
                 .getValue()
                 .split(",")
                 .map(val => parseInt(val));
             var yearvals = this.yearSlider.getValue().split(",");
-            this.compositeparams = {
-                minprobability: probvals[0],
-                maxprobability: probvals[1],
-                minyear: yearvals[0],
-                maxyear: yearvals[1],
+            this.compositeParams = {
+                minProbability: probvals[0],
+                maxProbability: probvals[1],
+                minYear: yearvals[0],
+                maxYear: yearvals[1],
             };
             tileURL =
                 this.URLS.COMPOSITE_IMAGE +
                 "?minp=" +
-                this.compositeparams.minprobability +
+                this.compositeParams.minProbability +
                 "&maxp=" +
-                this.compositeparams.maxprobability +
+                this.compositeParams.maxProbability +
                 "&miny=" +
-                this.compositeparams.minyear +
+                this.compositeParams.minYear +
                 "&maxy=" +
-                this.compositeparams.maxyear;
+                this.compositeParams.maxYear;
             this.setState({
                 selectedDate: false,
             });
@@ -313,7 +306,7 @@ class OuterShell extends React.Component {
                         range: true,
                         scale: false,
                         labels: false,
-                        set: [this.appparams.minyear, this.appparams.maxyear],
+                        set: [this.appParams.minYear, this.appParams.maxYear],
                     });
                     result.ids.reverse();
                     this.setState({
@@ -348,7 +341,7 @@ class OuterShell extends React.Component {
 
     updateSubList(list) {
         this.setState({
-            sublist: list,
+            subList: list,
         });
     }
 
@@ -448,93 +441,74 @@ class OuterShell extends React.Component {
 
     // set up actions to render app
     render() {
-        var advancedbuttons = "";
-        if (this.state.advancedoptions)
-            advancedbuttons = (
-                <div className="advanced-icons">
-                    <SideIcons
-                        parentclass={this.state.statshidden ? "" : "active-icon"}
-                        glyphicon="glyphicon-stats"
-                        clickhandler={(() => this.togglePanel("statshidden")).bind(this)}
-                        tooltip="Stats"
-                    />
-                    <SideIcons
-                        parentclass={this.state.slidershidden ? "" : "active-icon"}
-                        glyphicon="glyphicon-filter"
-                        clickhandler={(() => this.togglePanel("slidershidden")).bind(this)}
-                        tooltip="Sliders"
-                    />
-                    <SideIcons
-                        parentclass={this.state.downloadhidden ? "" : "active-icon"}
-                        glyphicon="glyphicon-download-alt"
-                        clickhandler={(() => this.togglePanel("downloadhidden")).bind(this)}
-                        tooltip="Download data"
-                    />
-                </div>
-            );
         return (
             <div className="shell">
                 <div id="mapbox"></div>
                 <SliderPanel
-                    ishidden={this.state.slidershidden}
-                    slideradjusted={this.slidersadjusted.bind(this)}
-                    oncheckchange={this.imagetypechanged.bind(this)}
-                    showcomposite={this.state.showcomposite}
+                    isHidden={this.state.slidersHidden}
+                    slidersAdjusted={this.slidersAdjusted.bind(this)}
+                    onCheckChange={this.imageTypeChanged.bind(this)}
+                    showComposite={this.state.showComposite}
                     imageDates={this.state.imageDates}
                 />
                 <StatsPanel
-                    ishidden={this.state.statshidden}
+                    isHidden={this.state.statsHidden}
                     selectedDate={this.state.selectedDate}
+                    subList={this.state.subList}
                 />
                 <DownloadPanel
-                    ishidden={this.state.downloadhidden}
+                    isHidden={this.state.downloadHidden}
                     regionSelected={this.state.regionSelected}
                     selectedDate={this.state.selectedDate}
                 />
                 <SubscribePanel
-                    ishidden={this.state.subscribehidden}
+                    isHidden={this.state.subscribeHidden}
                     selectedRegion={this.state.regionSelected}
                     updateSubList={this.updateSubList.bind(this)}
-                    list={this.state.sublist}
+                    list={this.state.subList}
                 />
                 <ValidatePanel
-                    ishidden={this.state.validatehidden}
+                    isHidden={this.state.validateHidden}
                     selectedDate={this.state.selectedDate}
                     featureNames={this.state.featureNames}
-                    sublist={this.state.sublist}
+                    subList={this.state.subList}
                 />
                 <SearchPanel
-                    ishidden={this.state.searchhidden}
+                    isHidden={this.state.searchHidden}
                     pointmapto={this.pointmapto.bind(this)}
                     regionSelected={this.regionSelected.bind(this)}
                     featureNames={this.state.featureNames}
                 />
+                <AppInfo
+                    isHidden={this.state.appInfoHidden}
+                    onOuterClick={(() => this.togglePanel("appInfoHidden")).bind(this)}
+                />
                 <div className="sidebar">
                     <div className="sidebar-icon gold-drop app-icon"></div>
                     <SideIcons
-                        parentclass={this.state.subscribehidden ? "" : "active-icon"}
+                        parentclass={this.state.subscribeHidden ? "" : "active-icon"}
                         glyphicon="glyphicon-envelope"
-                        clickhandler={(() => this.togglePanel("subscribehidden")).bind(this)}
+                        clickhandler={(() => this.togglePanel("subscribeHidden")).bind(this)}
                         tooltip="Subscribe"
                     />
                     <SideIcons
-                        parentclass={this.state.validatehidden ? "" : "active-icon"}
+                        parentclass={this.state.validateHidden ? "" : "active-icon"}
                         glyphicon="glyphicon-ok"
-                        clickhandler={(() => this.togglePanel("validatehidden")).bind(this)}
+                        clickhandler={(() => this.togglePanel("validateHidden")).bind(this)}
                         tooltip="Validate"
                     />
                     <SideIcons
-                        parentclass={this.state.searchhidden ? "" : "active-icon"}
+                        parentclass={this.state.searchHidden ? "" : "active-icon"}
                         glyphicon="glyphicon-search"
-                        clickhandler={(() => this.togglePanel("searchhidden")).bind(this)}
+                        clickhandler={(() => this.togglePanel("searchHidden")).bind(this)}
                         tooltip="Search"
                     />
                     <button
                         className="sidebar-icon"
                         onClick={() => {
                             this.setState({
-                                advancedoptions: !this.state.advancedoptions,
-                                ...this.appstates,
+                                advancedOptions: !this.state.advancedOptions,
+                                ...this.appStates,
                             });
                         }}
                     >
@@ -542,7 +516,7 @@ class OuterShell extends React.Component {
                             <span
                                 className={
                                     "glyphicon advanced-icon " +
-                                    (this.state.advancedoptions
+                                    (this.state.advancedOptions
                                         ? "glyphicon-minus"
                                         : "glyphicon-plus")
                                 }
@@ -550,19 +524,35 @@ class OuterShell extends React.Component {
                             <span className="advanced-text">Advanced</span>
                         </div>
                     </button>
-                    {advancedbuttons}
-
+                    {this.state.advancedOptions &&
+                        <div className="advanced-icons">
+                            <SideIcons
+                                parentclass={this.state.statsHidden ? "" : "active-icon"}
+                                glyphicon="glyphicon-stats"
+                                clickhandler={(() => this.togglePanel("statsHidden")).bind(this)}
+                                tooltip="Stats"
+                            />
+                            <SideIcons
+                                parentclass={this.state.slidersHidden ? "" : "active-icon"}
+                                glyphicon="glyphicon-filter"
+                                clickhandler={(() => this.togglePanel("slidersHidden")).bind(this)}
+                                tooltip="Sliders"
+                            />
+                            <SideIcons
+                                parentclass={this.state.downloadHidden ? "" : "active-icon"}
+                                glyphicon="glyphicon-download-alt"
+                                clickhandler={(() => this.togglePanel("downloadHidden")).bind(this)}
+                                tooltip="Download data"
+                            />
+                        </div>
+                    }
                     <SideIcons
                         parentclass="disclaimer"
                         glyphicon="glyphicon-info-sign"
-                        clickhandler={(() => this.togglePanel("appinfohidden")).bind(this)}
+                        clickhandler={(() => this.togglePanel("appInfoHidden")).bind(this)}
                         tooltip="App Info"
                     />
                 </div>
-                <AppInfo
-                    ishidden={this.state.appinfohidden}
-                    onOuterClick={(() => this.togglePanel("appinfohidden")).bind(this)}
-                />
                 <div id="lnglathud-shell">
                     <span id="lnglathud"></span>
                 </div>
@@ -572,10 +562,10 @@ class OuterShell extends React.Component {
 }
 
 const props = {
-    minprobability: 0,
-    maxprobability: 100,
-    minyear: 2000,
-    maxyear: 2019,
+    minProbability: 0,
+    maxProbability: 100,
+    minYear: 2000,
+    maxYear: 2019,
 };
 
 ReactDOM.render(<OuterShell {...props} />, document.getElementById("main-container"));

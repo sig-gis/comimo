@@ -2,7 +2,7 @@ class AppInfo extends React.Component {
     render() {
         return (
             <div
-                className={["info-modal ", this.props.ishidden ? "see-through" : ""].join(" ")}
+                className={["info-modal ", this.props.isHidden ? "see-through" : ""].join(" ")}
                 onClick={this.props.onOuterClick}
             >
                 <div className="inner-container" onClick={e => e.stopPropagation()}>

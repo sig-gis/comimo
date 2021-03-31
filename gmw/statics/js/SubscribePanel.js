@@ -32,10 +32,9 @@ class SubscribePanel extends React.Component {
                 .then(res => res.json())
                 .then(result => {
                     if (result.action == "Created") {
-                        var currentList = this.props.list;
-                        currentList.push(result.level + "_" + result.region);
-                        currentList.sort();
-                        this.props.updateSubList(currentList);
+                        var newList = [...this.props.list, result.level + "_" + result.region];
+                        newList.sort();
+                        this.props.updateSubList(newList);
                     } else if (result.action == "Exists") {
                         alert("You are already subscribed to the region!");
                     }
@@ -57,12 +56,8 @@ class SubscribePanel extends React.Component {
                 .then(res => res.json())
                 .then(result => {
                     if (result.action != "Error") {
-                        var currentList = this.props.list;
-                        currentList.splice(
-                            currentList.indexOf(result.level + "_" + result.region),
-                            1
-                        );
-                        this.props.updateSubList(currentList);
+                        const newList = this.props.list.filter(r => r !== result.level + "_" + result.region)
+                        this.props.updateSubList(newList);
                     }
                 })
                 .catch(err => console.log(err));
@@ -150,7 +145,7 @@ class SubscribePanel extends React.Component {
             <div
                 className={[
                     "popup-container subs-panel ",
-                    this.props.ishidden ? "see-through" : "",
+                    this.props.isHidden ? "see-through" : "",
                 ].join(" ")}
             >
                 <h1>

@@ -43,12 +43,12 @@ class SliderPanel extends React.Component {
             <div
                 className={[
                     "popup-container filter-panel ",
-                    this.props.ishidden ? "see-through" : "",
+                    this.props.isHidden ? "see-through" : "",
                 ].join(" ")}
             >
                 <b>FILTER DATA</b>
                 <br />
-                {/*<input type="checkbox" className="form-check-input" id="showcomposite" onChange={this.props.oncheckchange} defaultChecked={this.props.showcomposite}/>
+                {/*<input type="checkbox" className="form-check-input" id="showcomposite" onChange={this.props.onCheckChange} defaultChecked={this.props.showcomposite}/>
       &nbsp;Show Composite <br/>
       <small className="form-text text-muted">time series agreement (%)</small>*/}
                 {singledate}
@@ -57,7 +57,7 @@ class SliderPanel extends React.Component {
                     <button
                         type="button"
                         className="btn btn-warning map-upd-btn"
-                        onClick={this.props.slideradjusted}
+                        onClick={this.props.slidersAdjusted}
                     >
                         Update Map
                     </button>

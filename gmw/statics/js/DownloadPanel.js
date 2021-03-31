@@ -82,7 +82,7 @@ class DownloadPanel extends React.Component {
             <div
                 className={[
                     "popup-container download-panel ",
-                    this.props.ishidden ? "see-through" : "",
+                    this.props.isHidden ? "see-through" : "",
                 ].join(" ")}
             >
                 <h1>

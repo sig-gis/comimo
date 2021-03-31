@@ -70,7 +70,7 @@ class SelectRegion extends React.Component {
         }
         return (
             <div
-                className={["popup-container ", this.props.ishidden ? "see-through" : ""].join(" ")}
+                className={["popup-container ", this.props.isHidden ? "see-through" : ""].join(" ")}
                 style={{top: "0px"}}
             >
                 <b>SELECT REGION OF INTEREST</b>

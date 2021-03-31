@@ -8,8 +8,9 @@ class StatsPanel extends React.Component {
         };
 
         this.state = {
+            subsListChanged: false,
             chartsLoaded: false,
-            fetchedFor: null
+            fetchedFor: false
         };
     }
 
@@ -22,14 +23,22 @@ class StatsPanel extends React.Component {
         });
     }
 
-    componentDidUpdate() {
-        if (USER_STATE
-                && this.state.chartsLoaded
-                && this.props.selectedDate
-                && (this.state.fetchedFor != this.props.selectedDate)) {
+    componentDidUpdate(prevProps, prevState) {
+        const initialLoad = this.state.chartsLoaded
+            && this.props.selectedDate
+            && (this.state.fetchedFor !== this.props.selectedDate);
+
+        const refreshNeeded = this.state.subsListChanged && prevProps.isHidden && !this.props.isHidden;
+
+        console.log(prevProps.subList, this.props.subList)
+        if (prevProps.subList !== this.props.subList) {
+            this.setState({subsListChanged: true})
+        }
+
+        if (USER_STATE && (initialLoad || refreshNeeded)) {
             this.getAreaStats(this.props.selectedDate);
             this.getAreaTS();
-            this.setState({fetchedFor: this.props.selectedDate})
+            this.setState({fetchedFor: this.props.selectedDate, subsListChanged: false})
         }
     }
 
@@ -51,6 +60,7 @@ class StatsPanel extends React.Component {
     }
 
     getAreaStats(date) {
+        document.getElementById("stats1").innerHTML = "<b>Loading data...</b>"
         var url = this.URL.ARSTATS + "?date=" + date;
         fetch(url)
             .then(res => res.json())
@@ -98,6 +108,7 @@ class StatsPanel extends React.Component {
     }
 
     getAreaTS() {
+        document.getElementById("stats2").innerHTML = "<b>Loading data...</b>"
         var url = this.URL.ARTS;
         fetch(url)
             .then(res => res.json())
@@ -154,7 +165,7 @@ class StatsPanel extends React.Component {
             <div
                 className={[
                     "popup-container stat-panel ",
-                    this.props.ishidden ? "see-through" : "",
+                    this.props.isHidden ? "see-through" : "",
                 ].join(" ")}
             >
                 {USER_STATE ? (
@@ -166,7 +177,9 @@ class StatsPanel extends React.Component {
                         <div id="stats1">
                             <b>Loading data...</b>
                         </div>
-                        <b>Total predictions for subscribed regions per reporting period</b>
+                        <b style={{marginTop: "3px"}}>
+                            Total predictions for subscribed regions per reporting period
+                        </b>
                         <div id="stats2">
                             <b>Loading data...</b>
                         </div>
