@@ -33,11 +33,6 @@ class StatsPanel extends React.Component {
         }
     }
 
-    toPrecision(val, n) {
-        const factor = Math.pow(10, n);
-        return Math.round(val * factor) / factor;
-    }
-
     createTooltipHTML(region, area, count) {
         return (
             '<div style="min-width: max-content; display: \
@@ -46,10 +41,10 @@ class StatsPanel extends React.Component {
                 region +
                 "</label>\n \
                 <label>Count: " +
-                this.toPrecision(count, 0) +
+                toPrecision(count, 0) +
                 "</label>\n \
                 <label>Area: " +
-                this.toPrecision(area, 1) +
+                toPrecision(area, 1) +
                 " km^2</label> \
             </div>"
         );

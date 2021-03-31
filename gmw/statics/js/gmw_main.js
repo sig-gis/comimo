@@ -1,4 +1,3 @@
-var t;
 window.mobileAndTabletCheck = function () {
     let check = false;
     (function (a) {
@@ -17,56 +16,235 @@ window.mobileAndTabletCheck = function () {
 
 class OuterShell extends React.Component {
     // set up class flags so each component update doesn't do redundant JS tasks
-    flags = {
-        updatelayers: true,
-        layeradded: false,
-        isMobile: mobileAndTabletCheck(),
-    };
-    // API URLS
-    URLS = {
-        FEATURE_NAMES: "api/getfeaturenames",
-        IMG_DATES: "/api/getimagenames",
-        SINGLE_IMAGE: "/api/getsingleimage",
-        COMPOSITE_IMAGE: "/api/getcompositeimage",
-        LEGAL_MINES: "api/getlegalmines",
-        GEE_LAYER: "api/getgeetiles",
-        MUNS: "api/getmunicipallayer",
-        INFO: "api/getinfo",
-    };
-    // overall app parameters
-    appparams = {
-        minprobability: props.minprobability,
-        maxprobability: props.maxprobability,
-        minyear: props.minyear,
-        maxyear: props.maxyear,
-    };
-    // initial component states
-    appstates = {
-        slidershidden: true,
-        statshidden: true,
-        downloadhidden: true,
-        subscribehidden: true,
-        validatehidden: true,
-        searchhidden: true,
-        appinfohidden: true,
-    };
-    compositeparams = {};
-    persistentstates = {
-        advancedoptions: false,
-        showcomposite: false,
-        imageDates: [],
-        selectedDate: false,
-        regionSelected: false,
-        featureNames: {},
-        sublist: [],
-    };
-    // combining everything to app state
-    state = {...this.appparams, ...this.appstates, ...this.persistentstates};
-    // reload limit for layers that could not be loaded
-    reloadCount = 0;
-
     constructor(props) {
         super(props);
+
+        this.flags = {
+            updatelayers: true,
+            layeradded: false,
+            isMobile: mobileAndTabletCheck(),
+        };
+        // API URLS
+        this.URLS = {
+            FEATURE_NAMES: "api/getfeaturenames",
+            IMG_DATES: "/api/getimagenames",
+            SINGLE_IMAGE: "/api/getsingleimage",
+            COMPOSITE_IMAGE: "/api/getcompositeimage",
+            legalMines: "api/getlegalmines",
+            GEE_LAYER: "api/getgeetiles",
+            MUNS: "api/getmunicipallayer",
+            INFO: "api/getinfo",
+        };
+        // overall app parameters
+        this.appparams = {
+            minprobability: props.minprobability,
+            maxprobability: props.maxprobability,
+            minyear: props.minyear,
+            maxyear: props.maxyear,
+        };
+        // initial component states
+        this.appstates = {
+            slidershidden: true,
+            statshidden: true,
+            downloadhidden: true,
+            subscribehidden: true,
+            validatehidden: true,
+            searchhidden: true,
+            appinfohidden: true,
+        };
+        this.compositeparams = {};
+        this.persistentstates = {
+            advancedoptions: false,
+            showcomposite: false,
+            imageDates: [],
+            selectedDate: false,
+            regionSelected: false,
+            featureNames: {},
+            sublist: [],
+        };
+        // combining everything to app state
+        this.state = {
+            ...this.appparams,
+            ...this.appstates,
+            ...this.persistentstates,
+            // reload limit for layers that could not be loaded
+            reloadCount: 0
+        };
+    }
+
+    // set up parameters after components are mounted
+    componentDidMount() {
+        // render maps
+        this.map = new mapboxgl.Map({
+            container: "mapbox",
+            style: "mapbox://styles/mapbox/"
+                + (this.flags.isMobile ? "dark-v10" : "satellite-streets-v9"),
+            center: [-73.5609339, 4.6371205],
+            zoom: 5,
+        });
+
+        this.map.on("load", () => {
+            this.map.addControl(new mapboxgl.NavigationControl({showCompass: false}));
+
+            this.addLayerSources([
+                "eeLayer",
+                "municipalBounds",
+                "otherAuthorizations",
+                //'nationalParks',
+                "tierrasDeCom",
+                "resguardos",
+                "legalMines",
+                "protectedAreas",
+            ]);
+
+            this.flags.layeradded = true;
+            const overlays = {
+                "eeLayer": "Prediction",
+                "municipalBounds": "Municipal Boundaries",
+                "legalMines": "Legal mines",
+                // 'nationalParks': 'National Parks',
+                "otherAuthorizations": "Other Authorizations",
+                "tierrasDeCom": "Ethnic territories I",
+                "resguardos": "Ethnic territories II",
+                "protectedAreas": "Protected Areas",
+            };
+            var opacity = new OpacityControl({
+                overLayers: overlays,
+                visibleOverlays: ["eeLayer"],
+                opacityControl: true,
+            });
+            this.map.addControl(opacity, "bottom-right");
+            this.getGEELayers([
+                "municipalBounds",
+                "otherAuthorizations", //'nationalParks',
+                "tierrasDeCom",
+                "resguardos",
+                "legalMines",
+                "protectedAreas",
+            ]);
+
+            this.map.on("mousemove", e => {
+                var lat = toPrecision(e.lngLat.lat, 4);
+                var lng = toPrecision(e.lngLat.lng, 4);
+                var hud_shell = document.getElementById("lnglathud-shell");
+                var hud = document.getElementById("lnglathud");
+                hud_shell.style.display = "inherit";
+                hud.innerHTML = [lat, lng].join(", ");
+            });
+            this.map.on("mouseout", () => {
+                var hud_shell = document.getElementById("lnglathud-shell");
+                hud_shell.style.display = "none";
+            });
+            this.map.on("click", e => {
+                const lat = e.lngLat.lat,
+                    lng = e.lngLat.lng
+                // if (!this.state.selectedDate) {
+                //     url +=
+                //             "&minp=" +
+                //             this.compositeparams.minprobability +
+                //             "&maxp=" +
+                //             this.compositeparams.maxprobability +
+                //             "&miny=" +
+                //             this.compositeparams.minyear +
+                //             "&maxy=" +
+                //             this.compositeparams.maxyear;
+                // }
+                var popup = new mapboxgl.Popup({closeOnClick: true})
+                    .setLngLat([lng, lat])
+                    .setHTML('<p>Loading...<p>')
+                    .addTo(this.map);
+
+                const visible = [
+                    this.isLayerVisible("eeLayer") && "eeLayer",
+                    this.isLayerVisible("municipalBounds") && "municipalBounds",
+                    this.isLayerVisible("protectedAreas") && "protectedAreas",
+                    this.isLayerVisible("otherAuthorizations") && "otherAuthorizations",
+                    this.isLayerVisible("legalMines") && "legalMines",
+                    this.isLayerVisible("tierrasDeCom") && "tierrasDeCom",
+                    this.isLayerVisible("resguardos") && "resguardos",
+                ].filter(e => e);
+
+                fetch(this.URLS.INFO,
+                      {
+                          method: "POST",
+                          headers: {
+                              "Accept": "application/json",
+                              "Content-Type": "application/json",
+                              "X-CSRFToken": getCookie('csrftoken')
+                          },
+                          body: JSON.stringify({
+                              lat: lat,
+                              lng: lng,
+                              date: this.state.selectedDate,
+                              visible: visible
+                          })
+                      }
+                )
+                    .then(resp => resp.json())
+                    .then(resp => {
+                        let ln = toPrecision(lng, 4);
+                        let lt = toPrecision(lat, 4);
+                        let innerHTML = `<b>Lat, lon</b>: ${lt}, ${ln}<br/>`;
+                        if (resp.action == "Error") {
+                            innerHTML += resp.message;
+                        } else {
+                            const {
+                                eeLayer,
+                                municipalBounds,
+                                protectedAreas,
+                                otherAuthorizations,
+                                legalMines,
+                                tierrasDeCom,
+                                resguardos
+                            } = resp.value
+                            if (this.isLayerVisible("eeLayer")) {
+                                let cl = eeLayer ? "Detected" : "Not Detected";
+                                innerHTML += `<b>Mining Activity</b>: ${cl}<br/>`;
+                            }
+                            if (this.isLayerVisible("municipalBounds")) {
+                                let loc = municipalBounds || "Outside Region of Interest"
+                                innerHTML += `<b>Located In</b>:${loc}<br/>`;
+                            }
+                            if (this.isLayerVisible("protectedAreas") && protectedAreas[0]) {
+                                let pa = `Category: ${protectedAreas[0]} <br/> Name: ${protectedAreas[1]}`;
+                                innerHTML += `<b>Protected Area</b><br>${pa}<br/>`;
+                            }
+                            // if(this.isLayerVisible("protectedAreas") && resp.value[5]){
+                            //   innerHTML += `<b>National Park:</b> ${resp.value[5]} <br/>`
+                            // }
+                            if (this.isLayerVisible("otherAuthorizations") && otherAuthorizations) {
+                                innerHTML += `<b>Other Authorizations:</b> ${otherAuthorizations} <br/>`;
+                            }
+                            if (this.isLayerVisible("legalMines") && legalMines) {
+                                innerHTML += `<b>Legal Mine:</b> ${legalMines} <br/>`;
+                            }
+                            if (this.isLayerVisible("tierrasDeCom") && tierrasDeCom) {
+                                innerHTML += `<b>Ethnic Territories I:</b> ${tierrasDeCom} <br/>`;
+                            }
+                            if (this.isLayerVisible("resguardos") && resguardos) {
+                                innerHTML += `<b>Ethnic Territories II:</b> ${resguardos} <br/>`;
+                            }
+                        }
+                        popup.setHTML(innerHTML);
+                    })
+                    .catch(err => console.log(err));
+            });
+        });
+        // render sliders
+        this.probSlider = new rSlider({
+            target: "#probabilitySlider",
+            values: {min: 0, max: 100},
+            step: 1,
+            range: true,
+            scale: false,
+            labels: false,
+            set: [this.appparams.minprobability, this.appparams.maxprobability],
+        });
+
+        this.getImageDates();
+
+        this.getFeatureNames();
+        // call initial state functions
     }
 
     isLayerVisible(layer) {
@@ -74,7 +252,7 @@ class OuterShell extends React.Component {
     }
 
     // function to toggle between visible panels
-    togglePanel(e, panelkey) {
+    togglePanel(panelkey) {
         document.activeElement.blur();
         var newstate = {[panelkey]: !this.state[panelkey]};
         this.setState({...this.appstates, ...newstate});
@@ -86,6 +264,7 @@ class OuterShell extends React.Component {
 
     // function to call when slider values are changed
     slidersadjusted() {
+        var tileURL
         if (this.state.showcomposite) {
             var probvals = this.probSlider
                 .getValue()
@@ -98,7 +277,7 @@ class OuterShell extends React.Component {
                 minyear: yearvals[0],
                 maxyear: yearvals[1],
             };
-            var tileURL =
+            tileURL =
                 this.URLS.COMPOSITE_IMAGE +
                 "?minp=" +
                 this.compositeparams.minprobability +
@@ -113,7 +292,7 @@ class OuterShell extends React.Component {
             });
         } else {
             var iid = document.getElementById("selectimagedate").value;
-            var tileURL = this.URLS.SINGLE_IMAGE + "?id=" + iid;
+            tileURL = this.URLS.SINGLE_IMAGE + "?id=" + iid;
             this.setState({
                 selectedDate: iid,
             });
@@ -122,8 +301,7 @@ class OuterShell extends React.Component {
     }
 
     getImageDates() {
-        var tileURL = this.URLS.IMG_DATES;
-        fetch(tileURL)
+        fetch(this.URLS.IMG_DATES)
             .then(res => res.json())
             .then(
                 result => {
@@ -142,9 +320,7 @@ class OuterShell extends React.Component {
                         imageDates: result.ids,
                         selectedDate: result.ids[0],
                     });
-
-                    var tileURL = this.URLS.SINGLE_IMAGE + "?id=" + result.ids[0];
-                    this.refreshlayers(tileURL);
+                    this.refreshlayers(this.URLS.SINGLE_IMAGE + "?id=" + result.ids[0]);
                 },
                 error => {
                     l(error);
@@ -212,15 +388,15 @@ class OuterShell extends React.Component {
                         if (list.length > 0) this.getGEELayers(list);
                     } catch (err) {
                         console.log(err);
-                        this.reloadCount++;
-                        if (this.reloadCount < 30) list.push(name);
+                        this.setState(prevState => ({reloadCount: prevState.reloadCount + 1}))
+                        if (this.state.reloadCount < 30) list.push(name);
                         if (list.length > 0) this.getGEELayers(list);
                     }
                 },
                 error => {
                     l(error);
-                    this.reloadCount++;
-                    if (this.reloadCount < 30) list.push(name);
+                    this.setState(prevState => ({reloadCount: prevState.reloadCount + 1}));
+                    if (this.state.reloadCount < 30) list.push(name);
                     if (list.length > 0) this.getGEELayers(list);
                 }
             );
@@ -245,11 +421,11 @@ class OuterShell extends React.Component {
             .then(
                 result => {
                     try {
-                        this.map.getSource("ee-Layer").tiles = [result.url];
+                        this.map.getSource("eeLayer").tiles = [result.url];
                         // clear existing tile cache and force map refresh
-                        this.map.style.sourceCaches["ee-Layer"].clearTiles();
-                        this.map.style.sourceCaches["ee-Layer"].update(this.map.transform);
-                        document.getElementsByClassName("vis-ee-Layer")[0].style["background"] =
+                        this.map.style.sourceCaches["eeLayer"].clearTiles();
+                        this.map.style.sourceCaches["eeLayer"].update(this.map.transform);
+                        document.getElementsByClassName("vis-eeLayer")[0].style["background"] =
                             "#" + result.visparams.palette[0];
                         this.map.triggerRepaint();
                     } catch (err) {
@@ -269,165 +445,6 @@ class OuterShell extends React.Component {
             regionSelected: [level, name],
         });
     }
-    // set up parameters after components are mounted
-    componentDidMount() {
-        // render maps
-        this.map = new mapboxgl.Map({
-            container: this.mapContainer,
-            style:
-                "mapbox://styles/mapbox/" +
-                (this.flags.isMobile ? "dark-v10" : "satellite-streets-v9"),
-            center: [-73.5609339, 4.6371205],
-            zoom: 5,
-        });
-
-        this.map.on("load", e => {
-            this.map.addControl(new mapboxgl.NavigationControl({showCompass: false}));
-            this.map.addSource("mapbox-streets", {
-                type: "raster",
-                url: "mapbox://mapbox.streets",
-                tileSize: 256,
-            });
-            this.map.addLayer({
-                id: "mapbox-streets",
-                type: "raster",
-                source: "mapbox-streets",
-            });
-
-            this.addLayerSources([
-                "ee-Layer",
-                "municipal_bounds",
-                "other_authorizations", //'national_parks',
-                "tierras_de_com",
-                "resguardos",
-                "legal_mines",
-                "protected_areas",
-            ]);
-
-            this.flags.layeradded = true;
-            const overlays = {
-                "ee-Layer": "Prediction",
-                "municipal_bounds": "Municipal Boundaries",
-                "legal_mines": "Legal mines",
-                // 'national_parks': 'National Parks',
-                "other_authorizations": "Other Authorizations",
-                "tierras_de_com": "Ethnic territories I",
-                "resguardos": "Ethnic territories II",
-                "protected_areas": "Protected Areas",
-                "mapbox-streets": "Mapbox Streets",
-            };
-            var opacity = new OpacityControl({
-                // baseLayers:baseLayers,
-                overLayers: overlays,
-                opacityControl: true,
-            });
-            this.map.addControl(opacity, "bottom-right");
-            this.getGEELayers([
-                "municipal_bounds",
-                "other_authorizations", //'national_parks',
-                "tierras_de_com",
-                "resguardos",
-                "legal_mines",
-                "protected_areas",
-            ]);
-
-            this.map.on("mousemove", e => {
-                // var lat = e.lngLat.lat;
-                // var lng = e.lngLat.lng;
-                var lat = Math.round(e.lngLat.lat * 10000) / 10000;
-                var lng = Math.round(e.lngLat.lng * 10000) / 10000;
-                var hud_shell = document.getElementById("lnglathud-shell");
-                var hud = document.getElementById("lnglathud");
-                hud_shell.style.display = "inherit";
-                hud.innerHTML = [lat, lng].join(", ");
-            });
-            this.map.on("mouseout", e => {
-                var hud_shell = document.getElementById("lnglathud-shell");
-                hud_shell.style.display = "none";
-            });
-            this.map.on("click", e => {
-                t = this.map;
-                let lat = e.lngLat.lat,
-                    lng = e.lngLat.lng;
-                let url =
-                    this.URLS.INFO +
-                    "?lat=" +
-                    e.lngLat.lat +
-                    "&lon=" +
-                    e.lngLat.lng +
-                    "&image=" +
-                    this.state.selectedDate;
-                if (!this.state.selectedDate) {
-                    url +=
-                        "&minp=" +
-                        this.compositeparams.minprobability +
-                        "&maxp=" +
-                        this.compositeparams.maxprobability +
-                        "&miny=" +
-                        this.compositeparams.minyear +
-                        "&maxy=" +
-                        this.compositeparams.maxyear;
-                }
-                fetch(url)
-                    .then(resp => resp.json())
-                    .then(resp => {
-                        let ln = Math.ceil(lng * 10000) / 10000;
-                        let lt = Math.ceil(lat * 10000) / 10000;
-                        let innerHTML = "";
-                        if (resp.action == "Error") {
-                            innerHTML = `<b>${lt},${ln}</b>:<br/> ${resp.message}`;
-                        } else {
-                            innerHTML = `<b>${lt},${ln}</b><br/>`;
-                            if (this.isLayerVisible("ee-Layer")) {
-                                let cl = resp.value[0] ? "Detected" : "Not Detected";
-                                innerHTML += `<b>Mining Activity</b>: ${cl}<br/>`;
-                            }
-                            if (this.isLayerVisible("municipal_bounds")) {
-                                let loc = resp.value[1]
-                                    ? [resp.value[1], resp.value[2]].join(", ")
-                                    : "Outside Region of Interest";
-                                innerHTML += `<b>Located In</b>:${loc}<br/>`;
-                            }
-                            if (this.isLayerVisible("protected_areas") && resp.value[3]) {
-                                let pa = `Category: ${resp.value[3]} <br/> Name: ${resp.value[4]}`;
-                                innerHTML += `<b>Protected Area</b><br>${pa}<br/>`;
-                            }
-                            // if(this.isLayerVisible("protected_areas") && resp.value[5]){
-                            //   innerHTML += `<b>National Park:</b> ${resp.value[5]} <br/>`
-                            // }
-                            if (this.isLayerVisible("other_authorizations") && resp.value[6]) {
-                                innerHTML += `<b>Other Authorizations:</b> ${resp.value[6]} <br/>`;
-                            }
-                            if (this.isLayerVisible("legal_mines") && resp.value[7]) {
-                                innerHTML += `<b>Legal Mine:</b> ${resp.value[7]} <br/>`;
-                            }
-                            if (this.isLayerVisible("tierras_de_com") && resp.value[8]) {
-                                innerHTML += `<b>Ethnic Territories I:</b> ${resp.value[8]} <br/>`;
-                            }
-                        }
-                        var popup = new mapboxgl.Popup({closeOnClick: false})
-                            .setLngLat([lng, lat])
-                            .setHTML(innerHTML)
-                            .addTo(this.map);
-                    });
-            });
-        });
-        // render sliders
-        this.probSlider = new rSlider({
-            target: "#probabilitySlider",
-            values: {min: 0, max: 100},
-            step: 1,
-            range: true,
-            scale: false,
-            labels: false,
-            set: [this.appparams.minprobability, this.appparams.maxprobability],
-        });
-
-        this.getImageDates();
-
-        this.getFeatureNames();
-        // call initial state functions
-    }
 
     // set up actions to render app
     render() {
@@ -438,29 +455,26 @@ class OuterShell extends React.Component {
                     <SideIcons
                         parentclass={this.state.statshidden ? "" : "active-icon"}
                         glyphicon="glyphicon-stats"
-                        clickhandler={(e => this.togglePanel(e, "statshidden")).bind(this)}
+                        clickhandler={(() => this.togglePanel("statshidden")).bind(this)}
                         tooltip="Stats"
                     />
                     <SideIcons
                         parentclass={this.state.slidershidden ? "" : "active-icon"}
                         glyphicon="glyphicon-filter"
-                        clickhandler={(e => this.togglePanel(e, "slidershidden")).bind(this)}
+                        clickhandler={(() => this.togglePanel("slidershidden")).bind(this)}
                         tooltip="Sliders"
                     />
                     <SideIcons
                         parentclass={this.state.downloadhidden ? "" : "active-icon"}
                         glyphicon="glyphicon-download-alt"
-                        clickhandler={(e => this.togglePanel(e, "downloadhidden")).bind(this)}
+                        clickhandler={(() => this.togglePanel("downloadhidden")).bind(this)}
                         tooltip="Download data"
                     />
                 </div>
             );
         return (
-            <div className="shell" {...this.props}>
-                <div className="app-bar">
-                    <div className="sidebar-icon gold-drop app-icon"></div>
-                </div>
-                <div ref={el => (this.mapContainer = el)}></div>
+            <div className="shell">
+                <div id="mapbox"></div>
                 <SliderPanel
                     ishidden={this.state.slidershidden}
                     slideradjusted={this.slidersadjusted.bind(this)}
@@ -497,28 +511,27 @@ class OuterShell extends React.Component {
                 />
                 <div className="sidebar">
                     <div className="sidebar-icon gold-drop app-icon"></div>
-                    {/* <SideIcons parentclass='gold-drop' glyphicon='glyphicon-question-sign' />*/}
                     <SideIcons
                         parentclass={this.state.subscribehidden ? "" : "active-icon"}
                         glyphicon="glyphicon-envelope"
-                        clickhandler={(e => this.togglePanel(e, "subscribehidden")).bind(this)}
+                        clickhandler={(() => this.togglePanel("subscribehidden")).bind(this)}
                         tooltip="Subscribe"
                     />
                     <SideIcons
                         parentclass={this.state.validatehidden ? "" : "active-icon"}
                         glyphicon="glyphicon-ok"
-                        clickhandler={(e => this.togglePanel(e, "validatehidden")).bind(this)}
+                        clickhandler={(() => this.togglePanel("validatehidden")).bind(this)}
                         tooltip="Validate"
                     />
                     <SideIcons
                         parentclass={this.state.searchhidden ? "" : "active-icon"}
                         glyphicon="glyphicon-search"
-                        clickhandler={(e => this.togglePanel(e, "searchhidden")).bind(this)}
+                        clickhandler={(() => this.togglePanel("searchhidden")).bind(this)}
                         tooltip="Search"
                     />
                     <button
                         className="sidebar-icon"
-                        onClick={e => {
+                        onClick={() => {
                             this.setState({
                                 advancedoptions: !this.state.advancedoptions,
                                 ...this.appstates,
@@ -542,13 +555,13 @@ class OuterShell extends React.Component {
                     <SideIcons
                         parentclass="disclaimer"
                         glyphicon="glyphicon-info-sign"
-                        clickhandler={(e => this.togglePanel(e, "appinfohidden")).bind(this)}
+                        clickhandler={(() => this.togglePanel("appinfohidden")).bind(this)}
                         tooltip="App Info"
                     />
                 </div>
                 <AppInfo
                     ishidden={this.state.appinfohidden}
-                    onOuterClick={(e => this.togglePanel(e, "appinfohidden")).bind(this)}
+                    onOuterClick={(() => this.togglePanel("appinfohidden")).bind(this)}
                 />
                 <div id="lnglathud-shell">
                     <span id="lnglathud"></span>

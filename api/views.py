@@ -113,26 +113,26 @@ def getMunicipalLayer(request):
 
 def getGEETiles(request):
     name = request.GET.get('name')
-    if (name == "national_parks"):
+    if (name == "nationalParks"):
         table = ee.FeatureCollection("users/comimoapp/Shapes/National_Parks")
         style = {'color':'#6f6', 'fillColor':'#0000', 'width':1}
-    elif (name == "municipal_bounds"):
+    elif (name == "municipalBounds"):
         table = ee.FeatureCollection("users/comimoapp/Shapes/Municipal_Bounds")
         style = {'color':'#f66', 'fillColor':'#0000', 'width':1}
-    elif (name == "other_authorizations"):
+    elif (name == "otherAuthorizations"):
         table = ee.FeatureCollection("users/comimoapp/Shapes/Solicitudes_de_Legalizacion_2001")\
                   .merge(ee.FeatureCollection("users/comimoapp/Shapes/Solicitudes_de_Legalizacion_2010"))
         style = {"color":"#047", "fillColor":"#00447711", "width":1}
-    elif (name == "legal_mines"):
+    elif (name == "legalMines"):
         table = ee.FeatureCollection("users/comimoapp/Shapes/Legal_Mines")
         style = {'color':'#ff0', 'fillColor':'#ffff0011', 'width':1}
-    elif (name == 'tierras_de_com'):
+    elif (name == 'tierrasDeCom'):
         table = ee.FeatureCollection("users/comimoapp/Shapes/Tierras_de_comunidades_negras")
         style = {'color':'#fd9', 'fillColor':'#ffdd9911', 'width':1}
     elif (name == 'resguardos'):
         table = ee.FeatureCollection("users/comimoapp/Shapes/Resguardos_Indigenas")
         style = {'color':'#d9d', 'fillColor':'#dd99dd11', 'width':1}
-    elif (name == 'protected_areas'):
+    elif (name == 'protectedAreas'):
         # bounds = ee.FeatureCollection('users/comimoapp/Shapes/Level0')
         table = ee.FeatureCollection("users/comimoapp/Shapes/RUNAP")#.filterBounds(bounds)
         style = {'color':'#35f0ab', 'fillColor':'#dd99dd11', 'width':1}
@@ -229,49 +229,71 @@ def getAreaPredictedTS(request):
 
 def getInfo(request):
     try:
-        lat = float(request.GET.get('lat'))
-        lng = float(request.GET.get('lon'))
-        image = request.GET.get('image')
+        req = json.loads(request.body)
+        date = req.get('date')
         authGEE()
-        if image != "false":
-            image = ee.Image(IMAGE_REPO+'/'+image).select([0],['cval'])
+        if date != "false":
+            image = ee.Image(IMAGE_REPO + '/' + date).select([0],['cval'])
         else:
-            minp = int(request.GET.get('minp'))/100.
-            maxp = int(request.GET.get('maxp'))/100.
-            miny = request.GET.get('miny')
-            maxy = request.GET.get('maxy')
+            minp = int(req.get('minp')) / 100.
+            maxp = int(req.get('maxp')) / 100.
+            miny = req.get('miny')
+            maxy = req.get('maxy')
             image = getComposite(miny, maxy).select([0],['cval'])
-        dist = ee.FeatureCollection(LEVELS['mun'])
+
+        lat = float(req.get('lat'))
+        lng = float(req.get('lng'))
         point = ee.Geometry.Point(lng,lat)
-        pt = image.sampleRegions(ee.Feature(point))
-        print(pt.getInfo())
-        # f = dist.filterBounds(point)
-        classval = ee.Algorithms.If(pt.size().gt(0),pt.first().get('cval'),0)
 
-        admnames = ee.FeatureCollection("users/comimoapp/Shapes/Municipal_Bounds").filterBounds(point)
-        admnames = ee.Algorithms.If(admnames.size().gt(0),[admnames.first().get('MPIO_CNMBR'),
-                                                        admnames.first().get('DPTO_CNMBR')],[False,False])
+        visible = req.get('visible')
+        vals = {}
 
-        pa = ee.FeatureCollection("users/comimoapp/Shapes/RUNAP").filterBounds(point)
-        pa = ee.Algorithms.If(pa.size().gt(0),[pa.first().get('categoria'),
-                                               pa.first().get('nombre')],[False,False])
+        if "eeLayer" in visible:
+            pt = image.sampleRegions(ee.Feature(point))
+            vals["eeLayer"] = ee.Algorithms.If(pt.size().gt(0),pt.first().get('cval'),0).getInfo()
 
-        npark = ee.FeatureCollection("users/comimoapp/Shapes/National_Parks").filterBounds(point)
-        npark = ee.Algorithms.If(npark.size().gt(0),[npark.first().get('Name')],[False])
+        if "municipalBounds" in visible:
+            admnames = ee.FeatureCollection("users/comimoapp/Shapes/Municipal_Bounds").filterBounds(point)
+            vals["municipalBounds"] = ee.Algorithms.If(admnames.size().gt(0),
+                                        admnames.first().get('MPIO_CNMBR').getInfo() + ", " + admnames.first().get('DPTO_CNMBR').getInfo(),
+                                        False).getInfo()
 
-        oth_auth = ee.FeatureCollection("users/comimoapp/Shapes/Solicitudes_de_Legalizacion_2001")\
-                  .merge(ee.FeatureCollection("users/comimoapp/Shapes/Solicitudes_de_Legalizacion_2010"))\
-                  .filterBounds(point)
-        oth_auth = ee.Algorithms.If(oth_auth.size().gt(0),[oth_auth.first().get('Name')],[False])
+        if "protectedAreas" in visible:
+            pa = ee.FeatureCollection("users/comimoapp/Shapes/RUNAP").filterBounds(point)
+            vals["protectedAreas"] = ee.Algorithms.If(pa.size().gt(0),
+                                        [pa.first().get('categoria'),  pa.first().get('nombre')],
+                                        [False,False]).getInfo()
 
-        legal_mine = ee.FeatureCollection("users/comimoapp/Shapes/Legal_Mines").filterBounds(point)
-        legal_mine = ee.Algorithms.If(legal_mine.size().gt(0),[legal_mine.first().get('CODIGO_RMN')],[False])
+        # npark = ee.FeatureCollection("users/comimoapp/Shapes/National_Parks").filterBounds(point)
+        # npark = ee.Algorithms.If(npark.size().gt(0),[npark.first().get('Name')],[False])
 
-        et1 = ee.FeatureCollection("users/comimoapp/Shapes/Tierras_de_comunidades_negras").filterBounds(point)
-        et1 = ee.Algorithms.If(et1.size().gt(0),[et1.first().get('Name')],[False])
+        if "otherAuthorizations" in visible:
+            oth_auth = ee.FeatureCollection("users/comimoapp/Shapes/Solicitudes_de_Legalizacion_2001")\
+                    .merge(ee.FeatureCollection("users/comimoapp/Shapes/Solicitudes_de_Legalizacion_2010"))\
+                    .filterBounds(point)
+            vals["otherAuthorizations"] = ee.Algorithms.If(oth_auth.size().gt(0),
+                                        oth_auth.first().get('Name'),
+                                        False).getInfo()
 
-        vals = ee.List([classval]).cat(admnames).cat(pa).cat(npark).cat(oth_auth).cat(legal_mine).cat(et1).getInfo()
-        return JsonResponse({'action':'Success','value':vals})
+        if "legalMines" in visible:
+            legal_mine = ee.FeatureCollection("users/comimoapp/Shapes/Legal_Mines").filterBounds(point)
+            vals["legalMines"] = ee.Algorithms.If(legal_mine.size().gt(0),
+                                        legal_mine.first().get('CODIGO_RMN'),
+                                        False).getInfo()
+
+        if "tierrasDeCom" in visible:
+            et1 = ee.FeatureCollection("users/comimoapp/Shapes/Tierras_de_comunidades_negras").filterBounds(point)
+            vals["tierrasDeCom"] = ee.Algorithms.If(et1.size().gt(0),
+                                        et1.first().get('Name'),
+                                        False).getInfo()
+
+        if "ResguardosIndigenas" in visible:
+            et2 = ee.FeatureCollection("users/comimoapp/Shapes/Resguardos_Indigenas").filterBounds(point)
+            vals["ResguardosIndigenas"] = ee.Algorithms.If(et1.size().gt(0),
+                                        et1.first().get('RINOMBRE'),
+                                        False).getInfo()
+
+        return JsonResponse({'action': 'Success', 'value': vals})
     except Exception as e:
         print(e)
-        return JsonResponse({'action':'Error','message':'Something went wrong!'},status=500)
+        return JsonResponse({'action': 'Error', 'message': 'Something went wrong!'}, status=500)

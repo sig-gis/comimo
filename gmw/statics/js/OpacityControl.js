@@ -2,6 +2,7 @@
 const defaultOptions = {
     baseLayers: null,
     overLayers: null,
+    visibleOverlays: [],
     opacityControl: false,
 };
 
@@ -10,6 +11,7 @@ class OpacityControl {
         // オプション設定
         this._baseLayersOption = options.baseLayers || defaultOptions.baseLayers;
         this._overLayersOption = options.overLayers || defaultOptions.overLayers;
+        this._visibleOverlaysOption = options.visibleOverlays || defaultOptions.visibleOverlays;
         this._opacityControlOption = options.opacityControl || defaultOptions.opacityControl;
         this._expanded = false;
     }
@@ -52,15 +54,17 @@ class OpacityControl {
         return element;
     }
 
-    // チェックボックス作成
     _checkBoxControlAdd(layerId) {
         var element = document.createElement("div");
-        // チェックボックス追加
         const checkBox = document.createElement("input");
         checkBox.setAttribute("type", "checkbox");
         checkBox.id = layerId;
-        // 全レイヤ非表示
-        this._map.setLayoutProperty(layerId, "visibility", "none");
+        if (this._visibleOverlaysOption.includes(layerId)) {
+            this._map.setLayoutProperty(layerId, "visibility", "visible");
+            checkBox.setAttribute("checked", true);
+        } else {
+            this._map.setLayoutProperty(layerId, "visibility", "none");
+        }
         element.appendChild(checkBox);
 
         // チェックボックスイベント
