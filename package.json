@@ -23,7 +23,6 @@
     "prettier": "^2.2.1"
   },
   "scripts": {
-    "lint": "./node_modules/.bin/eslint gmw/statics/js/*",
-    "prettier": "./node_modules/.bin/prettier --write gmw/statics/js/*.*"
+    "lint": "./node_modules/.bin/eslint gmw/statics/js/*"
   }
 }
