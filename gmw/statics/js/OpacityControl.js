@@ -3,7 +3,7 @@ const defaultOptions = {
     baseLayers: null,
     overLayers: null,
     visibleOverlays: [],
-    opacityControl: false,
+    opacityControl: false
 };
 
 class OpacityControl {
@@ -19,7 +19,7 @@ class OpacityControl {
     // ラジオボタン作成
     _radioButtonControlAdd(layerId) {
         // ラジオボタン追加
-        var element = document.createElement("div");
+        const element = document.createElement("div");
 
         const radioButton = document.createElement("input");
         radioButton.setAttribute("type", "radio");
@@ -55,7 +55,7 @@ class OpacityControl {
     }
 
     _checkBoxControlAdd(layerId) {
-        var element = document.createElement("div");
+        const element = document.createElement("div");
         const checkBox = document.createElement("input");
         checkBox.setAttribute("type", "checkbox");
         checkBox.id = layerId;
@@ -82,7 +82,7 @@ class OpacityControl {
 
         const layerName = document.createElement("span");
         layerName.appendChild(document.createTextNode(this._overLayersOption[layerId]));
-        var vis = this._map.getSource(layerId)._options.vis;
+        const vis = this._map.getSource(layerId)._options.vis;
         if (vis) {
             const icon = document.createElement("span");
             icon.className = "legend-icon vis-" + layerId;
@@ -95,7 +95,7 @@ class OpacityControl {
 
     // スライドバー作成
     _rangeControlAdd(layerId) {
-        var element = document.createElement("div");
+        const element = document.createElement("div");
         // スライドバー追加
         const range = document.createElement("input");
         range.type = "range";
@@ -120,33 +120,33 @@ class OpacityControl {
         this._container.className = "mapboxgl-ctrl mapboxgl-ctrl-group";
         this._container.id = "opacity-control";
 
-        var expandDiv = document.createElement("div");
+        const expandDiv = document.createElement("div");
         expandDiv.className = "expand-legend-div";
 
-        var expandBtn = document.createElement("button");
+        const expandBtn = document.createElement("button");
         expandBtn.style.width = "calc(100% - 10px)";
 
-        var expandIco = document.createElement("span");
+        const expandIco = document.createElement("span");
         expandIco.id = "expand-legend-ico";
         expandIco.className = "glyphicon glyphicon-plus";
-        var expandTxt = document.createElement("span");
+        const expandTxt = document.createElement("span");
         expandTxt.innerHTML = " Legend";
 
         expandBtn.appendChild(expandIco);
         expandBtn.appendChild(expandTxt);
 
         expandBtn.onclick = e => {
-            var legend = document.getElementById("legend-div");
-            var ico = document.getElementById("expand-legend-ico");
+            const legend = document.getElementById("legend-div");
+            const ico = document.getElementById("expand-legend-ico");
             this._expanded = !this._expanded;
             legend.style.display = this._expanded ? "block" : "none";
-            var glyphclass = this._expanded ? "glyphicon-minus" : "glyphicon-plus";
+            const glyphclass = this._expanded ? "glyphicon-minus" : "glyphicon-plus";
             ico.className = "glyphicon " + glyphclass;
         };
 
         expandDiv.appendChild(expandBtn);
 
-        var legendDiv = document.createElement("div");
+        const legendDiv = document.createElement("div");
         legendDiv.id = "legend-div";
         legendDiv.style.display = this._expanded ? "block" : "none";
 

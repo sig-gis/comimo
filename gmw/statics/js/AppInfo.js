@@ -8,7 +8,7 @@ class AppInfo extends React.Component {
                 <div className="inner-container" onClick={e => e.stopPropagation()}>
                     <div className="user-section" style={{float: "right"}}>
                         {USER_ADM && (
-                            <a style={{marginRight: "1rem"}} href="/download">
+                            <a href="/download" style={{marginRight: "1rem"}}>
                                 Download Validated data
                             </a>
                         )}
@@ -25,13 +25,13 @@ class AppInfo extends React.Component {
                     </p>
                     <a
                         href="https://docs.google.com/document/d/1xrLgL_Ai8lR8E4ZsF0AnzjlZESMVwKuUjOgSBJE3bqo"
-                        target="_blank"
                         rel="noopener noreferrer"
                         style={{margin: ".5rem 0"}}
+                        target="_blank"
                     >
                         Hacer clic aquí del condiciones de uso
                     </a>
-                    <br />
+                    <br/>
                     <label style={{margin: "1rem 0"}}>Terms of Use</label>
                     <p>
                         Welcome to Colombian Mining Monitoring. All services available through our
@@ -41,9 +41,9 @@ class AppInfo extends React.Component {
                     </p>
                     <a
                         href="https://docs.google.com/document/d/1kJrlXUlyDRVeVEb1WcPOWBNnzJ1s-9spLTHCxnk8o5E"
-                        target="_blank"
                         rel="noopener noreferrer"
                         style={{margin: ".5rem 0"}}
+                        target="_blank"
                     >
                         Click here for the terms of use
                     </a>

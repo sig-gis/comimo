@@ -1,12 +1,17 @@
 class SubscribePanel extends React.Component {
-    URLS = {
-        SUBS: "subscribe/getsubs",
-        DELSUBS: "subscribe/delsubs",
-        ADDSUBS: "subscribe/addsubs",
-    };
-    state = {
-        subsLoaded: false,
-    };
+    constructor(props) {
+        super(props);
+
+        this.URLS = {
+            SUBS: "subscribe/getsubs",
+            DELSUBS: "subscribe/delsubs",
+            ADDSUBS: "subscribe/addsubs"
+        };
+
+        this.state = {
+            subsLoaded: false
+        };
+    }
 
     componentDidMount() {
         this.getSubs();
@@ -16,9 +21,9 @@ class SubscribePanel extends React.Component {
         fetch(this.URLS.SUBS)
             .then(res => res.json())
             .then(result => {
-                if (result.action == "Success") {
+                if (result.action === "Success") {
                     this.setState({
-                        subsLoaded: true,
+                        subsLoaded: true
                     });
                     this.props.updateSubList(result.regions.sort());
                 }
@@ -27,15 +32,15 @@ class SubscribePanel extends React.Component {
     }
 
     addSubs(region) {
-        if (region != "") {
+        if (region !== "") {
             fetch(this.URLS.ADDSUBS + "?region=" + region[1] + "&level=" + region[0])
                 .then(res => res.json())
                 .then(result => {
-                    if (result.action == "Created") {
-                        var newList = [...this.props.list, result.level + "_" + result.region];
+                    if (result.action === "Created") {
+                        const newList = [...this.props.subList, result.level + "_" + result.region];
                         newList.sort();
                         this.props.updateSubList(newList);
-                    } else if (result.action == "Exists") {
+                    } else if (result.action === "Exists") {
                         alert("You are already subscribed to the region!");
                     }
                 })
@@ -44,19 +49,19 @@ class SubscribePanel extends React.Component {
     }
 
     delSubs(data) {
-        var arr = data.split("_");
-        var level = arr.splice(0, 1);
-        var delConfirm = confirm(
-            "Are you sure you want to stop subscribing to " +
-                arr.reverse().join(", ") +
-                "? You will stop receiving alerts for this region."
+        const arr = data.split("_");
+        const level = arr.splice(0, 1);
+        const delConfirm = confirm(
+            "Are you sure you want to stop subscribing to "
+                + arr.reverse().join(", ")
+                + "? You will stop receiving alerts for this region."
         );
         if (delConfirm) {
             fetch(this.URLS.DELSUBS + "?region=" + arr.reverse().join("_") + "&level=" + level)
                 .then(res => res.json())
                 .then(result => {
-                    if (result.action != "Error") {
-                        const newList = this.props.list.filter(r => r !== result.level + "_" + result.region)
+                    if (result.action !== "Error") {
+                        const newList = this.props.subList.filter(r => r !== result.level + "_" + result.region);
                         this.props.updateSubList(newList);
                     }
                 })
@@ -64,7 +69,7 @@ class SubscribePanel extends React.Component {
         }
     }
 
-    createList(list) {
+    createList(subList) {
         return (
             <table style={{width: "100%", textAlign: "left"}}>
                 <thead>
@@ -75,7 +80,7 @@ class SubscribePanel extends React.Component {
                     </tr>
                 </thead>
                 <tbody>
-                    {list.map((fullRegion, idx) => {
+                    {subList.map((fullRegion, idx) => {
                         const arr = fullRegion.split("_");
                         return (
                             <tr key={fullRegion}>
@@ -86,10 +91,10 @@ class SubscribePanel extends React.Component {
                                 </td>
                                 <td style={{width: "30px"}}>
                                     <input
-                                        value="X"
-                                        type="submit"
                                         className="del-btn"
                                         onClick={() => this.delSubs(fullRegion)}
+                                        type="submit"
+                                        value="X"
                                     />
                                 </td>
                             </tr>
@@ -101,9 +106,10 @@ class SubscribePanel extends React.Component {
     }
 
     render() {
-        var list = <div></div>;
-        if (this.props.list.length == 0) {
-            list = (
+        const {selectedRegion, subList} = this.props;
+        let content;
+        if (subList.length === 0) {
+            content = (
                 <div className="subs-header">
                     <p>
                         {this.state.subsLoaded
@@ -113,27 +119,27 @@ class SubscribePanel extends React.Component {
                 </div>
             );
         } else {
-            list = (
+            content = (
                 <div>
                     <div className="subs-header">
                         {" "}
                         You are subscribed to alerts from following regions
                     </div>
-                    {this.createList(this.props.list)}
-                    <br />
+                    {this.createList(subList)}
+                    <br/>
                 </div>
             );
         }
-        var subtocurrent = "";
-        var selreg = this.props.selectedRegion;
-        if (selreg && this.props.list.indexOf(selreg[0] + "_" + selreg[1]) == -1) {
-            var reg = this.props.selectedRegion[1].split("_");
-            subtocurrent = (
+        let subToCurrent = "";
+
+        if (selectedRegion && subList.indexOf(selectedRegion[0] + "_" + selectedRegion[1]) === -1) {
+            const reg = selectedRegion[1].split("_");
+            subToCurrent = (
                 <div style={{textAlign: "center", width: "100%"}}>
                     <button
-                        type="button"
                         className="btn btn-warning map-upd-btn"
-                        onClick={() => this.addSubs(this.props.selectedRegion)}
+                        onClick={() => this.addSubs(selectedRegion)}
+                        type="button"
                     >
                         Subscribe to {reg[1]}, <i>{reg[0]}</i>
                     </button>
@@ -145,7 +151,7 @@ class SubscribePanel extends React.Component {
             <div
                 className={[
                     "popup-container subs-panel ",
-                    this.props.isHidden ? "see-through" : "",
+                    this.props.isHidden ? "see-through" : ""
                 ].join(" ")}
             >
                 <h1>
@@ -153,18 +159,18 @@ class SubscribePanel extends React.Component {
                 </h1>
                 {USER_STATE ? (
                     <div>
-                        {list}
-                        {subtocurrent}
+                        {content}
+                        {subToCurrent}
                     </div>
                 ) : (
                     <div style={{textAlign: "center", width: "100%"}}>
                         <p> Login to view your subscriptions </p>
                         <button
-                            type="button"
                             className="btn btn-warning map-upd-btn"
                             onClick={() => {
                                 location.href = "accounts/login";
                             }}
+                            type="button"
                         >
                             Login
                         </button>

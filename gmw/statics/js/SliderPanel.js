@@ -1,41 +1,41 @@
 class SliderPanel extends React.Component {
-    getOptions(list) {
-        var options = [];
+    getOptions = list => {
+        const options = [];
         for (let i = 0; i < list.length; i++) {
             options.push(
-                <option value={list[i]} key={i}>
+                <option key={i} value={list[i]}>
                     {list[i]}
                 </option>
             );
         }
         return options;
-    }
+    };
 
     render() {
         // var imageDates = this.props.imageDates;
 
-        var singledate = (
+        const singledate = (
             <div className={this.props.showcomposite ? "see-through ht_0" : ""}>
                 Select a date of prediction
                 <select className="select-image-date" id="selectimagedate">
                     {this.getOptions(this.props.imageDates)}
                 </select>
-                <br />
-                <br />
+                <br/>
+                <br/>
             </div>
         );
 
-        var range = (
+        const range = (
             <div className={this.props.showcomposite ? "" : "see-through ht_0"}>
-                {/*Change sliders to control data*/}
+                {/* Change sliders to control data */}
                 <div className="inputLabel">Sliders to change time-series agreement(%) range</div>
                 <div className="slider-div">
-                    <input type="text" id="probabilitySlider" />
+                    <input id="probabilitySlider" type="text"/>
                 </div>
-                <br />
+                <br/>
                 <div className="inputLabel">Sliders to change years </div>
                 <div className="slider-div">
-                    <input type="text" id="yearSlider" />
+                    <input id="yearSlider" type="text"/>
                 </div>
             </div>
         );
@@ -43,21 +43,21 @@ class SliderPanel extends React.Component {
             <div
                 className={[
                     "popup-container filter-panel ",
-                    this.props.isHidden ? "see-through" : "",
+                    this.props.isHidden ? "see-through" : ""
                 ].join(" ")}
             >
                 <b>FILTER DATA</b>
-                <br />
-                {/*<input type="checkbox" className="form-check-input" id="showcomposite" onChange={this.props.onCheckChange} defaultChecked={this.props.showcomposite}/>
+                <br/>
+                {/* <input type="checkbox" className="form-check-input" id="showcomposite" onChange={this.props.onCheckChange} defaultChecked={this.props.showcomposite}/>
       &nbsp;Show Composite <br/>
-      <small className="form-text text-muted">time series agreement (%)</small>*/}
+      <small className="form-text text-muted">time series agreement (%)</small> */}
                 {singledate}
                 {range}
                 <div style={{textAlign: "center", width: "100%"}}>
                     <button
-                        type="button"
                         className="btn btn-warning map-upd-btn"
                         onClick={this.props.slidersAdjusted}
+                        type="button"
                     >
                         Update Map
                     </button>

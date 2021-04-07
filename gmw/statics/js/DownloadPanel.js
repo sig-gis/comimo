@@ -1,59 +1,52 @@
 class DownloadPanel extends React.Component {
-    state = {
-        generatingLink: false,
-        clipOption: false,
-        downURL: false,
-        fetching: false,
-    };
-    URL = {
-        GETDL: "/api/getdownloadurl",
-    };
+    constructor(props) {
+        super(props);
 
-    radioChange(e) {
-        this.setState({
-            clipOption: document.querySelector("input[name=downloadRegion]:checked").value,
-        });
+        this.URL = {
+            GETDL: "/api/getdownloadurl"
+        };
+
+        this.state = {
+            clipOption: 1,
+            downURL: false,
+            fetching: false
+        };
     }
 
-    getDownloadUrl(e) {
-        if (this.state.clipOption == "1") {
-            var region = "all";
-            var date = this.props.selectedDate;
-        } else if (this.state.clipOption == "2") {
-            var region = this.props.regionSelected[1];
-            var level = this.props.regionSelected[0];
-            var date = this.props.selectedDate;
-        }
-        var url = this.URL.GETDL + "?region=" + region + "&level=" + level + "&date=" + date;
+    getDownloadUrl = () => {
+        const [level, region] = this.state.clipOption === 1
+            ? ["", "all"]
+            : [...this.props.regionSelected, this.props.selectedDate];
+        const date = this.props.selectedDate;
+
+        const url = this.URL.GETDL + "?region=" + region + "&level=" + level + "&date=" + date;
         this.setState({fetching: true});
         fetch(url)
             .then(res => res.json())
-            .then(
-                res => {
-                    if (res.action == "success") {
-                        this.setState({
-                            downURL: [region, level, date, res.url],
-                            fetching: false,
-                        });
-                    }
-                },
-                err => {
-                    l(err);
+            .then(res => {
+                if (res.action === "success") {
+                    this.setState({
+                        downURL: [region, level, date, res.url],
+                        fetching: false
+                    });
                 }
-            );
-    }
+            })
+            .catch(err => {
+                console.log(err);
+            });
+    };
 
     render() {
-        var button = "",
-            link = "";
+        let button = "";
+        let link = "";
         if (this.state.clipOption && this.props.selectedDate) {
             button = (
                 <div style={{textAlign: "center", width: "100%"}}>
                     <button
-                        type="button"
                         className="btn btn-warning map-upd-btn"
-                        onClick={this.getDownloadUrl.bind(this)}
                         disabled={this.state.fetching}
+                        onClick={this.getDownloadUrl}
+                        type="button"
                     >
                         Get download URL for {this.props.selectedDate}
                     </button>
@@ -68,7 +61,7 @@ class DownloadPanel extends React.Component {
                     <span>
                         <a href={this.state.downURL[3]}>
                             Click here to download the{" "}
-                            {this.state.downURL[0] == "all"
+                            {this.state.downURL[0] === "all"
                                 ? "complete data"
                                 : "data within " + this.state.downURL[0]}{" "}
                             for {this.state.downURL[2]}.
@@ -82,29 +75,33 @@ class DownloadPanel extends React.Component {
             <div
                 className={[
                     "popup-container download-panel ",
-                    this.props.isHidden ? "see-through" : "",
+                    this.props.isHidden ? "see-through" : ""
                 ].join(" ")}
             >
                 <h1>
                     <b> DOWNLOAD DATA </b>
                 </h1>
                 <b>Select Region</b>
-                <br />
+                <br/>
                 <input
-                    type="radio"
+                    checked={this.state.clipOption === 1}
                     name="downloadRegion"
-                    value={1}
-                    onChange={this.radioChange.bind(this)}
-                />{" "}
-                Complete Data <br />
+                    onChange={() => this.setState({clipOption: 1})}
+                    type="radio"
+                />
+                {" "}
+                Complete Data
+                <br/>
                 <input
-                    type="radio"
-                    name="downloadRegion"
-                    value={2}
-                    onChange={this.radioChange.bind(this)}
+                    checked={this.state.clipOption === 2}
                     disabled={!this.props.regionSelected}
-                />{" "}
-                Selected Municipality <br />
+                    name="downloadRegion"
+                    onChange={() => this.setState({clipOption: 2})}
+                    type="radio"
+                />
+                {" "}
+                Selected Municipality
+                <br/>
                 {button}
                 {link}
             </div>

@@ -16,8 +16,8 @@ const table = new Tabulator("#datTable", {
         {title: "latitude", field: "x", headerFilter: "input"},
         {title: "date", field: "dataDate", headerFilter: "number"},
         {title: "mine", field: "classNum", headerFilter: "number"},
-        {title: "label", field: "className", headerFilter: "input"},
-    ],
+        {title: "label", field: "className", headerFilter: "input"}
+    ]
 });
 
 let dates = [];
@@ -39,7 +39,7 @@ function fetchDataFor(date) {
         },
         error(err) {
             fetchDataFor(date);
-        },
+        }
     });
 }
 
@@ -50,8 +50,8 @@ $.ajax({
         const options = dates.map(x => `<option value='${x}' disabled=true>${x}</option>`);
         $("#projectDate").html(
             `${
-                "<option value=false selected='selected' disabled>Select Date</option>" +
-                "<option value=all disabled>All Dates</option>"
+                "<option value=false selected='selected' disabled>Select Date</option>"
+                + "<option value=all disabled>All Dates</option>"
             }${options.join("")}`
         );
         dates.map(date => fetchDataFor(date));
@@ -68,7 +68,7 @@ $.ajax({
             // 		}
             // });
         });
-    },
+    }
 });
 
 // table.setData("/download-all")
@@ -182,21 +182,21 @@ $("#download-json").click(() => {
 function formatToGeoJson(data) {
     const fc = {
         type: "FeatureCollection",
-        features: [],
+        features: []
     };
-    data.forEach((item, i) => {
+    data.forEach(item => {
         fc.features.push({
             type: "Feature",
             geometry: {
                 type: "Point",
-                coordinates: [item.y, item.x],
+                coordinates: [item.y, item.x]
             },
             properties: {
                 user: item.id,
                 date: item.dataDate,
                 class: item.classNum,
-                label: item.className,
-            },
+                label: item.className
+            }
         });
     });
     return fc;

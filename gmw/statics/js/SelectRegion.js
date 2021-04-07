@@ -1,9 +1,17 @@
 class SelectRegion extends React.Component {
-    state = {
-        l1names: [],
-        l2names: {},
-        l1name: false,
-    };
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            l1names: [],
+            l2names: {},
+            l1name: false
+        };
+    }
+
+    componentDidMount() {
+        this.getMunNames();
+    }
 
     getMunNames() {
         fetch("/api/getcascadingnames")
@@ -12,7 +20,7 @@ class SelectRegion extends React.Component {
                 res => {
                     this.setState({
                         l1names: Object.keys(res),
-                        l2names: res,
+                        l2names: res
                     });
                 },
                 err => {
@@ -23,23 +31,20 @@ class SelectRegion extends React.Component {
 
     updateL1Selection(e) {
         this.setState({
-            l1name: e.target.value,
+            l1name: e.target.value
         });
     }
 
-    componentDidMount() {
-        this.getMunNames();
-    }
-
     render() {
-        var l1 = [];
+        const l1 = [];
         if (this.state.l1names.length == 0) l1.push(<option key={0}>Loading ... </option>);
-        else
+        else {
             l1.push(
-                <option key={0} value={false} disabled>
+                <option key={0} disabled value={false}>
                     Select a state
                 </option>
             );
+        }
         this.state.l1names.forEach((item, i) => {
             l1.push(
                 <option key={i + 1} value={item}>
@@ -47,11 +52,11 @@ class SelectRegion extends React.Component {
                 </option>
             );
         });
-        var sell2 = "";
+        let sell2 = "";
         if (this.state.l1name) {
-            var l2 = [];
+            const l2 = [];
             l2.push(
-                <option key={0} value={false} disabled>
+                <option key={0} disabled value={false}>
                     Select a Municipality
                 </option>
             );
@@ -74,10 +79,10 @@ class SelectRegion extends React.Component {
                 style={{top: "0px"}}
             >
                 <b>SELECT REGION OF INTEREST</b>
-                <br />
-                <input type="radio" value="mun" /> <b>Municipality</b>
-                <br />
-                Colombia <br />
+                <br/>
+                <input type="radio" value="mun"/> <b>Municipality</b>
+                <br/>
+                Colombia <br/>
                 <select
                     className="select-l1 w_100"
                     id="selectl1"
@@ -85,15 +90,15 @@ class SelectRegion extends React.Component {
                 >
                     {l1}
                 </select>
-                <br />
+                <br/>
                 {sell2}
-                <br />
-                <br />
+                <br/>
+                <br/>
                 <div style={{textAlign: "center", width: "100%"}}>
                     <button
-                        type="button"
                         className="btn btn-warning map-upd-btn"
                         onClick={this.props.regionSelected}
+                        type="button"
                     >
                         Select Region
                     </button>
