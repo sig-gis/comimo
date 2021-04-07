@@ -2,7 +2,7 @@ class AppInfo extends React.Component {
     render() {
         return (
             <div
-                className={["info-modal ", this.props.isHidden ? "see-through" : ""].join(" ")}
+                className={"info-modal " + (this.props.isHidden ? "see-through" : "")}
                 onClick={this.props.onOuterClick}
             >
                 <div className="inner-container" onClick={e => e.stopPropagation()}>
@@ -14,8 +14,8 @@ class AppInfo extends React.Component {
                         )}
                         <a href="/accounts/logout">Log out</a>
                     </div>
-                    <h3 className="heading3"> APP INFO </h3>
-                    <label style={{margin: "1rem 0"}}>Condiciones De Uso</label>
+                    <h2 className="heading3"> APP INFO </h2>
+                    <h3>Condiciones De Uso</h3>
                     <p>
                         Bienvenidos a la Plataforma Colombian Mining Monitoring (COMIMO). Todos los
                         servicios disponibles a través de nuestro sitio web son operados por la
@@ -32,7 +32,7 @@ class AppInfo extends React.Component {
                         Hacer clic aquí del condiciones de uso
                     </a>
                     <br/>
-                    <label style={{margin: "1rem 0"}}>Terms of Use</label>
+                    <h3 style={{margin: "1rem 0"}}>Terms of Use</h3>
                     <p>
                         Welcome to Colombian Mining Monitoring. All services available through our
                         website are owned and operated by Universidad del Rosario. By accessing and

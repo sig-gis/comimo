@@ -8,7 +8,7 @@ from django.contrib.admin import DateFieldListFilter
 from . import models
 
 class InputFilter(admin.SimpleListFilter):
-    template = 'admin/input_filter.html'
+    template = 'input-filter.html'
     def lookups(self, request, model_admin):
         return ((),)
     def choices(self, changelist):

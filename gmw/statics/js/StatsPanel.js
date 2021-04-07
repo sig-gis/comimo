@@ -167,16 +167,14 @@ class StatsPanel extends React.Component {
             >
                 {USER_STATE ? (
                     <div>
-                        <b>Prediction count per subscribed region</b>
+                        <label>Prediction count per subscribed region</label>
                         <p style={{lineHeight: "1rem", fontSize: ".75rem"}}>
                             *Note: Regions with no predictions are not shown.
                         </p>
                         <div id="stats1">
                             <b>Loading data...</b>
                         </div>
-                        <b style={{marginTop: "3px"}}>
-                            Total predictions for subscribed regions per reporting period
-                        </b>
+                        <label>Total predictions for subscribed regions per reporting period</label>
                         <div id="stats2">
                             <b>Loading data...</b>
                         </div>

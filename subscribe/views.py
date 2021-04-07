@@ -8,16 +8,6 @@ from subscribe import utils
 def requestLogin(request):
     return redirect(reverse('login')+'?next='+request.build_absolute_uri())
 
-# Create your views here.
-def manageSubscriptions(request):
-    user = request.user
-    if not(user.is_authenticated):
-        return requestLogin(request)
-    else :
-        queryset = utils.getSubscribedRegions(user)
-        context = {'rows':queryset}
-        return render(request, 'manageSubscriptions.html', context=context)
-
 # request handler to add subscriptions
 def addSubs(request):
     user = request.user
@@ -102,7 +92,7 @@ def downloadData(request):
     if not(user.is_authenticated):
         return requestLogin(request)
     else:
-        return render(request, 'dlData.html')
+        return render(request, 'download-all.html')
 
 def downloadAllInCSV(request):
     user = request.user
@@ -144,7 +134,7 @@ def getDataDates(request):
             list.append(d)
         return JsonResponse(list, safe=False)
 
-        # return render(request, 'dlData.html')
+        # return render(request, 'download-all.html')
 
 # def downloadAllInCSV1(request):
 #     user = request.user

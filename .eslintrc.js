@@ -42,6 +42,7 @@ module.exports = {
         // Hacks for this code
         "react/react-in-jsx-scope": 0,
         "react/prefer-stateless-function": 0,
+        "react/jsx-fragments": 0,
         // Override recommends
         "import/prefer-default-export": 0,
         "implicit-arrow-linebreak": 0,
@@ -147,7 +148,7 @@ module.exports = {
         "react/prefer-es6-class": 1,
         "react/prop-types": 0,
         "react/self-closing-comp": 1,
-        "react/sort-comp": 1,
+        "react/sort-comp": 0,
         "react/sort-prop-types": 1
     }
 };

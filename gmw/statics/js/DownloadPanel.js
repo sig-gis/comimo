@@ -16,7 +16,7 @@ class DownloadPanel extends React.Component {
     getDownloadUrl = () => {
         const [level, region] = this.state.clipOption === 1
             ? ["", "all"]
-            : [...this.props.regionSelected, this.props.selectedDate];
+            : [...this.props.selectedRegion, this.props.selectedDate];
         const date = this.props.selectedDate;
 
         const url = this.URL.GETDL + "?region=" + region + "&level=" + level + "&date=" + date;
@@ -78,10 +78,8 @@ class DownloadPanel extends React.Component {
                     this.props.isHidden ? "see-through" : ""
                 ].join(" ")}
             >
-                <h1>
-                    <b> DOWNLOAD DATA </b>
-                </h1>
-                <b>Select Region</b>
+                <h3>DOWNLOAD DATA</h3>
+                <label>Select Region</label>
                 <br/>
                 <input
                     checked={this.state.clipOption === 1}
@@ -94,7 +92,7 @@ class DownloadPanel extends React.Component {
                 <br/>
                 <input
                     checked={this.state.clipOption === 2}
-                    disabled={!this.props.regionSelected}
+                    disabled={!this.props.selectedRegion}
                     name="downloadRegion"
                     onChange={() => this.setState({clipOption: 2})}
                     type="radio"

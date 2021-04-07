@@ -148,15 +148,8 @@ class SubscribePanel extends React.Component {
         }
 
         return (
-            <div
-                className={[
-                    "popup-container subs-panel ",
-                    this.props.isHidden ? "see-through" : ""
-                ].join(" ")}
-            >
-                <h1>
-                    <b> YOUR SUBSCRIPTIONS </b>
-                </h1>
+            <div className={"popup-container subs-panel " + (this.props.isHidden ? "see-through" : "")}>
+                <h3>YOUR SUBSCRIPTIONS</h3>
                 {USER_STATE ? (
                     <div>
                         {content}

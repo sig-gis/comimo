@@ -21,18 +21,14 @@ class ValidatePanel extends React.Component {
         if (USER_STATE) {
             fetch(this.URLS.PROJS)
                 .then(res => res.json())
-                .then(
-                    res => {
-                        if (res.action === "Success") {
-                            this.setState({
-                                projects: res.projects
-                            });
-                        }
-                    },
-                    err => {
-                        l(err);
+                .then(res => {
+                    if (res.action === "Success") {
+                        this.setState({
+                            projects: res.projects
+                        });
                     }
-                );
+                })
+                .catch(err => console.log(err));
         }
     }
 
@@ -312,16 +308,9 @@ class ValidatePanel extends React.Component {
         }
 
         return (
-            <div
-                className={[
-                    "popup-container validate-panel ",
-                    this.props.isHidden ? "see-through" : ""
-                ].join(" ")}
-            >
-                <h1>
-                    <b> VALIDATION </b>
-                </h1>
-                {USER_STATE
+            <div className={"popup-container validate-panel " + (this.props.isHidden ? "see-through" : "")}>
+                <h3>VALIDATION</h3>
+                {!USER_STATE
                     ? (
                         <div style={{textAlign: "center", width: "100%"}}>
                             <p> Login to validate the data </p>
@@ -339,14 +328,12 @@ class ValidatePanel extends React.Component {
                         <div>
                             {context}
                             <br/>
-                            <h2>
-                                <b>Create a new project:</b>
-                            </h2>
-                        Enter Project Name:
+                            <h3>Create a new project:</h3>
+                            <label>Enter Project Name:</label>
                             <br/>
                             <input id="projectName" length="2" style={{width: "100%"}}/>
                             <br/>
-                        Select Project Region:
+                            <label>Select Project Region:</label>
                             <br/>
                             <input
                                 defaultChecked
@@ -354,15 +341,16 @@ class ValidatePanel extends React.Component {
                                 onChange={this.regionRadioChanged.bind(this)}
                                 type="radio"
                                 value={1}
-                            />{" "}
-                        Subscribed Regions <br/>
+                            />
+                            {" "}
+                            Subscribed Regions <br/>
                             <input
                                 name="projectRegion"
                                 onChange={this.regionRadioChanged.bind(this)}
                                 type="radio"
                                 value={2}
                             />{" "}
-                        Custom Regions <br/>
+                            Custom Regions <br/>
                             {addOptions}
                             {buttonContent}
                             {this.state.errorMsg}
