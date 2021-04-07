@@ -45,14 +45,6 @@
   padding: 0;
 }
 
-.sidebar-icon span {
-  height: 100%;
-  width: 100%;
-  margin: 0;
-  padding: 10px;
-  font-size: 30px;
-}
-
 .sidebar-icon.app-icon {
   height: 50px;
 }
@@ -302,9 +294,6 @@ select[multiple] optgroup option:checked::before {
     width: 20%;
     white-space: normal;
   }
-  .sidebar-icon.app-icon {
-    width: 100px;
-  }
   .advanced-icons {
     display: inline-block;
     white-space: nowrap;
@@ -313,7 +302,7 @@ select[multiple] optgroup option:checked::before {
   .advanced-icons .sidebar-icon {
     width: 33.33%;
   }
-  .sidebar-icon span {
+  /* .sidebar-icon span {
     padding: 20px;
     font-size: 60px;
   }
@@ -324,7 +313,7 @@ select[multiple] optgroup option:checked::before {
   .sidebar-icon span.advanced-text {
     font-size: 20px;
     padding: 0;
-  }
+  } */
   .sidebar .app-icon {
     display: none;
   }

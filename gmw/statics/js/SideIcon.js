@@ -1,6 +1,6 @@
 class SideIcon extends React.Component {
     render() {
-        const {parentClass, clickHandler, tooltip, glyphIcon, subtext} = this.props;
+        const {parentClass, clickHandler, tooltip, icon, subtext} = this.props;
         return (
             <button
                 className={"sidebar-icon " + parentClass}
@@ -8,10 +8,8 @@ class SideIcon extends React.Component {
                 title={tooltip}
                 type="button"
             >
-                <div className="center">
-                    <span className={"glyphicon " + glyphIcon}/>
-                    {subtext && <span className="advanced-text">{subtext}</span>}
-                </div>
+                <div style={{padding: "6px"}}><SvgIcon icon={icon} size="38px"/></div>
+                {subtext && <span className="advanced-text mb-3">{subtext}</span>}
             </button>
         );
     }

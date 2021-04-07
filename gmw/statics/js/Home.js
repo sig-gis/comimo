@@ -402,7 +402,7 @@ class Home extends React.Component {
                     {/* Subscribe */}
                     <SideIcon
                         clickHandler={() => this.togglePanel("subscribeHidden")}
-                        glyphIcon="glyphicon-envelope"
+                        icon="envelope"
                         parentClass={this.state.subscribeHidden ? "" : "active-icon"}
                         tooltip="Subscribe"
                     />
@@ -416,7 +416,7 @@ class Home extends React.Component {
                     {/* Validation */}
                     <SideIcon
                         clickHandler={() => this.togglePanel("validateHidden")}
-                        glyphIcon="glyphicon-ok"
+                        icon="check"
                         parentClass={this.state.validateHidden ? "" : "active-icon"}
                         tooltip="Validate"
                     />
@@ -430,7 +430,7 @@ class Home extends React.Component {
                     {/* Geo location Search */}
                     <SideIcon
                         clickHandler={() => this.togglePanel("searchHidden")}
-                        glyphIcon="glyphicon-search"
+                        icon="search"
                         parentClass={this.state.searchHidden ? "" : "active-icon"}
                         tooltip="Search"
                     />
@@ -450,9 +450,7 @@ class Home extends React.Component {
                                     : {advancedOptions: true}
                             );
                         }}
-                        glyphIcon={this.state.advancedOptions
-                            ? "glyphicon-minus"
-                            : "glyphicon-plus"}
+                        icon={this.state.advancedOptions ? "minus" : "plus"}
                         parentClass=""
                         subtext="Advanced"
                         tooltip="Advanced"
@@ -462,7 +460,7 @@ class Home extends React.Component {
                             {/* Stats graphs */}
                             <SideIcon
                                 clickHandler={() => this.togglePanel("statsHidden")}
-                                glyphIcon="glyphicon-stats"
+                                icon="stats"
                                 parentClass={this.state.statsHidden ? "" : "active-icon"}
                                 tooltip="Stats"
                             />
@@ -475,7 +473,7 @@ class Home extends React.Component {
                             {/* Date filter */}
                             <SideIcon
                                 clickHandler={() => this.togglePanel("slidersHidden")}
-                                glyphIcon="glyphicon-filter"
+                                icon="filter"
                                 parentClass={this.state.slidersHidden ? "" : "active-icon"}
                                 tooltip="Sliders"
                             />
@@ -491,7 +489,7 @@ class Home extends React.Component {
                             {/* Download */}
                             <SideIcon
                                 clickHandler={() => this.togglePanel("downloadHidden")}
-                                glyphIcon="glyphicon-download-alt"
+                                icon="download"
                                 parentClass={this.state.downloadHidden ? "" : "active-icon"}
                                 tooltip="Download data"
                             />
@@ -506,7 +504,7 @@ class Home extends React.Component {
                     {/* Info dialoge */}
                     <SideIcon
                         clickHandler={() => this.togglePanel("appInfoHidden")}
-                        glyphIcon="glyphicon-info-sign"
+                        icon="info"
                         parentClass="disclaimer"
                         tooltip="App Info"
                     />
