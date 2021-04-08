@@ -141,14 +141,14 @@ class Home extends React.Component {
                 } catch (err) {
                     console.log(err);
                     this.setState(prevState => ({reloadCount: prevState.reloadCount + 1}));
-                    if (this.state.reloadCount < 4) list.push(name);
+                    // if (this.state.reloadCount < 4) list.push(name);
                     if (list.length > 0) this.getGEELayers(list);
                 }
             })
             .catch(error => {
                 console.log(error);
                 this.setState(prevState => ({reloadCount: prevState.reloadCount + 1}));
-                if (this.state.reloadCount < 4) list.push(name);
+                // if (this.state.reloadCount < 4) list.push(name);
                 if (list.length > 0) this.getGEELayers(list);
             });
     };
@@ -166,12 +166,12 @@ class Home extends React.Component {
                     this.state.theMap.triggerRepaint();
                 } catch (err) {
                     console.log(err);
-                    setTimeout(this.refreshLayers(tileURL), 1000);
+                    // setTimeout(this.refreshLayers(tileURL), 1000);
                 }
             })
             .catch(error => {
                 console.log(error);
-                this.refreshLayers(tileURL);
+                // this.refreshLayers(tileURL);
             });
     };
 

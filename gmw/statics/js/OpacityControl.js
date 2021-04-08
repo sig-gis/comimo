@@ -8,42 +8,10 @@ const defaultOptions = {
 
 class OpacityControl {
     constructor(options) {
-        this._baseLayersOption = options.baseLayers || defaultOptions.baseLayers;
         this._overLayersOption = options.overLayers || defaultOptions.overLayers;
         this._visibleOverlaysOption = options.visibleOverlays || defaultOptions.visibleOverlays;
         this._opacityControlOption = options.opacityControl || defaultOptions.opacityControl;
         this._expanded = false;
-    }
-
-    _radioButtonControlAdd(layerId) {
-        const element = document.createElement("div");
-
-        const radioButton = document.createElement("input");
-        radioButton.setAttribute("type", "radio");
-        radioButton.id = layerId;
-        if (layerId === Object.keys(this._baseLayersOption)[0]) {
-            radioButton.checked = true;
-            this._map.setLayoutProperty(layerId, "visibility", "visible");
-        } else {
-            this._map.setLayoutProperty(layerId, "visibility", "none");
-        }
-        element.appendChild(radioButton);
-
-        radioButton.addEventListener("change", event => {
-            event.target.checked = true;
-            this._map.setLayoutProperty(layerId, "visibility", "visible");
-            Object.keys(this._baseLayersOption).forEach(layer => {
-                if (layer !== event.target.id) {
-                    document.getElementById(layer).checked = false;
-                    this._map.setLayoutProperty(layer, "visibility", "none");
-                }
-            });
-        });
-
-        const layerName = document.createElement("span");
-        layerName.appendChild(document.createTextNode(this._baseLayersOption[layerId]));
-        element.appendChild(layerName);
-        return element;
     }
 
     _checkBoxControlAdd(layerId) {
@@ -127,18 +95,6 @@ class OpacityControl {
         const legendDiv = document.createElement("div");
         legendDiv.id = "legend-div";
         legendDiv.style.display = this._expanded ? "block" : "none";
-
-        if (this._baseLayersOption !== null) {
-            Object.keys(this._baseLayersOption).forEach(layer => {
-                const layerId = layer;
-                legendDiv.appendChild(this._radioButtonControlAdd(layerId));
-            });
-        }
-
-        if (this._baseLayersOption !== null && this._overLayersOption !== null) {
-            const hr = document.createElement("hr");
-            legendDiv.appendChild(hr);
-        }
 
         if (this._overLayersOption !== null) {
             Object.keys(this._overLayersOption).forEach(layer => {

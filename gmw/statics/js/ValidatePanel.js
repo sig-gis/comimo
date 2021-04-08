@@ -264,7 +264,7 @@ class ValidatePanel extends React.Component {
                         <div style={{textAlign: "center", width: "100%"}}>
                             <br/>
                             <button
-                                className="btn btn-warning map-upd-btn"
+                                className="map-upd-btn"
                                 disabled={!this.state.createState}
                                 onClick={e => {
                                     this.createProject(e, selDate);
@@ -315,7 +315,7 @@ class ValidatePanel extends React.Component {
                         <div style={{textAlign: "center", width: "100%"}}>
                             <p> Login to validate the data </p>
                             <button
-                                className="btn btn-warning map-upd-btn"
+                                className="map-upd-btn"
                                 onClick={() => {
                                     location.href = "accounts/login";
                                 }}

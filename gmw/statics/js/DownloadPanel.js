@@ -43,7 +43,7 @@ class DownloadPanel extends React.Component {
             button = (
                 <div style={{textAlign: "center", width: "100%"}}>
                     <button
-                        className="btn btn-warning map-upd-btn"
+                        className="map-upd-btn"
                         disabled={this.state.fetching}
                         onClick={this.getDownloadUrl}
                         type="button"

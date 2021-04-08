@@ -58,7 +58,7 @@ class FilterPanel extends React.Component {
                     ) }
                 <div style={{textAlign: "center", width: "100%"}}>
                     <button
-                        className="btn btn-warning map-upd-btn"
+                        className="map-upd-btn"
                         disabled={this.state.newSelectedDate === this.props.selectedDate}
                         onClick={() => selectDate(this.state.newSelectedDate)}
                         style={{marginTop: ".5rem"}}

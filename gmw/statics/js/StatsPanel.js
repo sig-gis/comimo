@@ -187,7 +187,7 @@ class StatsPanel extends React.Component {
                     <div style={{textAlign: "center", width: "100%"}}>
                         <p> Login to view your subscriptions </p>
                         <button
-                            className="btn btn-warning map-upd-btn"
+                            className="map-upd-btn"
                             onClick={() => {
                                 location.href = "accounts/login";
                             }}

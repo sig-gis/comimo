@@ -137,7 +137,7 @@ class SubscribePanel extends React.Component {
             subToCurrent = (
                 <div style={{textAlign: "center", width: "100%"}}>
                     <button
-                        className="btn btn-warning map-upd-btn"
+                        className="map-upd-btn"
                         onClick={() => this.addSubs(selectedRegion)}
                         type="button"
                     >
@@ -159,7 +159,7 @@ class SubscribePanel extends React.Component {
                     <div style={{textAlign: "center", width: "100%"}}>
                         <p> Login to view your subscriptions </p>
                         <button
-                            className="btn btn-warning map-upd-btn"
+                            className="map-upd-btn"
                             onClick={() => {
                                 location.href = "accounts/login";
                             }}

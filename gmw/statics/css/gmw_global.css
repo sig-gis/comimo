@@ -32,9 +32,51 @@ a {
   text-decoration: underline !important;
 }
 
+/**************/
+/* Elements   */
+/**************/
+
 label {
-  margin: .5rem 0;
+  margin: .5rem 0 0 3px;
 }
+
+input, select {
+  border-radius: 3px;
+  border: solid 1px darkgray;
+  padding: .25rem;
+  font-size: 1rem;
+}
+
+select {
+  background: white;
+}
+
+button {
+  display: inline-block;
+  font-weight: 400;
+  color: #212529;
+  text-align: center;
+  vertical-align: middle;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  background-color: transparent;
+  border: 1px solid transparent;
+  padding: .2rem .5rem;
+  font-size: 1rem;
+  line-height: 1.5;
+  border-radius: .25rem;
+  transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out
+}
+
+button:focus {
+  outline: 0;
+}
+
+/**************/
+/* Elements   */
+/**************/
 
 small {
   font-size: .75rem !important;
@@ -59,15 +101,6 @@ small {
 .w_50 {
   width: 50%;
   display: inline-block;
-}
-
-input {
-  border: solid 1px darkgray;
-  border-radius: 3px;
-}
-
-button:focus {
-  outline: 0;
 }
 
 .center {
