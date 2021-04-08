@@ -106,3 +106,8 @@ small {
 .center {
   text-align: center;
 }
+
+.disabled-group {
+  opacity: 0.4;
+  pointer-events: none;
+}

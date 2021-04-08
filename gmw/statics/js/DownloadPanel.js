@@ -37,71 +37,56 @@ class DownloadPanel extends React.Component {
     };
 
     render() {
-        let button = "";
-        let link = "";
-        if (this.state.clipOption && this.props.selectedDate) {
-            button = (
-                <div style={{textAlign: "center", width: "100%"}}>
-                    <button
-                        className="map-upd-btn"
-                        disabled={this.state.fetching}
-                        onClick={this.getDownloadUrl}
-                        type="button"
-                    >
-                        Get download URL for {this.props.selectedDate}
-                    </button>
-                </div>
-            );
-        }
-        if (this.state.fetching) {
-            link = <p> Fetching download URL ... </p>;
-        } else if (this.state.downURL) {
-            link = (
-                <p>
-                    <span>
-                        <a href={this.state.downURL[3]}>
-                            Click here to download the{" "}
-                            {this.state.downURL[0] === "all"
-                                ? "complete data"
-                                : "data within " + this.state.downURL[0]}{" "}
-                            for {this.state.downURL[2]}.
-                        </a>
-                    </span>
-                </p>
-            );
-        }
-
         return (
-            <div
-                className={[
-                    "popup-container download-panel ",
-                    this.props.isHidden ? "see-through" : ""
-                ].join(" ")}
-            >
+            <div className={"popup-container download-panel " + (this.props.isHidden ? "see-through" : "")}>
                 <h3>DOWNLOAD DATA</h3>
                 <label>Select Region</label>
+                <div>
+                    <input
+                        checked={this.state.clipOption === 1}
+                        name="downloadRegion"
+                        onChange={() => this.setState({clipOption: 1})}
+                        type="radio"
+                    />
+                    Complete Data
+                </div>
+                <div className={this.props.selectedRegion ? "" : "disabled-group"}>
+                    <input
+                        checked={this.state.clipOption === 2}
+                        name="downloadRegion"
+                        onChange={() => this.setState({clipOption: 2})}
+                        type="radio"
+                    />
+                    Selected Municipality
+                </div>
                 <br/>
-                <input
-                    checked={this.state.clipOption === 1}
-                    name="downloadRegion"
-                    onChange={() => this.setState({clipOption: 1})}
-                    type="radio"
-                />
-                {" "}
-                Complete Data
-                <br/>
-                <input
-                    checked={this.state.clipOption === 2}
-                    disabled={!this.props.selectedRegion}
-                    name="downloadRegion"
-                    onChange={() => this.setState({clipOption: 2})}
-                    type="radio"
-                />
-                {" "}
-                Selected Municipality
-                <br/>
-                {button}
-                {link}
+                {this.props.selectedDate && (
+                    <div style={{textAlign: "center", width: "100%"}}>
+                        <button
+                            className="map-upd-btn"
+                            disabled={this.state.fetching}
+                            onClick={this.getDownloadUrl}
+                            type="button"
+                        >
+                    Get download URL for {this.props.selectedDate}
+                        </button>
+                    </div>
+                )}
+                {this.state.fetching
+                    ? <p>Fetching download URL ...</p>
+                    : this.state.downURL && (
+                        <p>
+                            <span>
+                                <a href={this.state.downURL[3]}>
+                                    Click here to download the{" "}
+                                    {this.state.downURL[0] === "all"
+                                        ? "complete data"
+                                        : "data within " + this.state.downURL[0]}{" "}
+                                    for {this.state.downURL[2]}.
+                                </a>
+                            </span>
+                        </p>
+                    )}
             </div>
         );
     }
