@@ -12,11 +12,11 @@
 <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 
 <!-- add classes for the application -->
-<script type='text/babel' src='{% static "js/utils.js" %}'></script>
 <script type='text/javascript' src='{% static "js/appconfigs.js" %}'></script>
-<script type='text/javascript' src='{% static "js/OpacityControl.js" %}'></script>
+<script type='text/babel' src='{% static "js/utils.js" %}'></script>
 <script type='text/babel' src='{% static "js/SvgIcon.js" %}'></script>
 <script type='text/babel' src='{% static "js/SideIcon.js" %}'></script>
+<script type='text/babel' src='{% static "js/LayerPanel.js" %}'></script>
 <script type='text/babel' src='{% static "js/FilterPanel.js" %}'></script>
 <script type='text/babel' src='{% static "js/DownloadPanel.js" %}'></script>
 <script type='text/babel' src='{% static "js/StatsPanel.js" %}'></script>
@@ -29,7 +29,6 @@
 
 {% block pagestyles %}
 <link href='https://api.mapbox.com/mapbox-gl-js/v2.1.1/mapbox-gl.css' rel='stylesheet' />
-<link rel='stylesheet' href='{% static "css/OpacityControl.css" %}' />
 <link rel='stylesheet' href='{% static "css/gmw_main.css" %}' />
 <style>
   .app-icon {

@@ -244,7 +244,7 @@ select[multiple] optgroup option:checked::before {
 }
 .validate-panel {
   top: 100px;
-  max-height: calc(100% - 100px);
+  max-height: calc(100% - 110px);
   overflow-y: auto
 }
 .search-panel {
@@ -263,6 +263,9 @@ select[multiple] optgroup option:checked::before {
 }
 .download-panel {
   top: 350px;
+}
+.layer-panel {
+  top: 200px;
 }
 
 .expand-legend-div button {

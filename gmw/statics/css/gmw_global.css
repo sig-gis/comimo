@@ -74,6 +74,20 @@ button:focus {
   outline: 0;
 }
 
+input[type="radio"], input[type="checkbox"] {
+  margin-right: .5rem;
+}
+
+input[type="range"] {
+  -webkit-appearance: none;
+  -webkit-tap-highlight-color: rgba(255, 255, 255, 0);
+  height: 8px;
+  border: none;
+  border-radius: 30px;
+  background-image: linear-gradient(to right, #0080ff 5%, #001b3b 100%);
+  outline: none;
+}
+
 /**************/
 /* Elements   */
 /**************/
