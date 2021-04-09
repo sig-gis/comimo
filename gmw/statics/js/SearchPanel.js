@@ -15,11 +15,6 @@ class SearchPanel extends React.Component {
         };
     }
 
-    componentDidUpdate() {
-        // do like other panels and refresh on open
-    }
-
-    // aipe
     searchGeocode = () => {
         const url = this.URLS.GEOCODE + "key=" + mapquestkey + "&location=" + this.state.searchText;
         fetch(url)

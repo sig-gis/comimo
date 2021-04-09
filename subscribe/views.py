@@ -62,13 +62,12 @@ def closeProject(request):
     if not(user.is_authenticated):
         return requestLogin(request)
     else:
-        pid = request.GET.get('pid')
-        pdate = request.GET.get('pdate')
-        if (pid and pdate):
-            result = utils.archiveProject(user, pid, pdate)
+        pid = request.GET.get('pid') # pid is CEO id
+        if (pid):
+            result = utils.archiveProject(user, pid)
             return JsonResponse(result)
         else:
-            return JsonResponse({'action':'Error', 'message':'Make sure project id and date are supplied'})
+            return JsonResponse({'action':'Error', 'message':'Make sure project id is supplied'})
 
 def createProject(request):
     user = request.user

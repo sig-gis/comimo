@@ -10,10 +10,12 @@ class ValidatePanel extends React.Component {
 
         this.state = {
             projects: [],
-            delete: [],
-            createState: true,
+            deleting: [],
+            projectName: "",
+            projectCreating: false,
             errorMsg: false,
-            region: 1
+            regionType: 1,
+            customRegions: []
         };
     }
 
@@ -32,286 +34,221 @@ class ValidatePanel extends React.Component {
         }
     }
 
-    handleSelectClick = e => {
-        e.preventDefault();
-        // e.target.selected = !e.target.selected;
-        const select = e.target.parentElement.parentElement;
-        console.log(select);
-        const scroll = select.scrollTop;
-        console.log(scroll);
-        e.target.selected = !e.target.selected;
-        setTimeout(() => {
-            select.scrollTop = scroll;
-        }, 0);
+    checkProjectErrors = (pDate, selected, projectName, projects, type) => {
+        const errors = [
+            !pDate && "Please select a date.",
+            selected.length === 0
+                && (type === 1
+                    ? "Subscribed regions are loading or you are not subscribed to any region!"
+                    : "No region selected!"),
+            !projectName && "Please enter a project name!",
+            projects.find(pr => pr[4] === projectName) && "A project with that name already exists! Please choose a different name!"
+        ].filter(e => e);
+
+        console.log(errors);
+        return errors.length === 0 || this.setState({errorMsg: errors.join("\n\n")});
     };
 
-    createProject(e, pdate) {
-        this.setState({createState: false, errorMsg: false});
-        let selectedArr = [];
-        let regionError = "";
-        if (this.state.region === 1) {
-            selectedArr = this.props.sublist;
-            regionError = "Subscribed regions are loading or you are not subscribed to any region!";
-        } else if (this.state.region === 2) {
-            selectedArr = [...document.getElementById("selectProjRegions").options]
-                .filter(x => x.selected)
-                .map(x => "mun_" + x.value);
-            regionError = "No region selected!";
-        }
-        const name = document.getElementById("projectName").value;
+    createProject = pDate => {
+        const {customRegions, projectName, projects, regionType} = this.state;
+        const {subList} = this.props;
+        this.setState({projectCreating: true, errorMsg: false});
+        const selectedArr = regionType === 1 ? subList : customRegions.map(x => "mun_" + x);
 
-        let errorText = "";
-        if (!name) errorText += "Please enter a project name!\n";
-        else if (this.state.projects.map(x => x[4]).includes(name)) {
-            errorText
-                += "A project with that name already exists! Please choose a different name!\n";
-        } else if (!selectedArr.length) errorText += regionError;
+        const regions = selectedArr
+            .map(r => {
+                const es = r.split("_");
+                return es[2] + ", " + es[1];
+            })
+            .join(";");
+        const question = "Proceed with the configuration => \nprediction date = {%date}\nproject name = {%name} \nregions = {%region}?"
+            .replace("{%date}", pDate)
+            .replace("{%name}", projectName)
+            .replace("{%region}", regions);
 
-        if (errorText) {
-            this.setState({
-                createState: true,
-                errorMsg: errorText
-            });
-        } else {
-            const disp = selectedArr
-                .map(() => {
-                    const es = e.split("_");
-                    return es[2] + ", " + es[1];
-                })
-                .join(";");
-            const question = "Proceed with the configuration => prediction date = {%date}, project name = {%name} and regions = {%region}?"
-                .replace("{%date}", pdate)
-                .replace("{%name}", name)
-                .replace("{%region}", disp);
-            const proceed = confirm(question);
-            if (proceed) {
-                const url = this.URLS.CRTPROJ
+        if (this.checkProjectErrors(pDate, selectedArr, projectName, projects, regionType) && confirm(question)) {
+            const url = this.URLS.CRTPROJ
                     + "?pdate="
-                    + pdate
+                    + pDate
                     + "&name="
-                    + name
+                    + projectName
                     + "&regions="
                     + selectedArr.join("__");
-                if (USER_STATE) {
-                    fetch(url)
-                        .then(res => res.json())
-                        .then(
-                            res => {
-                                if (res.action != "Error") {
-                                    const {projects} = this.state;
-                                    projects.push(res.proj);
-                                    this.setState({
-                                        createState: true,
-                                        projects
-                                    });
-                                } else {
-                                    this.setState({createState: true, errorMsg: res.message});
-                                }
-                            },
-                            err => {
-                                l(err);
-                                this.setState({
-                                    createState: true,
-                                    errorMsg: "Something went wrong!"
-                                });
-                            }
-                        );
-                }
-            } else this.setState({createState: true});
-        }
-    }
-
-    closeProject(e, pdate, pid, i) {
-        // e.target.disabled = true;
-        this.setState({
-            delete: this.state.delete.concat([pid])
-        });
-        const template = "Are you sure you want to close the project for %pdate? Closing the project means you will no longer be able to validate the points unless you set up another project.";
-        const intent = confirm(template.replace("%pdate", pdate));
-        const url = this.URLS.CLPROJ + "?pid=" + pid + "&pdate=" + pdate;
-        if (intent) {
-            const p = this.state.projects[i];
             fetch(url)
                 .then(res => res.json())
-                .then(
-                    res => {
-                        if (res.action === "Archived") {
-                            const {projects} = this.state;
-                            const j = projects.indexOf(p);
-                            projects.splice(j, 1);
-                            const itemIndex = this.state.delete.indexOf(pid);
-                            const del = this.state.delete;
-                            if (itemIndex > -1) {
-                                del.splice(itemIndex, 1);
-                            }
-                            this.setState({
-                                projects,
-                                delete: del
-                            });
-                        } else {
-                            l("Could not close project.");
-                        }
-                    },
-                    err => {
-                        e.target.disabled = false;
-                        l(err);
+                .then(res => {
+                    if (res.action !== "Error") {
+                        this.setState({
+                            projectCreating: false,
+                            projects: [...projects, res.proj],
+                            errorMsg: ""
+                        });
+                    } else {
+                        this.setState({projectCreating: false, errorMsg: res.message});
                     }
-                );
+                })
+                .catch(err => {
+                    console.log(err);
+                    this.setState({
+                        projectCreating: false,
+                        errorMsg: "Unknown Error."
+                    });
+                });
         } else {
-            e.target.disabled = false;
+            this.setState({projectCreating: false});
         }
-    }
+    };
 
-    constructListElem(el, i) {
-        // el = el.split("__");
-        const r = el[5]
-            .split("__")
-            .map(x => x.split("_"))
-            .map(x => x[2] + ", " + x[1])
-            .join(";");
-        return (
-            <tr key={i}>
-                <td style={{width: "20px"}}>{i + 1}</td>
-                <td style={{width: "calc(100% - 50px)"}}>
-                    <a href={el[3]} rel="noreferrer" target="_blank">
-                        {" "}
-                        {el[4]}
-                    </a>
-                    <br/>
-                    <small>Prediction date:{el[0]}</small>
-                    <br/>
-                    <small>Created date:{el[1]}</small>
-                    <br/>
-                    <small>Regions:{r}</small>
-                </td>
-                <td style={{textAlign: "right"}}>
-                    <input
-                        className="del-btn green-btn"
-                        disabled={this.state.delete.includes(el[2])}
-                        onClick={e => this.closeProject(e, el[0], el[2], i)}
-                        title={"Close " + el[4]}
-                        type="submit"
-                        value="X"
-                    />
-                </td>
-            </tr>
-        );
-    }
+    closeProject = pid => {
+        if (confirm("Are you sure you want to close this project? Closing the project means you will no longer be able to validate the points unless you set up another project.")) {
+            this.setState({deleting: [...this.state.deleting, pid]});
+            fetch(this.URLS.CLPROJ + "?pid=" + pid)
+                .then(res => res.json())
+                .then(res => {
+                    if (res.action === "Archived") {
+                        this.setState(prevState => ({
+                            deleting: prevState.deleting.filter(p => p !== pid),
+                            projects: prevState.projects.filter(pr => pr[2] !== pid)
+                        }));
+                    } else {
+                        return Promise.reject("Could not close project.");
+                    }
+                })
+                .catch(err => {
+                    this.setState(prevState => ({deleting: prevState.deleting.filter(p => p !== pid)}));
+                    console.log(err);
+                });
+        }
+    };
 
-    generateMunicipalOptions() {
-        const options = [];
-        const f = this.props.featureNames;
-        const states = Object.keys(f).sort();
-        if (states.length <= 0) {
-            options.push(
+    renderProject = (predDate, createdDate, pid, url, projectName, regions) => (
+        <tr key={pid}>
+            <td style={{width: "calc(100% - 30px)"}}>
+                <a href={url} rel="noreferrer" target="_blank">
+                    {projectName}
+                </a>
+                <br/>
+                <small>Prediction date: {predDate}</small>
+                <br/>
+                <small>Created date: {createdDate}</small>
+                <br/>
+                <small>Regions: {regions
+                    .split("__")
+                    .map(x => x.split("_"))
+                    .map(x => x[2] + ", " + x[1])
+                    .join(";")}
+                </small>
+            </td>
+            <td style={{verticalAlign: "top"}}>
+                <button
+                    className="del-btn green-btn p-0"
+                    disabled={this.state.deleting.includes(pid)}
+                    onClick={() => this.closeProject(pid)}
+                    style={{height: "30px", width: "30px"}}
+                    title={"Close " + projectName}
+                    type="button"
+                >
+                    <SvgIcon extraStyle={{margin: "3px"}} icon="check" size="24px"/>
+                </button>
+            </td>
+        </tr>
+    );
+
+    renderCustomRegions = () => {
+        const {featureNames} = this.props;
+        const states = Object.keys(featureNames).sort();
+        return states.length === 0
+            ? (
                 <option key="0" disabled>
                     Loading ...
                 </option>
+            ) : (
+                <select
+                    id="selectProjRegions"
+                    multiple
+                    onChange={e => this.setState({
+                        customRegions: Array.from(e.target.selectedOptions, option => option.value)
+                    })}
+                    size="8"
+                    style={{width: "100%", float: "left", marginBottom: "10px"}}
+                    value={this.state.customRegions}
+                >
+                    {states.map(state => (
+                        <optgroup key={state} label={state}>
+                            {Object.keys(featureNames[state]).sort().map(mun => (
+                                <option key={mun} value={state + "_" + mun}>{mun}</option>
+                            ))}
+                        </optgroup>
+                    ))}
+                </select>
             );
-        } else {
-            for (let s = 0; s < states.length; s++) {
-                const state = states[s];
-                const muns = Object.keys(f[state]).sort();
-                const munopts = [];
-                for (let m = 0; m < muns.length; m++) {
-                    const mun = muns[m];
-                    munopts.push(
-                        <option
-                            key={"m" + m}
-                            onMouseDown={this.handleSelectClick}
-                            value={state + "_" + mun}
-                        >
-                            {mun}
-                        </option>
-                    );
-                }
-                options.push(
-                    <optgroup key={"s" + s} label={state}>
-                        {munopts}
-                    </optgroup>
-                );
-            }
-        }
-        return (
-            <select
-                id="selectProjRegions"
-                multiple
-                size="8"
-                style={{width: "100%", float: "left", marginBottom: "10px"}}
-            >
-                {options}
-            </select>
-        );
-    }
-
-    regionRadioChanged(e) {
-        this.setState({
-            region: e.target.value
-        });
-    }
+    };
 
     render() {
-        let buttonContent = null;
-        let context = null;
-        let addOptions = "";
-
-        if (USER_STATE) {
-            const selDate = this.props.selectedDate;
-            if (selDate) {
-                const match = this.state.projects.filter(x => x.includes(selDate + "__"));
-                if (match.length === 0) {
-                    buttonContent = (
-                        <div style={{textAlign: "center", width: "100%"}}>
-                            <br/>
+        const {selectedDate, isHidden} = this.props;
+        const {projects, projectName, regionType, projectCreating, errorMsg} = this.state;
+        return (
+            <div className={"popup-container validate-panel " + (isHidden ? "see-through" : "")}>
+                <h3>VALIDATION</h3>
+                View or add projects to validate mine data.
+                {USER_STATE
+                    ? (
+                        <div>
+                            {projects.length === 0
+                                ? (
+                                    <span>You don&apos;t have any active projects.</span>
+                                ) : (
+                                    <table style={{width: "100%", textAlign: "left"}}>
+                                        <thead>
+                                            <tr>
+                                                <th style={{width: "calc(100% - 50px)"}}>Name</th>
+                                                <th/>
+                                            </tr>
+                                        </thead>
+                                        <tbody>{projects.map(p => this.renderProject(...p))}</tbody>
+                                    </table>
+                                )}
+                            <h3>Create a new project:</h3>
+                            <label>Enter Project Name:</label>
+                            <input
+                                id="projectName"
+                                length="2"
+                                onChange={e => this.setState({projectName: e.target.value})}
+                                style={{width: "100%"}}
+                                value={projectName}
+                            />
+                            <label>Select Project Region:</label>
+                            <div>
+                                <input
+                                    checked={regionType === 1}
+                                    name="projectRegion"
+                                    onChange={() => this.setState({regionType: 1})}
+                                    type="radio"
+                                />
+                                Subscribed Regions
+                            </div>
+                            <div>
+                                <input
+                                    checked={regionType === 2}
+                                    name="projectRegion"
+                                    onChange={() => this.setState({regionType: 2})}
+                                    type="radio"
+                                    value={2}
+                                />
+                                Custom Regions
+                            </div>
+                            {regionType === 2 && this.renderCustomRegions()}
                             <button
                                 className="map-upd-btn"
-                                disabled={!this.state.createState}
-                                onClick={e => {
-                                    this.createProject(e, selDate);
-                                }}
+                                disabled={projectCreating}
+                                onClick={() => this.createProject(selectedDate)}
                                 type="button"
                             >
-                                Create new project for {selDate}
+                                Create new project for {selectedDate}
                             </button>
+                            <p>{errorMsg}</p>
                         </div>
-                    );
-                }
-            }
-            if (this.state.projects.length === 0) {
-                context = <div>You don&apos;t have any active projects at the moment.</div>;
-            } else {
-                const projectList = [];
-                for (let i = 0; i < this.state.projects.length; i++) {
-                    projectList.push(this.constructListElem(this.state.projects[i], i));
-                }
-                context = (
-                    <div>
-                        Click on the dates below to validate mined predictions for that day.
-                        <ul className="sub-list">{projectList}</ul>
-                    </div>
-                );
-                context = (
-                    <table style={{width: "100%", textAlign: "left"}}>
-                        <thead>
-                            <tr>
-                                <th style={{width: "20px"}}>SN</th>
-                                <th style={{width: "calc(100% - 50px)"}}>Name</th>
-                                <th style={{width: "30px"}}>Close</th>
-                            </tr>
-                        </thead>
-                        <tbody>{projectList}</tbody>
-                    </table>
-                );
-            }
-
-            if (this.state.region === 2) addOptions = this.generateMunicipalOptions();
-        }
-
-        return (
-            <div className={"popup-container validate-panel " + (this.props.isHidden ? "see-through" : "")}>
-                <h3>VALIDATION</h3>
-                {!USER_STATE
-                    ? (
+                    ) : (
                         <div style={{textAlign: "center", width: "100%"}}>
                             <p> Login to validate the data </p>
                             <button
@@ -321,39 +258,8 @@ class ValidatePanel extends React.Component {
                                 }}
                                 type="button"
                             >
-                        Login
+                                Login
                             </button>
-                        </div>
-                    ) : (
-                        <div>
-                            {context}
-                            <br/>
-                            <h3>Create a new project:</h3>
-                            <label>Enter Project Name:</label>
-                            <br/>
-                            <input id="projectName" length="2" style={{width: "100%"}}/>
-                            <br/>
-                            <label>Select Project Region:</label>
-                            <br/>
-                            <input
-                                defaultChecked
-                                name="projectRegion"
-                                onChange={this.regionRadioChanged.bind(this)}
-                                type="radio"
-                                value={1}
-                            />
-                            {" "}
-                            Subscribed Regions <br/>
-                            <input
-                                name="projectRegion"
-                                onChange={this.regionRadioChanged.bind(this)}
-                                type="radio"
-                                value={2}
-                            />{" "}
-                            Custom Regions <br/>
-                            {addOptions}
-                            {buttonContent}
-                            {this.state.errorMsg}
                         </div>
                     )}
             </div>

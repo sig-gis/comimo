@@ -152,15 +152,15 @@ def insertCollectedData(data, user, date):
         logging.getLogger("error").error(traceback.format_exc())
         return 'Error'
 
-def archiveProject(user, pid, pdate):
+# pid is CEO
+def archiveProject(user, pid):
     try:
         user = Profile.objects.get(user=user)
         project = ProjectsModel.objects.get(user=user,projid=pid,status='active')
-        p=project.projurl
         collectedSamples =  getCollectedData(pid)
         collectedSamples =  collectedSamples[1:]
         for sample in collectedSamples:
-            insertCollectedData(sample, user, pdate)
+            insertCollectedData(sample, user, project.data_date)
         status = delProject(user, pid)
         if (status == 'Archived'):
             project.status='archived'

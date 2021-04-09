@@ -214,7 +214,7 @@ span.advanced-text {
   width: calc(100% - 5px);
 }
 select[multiple] optgroup option:checked::before {
-  content: '\2713';
+  content: '\2713\0020';
   font-weight: bold;
 }
 #lnglathud-shell {
