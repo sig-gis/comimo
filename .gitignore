@@ -2,18 +2,13 @@ gee-auth-key.json
 config.py
 appconfigs.js
 *.pyc
-venv
 venv/*
-ceo-gateway
-ceodev-gateway
 logs
 package-lock.json
 
-__pycache__
 __pycache__/*
 
 db.sqlite3
-Readme.md
 
 static
 migrations/*
