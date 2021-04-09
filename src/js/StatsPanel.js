@@ -1,5 +1,7 @@
 import React from "react";
 
+import {toPrecision} from "./utils";
+
 export default class StatsPanel extends React.Component {
     constructor(props) {
         super(props);
