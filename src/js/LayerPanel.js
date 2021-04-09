@@ -1,4 +1,6 @@
-class LayerPanel extends React.Component {
+import React from "react";
+
+export default class LayerPanel extends React.Component {
     constructor(props) {
         super(props);
 

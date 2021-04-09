@@ -1,4 +1,18 @@
-/* eslint-disable react/jsx-no-undef */
+import React from "react";
+import ReactDOM from "react-dom";
+
+import AppInfo from "./AppInfo";
+import DownloadPanel from "./DownloadPanel";
+import LayerPanel from "./LayerPanel";
+import FilterPanel from "./FilterPanel";
+import SearchPanel from "./SearchPanel";
+import SideIcon from "./SideIcon";
+import StatsPanel from "./StatsPanel";
+import SubscribePanel from "./SubscribePanel";
+import ValidatePanel from "./ValidatePanel";
+
+import {toPrecision, getCookie} from "./utils";
+
 class Home extends React.Component {
     // set up class flags so each component update doesn't do redundant JS tasks
     constructor(props) {
@@ -10,9 +24,7 @@ class Home extends React.Component {
             IMG_DATES: "/api/getimagenames",
             SINGLE_IMAGE: "/api/getsingleimage",
             COMPOSITE_IMAGE: "/api/getcompositeimage",
-            legalMines: "api/getlegalmines",
             GEE_LAYER: "api/getgeetiles",
-            MUNS: "api/getmunicipallayer",
             INFO: "api/getinfo"
         };
         // Layers available
@@ -470,4 +482,6 @@ const props = {
     maxYear: 2019
 };
 
-ReactDOM.render(<Home {...props}/>, document.getElementById("main-container"));
+export function pageInit(args) {
+    ReactDOM.render(<Home {...props}/>, document.getElementById("main-container"));
+}

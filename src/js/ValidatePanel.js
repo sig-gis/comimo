@@ -1,4 +1,8 @@
-class ValidatePanel extends React.Component {
+import React from "react";
+
+import SvgIcon from "./SvgIcon";
+
+export default class ValidatePanel extends React.Component {
     constructor(props) {
         super(props);
 

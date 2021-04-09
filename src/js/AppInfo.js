@@ -1,4 +1,6 @@
-class AppInfo extends React.Component {
+import React from "react";
+
+export default class AppInfo extends React.Component {
     render() {
         return (
             <div

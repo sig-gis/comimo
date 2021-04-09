@@ -3,47 +3,34 @@
 
 <!DOCTYPE html>
 <html>
-<head>
-  <meta charset="utf-8">
-  <title>{% block title %}Colombian Mining Monitoring{% endblock %}</title>
-</head>
-<body>
-  {% block sidebar %}
-  {% endblock %}
-  {% block content %}
-  {% endblock %}
-</body>
+    <head>
+        <meta charset="utf-8">
+        <title>Colombian Mining Monitoring</title>
+        <script
+            type="text/javascript"
+            {% if user.is_authenticated %}
+            data-auth = 'true'
+            {% endif %}
+            {% if user.is_superuser %}
+            data-admin = 'true'
+            {% endif %}
+            data-test = 100
+        >
+            USER_STATE = document.currentScript.dataset.auth;
+            USER_ADM = document.currentScript.dataset.admin;
+        </script>
+        {% block pagescripts %}
+        {% endblock %}
 
-<script crossorigin src="https://unpkg.com/react@16/umd/react.development.js"></script>
-<script crossorigin src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
-<script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/6.26.0/babel.min.js"></script>
-<script type="text/javascript"
-  {% if user.is_authenticated %}
-  data-auth = 'true'
-  {% endif %}
-  {% if user.is_superuser %}
-  data-admin = 'true'
-  {% endif %}>
-  // global helpers
-  const l = function(message){
-    console.log(message);
-  }
-  // global constants
-  DJANGO_STATIC_URL = '{% static STATIC_URL %}';
-  DJANGO_IMAGE_FOLDER = 'images/';
-  DJANGO_JS_FOLDER = 'js/';
-  DJANGO_CSS_FOLDER = 'css/';
-  USER_STATE = document.currentScript.dataset.auth;
-  USER_ADM = document.currentScript.dataset.admin;
-</script>
-{% block pagescripts %}
-{% endblock %}
-
-<!-- Latest compiled and minified CSS -->
-<link rel='stylesheet' href='{% static "css/bootstrap-grid.min.4.3.1.css" %}' />
-<link href="https://fonts.googleapis.com/css?family=Roboto+Condensed&display=swap" rel="stylesheet">
-<link rel='stylesheet' href='{% static "css/gmw_global.css" %}' />
-{% block pagestyles %}
-{% endblock %}
-
+        <!-- Latest compiled and minified CSS -->
+        <link rel='stylesheet' href='{% static "css/bootstrap-grid.min.4.3.1.css" %}' />
+        <link href="https://fonts.googleapis.com/css?family=Roboto+Condensed&display=swap" rel="stylesheet">
+        <link rel='stylesheet' href='{% static "css/gmw_global.css" %}' />
+        {% block pagestyles %}
+        {% endblock %}
+    </head>
+    <body>
+        {% block content %}
+        {% endblock %}
+    </body>
 </html>

@@ -1,3 +1,5 @@
+import React from "react";
+
 const envelopeIcon = (
     <svg
         viewBox="0 0 512 512"
@@ -146,7 +148,7 @@ const iconMap = {
     "layer": layerIcon
 };
 
-function SvgIcon({icon, color, size, extraStyle}) {
+export default function SvgIcon({icon, color, size, extraStyle}) {
     return (
         <div
             style={{

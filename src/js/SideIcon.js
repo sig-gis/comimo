@@ -1,4 +1,8 @@
-class SideIcon extends React.Component {
+import React from "react";
+
+import SvgIcon from "./SvgIcon";
+
+export default class SideIcon extends React.Component {
     render() {
         const {parentClass, clickHandler, tooltip, icon, subtext} = this.props;
         return (

@@ -18,3 +18,5 @@ Readme.md
 static
 migrations/*
 node_modules
+# Webpack output
+gmw/statics/js/home.js

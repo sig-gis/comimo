@@ -40,7 +40,6 @@ module.exports = {
             }
         ],
         // Hacks for this code
-        "react/react-in-jsx-scope": 0,
         "react/prefer-stateless-function": 0,
         "react/jsx-fragments": 0,
         // Override recommends

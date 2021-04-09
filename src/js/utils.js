@@ -1,10 +1,10 @@
-function toPrecision(val, n) {
+export function toPrecision(val, n) {
     const factor = 10 ** n;
     return Math.round(val * factor) / factor;
 }
 
 // From Django docs.  Not functionally written.
-function getCookie(name) {
+export function getCookie(name) {
     let cookieValue = null;
     if (document.cookie && document.cookie !== "") {
         const cookies = document.cookie.split(";");

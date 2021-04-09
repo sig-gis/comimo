@@ -2,38 +2,28 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block content %}
-<div id = 'main-container'>
-</div>
-{% endblock %}
-
 {% block pagescripts %}
 <script src='https://api.mapbox.com/mapbox-gl-js/v2.1.1/mapbox-gl.js'></script>
 <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 
 <!-- add classes for the application -->
 <script type='text/javascript' src='{% static "js/appconfigs.js" %}'></script>
-<script type='text/babel' src='{% static "js/utils.js" %}'></script>
-<script type='text/babel' src='{% static "js/SvgIcon.js" %}'></script>
-<script type='text/babel' src='{% static "js/SideIcon.js" %}'></script>
-<script type='text/babel' src='{% static "js/LayerPanel.js" %}'></script>
-<script type='text/babel' src='{% static "js/FilterPanel.js" %}'></script>
-<script type='text/babel' src='{% static "js/DownloadPanel.js" %}'></script>
-<script type='text/babel' src='{% static "js/StatsPanel.js" %}'></script>
-<script type='text/babel' src='{% static "js/SearchPanel.js" %}'></script>
-<script type='text/babel' src='{% static "js/SubscribePanel.js" %}'></script>
-<script type='text/babel' src='{% static "js/ValidatePanel.js" %}'></script>
-<script type='text/babel' src='{% static "js/AppInfo.js" %}'></script>
-<script type='text/babel' src='{% static "js/Home.js" %}'></script>
+<script type='text/javascript' src='{% static "js/home.js" %}'></script>
 {% endblock %}
 
 {% block pagestyles %}
 <link href='https://api.mapbox.com/mapbox-gl-js/v2.1.1/mapbox-gl.css' rel='stylesheet' />
 <link rel='stylesheet' href='{% static "css/gmw_main.css" %}' />
 <style>
-  .app-icon {
-    background-image: url('{% static "images/app-logo.jpg" %}');
-    background-size: cover;
-  }
+    .app-icon {
+        background-image: url('{% static "images/app-logo.jpg" %}');
+        background-size: cover;
+    }
 </style>
+{% endblock %}
+
+{% block content %}
+<div id = 'main-container'>
+</div>
+<script type='text/javascript'>window.onload = function() {home.pageInit({isUser: USER_STATE, isAdmin: USER_ADM})} </script>
 {% endblock %}
