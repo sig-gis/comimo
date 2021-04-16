@@ -146,18 +146,15 @@ export default class StatsPanel extends React.Component {
             .catch(e => console.log("Error loading stats!", e));
     }
 
-    createTooltipHTML = (region, area, count) => (
+    createTooltipHTML = (region, count) => (
         "<div style=\"min-width: max-content; display:"
                 + "flex; flex-direction: column; padding: .4rem; line-height: 1rem\">"
-            + "<label>"
+            + "<span>"
             + region
-            + "</label>\n"
-            + "<label>Count: "
+            + "</span>"
+            + "<span><strong>Count: </strong>"
             + toPrecision(count, 0)
-            + "</label>\n"
-            + "<label>Area: "
-            + toPrecision(area, 1)
-            + " km^2</label>"
+            + "</span>"
         + "</div>"
     );
 
