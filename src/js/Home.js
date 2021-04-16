@@ -475,13 +475,6 @@ class Home extends React.Component {
     }
 }
 
-const props = {
-    minProbability: 0,
-    maxProbability: 100,
-    minYear: 2000,
-    maxYear: 2019
-};
-
 export function pageInit(args) {
-    ReactDOM.render(<Home {...props}/>, document.getElementById("main-container"));
+    ReactDOM.render(<Home {...args}/>, document.getElementById("main-container"));
 }

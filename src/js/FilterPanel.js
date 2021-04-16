@@ -4,6 +4,13 @@ export default class FilterPanel extends React.Component {
     constructor(props) {
         super(props);
 
+        this.range = {
+            minProbability: 0,
+            maxProbability: 100,
+            minYear: 2000,
+            maxYear: 2019
+        };
+
         this.state = {
             newSelectedDate: null
         };
