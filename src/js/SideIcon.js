@@ -12,7 +12,9 @@ export default class SideIcon extends React.Component {
                 title={tooltip}
                 type="button"
             >
-                <div style={{padding: "6px"}}><SvgIcon icon={icon} size="38px"/></div>
+                <div style={{padding: "6px", display: "flex", justifyContent: "center"}}>
+                    <SvgIcon icon={icon} size="38px"/>
+                </div>
                 {subtext && <span className="advanced-text mb-3">{subtext}</span>}
             </button>
         );

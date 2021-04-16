@@ -125,3 +125,7 @@ small {
   opacity: 0.4;
   pointer-events: none;
 }
+
+.circle {
+  border-radius: 100%;
+}

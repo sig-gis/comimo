@@ -43,7 +43,7 @@ export default class DownloadPanel extends React.Component {
             <div className={"popup-container download-panel " + (this.props.isHidden ? "see-through" : "")}>
                 <h3>DOWNLOAD DATA</h3>
                 <label>Select Region</label>
-                <div>
+                <div style={{marginTop: ".25rem"}}>
                     <input
                         checked={this.state.clipOption === 1}
                         name="downloadRegion"
@@ -52,7 +52,7 @@ export default class DownloadPanel extends React.Component {
                     />
                     Complete Data
                 </div>
-                <div className={this.props.selectedRegion ? "" : "disabled-group"}>
+                <div className={this.props.selectedRegion ? "" : "disabled-group"} style={{marginTop: ".25rem"}}>
                     <input
                         checked={this.state.clipOption === 2}
                         name="downloadRegion"

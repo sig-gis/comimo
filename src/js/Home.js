@@ -64,7 +64,8 @@ class Home extends React.Component {
             subList: [],
             // reload limit for layers that could not be loaded
             reloadCount: 0,
-            theMap: null
+            theMap: null,
+            myHeight: 0
         };
     }
 
@@ -73,7 +74,22 @@ class Home extends React.Component {
         this.getFeatureNames();
         this.initMap();
         this.getImageDates();
+
+        this.updateWindow();
+        window.addEventListener("touchend", this.updateWindow);
+        window.addEventListener("resize", this.updateWindow);
     }
+
+    componentDidUpdate(prevProps, prevState) {
+        if (prevState.myHeight !== this.state.myHeight) {
+            setTimeout(() => this.state.theMap.resize(), 50);
+        }
+    }
+
+    updateWindow = () => {
+        window.scrollTo(0, 0);
+        this.setState({myHeight: window.innerHeight});
+    };
 
     /// State update
 
@@ -328,14 +344,44 @@ class Home extends React.Component {
     render() {
         return (
             <div
+                id="root-component"
                 style={{
-                    height: "100%",
+                    height: this.state.myHeight,
                     width: "100%",
                     margin: 0,
-                    padding: 0
+                    padding: 0,
+                    position: "relative"
                 }}
             >
-                <div id="mapbox"/>
+                <div
+                    id="mapbox"
+                    style={{
+                        height: "100%",
+                        width: "100%",
+                        margin: 0,
+                        padding: 0,
+                        position: "relative"
+                    }}
+                />
+                {/* Layers */}
+                <div
+                    className="circle layer-group"
+                    style={{}}
+                >
+                    <LayerPanel
+                        availableLayers={this.availableLayers}
+                        isHidden={this.state.layerHidden}
+                        startVisible={["eeLayer"]}
+                        theMap={this.state.theMap}
+                    />
+                    <SideIcon
+                        clickHandler={() => this.togglePanel("layerHidden")}
+                        icon="layer"
+                        parentClass={"layer-icon circle" + (this.state.layerHidden ? "" : " active-icon")}
+                        tooltip="Layers"
+                    />
+
+                </div>
 
                 <div className="sidebar">
                     <div className="sidebar-icon gold-drop app-icon"/>
@@ -379,20 +425,6 @@ class Home extends React.Component {
                         fitMap={this.fitMap}
                         isHidden={this.state.searchHidden}
                         selectRegion={this.selectRegion}
-                    />
-
-                    {/* Layers */}
-                    <SideIcon
-                        clickHandler={() => this.togglePanel("layerHidden")}
-                        icon="layer"
-                        parentClass={this.state.layerHidden ? "" : "active-icon"}
-                        tooltip="Layers"
-                    />
-                    <LayerPanel
-                        availableLayers={this.availableLayers}
-                        isHidden={this.state.layerHidden}
-                        startVisible={["eeLayer"]}
-                        theMap={this.state.theMap}
                     />
 
                     {/* Advanced Button */}

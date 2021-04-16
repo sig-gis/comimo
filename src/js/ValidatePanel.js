@@ -197,7 +197,7 @@ export default class ValidatePanel extends React.Component {
                 View or add projects to validate mine data.
                 {USER_STATE
                     ? (
-                        <div>
+                        <div style={{display: "flex", flexDirection: "column"}}>
                             {projects.length === 0
                                 ? (
                                     <span>You don&apos;t have any active projects.</span>
@@ -212,7 +212,7 @@ export default class ValidatePanel extends React.Component {
                                         <tbody>{projects.map(p => this.renderProject(...p))}</tbody>
                                     </table>
                                 )}
-                            <h3>Create a new project:</h3>
+                            <h3 style={{marginBottom: 0}}>Create a new project:</h3>
                             <label>Enter Project Name:</label>
                             <input
                                 id="projectName"
@@ -222,7 +222,7 @@ export default class ValidatePanel extends React.Component {
                                 value={projectName}
                             />
                             <label>Select Project Region:</label>
-                            <div>
+                            <span style={{marginTop: ".25rem"}}>
                                 <input
                                     checked={regionType === 1}
                                     name="projectRegion"
@@ -230,8 +230,8 @@ export default class ValidatePanel extends React.Component {
                                     type="radio"
                                 />
                                 Subscribed Regions
-                            </div>
-                            <div>
+                            </span>
+                            <span style={{marginTop: ".25rem"}}>
                                 <input
                                     checked={regionType === 2}
                                     name="projectRegion"
@@ -240,12 +240,13 @@ export default class ValidatePanel extends React.Component {
                                     value={2}
                                 />
                                 Custom Regions
-                            </div>
+                            </span>
                             {regionType === 2 && this.renderCustomRegions()}
                             <button
                                 className="map-upd-btn"
                                 disabled={projectCreating}
                                 onClick={() => this.createProject(selectedDate)}
+                                style={{marginTop: ".25rem"}}
                                 type="button"
                             >
                                 Create new project for {selectedDate}

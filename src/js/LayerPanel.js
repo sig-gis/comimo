@@ -66,9 +66,9 @@ export default class LayerPanel extends React.Component {
         const layerNames = Object.keys(availableLayers);
 
         return (
-            <div className={"popup-container layer-panel " + (this.props.isHidden ? "see-through" : "")}>
+            <div className={"layer-container" + (this.props.isHidden ? " see-through" : "")}>
                 <h3>SELECT LAYERS</h3>
-                <div key={name} className="d-flex justify-content-between mb-2">
+                <div className="d-flex justify-content-between mb-2">
                     <label style={{margin: "0 .25rem"}}>Layer Name</label>
                     <div style={{width: "40%"}}>
                         <label style={{margin: "0 .25rem"}}>Opacity</label>
