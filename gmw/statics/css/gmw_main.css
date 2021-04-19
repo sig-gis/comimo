@@ -1,8 +1,11 @@
 .mapboxgl-popup-close-button {
-  font-size: 1.5rem;
-  right: 2px;
+  font-size: 1.25rem;
+  padding: 0 3px 8px 8px;
+  line-height: 1.25rem;
 }
-
+.mapboxgl-popup-content {
+  padding-top: 14px;
+}
 .app-bar {
   position: absolute;
   top: 0;
