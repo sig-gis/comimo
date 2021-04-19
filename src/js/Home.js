@@ -42,7 +42,6 @@ class Home extends React.Component {
             subscribeHidden: true,
             validateHidden: true,
             searchHidden: true,
-            layerHidden: true,
             appInfoHidden: true
         };
         this.advancedPanelState = {
@@ -54,6 +53,7 @@ class Home extends React.Component {
         this.state = {
             ...this.panelState,
             ...this.advancedPanelState,
+            layersHidden: true,
             advancedOptions: false,
             showComposite: false,
             compositeParams: {},
@@ -370,14 +370,14 @@ class Home extends React.Component {
                 >
                     <LayerPanel
                         availableLayers={this.availableLayers}
-                        isHidden={this.state.layerHidden}
+                        isHidden={this.state.layersHidden}
                         startVisible={["eeLayer"]}
                         theMap={this.state.theMap}
                     />
                     <SideIcon
-                        clickHandler={() => this.togglePanel("layerHidden")}
+                        clickHandler={() => this.setState({layersHidden: !this.state.layersHidden})}
                         icon="layer"
-                        parentClass={"layer-icon circle" + (this.state.layerHidden ? "" : " active-icon")}
+                        parentClass={"layer-icon circle" + (this.state.layersHidden ? "" : " active-icon")}
                         tooltip="Layers"
                     />
 
