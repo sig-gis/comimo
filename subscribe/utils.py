@@ -1,5 +1,7 @@
 from django.core.exceptions import ObjectDoesNotExist
-import logging, traceback, pytz
+import logging
+import traceback
+import pytz
 from datetime import datetime
 
 from subscribe.models import SubscribeModel, ProjectsModel, ExtractedData, CronJobs
@@ -9,10 +11,13 @@ from accounts.models import Profile
 from api import utils as apiutils
 
 # function to add entry to model
+
+
 def saveEmail(user, region, level):
     try:
         user = Profile.objects.get(user=user)
-        subscribe_model_instance = SubscribeModel.objects.get(user=user, region=region, level=level)
+        subscribe_model_instance = SubscribeModel.objects.get(
+            user=user, region=region, level=level)
         return 'Exists'
     except ObjectDoesNotExist as e:
         subscribe_model_instance = SubscribeModel()
@@ -33,20 +38,25 @@ def saveEmail(user, region, level):
 def delEmail(user, region, level):
     try:
         user = Profile.objects.get(user=user)
-        subscribe_model_instance = SubscribeModel.objects.get(user=user, region=region, level=level)
+        subscribe_model_instance = SubscribeModel.objects.get(
+            user=user, region=region, level=level)
     except Exception as e:
         return 'Error'
     subscribe_model_instance.delete()
     return 'Deleted'
 
+
 def projectExists(user, data_date, regions):
     try:
-        projects_model_instance = ProjectsModel.objects.get(user=user, data_date=data_date, regions=regions, status='active')
+        projects_model_instance = ProjectsModel.objects.get(
+            user=user, data_date=data_date, regions=regions, status='active')
         return True, projects_model_instance.name
     except ObjectDoesNotExist as e:
         return False, 'NA'
 
 # function to add entry to model
+
+
 def saveProject(email, projurl, projid, data_date, name, regions):
     user = Profile.objects.get(email=email)
     try:
@@ -82,6 +92,7 @@ def getSubscribedRegions(user):
         print(e)
         return 'Error'
 
+
 def createProject(userId, data_date, name, regions):
     user = Profile.objects.get(user=userId)
     exists, ename = projectExists(user, data_date, regions)
@@ -89,26 +100,28 @@ def createProject(userId, data_date, name, regions):
         apiutils.authGEE()
         regions = regions.split('__')
         regions.sort()
-        points = apiutils.getPointsWithin(regions,data_date)
+        points = apiutils.getPointsWithin(regions, data_date)
         number = points.size().getInfo()
         if (number > 0):
             points = points.getInfo()
-            proj = getCeoProjectURL(points,data_date,user.email,name)
+            proj = getCeoProjectURL(points, user.email, name)
             if proj is not None:
                 projid = proj['projectId']
                 projurl = proj['ceoCollectionUrl']
                 if (projurl and projurl != ""):
                     regions = '__'.join(regions)
-                    entry_added = saveProject(user.email, projurl, projid, data_date, name, regions)
-                    return {'action':entry_added, 'proj':[data_date.strftime('%Y-%m-%d'),datetime.today().strftime("%Y-%m-%d"),projid,projurl,name,regions]}
+                    entry_added = saveProject(
+                        user.email, projurl, projid, data_date, name, regions)
+                    return {'action': entry_added, 'proj': [data_date.strftime('%Y-%m-%d'), datetime.today().strftime("%Y-%m-%d"), projid, projurl, name, regions]}
                 else:
-                    return {'action':'Error', 'message':'Error creating CEO project. Please try again later.'}
+                    return {'action': 'Error', 'message': 'Error creating CEO project. Please try again later.'}
             else:
-                    return {'action':'Error', 'message':'Error with CEO Gateway. Please contact support.'}
+                return {'action': 'Error', 'message': 'Error with CEO Gateway. Please contact support.'}
         else:
-            return {'action':'Error', 'message':'No mines detected within specified region(s)! Subscribe to other regions, or use custom regions.'}
+            return {'action': 'Error', 'message': 'No mines detected within specified region(s)! Subscribe to other regions, or use custom regions.'}
     else:
-        return {'action':'Error', 'message':'Project for those regions already exists for the day! It\'s name is "'+ename+'". Close that one to create another.'}
+        return {'action': 'Error', 'message': 'Project for those regions already exists for the day! It\'s name is "'+ename+'". Close that one to create another.'}
+
 
 def delProject(user, pid):
     try:
@@ -126,8 +139,9 @@ def delProject(user, pid):
 def getActiveProjects(user):
     try:
         user = Profile.objects.get(user=user)
-        fields = ['data_date','projurl']
-        queryset = ProjectsModel.objects.filter(user=user,status='active').values_list(*fields)
+        fields = ['data_date', 'projurl']
+        queryset = ProjectsModel.objects.filter(
+            user=user, status='active').values_list(*fields)
         return queryset
     except ObjectDoesNotExist as e:
         print('no row')
@@ -136,12 +150,13 @@ def getActiveProjects(user):
         print(e)
         return 'Error'
 
+
 def insertCollectedData(data, user, date):
     try:
         data_instance = ExtractedData()
         data_instance.user = user
-        data_instance.y =float(data[1])
-        data_instance.x =float(data[2])
+        data_instance.y = float(data[1])
+        data_instance.x = float(data[2])
         data_instance.data_date = date
         data_instance.class_num = data[3]
         data_instance.class_name = data[4]
@@ -153,25 +168,29 @@ def insertCollectedData(data, user, date):
         return 'Error'
 
 # pid is CEO
+
+
 def archiveProject(user, pid):
     try:
         user = Profile.objects.get(user=user)
-        project = ProjectsModel.objects.get(user=user,projid=pid,status='active')
-        collectedSamples =  getCollectedData(pid)
-        collectedSamples =  collectedSamples[1:]
+        project = ProjectsModel.objects.get(
+            user=user, projid=pid, status='active')
+        collectedSamples = getCollectedData(pid)
+        collectedSamples = collectedSamples[1:]
         for sample in collectedSamples:
             insertCollectedData(sample, user, project.data_date)
         status = delProject(user, pid)
         if (status == 'Archived'):
-            project.status='archived'
+            project.status = 'archived'
             project.save()
-        return {'action':status}
+        return {'action': status}
     except ObjectDoesNotExist as e:
         print('no user/project')
-        return {'action':'Error','message':'Project does not exist!'}
+        return {'action': 'Error', 'message': 'Project does not exist!'}
     except Exception as e:
         print(e)
-        return {'action':'Error', 'message':'Something went wrong!'}
+        return {'action': 'Error', 'message': 'Something went wrong!'}
+
 
 def saveCron(jobType, message):
     try:

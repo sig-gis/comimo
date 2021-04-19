@@ -2,6 +2,7 @@ from django.db import models
 from datetime import datetime
 from accounts.models import Profile
 
+
 class SubscribeModel(models.Model):
     id = models.AutoField(primary_key=True, null=False)
     user = models.ForeignKey(Profile, on_delete=models.CASCADE)
@@ -17,7 +18,7 @@ class SubscribeModel(models.Model):
         db_table = "gmw_subscribe"
 
     def __str__(self):
-        return str(self.user.user.id)+ ' ' +self.user.user.username+' : '+self.region
+        return str(self.user.user.id) + ' ' + self.user.user.username+' : '+self.region
 
 
 class ProjectsModel(models.Model):
@@ -27,9 +28,9 @@ class ProjectsModel(models.Model):
     projurl = models.TextField(null=False)
     name = models.TextField(null=False)
     regions = models.TextField(null=False)
-    data_date =  models.DateTimeField(null=False)
-    created_date =  models.DateTimeField(null=False, blank=True)
-    status =  models.TextField(null=False, default='active')
+    data_date = models.DateTimeField(null=False)
+    created_date = models.DateTimeField(null=False, blank=True)
+    status = models.TextField(null=False, default='active')
 
     class Meta:
         app_label = "subscribe"
@@ -37,6 +38,7 @@ class ProjectsModel(models.Model):
 
     def __str__(self):
         return '('+self.status+') '+self.name+' : '+self.user.user.username+' - '+self.data_date.strftime('%Y-%m-%d')
+
 
 class ExtractedData(models.Model):
     id = models.AutoField(primary_key=True, null=False)
@@ -53,6 +55,7 @@ class ExtractedData(models.Model):
 
     def __str__(self):
         return str(self.id)+' - '+self.class_name+' by '+self.user.user.username
+
 
 class CronJobs(models.Model):
     id = models.AutoField(primary_key=True, null=False)

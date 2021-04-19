@@ -3,7 +3,8 @@ import requests
 from datetime import datetime
 import json
 
-def getCeoProjectURL(points, latest_date, email, name):
+
+def getCeoProjectURL(points, email, name):
     try:
         reqobj = {
             "classes": PROJ_CLASSES,
@@ -13,11 +14,13 @@ def getCeoProjectURL(points, latest_date, email, name):
             "imageryId": PROJ_IMAGERY
         }
         headers = {'Content-type': 'application/json', 'Accept': 'text/plain'}
-        resp = requests.post(CEO_GATEWAY_URL+CEO_CREATE, data=json.dumps(reqobj), headers=headers, timeout=300)
+        resp = requests.post(CEO_GATEWAY_URL+CEO_CREATE,
+                             data=json.dumps(reqobj), headers=headers, timeout=300)
         proj = resp.text
         return json.loads(proj)
     except Exception as e:
         print(e)
+
 
 def getPlots(points):
     import random
@@ -28,24 +31,27 @@ def getPlots(points):
             coords = feature['geometry']['coordinates']
             lon = coords[0]
             lat = coords[1]
-            plots.append({'lat':lat,'lon':lon})
+            plots.append({'lat': lat, 'lon': lon})
         except Exception as e:
             print("issue with feature:", feature)
     random.shuffle(plots)
     return plots
+
 
 def getProjectInfo(pid):
     headers = {'Content-type': 'application/json', 'Accept': 'text/plain'}
     resp = requests.get(CEO_GATEWAY_URL+CEO_INFO+pid, headers=headers)
     return json.loads(resp.text)
 
+
 def getCollectedData(pid):
     headers = {'Content-type': 'application/json', 'Accept': 'text/plain'}
     resp = requests.get(CEO_GATEWAY_URL+CEO_GETDATA+pid, headers=headers)
     csv = resp.text.split('\n')
     csv = list(map(lambda x: x.split(','), csv))
-    csv = list(filter(lambda x: x[3] != '',csv))
+    csv = list(filter(lambda x: x[3] != '', csv))
     return csv
+
 
 def deleteProject(pid):
     headers = {'Content-type': 'application/json', 'Accept': 'text/plain'}
