@@ -1,5 +1,7 @@
 import React from "react";
 
+import {MainContext} from "./context";
+
 export default class FilterPanel extends React.Component {
     constructor(props) {
         super(props);
@@ -17,14 +19,15 @@ export default class FilterPanel extends React.Component {
     }
 
     componentDidUpdate(prevProps, prevState) {
-        if ((prevProps.isHidden === true && this.props.isHidden === false)
-            || (prevProps.selectedDate && !this.state.newSelectedDate)) {
-            this.setState({newSelectedDate: this.props.selectedDate});
+        if (prevProps.isHidden === true && this.props.isHidden === false) {
+            this.setState({newSelectedDate: this.context.selectedDate});
         }
     }
 
     render() {
         const {showComposite, isHidden, selectDate, imageDates} = this.props;
+        const {newSelectedDate} = this.state;
+        const {selectedDate} = this.context;
         return (
             <div className={"popup-container filter-panel " + (isHidden ? "see-through" : "")}>
                 <h3>FILTER DATA</h3>
@@ -68,8 +71,8 @@ export default class FilterPanel extends React.Component {
                 <div style={{textAlign: "center", width: "100%"}}>
                     <button
                         className="map-upd-btn"
-                        disabled={this.state.newSelectedDate === this.props.selectedDate}
-                        onClick={() => selectDate(this.state.newSelectedDate)}
+                        disabled={newSelectedDate === selectedDate}
+                        onClick={() => selectDate(newSelectedDate)}
                         style={{marginTop: ".5rem"}}
                         type="button"
                     >
@@ -80,3 +83,4 @@ export default class FilterPanel extends React.Component {
         );
     }
 }
+FilterPanel.contextType = MainContext;

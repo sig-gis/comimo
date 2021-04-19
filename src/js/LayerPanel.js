@@ -20,14 +20,18 @@ export default class LayerPanel extends React.Component {
     }
 
     setVisible = (name, isVisible) => {
-        this.props.theMap.setLayoutProperty(name, "visibility", isVisible ? "visible" : "none");
-        this.setState({visible: {...this.state.visible, [name]: isVisible}});
+        const {visible} = this.state;
+        const {theMap} = this.props;
+        theMap.setLayoutProperty(name, "visibility", isVisible ? "visible" : "none");
+        this.setState({visible: {...visible, [name]: isVisible}});
     };
 
     setOpacity = (name, newOpacity) => {
-        this.props.theMap.setPaintProperty(name, "raster-opacity", newOpacity / 100);
+        const {opacity} = this.state;
+        const {theMap} = this.props;
+        theMap.setPaintProperty(name, "raster-opacity", newOpacity / 100);
         this.setState({
-            opacity: {...this.state.opacity, [name]: newOpacity}
+            opacity: {...opacity, [name]: newOpacity}
         });
     };
 
@@ -62,11 +66,11 @@ export default class LayerPanel extends React.Component {
 
     render() {
         const {opacity, visible} = this.state;
-        const {availableLayers} = this.props;
+        const {availableLayers, isHidden} = this.props;
         const layerNames = Object.keys(availableLayers);
 
         return (
-            <div className={"layer-container" + (this.props.isHidden ? " see-through" : "")}>
+            <div className={"layer-container" + (isHidden ? " see-through" : "")}>
                 <h3>SELECT LAYERS</h3>
                 <div className="d-flex justify-content-between mb-2">
                     <label style={{margin: "0 .25rem"}}>Layer Name</label>

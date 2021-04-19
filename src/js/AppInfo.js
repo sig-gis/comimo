@@ -1,15 +1,19 @@
 import React from "react";
 
+import {MainContext} from "./context";
+
 export default class AppInfo extends React.Component {
     render() {
+        const {isHidden, onOuterClick} = this.props;
+        const {isAdmin} = this.context;
         return (
             <div
-                className={"info-modal " + (this.props.isHidden ? "see-through" : "")}
-                onClick={this.props.onOuterClick}
+                className={"info-modal " + (isHidden ? "see-through" : "")}
+                onClick={onOuterClick}
             >
                 <div className="inner-container" onClick={e => e.stopPropagation()}>
                     <div className="user-section" style={{float: "right"}}>
-                        {USER_ADM && (
+                        {isAdmin && (
                             <a href="/download" style={{marginRight: "1rem"}}>
                                 Download Validated data
                             </a>
@@ -54,3 +58,4 @@ export default class AppInfo extends React.Component {
         );
     }
 }
+AppInfo.contextType = MainContext;

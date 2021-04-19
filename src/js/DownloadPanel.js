@@ -1,5 +1,7 @@
 import React from "react";
 
+import {MainContext} from "./context";
+
 export default class DownloadPanel extends React.Component {
     constructor(props) {
         super(props);
@@ -10,51 +12,50 @@ export default class DownloadPanel extends React.Component {
 
         this.state = {
             clipOption: 1,
-            downURL: false,
+            downloadURL: false,
             fetching: false
         };
     }
 
     getDownloadUrl = () => {
-        const [level, region] = this.state.clipOption === 1
-            ? ["", "all"]
-            : [...this.props.selectedRegion, this.props.selectedDate];
-        const date = this.props.selectedDate;
-
-        const url = this.URL.GETDL + "?region=" + region + "&level=" + level + "&date=" + date;
+        const {selectedRegion, selectedDate} = this.context;
+        const {clipOption} = this.state;
         this.setState({fetching: true});
-        fetch(url)
+
+        const [level, region] = clipOption === 1 ? ["", "all"] : selectedRegion;
+        fetch(this.URL.GETDL + "?region=" + region + "&level=" + level + "&date=" + selectedDate)
             .then(res => res.json())
             .then(res => {
                 if (res.action === "success") {
-                    this.setState({
-                        downURL: [region, level, date, res.url],
-                        fetching: false
-                    });
+                    this.setState({downloadURL: [region, level, selectedDate, res.url]});
                 }
             })
             .catch(err => {
                 console.log(err);
-            });
+            })
+            .finally(() => this.setState({fetching: false}));
     };
 
     render() {
+        const {isHidden} = this.props;
+        const {clipOption, fetching, downloadURL} = this.state;
+        const {selectedRegion, selectedDate} = this.context;
         return (
-            <div className={"popup-container download-panel " + (this.props.isHidden ? "see-through" : "")}>
+            <div className={"popup-container download-panel " + (isHidden ? "see-through" : "")}>
                 <h3>DOWNLOAD DATA</h3>
                 <label>Select Region</label>
                 <div style={{marginTop: ".25rem"}}>
                     <input
-                        checked={this.state.clipOption === 1}
+                        checked={clipOption === 1}
                         name="downloadRegion"
                         onChange={() => this.setState({clipOption: 1})}
                         type="radio"
                     />
                     Complete Data
                 </div>
-                <div className={this.props.selectedRegion ? "" : "disabled-group"} style={{marginTop: ".25rem"}}>
+                <div className={selectedRegion ? "" : "disabled-group"} style={{marginTop: ".25rem"}}>
                     <input
-                        checked={this.state.clipOption === 2}
+                        checked={clipOption === 2}
                         name="downloadRegion"
                         onChange={() => this.setState({clipOption: 2})}
                         type="radio"
@@ -62,29 +63,29 @@ export default class DownloadPanel extends React.Component {
                     Selected Municipality
                 </div>
                 <br/>
-                {this.props.selectedDate && (
+                {selectedDate && (
                     <div style={{textAlign: "center", width: "100%"}}>
                         <button
                             className="map-upd-btn"
-                            disabled={this.state.fetching}
+                            disabled={fetching}
                             onClick={this.getDownloadUrl}
                             type="button"
                         >
-                    Get download URL for {this.props.selectedDate}
+                    Get download URL for {selectedDate}
                         </button>
                     </div>
                 )}
-                {this.state.fetching
+                {fetching
                     ? <p>Fetching download URL ...</p>
-                    : this.state.downURL && (
+                    : downloadURL && (
                         <p>
                             <span>
-                                <a href={this.state.downURL[3]}>
+                                <a href={downloadURL[3]}>
                                     Click here to download the{" "}
-                                    {this.state.downURL[0] === "all"
+                                    {downloadURL[0] === "all"
                                         ? "complete data"
-                                        : "data within " + this.state.downURL[0]}{" "}
-                                    for {this.state.downURL[2]}.
+                                        : "data within " + downloadURL[0]}{" "}
+                                    for {downloadURL[2]}.
                                 </a>
                             </span>
                         </p>
@@ -93,3 +94,4 @@ export default class DownloadPanel extends React.Component {
         );
     }
 }
+DownloadPanel.contextType = MainContext;

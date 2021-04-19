@@ -1,5 +1,9 @@
 import React from "react";
 
+import LoginMessage from "./LoginMessage";
+
+import {MainContext} from "./context";
+
 export default class SubscribePanel extends React.Component {
     constructor(props) {
         super(props);
@@ -20,6 +24,7 @@ export default class SubscribePanel extends React.Component {
     }
 
     getSubs() {
+        const {updateSubList} = this.props;
         fetch(this.URLS.SUBS)
             .then(res => res.json())
             .then(result => {
@@ -27,21 +32,23 @@ export default class SubscribePanel extends React.Component {
                     this.setState({
                         subsLoaded: true
                     });
-                    this.props.updateSubList(result.regions.sort());
+                    updateSubList(result.regions.sort());
                 }
             })
             .catch(err => console.log(err));
     }
 
     addSubs(region) {
+        const {updateSubList} = this.props;
+        const {subscribedList} = this.context;
         if (region !== "") {
             fetch(this.URLS.ADDSUBS + "?region=" + region[1] + "&level=" + region[0])
                 .then(res => res.json())
                 .then(result => {
                     if (result.action === "Created") {
-                        const newList = [...this.props.subList, result.level + "_" + result.region];
+                        const newList = [...subscribedList, result.level + "_" + result.region];
                         newList.sort();
-                        this.props.updateSubList(newList);
+                        updateSubList(newList);
                     } else if (result.action === "Exists") {
                         alert("You are already subscribed to the region!");
                     }
@@ -51,6 +58,8 @@ export default class SubscribePanel extends React.Component {
     }
 
     delSubs(data) {
+        const {updateSubList} = this.props;
+        const {subscribedList} = this.context;
         const arr = data.split("_");
         const level = arr.splice(0, 1);
         const delConfirm = confirm(
@@ -63,15 +72,15 @@ export default class SubscribePanel extends React.Component {
                 .then(res => res.json())
                 .then(result => {
                     if (result.action !== "Error") {
-                        const newList = this.props.subList.filter(r => r !== result.level + "_" + result.region);
-                        this.props.updateSubList(newList);
+                        const newList = subscribedList.filter(r => r !== result.level + "_" + result.region);
+                        updateSubList(newList);
                     }
                 })
                 .catch(err => console.log(err));
         }
     }
 
-    createList(subList) {
+    renderSubscribedTable(subscribedList) {
         return (
             <table style={{width: "100%", textAlign: "left"}}>
                 <thead>
@@ -82,7 +91,7 @@ export default class SubscribePanel extends React.Component {
                     </tr>
                 </thead>
                 <tbody>
-                    {subList.map((fullRegion, idx) => {
+                    {subscribedList.map((fullRegion, idx) => {
                         const arr = fullRegion.split("_");
                         return (
                             <tr key={fullRegion}>
@@ -108,70 +117,50 @@ export default class SubscribePanel extends React.Component {
     }
 
     render() {
-        const {selectedRegion, subList} = this.props;
-        let content;
-        if (subList.length === 0) {
-            content = (
-                <div className="subs-header">
-                    <p>
-                        {this.state.subsLoaded
-                            ? "You don't seem to be subscribed to alerts from any region!"
-                            : "Loading the regions that you are subscribed to"}
-                    </p>
-                </div>
-            );
-        } else {
-            content = (
-                <div>
-                    <div className="subs-header">
-                        {" "}
-                        You are subscribed to alerts from following regions
-                    </div>
-                    {this.createList(subList)}
-                    <br/>
-                </div>
-            );
-        }
-        let subToCurrent = "";
-
-        if (selectedRegion && subList.indexOf(selectedRegion[0] + "_" + selectedRegion[1]) === -1) {
-            const reg = selectedRegion[1].split("_");
-            subToCurrent = (
-                <div style={{textAlign: "center", width: "100%"}}>
-                    <button
-                        className="map-upd-btn"
-                        onClick={() => this.addSubs(selectedRegion)}
-                        type="button"
-                    >
-                        Subscribe to {reg[1]}, <i>{reg[0]}</i>
-                    </button>
-                </div>
-            );
-        }
-
+        const {subsLoaded} = this.state;
+        const {isHidden} = this.props;
+        const {selectedRegion, subscribedList, isUser} = this.context;
+        const parsedRegion = selectedRegion && selectedRegion[1].split("_");
         return (
-            <div className={"popup-container subs-panel " + (this.props.isHidden ? "see-through" : "")}>
+            <div className={"popup-container subs-panel " + (isHidden ? "see-through" : "")}>
                 <h3>YOUR SUBSCRIPTIONS</h3>
-                {USER_STATE ? (
+                {isUser ? (
                     <div>
-                        {content}
-                        {subToCurrent}
+                        {subscribedList.length === 0
+                            ? (
+                                <div className="subs-header">
+                                    <p>
+                                        {subsLoaded
+                                            ? "You are not subscribed to any alerts."
+                                            : "Loading subscriptions..."}
+                                    </p>
+                                </div>
+                            ) : (
+                                <div>
+                                    <div className="subs-header">
+                                        You are subscribed to alerts from following regions
+                                    </div>
+                                    {this.renderSubscribedTable(subscribedList)}
+                                    <br/>
+                                </div>
+                            )}
+                        {parsedRegion && subscribedList.indexOf(selectedRegion[0] + "_" + selectedRegion[1]) === -1 && (
+                            <div style={{textAlign: "center", width: "100%"}}>
+                                <button
+                                    className="map-upd-btn"
+                                    onClick={() => this.addSubs(selectedRegion)}
+                                    type="button"
+                                >
+                                    Subscribe to {parsedRegion[1]}, <i>{parsedRegion[0]}</i>
+                                </button>
+                            </div>
+                        )}
                     </div>
                 ) : (
-                    <div style={{textAlign: "center", width: "100%"}}>
-                        <p> Login to view your subscriptions </p>
-                        <button
-                            className="map-upd-btn"
-                            onClick={() => {
-                                location.href = "accounts/login";
-                            }}
-                            type="button"
-                        >
-                            Login
-                        </button>
-                    </div>
+                    <LoginMessage actionText="subscriptions"/>
                 )}
             </div>
         );
     }
 }
+SubscribePanel.contextType = MainContext;

@@ -36,11 +36,11 @@ export default class StatsPanel extends React.Component {
             && prevProps.isHidden
             && !this.props.isHidden;
 
-        if (prevProps.subList !== this.props.subList) {
+        if (prevProps.subscribedList !== this.props.subscribedList) {
             this.setState({subsListChanged: true});
         }
 
-        if (USER_STATE && (initialLoad || refreshNeeded)) {
+        if (initialLoad || refreshNeeded) {
             this.getAreaStats(this.props.selectedDate);
             this.getAreaTS();
             this.setState({fetchedFor: this.props.selectedDate, subsListChanged: false});
@@ -49,8 +49,7 @@ export default class StatsPanel extends React.Component {
 
     getAreaStats(date) {
         document.getElementById("stats1").innerHTML = "<b>Loading data...</b>";
-        const url = this.URL.ARSTATS + "?date=" + date;
-        fetch(url)
+        fetch(this.URL.ARSTATS + "?date=" + date)
             .then(res => res.json())
             .then(result => {
                 const data = [];
@@ -96,8 +95,7 @@ export default class StatsPanel extends React.Component {
 
     getAreaTS() {
         document.getElementById("stats2").innerHTML = "<b>Loading data...</b>";
-        const url = this.URL.ARTS;
-        fetch(url)
+        fetch(this.URL.ARTS)
             .then(res => res.json())
             .then(result => {
                 const data = [];
@@ -159,45 +157,28 @@ export default class StatsPanel extends React.Component {
     );
 
     render() {
+        const {isHidden} = this.props;
         return (
             <div
-                className={[
-                    "popup-container stat-panel ",
-                    this.props.isHidden ? "see-through" : ""
-                ].join(" ")}
+                className={"popup-container stat-panel " + (isHidden ? "see-through" : "")}
             >
-                {USER_STATE ? (
-                    <div>
-                        <label>Prediction count per subscribed region</label>
-                        <p style={{lineHeight: "1rem", fontSize: ".75rem"}}>
-                            *Note: Regions with no predictions are not shown.
-                        </p>
-                        <div id="stats1">
-                            <b>Loading data...</b>
-                        </div>
-                        <label>Total predictions for subscribed regions per reporting period</label>
-                        <div id="stats2">
-                            <b>Loading data...</b>
-                        </div>
-                        <p style={{lineHeight: "1rem", fontSize: ".75rem"}}>
-                            *Note: each prediction equals an area of 540x540m. Mining activity is
-                            not always present in the entire prediction area
-                        </p>
+                <div>
+                    <label>Prediction count per subscribed region</label>
+                    <p style={{lineHeight: "1rem", fontSize: ".75rem"}}>
+                        *Note: Regions with no predictions are not shown.
+                    </p>
+                    <div id="stats1">
+                        <b>Loading data...</b>
                     </div>
-                ) : (
-                    <div style={{textAlign: "center", width: "100%"}}>
-                        <p> Login to view your subscriptions </p>
-                        <button
-                            className="map-upd-btn"
-                            onClick={() => {
-                                location.href = "accounts/login";
-                            }}
-                            type="button"
-                        >
-                            Login
-                        </button>
+                    <label>Total predictions for subscribed regions per reporting period</label>
+                    <div id="stats2">
+                        <b>Loading data...</b>
                     </div>
-                )}
+                    <p style={{lineHeight: "1rem", fontSize: ".75rem"}}>
+                        *Note: each prediction equals an area of 540x540m. Mining activity is
+                        not always present in the entire prediction area
+                    </p>
+                </div>
             </div>
         );
     }

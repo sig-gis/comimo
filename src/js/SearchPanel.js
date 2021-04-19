@@ -1,5 +1,7 @@
 import React from "react";
 
+import {MainContext} from "./context";
+
 export default class SearchPanel extends React.Component {
     constructor(props) {
         super(props);
@@ -18,7 +20,9 @@ export default class SearchPanel extends React.Component {
     }
 
     searchGeocode = () => {
-        const url = this.URLS.GEOCODE + "key=" + mapquestkey + "&location=" + this.state.searchText;
+        const {searchText} = this.this.state;
+        const {featureNames} = this.context;
+        const url = this.URLS.GEOCODE + "key=" + mapquestkey + "&location=" + searchText;
         fetch(url)
             .then(resp => resp.json())
             .then(result => {
@@ -27,7 +31,7 @@ export default class SearchPanel extends React.Component {
                     geoCodedSearch: result.results[0].locations.filter(l => {
                         try {
                             return l.adminArea1 === "CO"
-                                && this.props.featureNames[l.adminArea3.toUpperCase()][l.adminArea4.toUpperCase()]
+                                && featureNames[l.adminArea3.toUpperCase()][l.adminArea4.toUpperCase()]
                                 && !l.adminArea5
                                 && !l.adminArea6;
                         } catch (err) {
@@ -66,15 +70,20 @@ export default class SearchPanel extends React.Component {
     }
 
     processLatLng = () => {
-        const pair = this.state.latLngText.split(",");
+        const {latLngText} = this.state;
+        const {fitMap} = this.props;
+        const pair = latLngText.split(",");
         const nump = pair
             .map(a => parseFloat(a))
             .slice(0, 2);
-        this.props.fitMap("point", [nump[1], nump[0]]);
+        fitMap("point", [nump[1], nump[0]]);
     };
 
     render() {
-        const {geoCodedSearch} = this.state;
+        const {geoCodedSearch, selectedL1, selectedL2, searchText, latLngText} = this.state;
+        const {fitMap, selectRegion, isHidden} = this.props;
+        const {featureNames} = this.context;
+
         const geoSearchResults = geoCodedSearch && geoCodedSearch.length === 0
             ? <label>No Results</label>
             : geoCodedSearch && (
@@ -86,8 +95,8 @@ export default class SearchPanel extends React.Component {
                             const state = item.adminArea3.toUpperCase();
                             const mun = item.adminArea4.toUpperCase();
                             this.setState({selectedL1: state, selectedL2: mun});
-                            this.props.fitMap("bbox", this.props.featureNames[state][mun]);
-                            this.props.selectRegion(
+                            fitMap("bbox", featureNames[state][mun]);
+                            selectRegion(
                                 "mun",
                                 item.adminArea3.toUpperCase()
                                 + "_"
@@ -103,7 +112,7 @@ export default class SearchPanel extends React.Component {
                 </div>
             );
 
-        const l1Names = Object.keys(this.props.featureNames).sort() || [];
+        const l1Names = Object.keys(featureNames).sort() || [];
         const selectL1 = l1Names.length > 0
             ? (
                 <div className="w_100">
@@ -111,7 +120,7 @@ export default class SearchPanel extends React.Component {
                     <select
                         className="w_100"
                         onChange={e => this.setState({selectedL1: e.target.value})}
-                        value={this.state.selectedL1}
+                        value={selectedL1}
                     >
                         <option key={-1} disabled value={-1}>Select a State</option>
                         {l1Names.map(name => (
@@ -122,7 +131,7 @@ export default class SearchPanel extends React.Component {
             )
             : "Loading ...";
 
-        const activeMuns = this.props.featureNames[this.state.selectedL1] || {};
+        const activeMuns = featureNames[selectedL1] || {};
         const l2names = Object.keys(activeMuns).sort();
         const selectL2 = l2names.length > 0
             ? (
@@ -134,15 +143,15 @@ export default class SearchPanel extends React.Component {
                             const name = e.target.value;
                             const coords = activeMuns[name];
                             this.setState({selectedL2: name});
-                            if (Array.isArray(coords)) this.props.fitMap("bbox", coords);
-                            this.props.selectRegion(
+                            if (Array.isArray(coords)) fitMap("bbox", coords);
+                            selectRegion(
                                 "mun",
-                                this.state.selectedL1
+                                selectedL1
                                     + "_"
                                     + e.target.value
                             );
                         }}
-                        value={this.state.selectedL2}
+                        value={selectedL2}
                     >
                         <option key={-1} disabled value={-1}>Select a Municipality</option>
                         {l2names.map(item => (
@@ -153,7 +162,7 @@ export default class SearchPanel extends React.Component {
             ) : "";
 
         return (
-            <div className={"popup-container search-panel " + (this.props.isHidden ? "see-through" : "")}>
+            <div className={"popup-container search-panel " + (isHidden ? "see-through" : "")}>
                 <h3>SEARCH LOCATION</h3>
                 <label>Internet Search</label>
                 <div className="d-flex">
@@ -161,7 +170,7 @@ export default class SearchPanel extends React.Component {
                         className="w_100"
                         onChange={e => this.setState({searchText: e.target.value})}
                         onKeyUp={e => { if (e.key === "Enter") this.searchGeocode(); }}
-                        value={this.state.searchText}
+                        value={searchText}
                     />
                     <button className="map-upd-btn" onClick={this.searchGeocode} type="button">
                         Go
@@ -174,7 +183,7 @@ export default class SearchPanel extends React.Component {
                         className="w_100"
                         onChange={e => this.setState({latLngText: e.target.value})}
                         onKeyUp={e => { if (e.key === "Enter") this.processLatLng(); }}
-                        value={this.state.latLngText}
+                        value={latLngText}
                     />
                     <button className="map-upd-btn" onClick={this.processLatLng} type="button">
                         Go
@@ -187,3 +196,4 @@ export default class SearchPanel extends React.Component {
         );
     }
 }
+SearchPanel.contextType = MainContext;

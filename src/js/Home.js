@@ -12,6 +12,7 @@ import SubscribePanel from "./SubscribePanel";
 import ValidatePanel from "./ValidatePanel";
 
 import {toPrecision, getCookie} from "./utils";
+import {MainContext} from "./context";
 
 class Home extends React.Component {
     // set up class flags so each component update doesn't do redundant JS tasks
@@ -61,7 +62,7 @@ class Home extends React.Component {
             selectedDate: false,
             selectedRegion: false,
             featureNames: {},
-            subList: [],
+            subscribedList: [],
             // reload limit for layers that could not be loaded
             reloadCount: 0,
             theMap: null,
@@ -101,7 +102,7 @@ class Home extends React.Component {
 
     toggleShowComposite = () => this.setState({showComposite: !this.state.showComposite});
 
-    updateSubList = list => this.setState({subList: list});
+    updateSubList = list => this.setState({subscribedList: list});
 
     selectDate = newDate => {
         let tileURL;
@@ -343,166 +344,166 @@ class Home extends React.Component {
     // set up actions to render app
     render() {
         return (
-            <div
-                id="root-component"
-                style={{
-                    height: this.state.myHeight,
-                    width: "100%",
-                    margin: 0,
-                    padding: 0,
-                    position: "relative"
+            <MainContext.Provider
+                value={{
+                    isAdmin: this.props.isAdmin,
+                    isUser: this.props.isUser,
+                    selectedDate: this.state.selectedDate,
+                    selectedRegion: this.state.selectedRegion,
+                    featureNames: this.state.featureNames,
+                    subscribedList: this.state.subscribedList
                 }}
             >
                 <div
-                    id="mapbox"
+                    id="root-component"
                     style={{
-                        height: "100%",
+                        height: this.state.myHeight,
                         width: "100%",
                         margin: 0,
                         padding: 0,
                         position: "relative"
                     }}
-                />
-                {/* Layers */}
-                <div
-                    className="circle layer-group"
-                    style={{}}
                 >
-                    <LayerPanel
-                        availableLayers={this.availableLayers}
-                        isHidden={this.state.layersHidden}
-                        startVisible={["eeLayer"]}
-                        theMap={this.state.theMap}
-                    />
-                    <SideIcon
-                        clickHandler={() => this.setState({layersHidden: !this.state.layersHidden})}
-                        icon="layer"
-                        parentClass={"layer-icon circle" + (this.state.layersHidden ? "" : " active-icon")}
-                        tooltip="Layers"
-                    />
-
-                </div>
-
-                <div className="sidebar">
-                    <div className="sidebar-icon gold-drop app-icon"/>
-                    {/* Subscribe */}
-                    <SideIcon
-                        clickHandler={() => this.togglePanel("subscribeHidden")}
-                        icon="envelope"
-                        parentClass={this.state.subscribeHidden ? "" : "active-icon"}
-                        tooltip="Subscribe"
-                    />
-                    <SubscribePanel
-                        isHidden={this.state.subscribeHidden}
-                        selectedRegion={this.state.selectedRegion}
-                        subList={this.state.subList}
-                        updateSubList={this.updateSubList}
-                    />
-
-                    {/* Validation */}
-                    <SideIcon
-                        clickHandler={() => this.togglePanel("validateHidden")}
-                        icon="check"
-                        parentClass={this.state.validateHidden ? "" : "active-icon"}
-                        tooltip="Validate"
-                    />
-                    <ValidatePanel
-                        featureNames={this.state.featureNames}
-                        isHidden={this.state.validateHidden}
-                        selectedDate={this.state.selectedDate}
-                        subList={this.state.subList}
-                    />
-
-                    {/* Geo location Search */}
-                    <SideIcon
-                        clickHandler={() => this.togglePanel("searchHidden")}
-                        icon="search"
-                        parentClass={this.state.searchHidden ? "" : "active-icon"}
-                        tooltip="Search"
-                    />
-                    <SearchPanel
-                        featureNames={this.state.featureNames}
-                        fitMap={this.fitMap}
-                        isHidden={this.state.searchHidden}
-                        selectRegion={this.selectRegion}
-                    />
-
-                    {/* Advanced Button */}
-                    <SideIcon
-                        clickHandler={() => {
-                            this.setState(
-                                this.state.advancedOptions
-                                    ? {advancedOptions: false, ...this.advancedPanelState}
-                                    : {advancedOptions: true}
-                            );
+                    <div
+                        id="mapbox"
+                        style={{
+                            height: "100%",
+                            width: "100%",
+                            margin: 0,
+                            padding: 0,
+                            position: "relative"
                         }}
-                        icon={this.state.advancedOptions ? "minus" : "plus"}
-                        parentClass=""
-                        subtext="Advanced"
-                        tooltip="Advanced"
                     />
-                    {this.state.advancedOptions && (
-                        <React.Fragment>
-                            {/* Stats graphs */}
-                            <SideIcon
-                                clickHandler={() => this.togglePanel("statsHidden")}
-                                icon="stats"
-                                parentClass={this.state.statsHidden ? "" : "active-icon"}
-                                tooltip="Stats"
-                            />
-                            <StatsPanel
-                                isHidden={this.state.statsHidden}
-                                selectedDate={this.state.selectedDate}
-                                subList={this.state.subList}
-                            />
+                    {/* Layers */}
+                    <div
+                        className="circle layer-group"
+                        style={{}}
+                    >
+                        <LayerPanel
+                            availableLayers={this.availableLayers}
+                            isHidden={this.state.layersHidden}
+                            startVisible={["eeLayer"]}
+                            theMap={this.state.theMap}
+                        />
+                        <SideIcon
+                            clickHandler={() => this.setState({layersHidden: !this.state.layersHidden})}
+                            icon="layer"
+                            parentClass={"layer-icon circle" + (this.state.layersHidden ? "" : " active-icon")}
+                            tooltip="Layers"
+                        />
 
-                            {/* Date filter */}
-                            <SideIcon
-                                clickHandler={() => this.togglePanel("slidersHidden")}
-                                icon="filter"
-                                parentClass={this.state.slidersHidden ? "" : "active-icon"}
-                                tooltip="Sliders"
-                            />
-                            <FilterPanel
-                                imageDates={this.state.imageDates}
-                                isHidden={this.state.slidersHidden}
-                                selectDate={this.selectDate}
-                                selectedDate={this.state.selectedDate}
-                                showComposite={this.state.showComposite}
-                                toggleShowComposite={this.toggleShowComposite}
-                            />
+                    </div>
 
-                            {/* Download */}
-                            <SideIcon
-                                clickHandler={() => this.togglePanel("downloadHidden")}
-                                icon="download"
-                                parentClass={this.state.downloadHidden ? "" : "active-icon"}
-                                tooltip="Download data"
-                            />
-                            <DownloadPanel
-                                isHidden={this.state.downloadHidden}
-                                selectedDate={this.state.selectedDate}
-                                selectedRegion={this.state.selectedRegion}
-                            />
-                        </React.Fragment>
-                    )}
+                    <div className="sidebar">
+                        <div className="sidebar-icon gold-drop app-icon"/>
+                        {/* Subscribe */}
+                        <SideIcon
+                            clickHandler={() => this.togglePanel("subscribeHidden")}
+                            icon="envelope"
+                            parentClass={this.state.subscribeHidden ? "" : "active-icon"}
+                            tooltip="Subscribe"
+                        />
+                        <SubscribePanel
+                            isHidden={this.state.subscribeHidden}
+                            updateSubList={this.updateSubList}
+                        />
 
-                    {/* Info dialoge */}
-                    <SideIcon
-                        clickHandler={() => this.togglePanel("appInfoHidden")}
-                        icon="info"
-                        parentClass="disclaimer"
-                        tooltip="App Info"
-                    />
-                    <AppInfo
-                        isHidden={this.state.appInfoHidden}
-                        onOuterClick={() => this.togglePanel("appInfoHidden")}
-                    />
+                        {/* Validation */}
+                        <SideIcon
+                            clickHandler={() => this.togglePanel("validateHidden")}
+                            icon="check"
+                            parentClass={this.state.validateHidden ? "" : "active-icon"}
+                            tooltip="Validate"
+                        />
+                        <ValidatePanel isHidden={this.state.validateHidden}/>
+
+                        {/* Geo location Search */}
+                        <SideIcon
+                            clickHandler={() => this.togglePanel("searchHidden")}
+                            icon="search"
+                            parentClass={this.state.searchHidden ? "" : "active-icon"}
+                            tooltip="Search"
+                        />
+                        <SearchPanel
+                            fitMap={this.fitMap}
+                            isHidden={this.state.searchHidden}
+                            selectRegion={this.selectRegion}
+                        />
+
+                        {/* Advanced Button */}
+                        {this.props.isUser && (
+                            <SideIcon
+                                clickHandler={() => {
+                                    this.setState(
+                                        this.state.advancedOptions
+                                            ? {advancedOptions: false, ...this.advancedPanelState}
+                                            : {advancedOptions: true}
+                                    );
+                                }}
+                                icon={this.state.advancedOptions ? "minus" : "plus"}
+                                parentClass=""
+                                subtext="Advanced"
+                                tooltip="Advanced"
+                            />
+                        )}
+                        {this.state.advancedOptions && (
+                            <React.Fragment>
+                                {/* Stats graphs */}
+                                <SideIcon
+                                    clickHandler={() => this.togglePanel("statsHidden")}
+                                    icon="stats"
+                                    parentClass={this.state.statsHidden ? "" : "active-icon"}
+                                    tooltip="Stats"
+                                />
+                                <StatsPanel
+                                    isHidden={this.state.statsHidden}
+                                    selectedDate={this.state.selectedDate}
+                                    subscribedList={this.state.subscribedList}
+                                />
+
+                                {/* Date filter */}
+                                <SideIcon
+                                    clickHandler={() => this.togglePanel("slidersHidden")}
+                                    icon="filter"
+                                    parentClass={this.state.slidersHidden ? "" : "active-icon"}
+                                    tooltip="Sliders"
+                                />
+                                <FilterPanel
+                                    imageDates={this.state.imageDates}
+                                    isHidden={this.state.slidersHidden}
+                                    selectDate={this.selectDate}
+                                    showComposite={this.state.showComposite}
+                                    toggleShowComposite={this.toggleShowComposite}
+                                />
+
+                                {/* Download */}
+                                <SideIcon
+                                    clickHandler={() => this.togglePanel("downloadHidden")}
+                                    icon="download"
+                                    parentClass={this.state.downloadHidden ? "" : "active-icon"}
+                                    tooltip="Download data"
+                                />
+                                <DownloadPanel isHidden={this.state.downloadHidden}/>
+                            </React.Fragment>
+                        )}
+
+                        {/* Info dialoge */}
+                        <SideIcon
+                            clickHandler={() => this.togglePanel("appInfoHidden")}
+                            icon="info"
+                            parentClass="disclaimer"
+                            tooltip="App Info"
+                        />
+                        <AppInfo
+                            isHidden={this.state.appInfoHidden}
+                            onOuterClick={() => this.togglePanel("appInfoHidden")}
+                        />
+                    </div>
+                    <div id="lnglathud-shell">
+                        <span id="lnglathud"/>
+                    </div>
                 </div>
-                <div id="lnglathud-shell">
-                    <span id="lnglathud"/>
-                </div>
-            </div>
+            </MainContext.Provider>
         );
     }
 }

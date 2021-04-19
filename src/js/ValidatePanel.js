@@ -1,5 +1,7 @@
 import React from "react";
+import {MainContext} from "./context";
 
+import LoginMessage from "./LoginMessage";
 import SvgIcon from "./SvgIcon";
 
 export default class ValidatePanel extends React.Component {
@@ -24,19 +26,24 @@ export default class ValidatePanel extends React.Component {
     }
 
     componentDidMount() {
-        if (USER_STATE) {
-            fetch(this.URLS.PROJS)
-                .then(res => res.json())
-                .then(res => {
-                    if (res.action === "Success") {
-                        this.setState({
-                            projects: res.projects
-                        });
-                    }
-                })
-                .catch(err => console.log(err));
+        const {isUser} = this.context;
+        if (isUser) {
+            this.getProjects();
         }
     }
+
+    getProjects = () => {
+        fetch(this.URLS.PROJS)
+            .then(res => res.json())
+            .then(res => {
+                if (res.action === "Success") {
+                    this.setState({
+                        projects: res.projects
+                    });
+                }
+            })
+            .catch(err => console.log(err));
+    };
 
     checkProjectErrors = (pDate, selected, projectName, projects, type) => {
         const errors = [
@@ -48,17 +55,15 @@ export default class ValidatePanel extends React.Component {
             !projectName && "Please enter a project name!",
             projects.find(pr => pr[4] === projectName) && "A project with that name already exists! Please choose a different name!"
         ].filter(e => e);
-
-        console.log(errors);
         return errors.length === 0 || this.setState({errorMsg: errors.join("\n\n")});
     };
 
     createProject = pDate => {
         const {customRegions, projectName, projects, regionType} = this.state;
-        const {subList} = this.props;
-        this.setState({projectCreating: true, errorMsg: false});
-        const selectedArr = regionType === 1 ? subList : customRegions.map(x => "mun_" + x);
+        const {subscribedList} = this.context;
 
+        this.setState({projectCreating: true, errorMsg: false});
+        const selectedArr = regionType === 1 ? subscribedList : customRegions.map(x => "mun_" + x);
         const regions = selectedArr
             .map(r => {
                 const es = r.split("_");
@@ -82,9 +87,9 @@ export default class ValidatePanel extends React.Component {
                 .then(res => res.json())
                 .then(res => {
                     if (res.action !== "Error") {
+                        this.getProjects();
                         this.setState({
                             projectCreating: false,
-                            projects: [...projects, res.proj],
                             errorMsg: ""
                         });
                     } else {
@@ -105,23 +110,23 @@ export default class ValidatePanel extends React.Component {
 
     closeProject = pid => {
         if (confirm("Are you sure you want to close this project? Closing the project means you will no longer be able to validate the points unless you set up another project.")) {
-            this.setState({deleting: [...this.state.deleting, pid]});
+            const {deleting} = this.state;
+            this.setState({deleting: [...deleting, pid], errorMsg: false});
             fetch(this.URLS.CLPROJ + "?pid=" + pid)
                 .then(res => res.json())
                 .then(res => {
                     if (res.action === "Archived") {
-                        this.setState(prevState => ({
-                            deleting: prevState.deleting.filter(p => p !== pid),
-                            projects: prevState.projects.filter(pr => pr[2] !== pid)
-                        }));
+                        this.getProjects();
                     } else {
-                        return Promise.reject("Could not close project.");
+                        // TODO pass back meaningful errors
+                        this.setState({errorMsg: "Could not close project."});
                     }
                 })
                 .catch(err => {
-                    this.setState(prevState => ({deleting: prevState.deleting.filter(p => p !== pid)}));
                     console.log(err);
-                });
+                })
+                .finally(() =>
+                    this.setState(prevState => ({deleting: prevState.deleting.filter(p => p !== pid)})));
         }
     };
 
@@ -159,7 +164,8 @@ export default class ValidatePanel extends React.Component {
     );
 
     renderCustomRegions = () => {
-        const {featureNames} = this.props;
+        const {customRegions} = this.state;
+        const {featureNames} = this.context;
         const states = Object.keys(featureNames).sort();
         return states.length === 0
             ? (
@@ -175,12 +181,12 @@ export default class ValidatePanel extends React.Component {
                     })}
                     size="8"
                     style={{width: "100%", float: "left", marginBottom: "10px"}}
-                    value={this.state.customRegions}
+                    value={customRegions}
                 >
-                    {states.map(state => (
-                        <optgroup key={state} label={state}>
-                            {Object.keys(featureNames[state]).sort().map(mun => (
-                                <option key={mun} value={state + "_" + mun}>{mun}</option>
+                    {states.map(scrollX => (
+                        <optgroup key={scrollX} label={scrollX}>
+                            {Object.keys(featureNames[scrollX]).sort().map(mun => (
+                                <option key={mun} value={scrollX + "_" + mun}>{mun}</option>
                             ))}
                         </optgroup>
                     ))}
@@ -189,13 +195,14 @@ export default class ValidatePanel extends React.Component {
     };
 
     render() {
-        const {selectedDate, isHidden} = this.props;
+        const {isHidden} = this.props;
         const {projects, projectName, regionType, projectCreating, errorMsg} = this.state;
+        const {selectedDate, isUser} = this.context;
         return (
             <div className={"popup-container validate-panel " + (isHidden ? "see-through" : "")}>
                 <h3>VALIDATION</h3>
                 View or add projects to validate mine data.
-                {USER_STATE
+                {isUser
                     ? (
                         <div style={{display: "flex", flexDirection: "column"}}>
                             {projects.length === 0
@@ -254,20 +261,10 @@ export default class ValidatePanel extends React.Component {
                             <p>{errorMsg}</p>
                         </div>
                     ) : (
-                        <div style={{textAlign: "center", width: "100%"}}>
-                            <p> Login to validate the data </p>
-                            <button
-                                className="map-upd-btn"
-                                onClick={() => {
-                                    location.href = "accounts/login";
-                                }}
-                                type="button"
-                            >
-                                Login
-                            </button>
-                        </div>
+                        <LoginMessage actionText="projects"/>
                     )}
             </div>
         );
     }
 }
+ValidatePanel.contextType = MainContext;
