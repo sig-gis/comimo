@@ -145,6 +145,8 @@
   height: 80%;
   padding: 1rem;
   background: white;
+  display: flex;
+  flex-direction: column;
 }
 
 .info-modal p {

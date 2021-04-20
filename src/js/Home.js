@@ -3,7 +3,7 @@ import ReactDOM from "react-dom";
 
 import AppInfo from "./AppInfo";
 import DownloadPanel from "./DownloadPanel";
-import LayerPanel from "./LayerPanel";
+import LayersPanel from "./LayersPanel";
 import FilterPanel from "./FilterPanel";
 import SearchPanel from "./SearchPanel";
 import SideIcon from "./SideIcon";
@@ -11,7 +11,7 @@ import StatsPanel from "./StatsPanel";
 import SubscribePanel from "./SubscribePanel";
 import ValidatePanel from "./ValidatePanel";
 
-import {toPrecision, getCookie} from "./utils";
+import {toPrecision, getCookie, getLanguage} from "./utils";
 import {MainContext} from "./context";
 
 class Home extends React.Component {
@@ -29,15 +29,15 @@ class Home extends React.Component {
             INFO: "api/getinfo"
         };
         // Layers available
-        this.availableLayers = {
-            eeLayer: "Prediction",
-            municipalBounds: "Municipal Boundaries",
-            legalMines: "Legal mines",
-            otherAuthorizations: "Other Authorizations",
-            tierrasDeCom: "Ethnic territories I",
-            resguardos: "Ethnic territories II",
-            protectedAreas: "Protected Areas"
-        };
+        this.availableLayers = [
+            "eeLayer",
+            "municipalBounds",
+            "legalMines",
+            "otherAuthorizations",
+            "tierrasDeCom",
+            "resguardos",
+            "protectedAreas"
+        ];
         // Set panels as a group
         this.panelState = {
             subscribeHidden: true,
@@ -56,7 +56,6 @@ class Home extends React.Component {
             ...this.advancedPanelState,
             layersHidden: true,
             advancedOptions: false,
-            showComposite: false,
             compositeParams: {},
             imageDates: [],
             selectedDate: false,
@@ -66,17 +65,21 @@ class Home extends React.Component {
             // reload limit for layers that could not be loaded
             reloadCount: 0,
             theMap: null,
-            myHeight: 0
+            myHeight: 0,
+            localeText: null
         };
     }
 
     // set up parameters after components are mounted
     componentDidMount() {
-        this.getFeatureNames();
-        this.initMap();
-        this.getImageDates();
-
         this.updateWindow();
+        this.initMap();
+        Promise.all([this.getLocalText(), this.getFeatureNames(), this.getImageDates()])
+            .then(() => {
+                this.loadMapLocalEvents();
+                this.updateEELayer(this.URLS.SINGLE_IMAGE + "?id=" + this.state.selectedDate);
+            })
+            .catch(error => console.log(error));
         window.addEventListener("touchend", this.updateWindow);
         window.addEventListener("resize", this.updateWindow);
     }
@@ -100,47 +103,40 @@ class Home extends React.Component {
         [panelKey]: !this.state[panelKey]
     });
 
-    toggleShowComposite = () => this.setState({showComposite: !this.state.showComposite});
-
     updateSubList = list => this.setState({subscribedList: list});
 
     selectDate = newDate => {
-        let tileURL;
-        if (this.state.showComposite) {
-            // This should be unreachable
-            const probvals = this.probSlider
-                .getValue()
-                .split(",")
-                .map(val => parseInt(val));
-            const yearvals = this.yearSlider.getValue().split(",");
-            this.setState({
-                selectedDate: false,
-                compositeParams: {
-                    minProbability: probvals[0],
-                    maxProbability: probvals[1],
-                    minYear: yearvals[0],
-                    maxYear: yearvals[1]
-                }
-            });
-            tileURL = this.URLS.COMPOSITE_IMAGE
-                + "?minp="
-                + this.sate.compositeParams.minProbability
-                + "&maxp="
-                + this.sate.compositeParams.maxProbability
-                + "&miny="
-                + this.sate.compositeParams.minYear
-                + "&maxy="
-                + this.sate.compositeParams.maxYear;
-        } else {
-            this.setState({selectedDate: newDate});
-            tileURL = this.URLS.SINGLE_IMAGE + "?id=" + newDate;
-        }
-        this.updateEELayer(tileURL);
+        this.setState({selectedDate: newDate});
+        this.updateEELayer(this.URLS.SINGLE_IMAGE + "?id=" + newDate);
     };
 
     selectRegion = (level, name) => this.setState({selectedRegion: [level, name]});
 
     /// Fetch calls
+
+    getLocalText = () => fetch(
+        `/static/locale/${getLanguage(["en", "es"])}.json`,
+        {headers: {"Cache-Control": "no-cache", "Pragma": "no-cache", "Accept": "application/json"}}
+    )
+        .then(response => (response.ok ? response.json() : Promise.reject(response)))
+        .then(data => this.setState({localeText: data}));
+
+    getImageDates = () => fetch(this.URLS.IMG_DATES)
+        .then(res => res.json())
+        .then(result => {
+            result.ids.sort();
+            result.ids.reverse();
+            this.setState({
+                imageDates: result.ids,
+                selectedDate: result.ids[0]
+            });
+        });
+
+    getFeatureNames = () => fetch(this.URLS.FEATURE_NAMES)
+        .then(res => res.json())
+        .then(result => {
+            if (result.action === "FeatureNames") this.setState({featureNames: result.features});
+        });
 
     getGEELayers = list => {
         const name = list.shift();
@@ -171,31 +167,6 @@ class Home extends React.Component {
             .catch(error => console.log(error));
     };
 
-    getImageDates = () => {
-        fetch(this.URLS.IMG_DATES)
-            .then(res => res.json())
-            .then(result => {
-                result.ids.sort();
-                result.ids.reverse();
-                this.setState({
-                    imageDates: result.ids,
-                    selectedDate: result.ids[0]
-                });
-                this.updateEELayer(this.URLS.SINGLE_IMAGE + "?id=" + result.ids[0]);
-            })
-            .catch(error => console.log(error));
-    };
-
-    getFeatureNames = () => {
-        const url = this.URLS.FEATURE_NAMES;
-        fetch(url)
-            .then(res => res.json())
-            .then(result => {
-                if (result.action === "FeatureNames") this.setState({featureNames: result.features});
-            })
-            .catch(error => console.log(error));
-    };
-
     /// Mapbox TODO move to separate component
 
     initMap = () => {
@@ -210,10 +181,9 @@ class Home extends React.Component {
         theMap.on("load", () => {
             theMap.addControl(new mapboxgl.NavigationControl({showCompass: false}));
 
-            const layerNames = Object.keys(this.availableLayers);
             // these are launched async it only works because the fetch command takes longer than creating a layer
-            this.addLayerSources(layerNames);
-            this.getGEELayers(layerNames.slice(1));
+            this.addLayerSources(this.availableLayers);
+            this.getGEELayers(this.availableLayers.slice(1));
 
             theMap.on("mousemove", e => {
                 const lat = toPrecision(e.lngLat.lat, 4);
@@ -227,99 +197,102 @@ class Home extends React.Component {
                 const hudShell = document.getElementById("lnglathud-shell");
                 hudShell.style.display = "none";
             });
-            theMap.on("click", e => {
-                const {lat, lng} = e.lngLat;
+        });
+    };
 
-                const popup = new mapboxgl.Popup({closeOnClick: true})
-                    .setLngLat([lng, lat])
-                    .setHTML("<p>Loading...<p>")
-                    .addTo(theMap);
+    loadMapLocalEvents = () => {
+        const {theMap, localeText: {home}} = this.state;
+        theMap.on("click", e => {
+            const {lat, lng} = e.lngLat;
 
-                const visible = layerNames.map(l => this.isLayerVisible(l) && l).filter(l => l);
+            const popup = new mapboxgl.Popup({closeOnClick: true})
+                .setLngLat([lng, lat])
+                .setHTML("<p>Loading...<p>")
+                .addTo(theMap);
 
-                fetch(this.URLS.INFO,
-                      {
-                          method: "POST",
-                          headers: {
-                              Accept: "application/json",
-                              "Content-Type": "application/json",
-                              "X-CSRFToken": getCookie("csrftoken")
-                          },
-                          body: JSON.stringify({
-                              lat,
-                              lng,
-                              date: this.state.selectedDate,
-                              minp: this.state.compositeParams.minProbability,
-                              maxp: this.state.compositeParams.maxProbability,
-                              miny: this.state.compositeParams.minYear,
-                              maxy: this.state.compositeParams.maxYear,
-                              visible
-                          })
+            const visible = this.availableLayers.map(l => this.isLayerVisible(l) && l).filter(l => l);
+
+            fetch(this.URLS.INFO,
+                  {
+                      method: "POST",
+                      headers: {
+                          Accept: "application/json",
+                          "Content-Type": "application/json",
+                          "X-CSRFToken": getCookie("csrftoken")
+                      },
+                      body: JSON.stringify({
+                          lat,
+                          lng,
+                          date: this.state.selectedDate,
+                          minp: this.state.compositeParams.minProbability,
+                          maxp: this.state.compositeParams.maxProbability,
+                          miny: this.state.compositeParams.minYear,
+                          maxy: this.state.compositeParams.maxYear,
+                          visible
                       })
-                    .then(resp => resp.json())
-                    .then(resp => {
-                        const ln = toPrecision(lng, 4);
-                        const lt = toPrecision(lat, 4);
-                        let innerHTML = `<b>Lat, lon</b>: ${lt}, ${ln}<br/>`;
-                        if (resp.action === "Error") {
-                            innerHTML += resp.message;
-                        } else {
-                            const {
-                                eeLayer,
-                                municipalBounds,
-                                protectedAreas,
-                                otherAuthorizations,
-                                legalMines,
-                                tierrasDeCom,
-                                resguardos
-                            } = resp.value;
-                            if (this.isLayerVisible("eeLayer")) {
-                                const cl = eeLayer ? "Detected" : "Not Detected";
-                                innerHTML += `<b>Mining Activity</b>: ${cl}<br/>`;
-                            }
-                            if (this.isLayerVisible("municipalBounds")) {
-                                const loc = municipalBounds || "Outside Region of Interest";
-                                innerHTML += `<b>Located In</b>: ${loc}<br/>`;
-                            }
-                            if (this.isLayerVisible("protectedAreas") && protectedAreas[0]) {
-                                const pa = `Category: ${protectedAreas[0]} <br/> Name: ${protectedAreas[1]}`;
-                                innerHTML += `<b>Protected Area:</b><br> ${pa}<br/>`;
-                            }
-                            // if(this.isLayerVisible("protectedAreas") && resp.value[5]){
-                            //   innerHTML += `<b>National Park:</b> ${resp.value[5]} <br/>`
-                            // }
-                            if (this.isLayerVisible("otherAuthorizations") && otherAuthorizations) {
-                                innerHTML += `<b>Other Authorizations:</b> ${otherAuthorizations} <br/>`;
-                            }
-                            if (this.isLayerVisible("legalMines") && legalMines) {
-                                innerHTML += `<b>Legal Mine:</b> ${legalMines} <br/>`;
-                            }
-                            if (this.isLayerVisible("tierrasDeCom") && tierrasDeCom) {
-                                innerHTML += `<b>Ethnic Territories I:</b> ${tierrasDeCom} <br/>`;
-                            }
-                            if (this.isLayerVisible("resguardos") && resguardos) {
-                                innerHTML += `<b>Ethnic Territories II:</b> ${resguardos} <br/>`;
-                            }
+                  })
+                .then(resp => resp.json())
+                .then(resp => {
+                    const ln = toPrecision(lng, 4);
+                    const lt = toPrecision(lat, 4);
+                    let innerHTML = `<b>Lat, lon</b>: ${lt}, ${ln}<br/>`;
+                    if (resp.action === "Error") {
+                        innerHTML += resp.message;
+                    } else {
+                        const {
+                            eeLayer,
+                            municipalBounds,
+                            protectedAreas,
+                            otherAuthorizations,
+                            legalMines,
+                            tierrasDeCom,
+                            resguardos
+                        } = resp.value;
+                        if (this.isLayerVisible("eeLayer")) {
+                            const cl = eeLayer ? home.eeLayerDetected : home.eeLayerNotDetected;
+                            innerHTML += `<b>${home.eeLayerPopup}</b>: ${cl}<br/>`;
                         }
-                        popup.setHTML(innerHTML);
-                    })
-                    .catch(err => console.log(err));
-            });
+                        if (this.isLayerVisible("municipalBounds")) {
+                            const loc = municipalBounds || home.municipalBoundsNotFound;
+                            innerHTML += `<b>${home.municipalBoundsPopup}:</b> ${loc}<br/>`;
+                        }
+                        if (this.isLayerVisible("protectedAreas") && protectedAreas[0]) {
+                            const pa = `${home.protectedAreasCategory}: ${protectedAreas[0]}
+                                        <br/> ${home.protectedAreasName}: ${protectedAreas[1]}`;
+                            innerHTML += `<b>${home.protectedAreasPopup}:</b><br> ${pa}<br/>`;
+                        }
+                        if (this.isLayerVisible("otherAuthorizations") && otherAuthorizations) {
+                            innerHTML += `<b>${home.otherAuthorizationsPopup}:</b> ${otherAuthorizations} <br/>`;
+                        }
+                        if (this.isLayerVisible("legalMines") && legalMines) {
+                            innerHTML += `<b>${home.legalMinesPopup}:</b> ${legalMines} <br/>`;
+                        }
+                        if (this.isLayerVisible("tierrasDeCom") && tierrasDeCom) {
+                            innerHTML += `<b>${home.tierrasDeComPopup}:</b> ${tierrasDeCom} <br/>`;
+                        }
+                        if (this.isLayerVisible("resguardos") && resguardos) {
+                            innerHTML += `<b>${home.resguardosPopup}:</b> ${resguardos} <br/>`;
+                        }
+                    }
+                    popup.setHTML(innerHTML);
+                })
+                .catch(err => console.log(err));
         });
     };
 
     fitMap = (type, arg) => {
+        const {theMap, localeText: {home}} = this.state;
         if (type === "point") {
             try {
-                this.state.theMap.flyTo({center: arg, essential: true});
+                theMap.flyTo({center: arg, essential: true});
             } catch (err) {
-                console.log("Please enter valid coordinates.");
+                console.log(home.errorCoordinates);
             }
         } else if (type === "bbox") {
             try {
-                this.state.theMap.fitBounds(arg);
+                theMap.fitBounds(arg);
             } catch (error) {
-                console.log("Please enter valid bounds.");
+                console.log(home.errorBounds);
             }
         }
     };
@@ -343,6 +316,8 @@ class Home extends React.Component {
 
     // set up actions to render app
     render() {
+        const {myHeight, localeText} = this.state;
+        const {home} = localeText || {};
         return (
             <MainContext.Provider
                 value={{
@@ -351,13 +326,14 @@ class Home extends React.Component {
                     selectedDate: this.state.selectedDate,
                     selectedRegion: this.state.selectedRegion,
                     featureNames: this.state.featureNames,
-                    subscribedList: this.state.subscribedList
+                    subscribedList: this.state.subscribedList,
+                    localeText: this.state.localeText
                 }}
             >
                 <div
                     id="root-component"
                     style={{
-                        height: this.state.myHeight,
+                        height: myHeight,
                         width: "100%",
                         margin: 0,
                         padding: 0,
@@ -374,131 +350,131 @@ class Home extends React.Component {
                             position: "relative"
                         }}
                     />
-                    {/* Layers */}
-                    <div
-                        className="circle layer-group"
-                        style={{}}
-                    >
-                        <LayerPanel
-                            availableLayers={this.availableLayers}
-                            isHidden={this.state.layersHidden}
-                            startVisible={["eeLayer"]}
-                            theMap={this.state.theMap}
-                        />
-                        <SideIcon
-                            clickHandler={() => this.setState({layersHidden: !this.state.layersHidden})}
-                            icon="layer"
-                            parentClass={"layer-icon circle" + (this.state.layersHidden ? "" : " active-icon")}
-                            tooltip="Layers"
-                        />
-
-                    </div>
-
-                    <div className="sidebar">
-                        <div className="sidebar-icon gold-drop app-icon"/>
-                        {/* Subscribe */}
-                        <SideIcon
-                            clickHandler={() => this.togglePanel("subscribeHidden")}
-                            icon="envelope"
-                            parentClass={this.state.subscribeHidden ? "" : "active-icon"}
-                            tooltip="Subscribe"
-                        />
-                        <SubscribePanel
-                            isHidden={this.state.subscribeHidden}
-                            updateSubList={this.updateSubList}
-                        />
-
-                        {/* Validation */}
-                        <SideIcon
-                            clickHandler={() => this.togglePanel("validateHidden")}
-                            icon="check"
-                            parentClass={this.state.validateHidden ? "" : "active-icon"}
-                            tooltip="Validate"
-                        />
-                        <ValidatePanel isHidden={this.state.validateHidden}/>
-
-                        {/* Geo location Search */}
-                        <SideIcon
-                            clickHandler={() => this.togglePanel("searchHidden")}
-                            icon="search"
-                            parentClass={this.state.searchHidden ? "" : "active-icon"}
-                            tooltip="Search"
-                        />
-                        <SearchPanel
-                            fitMap={this.fitMap}
-                            isHidden={this.state.searchHidden}
-                            selectRegion={this.selectRegion}
-                        />
-
-                        {/* Advanced Button */}
-                        {this.props.isUser && (
-                            <SideIcon
-                                clickHandler={() => {
-                                    this.setState(
-                                        this.state.advancedOptions
-                                            ? {advancedOptions: false, ...this.advancedPanelState}
-                                            : {advancedOptions: true}
-                                    );
-                                }}
-                                icon={this.state.advancedOptions ? "minus" : "plus"}
-                                parentClass=""
-                                subtext="Advanced"
-                                tooltip="Advanced"
-                            />
-                        )}
-                        {this.state.advancedOptions && (
-                            <React.Fragment>
-                                {/* Stats graphs */}
+                    {home && (
+                        <>
+                            {/* Layers */}
+                            <div
+                                className="circle layer-group"
+                                style={{}}
+                            >
+                                <LayersPanel
+                                    availableLayers={this.availableLayers}
+                                    isHidden={this.state.layersHidden}
+                                    startVisible={["eeLayer"]}
+                                    theMap={this.state.theMap}
+                                />
                                 <SideIcon
-                                    clickHandler={() => this.togglePanel("statsHidden")}
-                                    icon="stats"
-                                    parentClass={this.state.statsHidden ? "" : "active-icon"}
-                                    tooltip="Stats"
+                                    clickHandler={() => this.setState({layersHidden: !this.state.layersHidden})}
+                                    icon="layer"
+                                    parentClass={"layer-icon circle" + (this.state.layersHidden ? "" : " active-icon")}
+                                    tooltip={home.layersTooltip}
                                 />
-                                <StatsPanel
-                                    isHidden={this.state.statsHidden}
-                                    selectedDate={this.state.selectedDate}
-                                    subscribedList={this.state.subscribedList}
-                                />
+                            </div>
 
-                                {/* Date filter */}
+                            <div className="sidebar">
+                                <div className="sidebar-icon gold-drop app-icon"/>
+                                {/* Subscribe */}
                                 <SideIcon
-                                    clickHandler={() => this.togglePanel("slidersHidden")}
-                                    icon="filter"
-                                    parentClass={this.state.slidersHidden ? "" : "active-icon"}
-                                    tooltip="Sliders"
+                                    clickHandler={() => this.togglePanel("subscribeHidden")}
+                                    icon="envelope"
+                                    parentClass={this.state.subscribeHidden ? "" : "active-icon"}
+                                    tooltip={home.subscribeTooltip}
                                 />
-                                <FilterPanel
-                                    imageDates={this.state.imageDates}
-                                    isHidden={this.state.slidersHidden}
-                                    selectDate={this.selectDate}
-                                    showComposite={this.state.showComposite}
-                                    toggleShowComposite={this.toggleShowComposite}
+                                <SubscribePanel
+                                    isHidden={this.state.subscribeHidden}
+                                    updateSubList={this.updateSubList}
                                 />
 
-                                {/* Download */}
+                                {/* Validation */}
                                 <SideIcon
-                                    clickHandler={() => this.togglePanel("downloadHidden")}
-                                    icon="download"
-                                    parentClass={this.state.downloadHidden ? "" : "active-icon"}
-                                    tooltip="Download data"
+                                    clickHandler={() => this.togglePanel("validateHidden")}
+                                    icon="check"
+                                    parentClass={this.state.validateHidden ? "" : "active-icon"}
+                                    tooltip={home.validateTooltip}
                                 />
-                                <DownloadPanel isHidden={this.state.downloadHidden}/>
-                            </React.Fragment>
-                        )}
+                                <ValidatePanel isHidden={this.state.validateHidden}/>
 
-                        {/* Info dialoge */}
-                        <SideIcon
-                            clickHandler={() => this.togglePanel("appInfoHidden")}
-                            icon="info"
-                            parentClass="disclaimer"
-                            tooltip="App Info"
-                        />
-                        <AppInfo
-                            isHidden={this.state.appInfoHidden}
-                            onOuterClick={() => this.togglePanel("appInfoHidden")}
-                        />
-                    </div>
+                                {/* Geo location Search */}
+                                <SideIcon
+                                    clickHandler={() => this.togglePanel("searchHidden")}
+                                    icon="search"
+                                    parentClass={this.state.searchHidden ? "" : "active-icon"}
+                                    tooltip={home.searchTooltip}
+                                />
+                                <SearchPanel
+                                    fitMap={this.fitMap}
+                                    isHidden={this.state.searchHidden}
+                                    selectRegion={this.selectRegion}
+                                />
+
+                                {/* Advanced Button */}
+                                {this.props.isUser && (
+                                    <SideIcon
+                                        clickHandler={() => {
+                                            this.setState(
+                                                this.state.advancedOptions
+                                                    ? {advancedOptions: false, ...this.advancedPanelState}
+                                                    : {advancedOptions: true}
+                                            );
+                                        }}
+                                        icon={this.state.advancedOptions ? "minus" : "plus"}
+                                        parentClass=""
+                                        subtext={home.advancedTooltip}
+                                        tooltip={home.advancedTooltip}
+                                    />
+                                )}
+                                {this.state.advancedOptions && (
+                                    <React.Fragment>
+                                        {/* Stats graphs */}
+                                        <SideIcon
+                                            clickHandler={() => this.togglePanel("statsHidden")}
+                                            icon="stats"
+                                            parentClass={this.state.statsHidden ? "" : "active-icon"}
+                                            tooltip={home.statsTooltip}
+                                        />
+                                        <StatsPanel
+                                            isHidden={this.state.statsHidden}
+                                            selectedDate={this.state.selectedDate}
+                                            subscribedList={this.state.subscribedList}
+                                        />
+
+                                        {/* Date filter */}
+                                        <SideIcon
+                                            clickHandler={() => this.togglePanel("slidersHidden")}
+                                            icon="filter"
+                                            parentClass={this.state.slidersHidden ? "" : "active-icon"}
+                                            tooltip={home.filterTooltip}
+                                        />
+                                        <FilterPanel
+                                            imageDates={this.state.imageDates}
+                                            isHidden={this.state.slidersHidden}
+                                            selectDate={this.selectDate}
+                                        />
+
+                                        {/* Download */}
+                                        <SideIcon
+                                            clickHandler={() => this.togglePanel("downloadHidden")}
+                                            icon="download"
+                                            parentClass={this.state.downloadHidden ? "" : "active-icon"}
+                                            tooltip={home.downloadTooltip}
+                                        />
+                                        <DownloadPanel isHidden={this.state.downloadHidden}/>
+                                    </React.Fragment>
+                                )}
+                                {/* Info dialoge */}
+                                <SideIcon
+                                    clickHandler={() => this.togglePanel("appInfoHidden")}
+                                    icon="info"
+                                    parentClass="disclaimer"
+                                    tooltip={home.appInfoTooltip}
+                                />
+                                <AppInfo
+                                    isHidden={this.state.appInfoHidden}
+                                    onOuterClick={() => this.togglePanel("appInfoHidden")}
+                                />
+                            </div>
+                        </>
+                    )}
                     <div id="lnglathud-shell">
                         <span id="lnglathud"/>
                     </div>

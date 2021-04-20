@@ -1,18 +1,24 @@
 import React from "react";
 
+import {MainContext} from "./context";
+
 export default function LoginMessage({actionText}) {
     return (
-        <div style={{textAlign: "center", width: "100%"}}>
-            <p> Login to view your {actionText}.</p>
-            <button
-                className="map-upd-btn"
-                onClick={() => {
-                    location.href = "accounts/login";
-                }}
-                type="button"
-            >
-                Login
-            </button>
-        </div>
+        <MainContext.Consumer>
+            {({localeText: {login}}) => (
+                <div style={{textAlign: "center", width: "100%"}}>
+                    <p>{`${login.toView} ${actionText}.`}</p>
+                    <button
+                        className="map-upd-btn"
+                        onClick={() => {
+                            location.href = "accounts/login";
+                        }}
+                        type="button"
+                    >
+                        {login.login}
+                    </button>
+                </div>
+            )}
+        </MainContext.Consumer>
     );
 }

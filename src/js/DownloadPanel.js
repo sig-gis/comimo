@@ -39,11 +39,11 @@ export default class DownloadPanel extends React.Component {
     render() {
         const {isHidden} = this.props;
         const {clipOption, fetching, downloadURL} = this.state;
-        const {selectedRegion, selectedDate} = this.context;
+        const {selectedRegion, selectedDate, localeText: {download}} = this.context;
         return (
             <div className={"popup-container download-panel " + (isHidden ? "see-through" : "")}>
-                <h3>DOWNLOAD DATA</h3>
-                <label>Select Region</label>
+                <h3>{download.title.toUpperCase()}</h3>
+                <label>{download.regionLabel}</label>
                 <div style={{marginTop: ".25rem"}}>
                     <input
                         checked={clipOption === 1}
@@ -51,7 +51,7 @@ export default class DownloadPanel extends React.Component {
                         onChange={() => this.setState({clipOption: 1})}
                         type="radio"
                     />
-                    Complete Data
+                    {download.allRadio}
                 </div>
                 <div className={selectedRegion ? "" : "disabled-group"} style={{marginTop: ".25rem"}}>
                     <input
@@ -60,7 +60,7 @@ export default class DownloadPanel extends React.Component {
                         onChange={() => this.setState({clipOption: 2})}
                         type="radio"
                     />
-                    Selected Municipality
+                    {download.selectedRadio}
                 </div>
                 <br/>
                 {selectedDate && (
@@ -71,21 +71,21 @@ export default class DownloadPanel extends React.Component {
                             onClick={this.getDownloadUrl}
                             type="button"
                         >
-                    Get download URL for {selectedDate}
+                            {download.getUrl} {selectedDate}
                         </button>
                     </div>
                 )}
                 {fetching
-                    ? <p>Fetching download URL ...</p>
+                    ? <p>{`${download.fetching}...`}</p>
                     : downloadURL && (
                         <p>
                             <span>
                                 <a href={downloadURL[3]}>
-                                    Click here to download the{" "}
-                                    {downloadURL[0] === "all"
-                                        ? "complete data"
-                                        : "data within " + downloadURL[0]}{" "}
-                                    for {downloadURL[2]}.
+                                    {download.clickHere
+                                    + downloadURL[0] === "all"
+                                        ? download.completeData
+                                        : download.numData + downloadURL[0]
+                                    + download.prep + downloadURL[2] + "."}
                                 </a>
                             </span>
                         </p>

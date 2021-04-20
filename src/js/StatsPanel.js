@@ -1,4 +1,5 @@
 import React from "react";
+import {MainContext} from "./context";
 
 import {toPrecision} from "./utils";
 
@@ -48,7 +49,8 @@ export default class StatsPanel extends React.Component {
     }
 
     getAreaStats(date) {
-        document.getElementById("stats1").innerHTML = "<b>Loading data...</b>";
+        const {localeText: {stats}} = this.context;
+        document.getElementById("stats1").innerHTML = `<b>${stats.loading}...</b>`;
         fetch(this.URL.ARSTATS + "?date=" + date)
             .then(res => res.json())
             .then(result => {
@@ -61,14 +63,14 @@ export default class StatsPanel extends React.Component {
                         data.push([
                             name,
                             count,
-                            this.createTooltipHTML(name, area, count)
+                            this.createTooltipHTML(name, area, count, stats.countLabel)
                         ]);
                     }
                 }
                 if (data.length > 0) {
                     const dataTable = new google.visualization.DataTable();
-                    dataTable.addColumn("string", "Municipality");
-                    dataTable.addColumn("number", "Count");
+                    dataTable.addColumn("string", stats.munLabel);
+                    dataTable.addColumn("number", stats.countLabel);
                     dataTable.addColumn({type: "string", role: "tooltip", p: {html: true}});
 
                     dataTable.addRows(data);
@@ -87,14 +89,15 @@ export default class StatsPanel extends React.Component {
                         options
                     );
                 } else {
-                    document.getElementById("stats1").innerHTML = "<i>No data found. Subscribe to more regions.</i>";
+                    document.getElementById("stats1").innerHTML = `<i>${stats.noDataFound}</i>`;
                 }
             })
-            .catch(e => console.log("Error loading stats!", e));
+            .catch(e => console.log(stats.errorStats, e));
     }
 
     getAreaTS() {
-        document.getElementById("stats2").innerHTML = "<b>Loading data...</b>";
+        const {localeText: {stats}} = this.context;
+        document.getElementById("stats2").innerHTML = `<b>${stats.loading}...</b>`;
         fetch(this.URL.ARTS)
             .then(res => res.json())
             .then(result => {
@@ -107,14 +110,14 @@ export default class StatsPanel extends React.Component {
                     data.push([
                         name.substring(5),
                         count,
-                        this.createTooltipHTML(name, area, count)
+                        this.createTooltipHTML(name, area, count, stats.countLabel)
                     ]);
                     if (area > 0.0) nonzero = true;
                 }
                 if (nonzero) {
                     const dataTable = new google.visualization.DataTable();
-                    dataTable.addColumn("string", "Date");
-                    dataTable.addColumn("number", "Count");
+                    dataTable.addColumn("string", stats.dateLabel);
+                    dataTable.addColumn("number", stats.countLabel);
                     dataTable.addColumn({type: "string", role: "tooltip", p: {html: true}});
 
                     dataTable.addRows(data);
@@ -138,48 +141,44 @@ export default class StatsPanel extends React.Component {
                         options
                     );
                 } else {
-                    document.getElementById("stats2").innerHTML = "<i>No data found. Subscribe to more regions.</i>";
+                    document.getElementById("stats2").innerHTML = `<i>${stats.noDataFound}</i>`;
                 }
             })
-            .catch(e => console.log("Error loading stats!", e));
+            .catch(e => console.log(stats.errorStats, e));
     }
 
-    createTooltipHTML = (region, count) => (
-        "<div style=\"min-width: max-content; display:"
-                + "flex; flex-direction: column; padding: .4rem; line-height: 1rem\">"
-            + "<span>"
-            + region
-            + "</span>"
-            + "<span><strong>Count: </strong>"
-            + toPrecision(count, 0)
-            + "</span>"
-        + "</div>"
+    createTooltipHTML = (region, count, countLabel) => (
+        `<div style="min-width: max-content; display: flex; flex-direction: column; padding: .4rem; line-height: 1rem">
+            <span>${region}</span>
+            <span><strong>${countLabel}: </strong>${toPrecision(count, 0)}</span>
+        </div>`
     );
 
     render() {
         const {isHidden} = this.props;
+        const {localeText: {stats}} = this.context;
         return (
             <div
                 className={"popup-container stat-panel " + (isHidden ? "see-through" : "")}
             >
                 <div>
-                    <label>Prediction count per subscribed region</label>
+                    <label>{stats.regionTitle}</label>
                     <p style={{lineHeight: "1rem", fontSize: ".75rem"}}>
-                        *Note: Regions with no predictions are not shown.
+                        {stats.regionSubTitle}
                     </p>
                     <div id="stats1">
-                        <b>Loading data...</b>
+                        <b>{`${stats.loading}...`}</b>
                     </div>
-                    <label>Total predictions for subscribed regions per reporting period</label>
+                    <label>{stats.dateTitle}</label>
                     <div id="stats2">
-                        <b>Loading data...</b>
+                        <b>{`${stats.loading}...`}</b>
                     </div>
                     <p style={{lineHeight: "1rem", fontSize: ".75rem"}}>
-                        *Note: each prediction equals an area of 540x540m. Mining activity is
-                        not always present in the entire prediction area
+                        {stats.areaWarning}
                     </p>
                 </div>
             </div>
         );
     }
 }
+StatsPanel.contextType = MainContext;

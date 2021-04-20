@@ -82,10 +82,10 @@ export default class SearchPanel extends React.Component {
     render() {
         const {geoCodedSearch, selectedL1, selectedL2, searchText, latLngText} = this.state;
         const {fitMap, selectRegion, isHidden} = this.props;
-        const {featureNames} = this.context;
+        const {featureNames, localeText: {search}} = this.context;
 
         const geoSearchResults = geoCodedSearch && geoCodedSearch.length === 0
-            ? <label>No Results</label>
+            ? <label>{search.noResults}</label>
             : geoCodedSearch && (
                 <div>{geoCodedSearch.slice(0, 3).map(item => (
                     <div
@@ -116,27 +116,27 @@ export default class SearchPanel extends React.Component {
         const selectL1 = l1Names.length > 0
             ? (
                 <div className="w_100">
-                    <small>State</small>
+                    <small>{search.stateLabel}</small>
                     <select
                         className="w_100"
                         onChange={e => this.setState({selectedL1: e.target.value})}
                         value={selectedL1}
                     >
-                        <option key={-1} disabled value={-1}>Select a State</option>
+                        <option key={-1} disabled value={-1}>{search.defaultState}</option>
                         {l1Names.map(name => (
                             <option key={name} value={name}>{name}</option>
                         ))}
                     </select>
                 </div>
             )
-            : "Loading ...";
+            : search.loading + "...";
 
         const activeMuns = featureNames[selectedL1] || {};
         const l2names = Object.keys(activeMuns).sort();
         const selectL2 = l2names.length > 0
             ? (
                 <div className="w_100">
-                    <small>Municipality</small>
+                    <small>{search.munLabel}</small>
                     <select
                         className="w_100"
                         onChange={e => {
@@ -153,7 +153,7 @@ export default class SearchPanel extends React.Component {
                         }}
                         value={selectedL2}
                     >
-                        <option key={-1} disabled value={-1}>Select a Municipality</option>
+                        <option key={-1} disabled value={-1}>{search.defaultMun}</option>
                         {l2names.map(item => (
                             <option key={item} value={item}>{item}</option>
                         ))}
@@ -163,8 +163,8 @@ export default class SearchPanel extends React.Component {
 
         return (
             <div className={"popup-container search-panel " + (isHidden ? "see-through" : "")}>
-                <h3>SEARCH LOCATION</h3>
-                <label>Internet Search</label>
+                <h3>{search.title}</h3>
+                <label>{search.internetLabel}</label>
                 <div className="d-flex">
                     <input
                         className="w_100"
@@ -173,11 +173,11 @@ export default class SearchPanel extends React.Component {
                         value={searchText}
                     />
                     <button className="map-upd-btn" onClick={this.searchGeocode} type="button">
-                        Go
+                        {search.goButton}
                     </button>
                 </div>
                 {geoSearchResults}
-                <label>Lat Long Search</label>
+                <label>{search.coordLabel}</label>
                 <div className="d-flex">
                     <input
                         className="w_100"
@@ -186,10 +186,10 @@ export default class SearchPanel extends React.Component {
                         value={latLngText}
                     />
                     <button className="map-upd-btn" onClick={this.processLatLng} type="button">
-                        Go
+                        {search.goButton}
                     </button>
                 </div>
-                <label>Select Municipality</label>
+                <label>{search.selectLabel}</label>
                 {selectL1}
                 {selectL2}
             </div>

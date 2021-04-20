@@ -45,22 +45,19 @@ export default class ValidatePanel extends React.Component {
             .catch(err => console.log(err));
     };
 
-    checkProjectErrors = (pDate, selected, projectName, projects, type) => {
+    checkProjectErrors = (pDate, selected, projectName, projects, type, validate) => {
         const errors = [
-            !pDate && "Please select a date.",
-            selected.length === 0
-                && (type === 1
-                    ? "Subscribed regions are loading or you are not subscribed to any region!"
-                    : "No region selected!"),
-            !projectName && "Please enter a project name!",
-            projects.find(pr => pr[4] === projectName) && "A project with that name already exists! Please choose a different name!"
+            !pDate && validate.errorDate,
+            selected.length === 0 && (type === 1 ? validate.errorNoSubscribe : validate.errorNoRegion),
+            !projectName && validate.errorNoName,
+            projects.find(pr => pr[4] === projectName) && validate.errorDubName
         ].filter(e => e);
         return errors.length === 0 || this.setState({errorMsg: errors.join("\n\n")});
     };
 
     createProject = pDate => {
         const {customRegions, projectName, projects, regionType} = this.state;
-        const {subscribedList} = this.context;
+        const {subscribedList, localeText: {validate}} = this.context;
 
         this.setState({projectCreating: true, errorMsg: false});
         const selectedArr = regionType === 1 ? subscribedList : customRegions.map(x => "mun_" + x);
@@ -70,12 +67,13 @@ export default class ValidatePanel extends React.Component {
                 return es[2] + ", " + es[1];
             })
             .join(";");
-        const question = "Proceed with the configuration => \nprediction date = {%date}\nproject name = {%name} \nregions = {%region}?"
+        const question = validate.confirmQuestion
             .replace("{%date}", pDate)
             .replace("{%name}", projectName)
             .replace("{%region}", regions);
 
-        if (this.checkProjectErrors(pDate, selectedArr, projectName, projects, regionType) && confirm(question)) {
+        if (this.checkProjectErrors(pDate, selectedArr, projectName, projects, regionType, validate)
+            && confirm(question)) {
             const url = this.URLS.CRTPROJ
                     + "?pdate="
                     + pDate
@@ -100,7 +98,7 @@ export default class ValidatePanel extends React.Component {
                     console.log(err);
                     this.setState({
                         projectCreating: false,
-                        errorMsg: "Unknown Error."
+                        errorMsg: validate.errorUnknown
                     });
                 });
         } else {
@@ -109,7 +107,8 @@ export default class ValidatePanel extends React.Component {
     };
 
     closeProject = pid => {
-        if (confirm("Are you sure you want to close this project? Closing the project means you will no longer be able to validate the points unless you set up another project.")) {
+        const {localeText: {validate}} = this.context;
+        if (confirm(validate.closeConfirm)) {
             const {deleting} = this.state;
             this.setState({deleting: [...deleting, pid], errorMsg: false});
             fetch(this.URLS.CLPROJ + "?pid=" + pid)
@@ -119,7 +118,7 @@ export default class ValidatePanel extends React.Component {
                         this.getProjects();
                     } else {
                         // TODO pass back meaningful errors
-                        this.setState({errorMsg: "Could not close project."});
+                        this.setState({errorMsg: validate.errorClose});
                     }
                 })
                 .catch(err => {
@@ -130,23 +129,22 @@ export default class ValidatePanel extends React.Component {
         }
     };
 
-    renderProject = (predDate, createdDate, pid, url, projectName, regions) => (
+    renderProject = (predDate, createdDate, pid, url, projectName, regions, validate) => (
         <tr key={pid}>
             <td style={{width: "calc(100% - 30px)"}}>
-                <a href={url} rel="noreferrer" target="_blank">
-                    {projectName}
-                </a>
-                <br/>
-                <small>Prediction date: {predDate}</small>
-                <br/>
-                <small>Created date: {createdDate}</small>
-                <br/>
-                <small>Regions: {regions
-                    .split("__")
-                    .map(x => x.split("_"))
-                    .map(x => x[2] + ", " + x[1])
-                    .join(";")}
-                </small>
+                <div style={{display: "flex", flexDirection: "column"}}>
+                    <a href={url} rel="noreferrer" target="_blank">
+                        {projectName}
+                    </a>
+                    <small>{`${validate.predictionLabel}: ${predDate}`}</small>
+                    <small>{`${validate.createdLabel}: ${createdDate}`}</small>
+                    <small>{`${validate.regions}: ${regions
+                        .split("__")
+                        .map(x => x.split("_"))
+                        .map(x => x[2] + ", " + x[1])
+                        .join(";")}`}
+                    </small>
+                </div>
             </td>
             <td style={{verticalAlign: "top"}}>
                 <button
@@ -165,14 +163,11 @@ export default class ValidatePanel extends React.Component {
 
     renderCustomRegions = () => {
         const {customRegions} = this.state;
-        const {featureNames} = this.context;
+        const {featureNames, localeText: {validate}} = this.context;
         const states = Object.keys(featureNames).sort();
         return states.length === 0
-            ? (
-                <option key="0" disabled>
-                    Loading ...
-                </option>
-            ) : (
+            ? <option key="0" disabled>{`${validate.loading}...`}</option>
+            : (
                 <select
                     id="selectProjRegions"
                     multiple
@@ -197,18 +192,17 @@ export default class ValidatePanel extends React.Component {
     render() {
         const {isHidden} = this.props;
         const {projects, projectName, regionType, projectCreating, errorMsg} = this.state;
-        const {selectedDate, isUser} = this.context;
+        const {selectedDate, isUser, localeText: {validate}} = this.context;
         return (
             <div className={"popup-container validate-panel " + (isHidden ? "see-through" : "")}>
-                <h3>VALIDATION</h3>
-                View or add projects to validate mine data.
+                <h3>{validate.title.toUpperCase()}</h3>
+                {validate.subtitle}
                 {isUser
                     ? (
                         <div style={{display: "flex", flexDirection: "column"}}>
                             {projects.length === 0
-                                ? (
-                                    <span>You don&apos;t have any active projects.</span>
-                                ) : (
+                                ? <span>{validate.noProjects}</span>
+                                : (
                                     <table style={{width: "100%", textAlign: "left"}}>
                                         <thead>
                                             <tr>
@@ -216,11 +210,11 @@ export default class ValidatePanel extends React.Component {
                                                 <th/>
                                             </tr>
                                         </thead>
-                                        <tbody>{projects.map(p => this.renderProject(...p))}</tbody>
+                                        <tbody>{projects.map(p => this.renderProject(...p, validate))}</tbody>
                                     </table>
                                 )}
-                            <h3 style={{marginBottom: 0}}>Create a new project:</h3>
-                            <label>Enter Project Name:</label>
+                            <h3 style={{marginBottom: 0}}>{`${validate.createProject}:`}</h3>
+                            <label>{`${validate.projectName}:`}</label>
                             <input
                                 id="projectName"
                                 length="2"
@@ -228,7 +222,7 @@ export default class ValidatePanel extends React.Component {
                                 style={{width: "100%"}}
                                 value={projectName}
                             />
-                            <label>Select Project Region:</label>
+                            <label>{`${validate.projectRegion}:`}</label>
                             <span style={{marginTop: ".25rem"}}>
                                 <input
                                     checked={regionType === 1}
@@ -236,7 +230,7 @@ export default class ValidatePanel extends React.Component {
                                     onChange={() => this.setState({regionType: 1})}
                                     type="radio"
                                 />
-                                Subscribed Regions
+                                {validate.subscribedRadio}
                             </span>
                             <span style={{marginTop: ".25rem"}}>
                                 <input
@@ -246,7 +240,7 @@ export default class ValidatePanel extends React.Component {
                                     type="radio"
                                     value={2}
                                 />
-                                Custom Regions
+                                {validate.customRadio}
                             </span>
                             {regionType === 2 && this.renderCustomRegions()}
                             <button
@@ -256,12 +250,12 @@ export default class ValidatePanel extends React.Component {
                                 style={{marginTop: ".25rem"}}
                                 type="button"
                             >
-                                Create new project for {selectedDate}
+                                {`${validate.createButton} ${selectedDate}`}
                             </button>
                             <p>{errorMsg}</p>
                         </div>
                     ) : (
-                        <LoginMessage actionText="projects"/>
+                        <LoginMessage actionText={validate.loginAction}/>
                     )}
             </div>
         );

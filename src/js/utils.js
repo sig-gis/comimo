@@ -10,7 +10,6 @@ export function getCookie(name) {
         const cookies = document.cookie.split(";");
         for (let i = 0; i < cookies.length; i++) {
             const cookie = cookies[i].trim();
-            // Does this cookie string begin with the name we want?
             if (cookie.substring(0, name.length + 1) === (name + "=")) {
                 cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
                 break;
@@ -18,4 +17,10 @@ export function getCookie(name) {
         }
     }
     return cookieValue;
+}
+
+export function getLanguage(acceptableLanguages) {
+    const locale = navigator.language || navigator.browserLanguage || navigator.systemLanguage || "en";
+    const language = locale.includes("-") ? locale.slice(0, 2) : locale;
+    return acceptableLanguages.includes(language) ? language : "en";
 }
