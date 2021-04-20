@@ -9,13 +9,15 @@ def getCeoProjectURL(points, email, name):
         reqobj = {
             "classes": PROJ_CLASSES,
             "plots": getPlots(points),
-            "title": "_".join([PROJ_TITLE_PREFIX, datetime.today().strftime("%Y-%m-%d"), email, name]),
+            "title": email + "_" + name,
             "plotSize": PLOT_SIZE,
             "imageryId": PROJ_IMAGERY
         }
         headers = {'Content-type': 'application/json', 'Accept': 'text/plain'}
         resp = requests.post(CEO_GATEWAY_URL+CEO_CREATE,
-                             data=json.dumps(reqobj), headers=headers, timeout=300)
+                             data=json.dumps(reqobj),
+                             headers=headers,
+                             timeout=300)
         proj = resp.text
         return json.loads(proj)
     except Exception as e:

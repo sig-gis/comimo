@@ -10,7 +10,6 @@ from api.utils import authGEE, getLatestImage, getShape, reduceRegion, getPoints
 from api.config import *
 
 from subscribe.mailhelper import sendmail
-from subscribe.ceohelper import getCeoProjectURL
 from subscribe import utils as subutils
 
 
@@ -80,10 +79,9 @@ def cleanStaleProjects():
 
 
 def cleanCorruptProjects():
-    code = 'gmw.cleancorruptprojects'
+    jobCode = 'gmw.cleancorruptprojects'
     try:
         import datetime
-        fields = ['user', 'name', 'data_date', 'projurl']
         corruptProjects = ProjectsModel.objects.filter(projurl='')
         corruptProjects.delete()
         saveCron(jobCode, 'Completed Successfully')

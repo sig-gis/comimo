@@ -86,7 +86,7 @@ def getSubscribedRegions(user):
         for instance in iter(subscribe_instances):
             region = instance.region
             level = instance.level
-            sub_list.append(level+'_'+region)
+            sub_list.append(level + '_' + region)
         return sub_list
     except Exception as e:
         print(e)
@@ -104,7 +104,10 @@ def createProject(userId, data_date, name, regions):
         number = points.size().getInfo()
         if (number > 0):
             points = points.getInfo()
-            proj = getCeoProjectURL(points, user.email, name)
+            proj = getCeoProjectURL(
+                points,
+                user.email,
+                name + datetime.today().strftime("%Y-%m-%d"))
             if proj is not None:
                 projid = proj['projectId']
                 projurl = proj['ceoCollectionUrl']
@@ -120,7 +123,7 @@ def createProject(userId, data_date, name, regions):
         else:
             return {'action': 'Error', 'message': 'No mines detected within specified region(s)! Subscribe to other regions, or use custom regions.'}
     else:
-        return {'action': 'Error', 'message': 'Project for those regions already exists for the day! It\'s name is "'+ename+'". Close that one to create another.'}
+        return {'action': 'Error', 'message': 'Project for those regions already exists for the day! It\'s name is "' + ename + '". Close that one to create another.'}
 
 
 def delProject(user, pid):
