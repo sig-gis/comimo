@@ -5,6 +5,7 @@ html, body {
   padding: 0;
   font-family: 'Roboto Condensed', sans-serif !important;
   line-height: 1.5rem!important;
+  font-size: 16px;
 }
 
 #main-container {
@@ -26,7 +27,7 @@ h1, h2, h3 {
 h1 {font-size: 2rem;}
 h2 {font-size: 1.5rem;}
 h3 {font-size: 1rem;}
-h4 {font-size: 0.5rem;}
+h4 {font-size: .75rem;}
 
 a {
   text-decoration: underline !important;
@@ -38,6 +39,11 @@ a {
 
 label {
   margin: .5rem 0 0 3px;
+  font-size: 1rem;
+}
+
+span, a {
+  font-size: 1rem;
 }
 
 input, select {
@@ -88,9 +94,9 @@ input[type="range"] {
   outline: none;
 }
 
-/**************/
-/* Elements   */
-/**************/
+/******************/
+/* Style Classes  */
+/******************/
 
 small {
   font-size: .75rem !important;

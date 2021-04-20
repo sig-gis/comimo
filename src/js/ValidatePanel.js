@@ -196,7 +196,7 @@ export default class ValidatePanel extends React.Component {
         return (
             <div className={"popup-container validate-panel " + (isHidden ? "see-through" : "")}>
                 <h3>{validate.title.toUpperCase()}</h3>
-                {validate.subtitle}
+                <span>{validate.subtitle}</span>
                 {isUser
                     ? (
                         <div style={{display: "flex", flexDirection: "column"}}>
@@ -206,6 +206,7 @@ export default class ValidatePanel extends React.Component {
                                     <table style={{width: "100%", textAlign: "left"}}>
                                         <thead>
                                             <tr>
+                                                {/* FIXME, name missing in localeText */}
                                                 <th style={{width: "calc(100% - 50px)"}}>Name</th>
                                                 <th/>
                                             </tr>

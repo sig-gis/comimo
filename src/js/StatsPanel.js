@@ -50,7 +50,7 @@ export default class StatsPanel extends React.Component {
 
     getAreaStats(date) {
         const {localeText: {stats}} = this.context;
-        document.getElementById("stats1").innerHTML = `<b>${stats.loading}...</b>`;
+        document.getElementById("stats1").innerHTML = `${stats.loading}...`;
         fetch(this.URL.ARSTATS + "?date=" + date)
             .then(res => res.json())
             .then(result => {
@@ -97,7 +97,7 @@ export default class StatsPanel extends React.Component {
 
     getAreaTS() {
         const {localeText: {stats}} = this.context;
-        document.getElementById("stats2").innerHTML = `<b>${stats.loading}...</b>`;
+        document.getElementById("stats2").innerHTML = `${stats.loading}...`;
         fetch(this.URL.ARTS)
             .then(res => res.json())
             .then(result => {
@@ -162,16 +162,16 @@ export default class StatsPanel extends React.Component {
                 className={"popup-container stat-panel " + (isHidden ? "see-through" : "")}
             >
                 <div>
-                    <label>{stats.regionTitle}</label>
+                    <h3>{stats.regionTitle}</h3>
                     <p style={{lineHeight: "1rem", fontSize: ".75rem"}}>
                         {stats.regionSubTitle}
                     </p>
                     <div id="stats1">
-                        <b>{`${stats.loading}...`}</b>
+                        {`${stats.loading}...`}
                     </div>
-                    <label>{stats.dateTitle}</label>
+                    <h3>{stats.dateTitle}</h3>
                     <div id="stats2">
-                        <b>{`${stats.loading}...`}</b>
+                        {`${stats.loading}...`}
                     </div>
                     <p style={{lineHeight: "1rem", fontSize: ".75rem"}}>
                         {stats.areaWarning}

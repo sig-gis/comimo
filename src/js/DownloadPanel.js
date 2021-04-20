@@ -51,7 +51,7 @@ export default class DownloadPanel extends React.Component {
                         onChange={() => this.setState({clipOption: 1})}
                         type="radio"
                     />
-                    {download.allRadio}
+                    <span>{download.allRadio}</span>
                 </div>
                 <div className={selectedRegion ? "" : "disabled-group"} style={{marginTop: ".25rem"}}>
                     <input
@@ -60,11 +60,10 @@ export default class DownloadPanel extends React.Component {
                         onChange={() => this.setState({clipOption: 2})}
                         type="radio"
                     />
-                    {download.selectedRadio}
+                    <span>{download.selectedRadio}</span>
                 </div>
-                <br/>
                 {selectedDate && (
-                    <div style={{textAlign: "center", width: "100%"}}>
+                    <div style={{textAlign: "center", width: "100%", marginTop: ".5rem"}}>
                         <button
                             className="map-upd-btn"
                             disabled={fetching}

@@ -6,6 +6,10 @@
 .mapboxgl-popup-content {
   padding-top: 14px;
 }
+.mapboxgl-ctrl-logo {
+  margin: 0px 54px !important
+}
+
 .app-bar {
   position: absolute;
   top: 0;
@@ -111,18 +115,6 @@
   bottom: 3px;
 }
 
-/* .mapboxgl-ctrl-group {
-  border-radius: 0;
-}
-
-.mapboxgl-ctrl-group:not(:empty) {
-  box-shadow: 0px 0px 0px 1px rgba(0,0,0,.1);
-}
-
-.mapboxgl-ctrl-group button+button {
-  border: 0;
-} */
-
 .info-modal {
   position: fixed;
   height: 100%;
@@ -140,13 +132,14 @@
   margin: 50px auto;
   left: 0;
   right: 0;
-  min-width: 25rem;
-  width: 50%;
+  max-width: 40rem;
+  width: 90%;
   height: 80%;
-  padding: 1rem;
+  padding: 1.5rem;
   background: white;
   display: flex;
   flex-direction: column;
+  position: relative;
 }
 
 .info-modal p {
@@ -295,6 +288,9 @@ select[multiple] optgroup option:checked::before {
 
 
 @media only screen and (orientation: portrait) {
+  html {
+    font-size: 24px;
+  }
   .app-bar {
     display: block;
   }
@@ -326,6 +322,10 @@ select[multiple] optgroup option:checked::before {
     max-height: 50px !important;
     max-width: 50px !important;
   }
+  .info-modal .inner-container {
+    padding: 1.5rem;
+    line-height: 1rem;
+  }
   .advanced-icons {
     display: inline-block;
     white-space: nowrap;
@@ -344,7 +344,6 @@ select[multiple] optgroup option:checked::before {
     position: fixed;
     width: 100%;
     max-width: 100%;
-    font-size: 1.5rem;
     padding: 20px 40px 20px 40px;
     max-height: calc(100% - 100px);
     white-space: pre-wrap;
@@ -359,7 +358,6 @@ select[multiple] optgroup option:checked::before {
     top: 0;
     width: 100%;
     bottom: 176px;
-    font-size: 1.5rem;
     padding: 10px 20px 10px 20px;
   }
   .subs-panel {
@@ -400,20 +398,13 @@ select[multiple] optgroup option:checked::before {
     top: 50px;
   }
   .mapboxgl-popup-content {
-    font-size: 1rem;
-  }
-  #opacity-control {
-    position: absolute;
-    width: 100%;
-    top: 0;
-    left: 0;
-    padding: 10px 40px 10px 50px;
-    font-size: 1.5rem;
-    max-height: calc(100% - 300px);
-    overflow-y: auto;
+    font-size: .75rem;
   }
   .mapboxgl-ctrl-attrib {
     display: none;
+  }
+  .mapboxgl-ctrl-logo {
+    margin: 0 0 104px 4px !important;
   }
   #legend-div div input[type="checkbox"] {
     width: 30px;

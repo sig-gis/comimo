@@ -1,6 +1,7 @@
 import React from "react";
 
 import {MainContext} from "./context";
+import SvgIcon from "./SvgIcon";
 
 export default class AppInfo extends React.Component {
     render() {
@@ -15,9 +16,15 @@ export default class AppInfo extends React.Component {
                     className="inner-container"
                     onClick={e => e.stopPropagation()}
                 >
-                    <div style={{textAlign: "right"}}>
+                    <div
+                        onClick={onOuterClick}
+                        style={{position: "absolute", top: ".25rem", right: ".25rem"}}
+                    >
+                        <SvgIcon color="black" icon="close" size="1.5rem"/>
+                    </div>
+                    <div style={{display: "flex", justifyContent: "flex-end", marginBottom: ".5rem"}}>
                         {isAdmin && (
-                            <a href="/download" style={{marginRight: "1rem"}}>
+                            <a href="/download" style={{margin: "0 1rem"}}>
                                 {appInfo.download}
                             </a>
                         )}

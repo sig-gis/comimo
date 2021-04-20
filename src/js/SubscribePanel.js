@@ -81,7 +81,7 @@ export default class SubscribePanel extends React.Component {
     renderSubscribedTable(subscribedList) {
         const {localeText: {subscribe}} = this.context;
         return (
-            <table style={{width: "100%", textAlign: "left"}}>
+            <table style={{width: "100%", textAlign: "left", fontSize: "1rem"}}>
                 <thead>
                     <tr>
                         <th style={{width: "20px"}}>#</th>
@@ -126,17 +126,11 @@ export default class SubscribePanel extends React.Component {
                 {isUser ? (
                     <div>
                         {subscribedList.length === 0
-                            ? (
-                                <div className="subs-header">
-                                    <p>{subsLoaded ? subscribe.noSubs : subscribe.loadingSubs}</p>
-                                </div>
-                            ) : (
+                            ? <p>{subsLoaded ? subscribe.noSubs : subscribe.loadingSubs}</p>
+                            : (
                                 <div>
-                                    <div className="subs-header">
-                                        {subscribe.subscribedTo}
-                                    </div>
+                                    <span> {subscribe.subscribedTo}</span>
                                     {this.renderSubscribedTable(subscribedList)}
-                                    <br/>
                                 </div>
                             )}
                         {parsedRegion && subscribedList.indexOf(selectedRegion[0] + "_" + selectedRegion[1]) === -1 && (
