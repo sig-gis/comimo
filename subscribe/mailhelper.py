@@ -4,10 +4,10 @@ from . import config as C
 
 def sendmail(email, projurl):
     try:
-        textContent = buildTextcontent(projurl)
-        htmlContent = buildHTMLcontnet(projurl)
+        textContent = build_text_content(projurl)
+        htmlContent = build_HTML_contnet(projurl)
         sendSuccess = send_mail(
-            'Illegal mining activity detected in subscribed region',
+            'COMIMO ha detectado posibles sitios de explotación minera',
             textContent,
             C.EMAIL_HOST_USER,
             [email],
@@ -21,26 +21,24 @@ def sendmail(email, projurl):
         print(e)
 
 
-def buildTextcontent(projurl):
-    text = "Alert! \n\n"
-    text += "There are some potential illegal mining activities happening in the area that you are subscribed to.\n\n"
-    text += "Take a look at those area here : http://comimo.sig-gis.com'\n\n"
-    text += "To validate the data, navigate to the validation control on the application above or directly\
-            go to the CEO project : "+projurl
-    return text
+def build_text_content(projurl):
+    return "¡Alerta!\n\n" \
+        + "Hemos detectado posibles sitios de explotación minera en las áreas a las cuales se encuentra suscrito.\n\n" \
+        + "Puede visualizar estas áreas aquí: http://comimo.sig-gis.com'\n\n" \
+        + "Para validar esta información, diríjase al panel de validación en la aplicación o acceda directamente a CEO: " \
+        + projurl
 
 
-def buildHTMLcontnet(projurl):
-    html = """\
-    <html>
-      <body>
-        <h3>Alert!</h3>
-        There are some potential illegal mining activities happening in the area that you are subscribed to.
-        <br/><br/>
-        Take a look at those area <a href='http://comimo.sig-gis.com'>here</a>.
-        <br/><br/>
-        To validate the data, navigate to the validation control on the application above or directly go to the
-        <a href='"""+projurl+"""'>CEO project</a>.
-    </html>
+def build_HTML_contnet(projurl):
+    return """\
+        <html>
+        <body>
+            <h3>¡Alerta!</h3>
+            Hemos detectado posibles sitios de explotación minera en las áreas a las cuales se encuentra suscrito.
+            <br/><br/>
+            Puede visualizar estas áreas <a href='http://comimo.sig-gis.com'>aquí</a>.
+            <br/><br/>
+            Para validar esta información, diríjase al panel de validación en la aplicación o acceda directamente a
+            <a href='"""+projurl+"""'>CEO</a>.
+        </html>
     """
-    return html
