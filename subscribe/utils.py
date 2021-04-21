@@ -107,7 +107,7 @@ def createProject(userId, data_date, name, regions):
             proj = getCeoProjectURL(
                 points,
                 user.email,
-                name + datetime.today().strftime("%Y-%m-%d"))
+                name + "_" + datetime.today().strftime("%Y-%m-%d"))
             if proj is not None:
                 projid = proj['projectId']
                 projurl = proj['ceoCollectionUrl']
