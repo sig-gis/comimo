@@ -42,21 +42,25 @@ def getPlots(points):
 
 def getProjectInfo(pid):
     headers = {'Content-type': 'application/json', 'Accept': 'text/plain'}
-    resp = requests.get(CEO_GATEWAY_URL+CEO_INFO+pid, headers=headers)
+    resp = requests.get(CEO_GATEWAY_URL + CEO_INFO + str(pid), headers=headers)
     return json.loads(resp.text)
 
 
 def getCollectedData(pid):
     headers = {'Content-type': 'application/json', 'Accept': 'text/plain'}
-    resp = requests.get(CEO_GATEWAY_URL+CEO_GETDATA+pid, headers=headers)
-    csv = resp.text.split('\n')
-    csv = list(map(lambda x: x.split(','), csv))
-    csv = list(filter(lambda x: x[3] != '', csv))
-    return csv
+    resp = requests.get(CEO_GATEWAY_URL + CEO_GETDATA + str(pid),
+                        headers=headers)
+    if (resp.status_code == 200):
+        csv = resp.text.split('\n')
+        csv = list(map(lambda x: x.split(','), csv))
+        csv = list(filter(lambda x: x[3] != '', csv))
+        return csv
+    else:
+        return list()
 
 
 def deleteProject(pid):
     headers = {'Content-type': 'application/json', 'Accept': 'text/plain'}
-    print(CEO_GATEWAY_URL+CEO_DELETE+pid)
-    resp = requests.get(CEO_GATEWAY_URL+CEO_DELETE+pid, headers=headers)
+    resp = requests.get(CEO_GATEWAY_URL + CEO_DELETE + str(pid),
+                        headers=headers)
     return resp.text

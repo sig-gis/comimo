@@ -129,11 +129,10 @@ def createProject(userId, data_date, name, regions):
 def delProject(user, pid):
     try:
         result = deleteProject(pid)
-        print(result)
         if (result == 'OK'):
             return 'Archived'
         else:
-            return 'Error-' + result
+            return result
     except Exception as e:
         print(e)
         return 'Error'
@@ -170,10 +169,11 @@ def insertCollectedData(data, user, date):
         logging.getLogger("error").error(traceback.format_exc())
         return 'Error'
 
-# pid is CEO
-
 
 def archiveProject(user, pid):
+    # pid is CEO
+    # user is auth_user
+    # Gathers saved samples from CEO and stores them, then deletes project from CEO
     try:
         user = Profile.objects.get(user=user)
         project = ProjectsModel.objects.get(
@@ -186,7 +186,13 @@ def archiveProject(user, pid):
         if (status == 'Archived'):
             project.status = 'archived'
             project.save()
-        return {'action': status}
+            return {'action': 'Archived', 'message': 'Successfully imported data from CEO'}
+        elif (status == 'Forbidden'):
+            project.status = 'archived'
+            project.save()
+            return {'action': 'Archived', 'message': 'Missing CEO project'}
+        else:
+            return {'action': status}
     except ObjectDoesNotExist as e:
         print('no user/project')
         return {'action': 'Error', 'message': 'Project does not exist!'}
@@ -195,12 +201,13 @@ def archiveProject(user, pid):
         return {'action': 'Error', 'message': 'Something went wrong!'}
 
 
-def saveCron(jobType, message):
+def saveCron(jobType, message, regions=''):
     try:
         cron_jobs_instance = CronJobs()
         cron_jobs_instance.job_date = datetime.now().replace(tzinfo=pytz.UTC)
         cron_jobs_instance.job_type = jobType
         cron_jobs_instance.finish_message = message
+        cron_jobs_instance.regions = regions
         cron_jobs_instance.save()
         return 'Created'
     except Exception as e:

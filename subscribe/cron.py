@@ -23,7 +23,7 @@ def safeGetEmailRegions(user):
 
 
 def sendGoldAlerts():
-    jobCode = 'gmw.cronalerts'
+    jobCode = 'Auto alerts'
     try:
         authGEE()
         latest_image, latest_date = getLatestImage()
@@ -40,17 +40,20 @@ def sendGoldAlerts():
                 print(regions)
                 if regions and email:
                     proj_created = subutils.createProject(
-                        user, latest_date, 'Alert-for-'+today, regions)
+                        user, latest_date, 'Alert-for-' + today, regions)
                     if (proj_created['action'] == "Created"):
                         sendmail('mspencer@sig-gis.com',
                                  proj_created['proj'][3])
-                        print('mail sent to ', email)
+                        saveCron(jobCode,
+                                 'Success: Mail sent to ' + email,
+                                 regions)
                         SubscribeModel.objects.filter(user=alertable['user']).update(
                             last_alert_for=latest_date)
                     elif (proj_created['action'] == "Error"):
-                        saveCron(jobCode, 'Error: ' + proj_created['message'])
+                        saveCron(jobCode, 'Error: ' +
+                                 proj_created['message'], regions)
                     else:
-                        saveCron(jobCode, 'Error: Unknown cron error.')
+                        saveCron(jobCode, 'Error: Unknown cron error.', regions)
             except Exception as ee:
                 print('Error: {0}'.format(ee))
                 saveCron(jobCode, 'Error: {0}'.format(ee))
@@ -61,18 +64,20 @@ def sendGoldAlerts():
 
 
 def cleanStaleProjects():
-    jobCode = 'gmw.cleanstaleprojects'
+    jobCode = 'Close 30 day projects'
     try:
         import datetime
-        fields = ['user', 'projid', 'data_date']
-        bardate = datetime.datetime.now() + datetime.timedelta(days=-15)
+        fields = ['user__user_id', 'projid', 'name']
+        bardate = datetime.datetime.now() + datetime.timedelta(days=-30)
         staleprojects = list(ProjectsModel.objects.filter(
-            status='active', created_date__lt=bardate).values_list(*fields))
+            status='active', created_date__lt=bardate)
+            .values_list(*fields))
         for project in staleprojects:
-            result = subutils.archiveProject(
-                project[0], str(project[1]), project[2])
+            print(project)
+            result = subutils.archiveProject(project[0], project[1])
             print(result)
-        saveCron(jobCode, 'Completed Successfully')
+            saveCron(jobCode,
+                     result['action'] + " " + str(project[1]) + ": " + result['message'])
     except Exception as e:
         print(e)
         saveCron(jobCode, 'Error: {0}'.format(e))

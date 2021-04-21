@@ -62,10 +62,11 @@ class CronJobs(models.Model):
     job_date = models.DateTimeField(null=False)
     job_type = models.CharField(max_length=20, null=False)
     finish_message = models.CharField(max_length=500, null=False)
+    regions = models.TextField(null=False, default="")
 
     class Meta:
         app_label = "subscribe"
         db_table = "gmw_cron_jobs"
 
     def __str__(self):
-        return self.job_date.strftime("%Y-%m-%d %H:%M")+' '+self.job_type+'. Message: '+self.finish_message
+        return self.job_date.strftime("%Y-%m-%d %H:%M") + ' - ' + self.job_type + ' - '+self.finish_message

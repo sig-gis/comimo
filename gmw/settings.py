@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/2.2/ref/settings/
 """
 
+from subscribe import config as SUBCON
 import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -131,7 +132,8 @@ LOGOUT_REDIRECT_URL = 'home'
 CORS_ORIGIN_ALLOW_ALL = True
 
 CRONJOBS = [
-    ('0 23 * * *', 'subscribe.cron.sendGoldAlerts')
+    ('0 23 * * *', 'subscribe.cron.sendGoldAlerts'),
+    ('0 3 * * *', 'subscribe.cron.cleanStaleProjects')
 ]
 
 #EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
@@ -139,6 +141,5 @@ EMAIL_HOST = "smtp.gmail.com"
 EMAIL_USE_TLS = True
 EMAIL_PORT = 587
 
-from subscribe import config as SUBCON
 EMAIL_HOST_USER = SUBCON.EMAIL_HOST_USER
 EMAIL_HOST_PASSWORD = SUBCON.EMAIL_HOST_PASSWORD

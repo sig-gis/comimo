@@ -24,6 +24,18 @@ class InputFilter(admin.SimpleListFilter):
         yield all_choice
 
 
+class CEOidFilter(InputFilter):
+    parameter_name = 'projid'
+    title = _('CEO Project ID')
+
+    def queryset(self, request, queryset):
+        if self.value() is not None:
+            projid = self.value()
+            return queryset.filter(projid=projid)
+        else:
+            return queryset
+
+
 class NameFilter(InputFilter):
     parameter_name = 'name'
     title = _('Project Name')
@@ -75,6 +87,7 @@ class RegionFilter(InputFilter):
 class ProjectsAdmin(admin.ModelAdmin):
     search_fields = ('name', 'status', 'data_date', 'user__user__username')
     list_filter = (
+        CEOidFilter,
         NameFilter,
         UserFilter,
         StatusFilter,
