@@ -1,5 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom";
+import mapboxgl from "mapbox-gl";
+import "mapbox-gl/dist/mapbox-gl.css";
 
 import AppInfo from "./AppInfo";
 import DownloadPanel from "./DownloadPanel";
@@ -170,6 +172,7 @@ class Home extends React.Component {
     /// Mapbox TODO move to separate component
 
     initMap = () => {
+        mapboxgl.accessToken = mapboxToken;
         const theMap = new mapboxgl.Map({
             container: "mapbox",
             style: "mapbox://styles/mapbox/satellite-streets-v9",

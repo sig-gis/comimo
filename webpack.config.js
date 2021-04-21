@@ -30,6 +30,13 @@ module.exports = env => ({
                         ]
                     }
                 }
+            },
+            {
+                test: /\.css$/, // TODO Find a css optimizer
+                use: [
+                    "style-loader",
+                    {loader: "css-loader", options: {url: false}}
+                ]
             }
         ]
     },

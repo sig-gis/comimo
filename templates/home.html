@@ -3,16 +3,13 @@
 {% load static %}
 
 {% block pagescripts %}
-<script src='https://api.mapbox.com/mapbox-gl-js/v2.1.1/mapbox-gl.js'></script>
-<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-
 <!-- add classes for the application -->
 <script type='text/javascript' src='{% static "js/appconfigs.js" %}'></script>
+<script type='text/javascript' src='{% static "js/google-charts.js" %}'></script>
 <script type='text/javascript' src='{% static "js/home.js" %}'></script>
 {% endblock %}
 
 {% block pagestyles %}
-<link href='https://api.mapbox.com/mapbox-gl-js/v2.1.1/mapbox-gl.css' rel='stylesheet' />
 <link rel='stylesheet' href='{% static "css/gmw_main.css" %}' />
 <style>
     .app-icon {
@@ -23,7 +20,8 @@
 {% endblock %}
 
 {% block content %}
-<div id = 'main-container'>
+<div id='main-container'>
 </div>
-<script type='text/javascript'>window.onload = function() {home.pageInit({isUser: USER_STATE, isAdmin: USER_ADM})} </script>
+<script
+    type='text/javascript'>window.onload = function () { home.pageInit({ isUser: USER_STATE, isAdmin: USER_ADM }) }</script>
 {% endblock %}
