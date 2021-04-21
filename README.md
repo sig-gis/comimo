@@ -74,18 +74,18 @@ that are not included in git repository but are essential to the working of the
 application.
 
 ```shell
-nano gmw/statics/js/appconfigs.js
+nano src/js/appconfigs.js
 nano api/config.py
 nano subscribe/config.py
 ```
 
-1. gmw/statics/js/appconfigs.js
+1. src/js/appconfigs.js
 
-This file contains the access details to your mapbox and mapquest accounts.
+This file contains the access details to your Mapbox and MapQuest accounts.
 
 ```text
-mapboxgl.accessToken = '<your access token>';
-mapquestkey = '<your key>'
+mapboxToken = '<your access token>';
+mapQuestKey = '<your key>'
 ```
 
 2. api/config.py

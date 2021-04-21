@@ -1,6 +1,6 @@
 gee-auth-key.json
 config.py
-appconfigs.js
+src/js/appConfig.js
 *.pyc
 venv/*
 logs

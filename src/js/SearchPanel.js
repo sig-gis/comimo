@@ -1,13 +1,14 @@
 import React from "react";
 
 import {MainContext} from "./context";
+import {mapQuestKey} from "./appConfig";
 
 export default class SearchPanel extends React.Component {
     constructor(props) {
         super(props);
 
         this.URLS = {
-            GEOCODE: "http://open.mapquestapi.com/geocoding/v1/address?"
+            GEOCODE: "http://open.mapquestapi.com/geocoding/v1/address"
         };
 
         this.state = {
@@ -20,13 +21,12 @@ export default class SearchPanel extends React.Component {
     }
 
     searchGeocode = () => {
-        const {searchText} = this.this.state;
+        const {searchText} = this.state;
         const {featureNames} = this.context;
-        const url = this.URLS.GEOCODE + "key=" + mapquestkey + "&location=" + searchText;
+        const url = this.URLS.GEOCODE + "?key=" + mapQuestKey + "&location=" + searchText + "&boundingBox=12,-82,-5,-64";
         fetch(url)
             .then(resp => resp.json())
             .then(result => {
-                // TODO filter by exists in list.
                 this.setState({
                     geoCodedSearch: result.results[0].locations.filter(l => {
                         try {
