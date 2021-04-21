@@ -27,7 +27,6 @@ def sendGoldAlerts():
     try:
         authGEE()
         latest_image, latest_date = getLatestImage()
-        today = datetime.datetime.now().strftime("%Y-%m-%d")
         users = SubscribeModel.objects.all() \
             .values('user__user_id', 'user') \
             .filter(last_alert_for__lt=latest_date) \
@@ -40,7 +39,7 @@ def sendGoldAlerts():
                 print(regions)
                 if regions and email:
                     proj_created = subutils.createProject(
-                        user, latest_date, 'Alert-for-' + today, regions)
+                        user, latest_date, 'Alerta', regions)
                     if (proj_created['action'] == "Created"):
                         sendmail('mspencer@sig-gis.com',
                                  proj_created['proj'][3])
