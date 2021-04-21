@@ -5,80 +5,79 @@ from django.http import JsonResponse, HttpResponse
 from django.core import serializers
 from subscribe import utils
 
+
 def requestLogin(request):
     return redirect(reverse('login')+'?next='+request.build_absolute_uri())
 
-# Create your views here.
-def manageSubscriptions(request):
-    user = request.user
-    if not(user.is_authenticated):
-        return requestLogin(request);
-    else :
-        queryset = utils.getSubscribedRegions(user);
-        context = {'rows':queryset}
-        return render(request, 'manageSubscriptions.html', context=context)
-
 # request handler to add subscriptions
+
+
 def addSubs(request):
     user = request.user
     if not(user.is_authenticated):
-        return requestLogin(request);
+        return requestLogin(request)
     else:
         region = request.GET.get('region')
         try:
             level = request.GET.get('level')
         except Exception as e:
-            return JsonResponse({'action':'Error','region':region, 'level':level})
+            return JsonResponse({'action': 'Error', 'region': region, 'level': level})
         subaction = utils.saveEmail(user, region, level)
-        return JsonResponse({'action':subaction,'region':region, 'level':level})
+        return JsonResponse({'action': subaction, 'region': region, 'level': level})
+
 
 def deleteSubs(request):
     user = request.user
     if not(user.is_authenticated):
-        return requestLogin(request);
+        return requestLogin(request)
     else:
         region = request.GET.get('region')
         try:
             level = request.GET.get('level')
         except Exception as e:
-            return JsonResponse({'action':'Error','region':region, 'level':level})
+            return JsonResponse({'action': 'Error', 'region': region, 'level': level})
         subaction = utils.delEmail(user, region, level)
-        return JsonResponse({'action':subaction,'region':region, 'level':level})
+        return JsonResponse({'action': subaction, 'region': region, 'level': level})
+
 
 def getSubs(request):
     user = request.user
     if not(user.is_authenticated):
-            return requestLogin(request);
+        return requestLogin(request)
     else:
         regionList = utils.getSubscribedRegions(user)
-        return JsonResponse({'action':'Success','regions':regionList})
+        return JsonResponse({'action': 'Success', 'regions': regionList})
+
 
 def getProjects(request):
     user = request.user
     if not(user.is_authenticated):
-        return requestLogin(request);
+        return requestLogin(request)
     else:
         queryset = utils.getActiveProjects(user)
-        if queryset!='Error':
-            fields = ['data_date','created_date','projurl','projid','name','regions']
+        if queryset != 'Error':
+            fields = ['data_date', 'created_date',
+                      'projurl', 'projid', 'name', 'regions']
             projList = list(queryset.values(*fields))
-            projList = [[x['data_date'].strftime('%Y-%m-%d'), x['created_date'].strftime('%Y-%m-%d'), x['projid'], x['projurl'], x['name'], x['regions']] for x in projList]
-            return JsonResponse({'action':'Success','projects':projList})
+            projList = [[x['data_date'].strftime('%Y-%m-%d'), x['created_date'].strftime(
+                '%Y-%m-%d'), x['projid'], x['projurl'], x['name'], x['regions']] for x in projList]
+            return JsonResponse({'action': 'Success', 'projects': projList})
         else:
-            return JsonResponse({'action':'Error', 'message':'No active projects.'})
+            return JsonResponse({'action': 'Error', 'message': 'No active projects.'})
+
 
 def closeProject(request):
     user = request.user
     if not(user.is_authenticated):
         return requestLogin(request)
     else:
-        pid = request.GET.get('pid')
-        pdate = request.GET.get('pdate')
-        if (pid and pdate):
-            result = utils.archiveProject(user, pid, pdate)
+        pid = request.GET.get('pid')  # pid is CEO id
+        if (pid):
+            result = utils.archiveProject(user, pid)
             return JsonResponse(result)
         else:
-            return JsonResponse({'action':'Error', 'message':'Make sure project id and date are supplied'})
+            return JsonResponse({'action': 'Error', 'message': 'Make sure project id is supplied'})
+
 
 def createProject(request):
     user = request.user
@@ -90,18 +89,22 @@ def createProject(request):
         regions = request.GET.get('regions')
         if (pdate):
             from datetime import datetime
-            pdate = datetime.strptime(pdate, "%Y-%m-%d")
+            import pytz
+            pdate = datetime.strptime(
+                pdate, "%Y-%m-%d").replace(tzinfo=pytz.UTC)
             result = utils.createProject(user, pdate, name, regions)
             return JsonResponse(result)
         else:
-            return JsonResponse({'action':'Error', 'message':'Make sure projet date is supplied'})
+            return JsonResponse({'action': 'Error', 'message': 'Make sure projet date is supplied'})
+
 
 def downloadData(request):
     user = request.user
     if not(user.is_authenticated):
         return requestLogin(request)
     else:
-        return render(request, 'dlData.html')
+        return render(request, 'download-all.html')
+
 
 def downloadAllInCSV(request):
     user = request.user
@@ -111,7 +114,8 @@ def downloadAllInCSV(request):
         from subscribe.models import ExtractedData
         from accounts.models import Profile
         date = request.GET.get('date')
-        data = ExtractedData.objects.filter(data_date__startswith=date).values()
+        data = ExtractedData.objects.filter(
+            data_date__startswith=date).values()
         user = Profile.objects.get(user=user)
         d = []
         for point in iter(data):
@@ -128,8 +132,9 @@ def downloadAllInCSV(request):
             temp['classNum'] = point['class_num']
             temp['className'] = point['class_name']
             d.append(temp)
-        context = {'data':d}
+        context = {'data': d}
         return JsonResponse(d, safe=False)
+
 
 def getDataDates(request):
     user = request.user
@@ -137,13 +142,14 @@ def getDataDates(request):
         return requestLogin(request)
     else:
         from subscribe.models import ExtractedData
-        data = ExtractedData.objects.order_by().values_list('data_date',flat=True).distinct()
+        data = ExtractedData.objects.order_by().values_list(
+            'data_date', flat=True).distinct()
         list = []
         for d in data:
             list.append(d)
         return JsonResponse(list, safe=False)
 
-        # return render(request, 'dlData.html')
+        # return render(request, 'download-all.html')
 
 # def downloadAllInCSV1(request):
 #     user = request.user
@@ -182,4 +188,4 @@ def getDataDates(request):
 #         # csv = os.listdir(dlbbase+dlfolder)
 #         # dd = datetime.datetime.strptime(d,"%Y_%m_%dT%H_%M_%S")
 #         print(dd)
-#         return JsonResponse({"action":"success","file":csv});
+#         return JsonResponse({"action":"success","file":csv})

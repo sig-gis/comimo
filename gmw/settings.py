@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/2.2/ref/settings/
 """
 
+from subscribe import config as SUBCON
 import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -27,7 +28,6 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
-
 # Application definition
 
 INSTALLED_APPS = [
@@ -41,7 +41,7 @@ INSTALLED_APPS = [
     'accounts.apps.AccountsConfig',
     'api.apps.ApiConfig',
     'subscribe.apps.SubscribeConfig',
-    'django_cron'
+    'django_crontab'
 ]
 
 MIDDLEWARE = [
@@ -72,9 +72,6 @@ TEMPLATES = [
         },
     },
 ]
-
-WSGI_APPLICATION = 'gmw.wsgi.application'
-
 
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
@@ -132,22 +129,11 @@ STATICFILES_DIRS = [
 LOGIN_REDIRECT_URL = 'home'
 LOGOUT_REDIRECT_URL = 'home'
 
-# update cors to disallow all origins
 CORS_ORIGIN_ALLOW_ALL = True
 
-# CORS_ORIGIN_WHITELIST = [
-#     'http://127.0.0.1:3000',
-#     'http://127.0.0.1:8000',
-#     'http://127.0.0.1:8080',
-#     'http://localhost:3000',
-#     'http://localhost:8000',
-#     'http://localhost:8080',
-# ]
-
-CRON_CLASSES = [
-    'subscribe.cron.GoldAlerts',
-    # 'subscribe.cron.CleanStaleProjects'
-    # 'subscribe.cron.CleanCorruptProjects'
+CRONJOBS = [
+    ('0 23 * * *', 'subscribe.cron.sendGoldAlerts'),
+    ('0 3 * * *', 'subscribe.cron.cleanStaleProjects')
 ]
 
 #EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
@@ -155,6 +141,5 @@ EMAIL_HOST = "smtp.gmail.com"
 EMAIL_USE_TLS = True
 EMAIL_PORT = 587
 
-from subscribe import config as SUBCON
 EMAIL_HOST_USER = SUBCON.EMAIL_HOST_USER
 EMAIL_HOST_PASSWORD = SUBCON.EMAIL_HOST_PASSWORD

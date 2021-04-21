@@ -7,10 +7,13 @@ from django.contrib.admin import DateFieldListFilter
 # Register your models here.
 from . import models
 
+
 class InputFilter(admin.SimpleListFilter):
-    template = 'admin/input_filter.html'
+    template = 'input-filter.html'
+
     def lookups(self, request, model_admin):
         return ((),)
+
     def choices(self, changelist):
         all_choice = next(super().choices(changelist))
         all_choice['query_parts'] = (
@@ -19,6 +22,19 @@ class InputFilter(admin.SimpleListFilter):
             if k != self.parameter_name
         )
         yield all_choice
+
+
+class CEOidFilter(InputFilter):
+    parameter_name = 'projid'
+    title = _('CEO Project ID')
+
+    def queryset(self, request, queryset):
+        if self.value() is not None:
+            projid = self.value()
+            return queryset.filter(projid=projid)
+        else:
+            return queryset
+
 
 class NameFilter(InputFilter):
     parameter_name = 'name'
@@ -31,6 +47,7 @@ class NameFilter(InputFilter):
         else:
             return queryset
 
+
 class UserFilter(InputFilter):
     parameter_name = 'user'
     title = _('User Name')
@@ -41,6 +58,7 @@ class UserFilter(InputFilter):
             return queryset.filter(Q(user__user__username__contains=name))
         else:
             return queryset
+
 
 class StatusFilter(InputFilter):
     parameter_name = 'status'
@@ -53,6 +71,7 @@ class StatusFilter(InputFilter):
         else:
             return queryset
 
+
 class RegionFilter(InputFilter):
     parameter_name = 'regions'
     title = _('Regions')
@@ -64,9 +83,11 @@ class RegionFilter(InputFilter):
         else:
             return queryset
 
+
 class ProjectsAdmin(admin.ModelAdmin):
     search_fields = ('name', 'status', 'data_date', 'user__user__username')
     list_filter = (
+        CEOidFilter,
         NameFilter,
         UserFilter,
         StatusFilter,
@@ -74,13 +95,16 @@ class ProjectsAdmin(admin.ModelAdmin):
         ('data_date', DateFieldListFilter)
     )
 
+
 class ExtractedAdmin(admin.ModelAdmin):
     search_fields = ('user__user__username', 'data_date', 'class_name')
     list_filter = (
         UserFilter,
-        ('data_date',DateFieldListFilter),
+        ('data_date', DateFieldListFilter),
     )
 
+
 admin.site.register(models.SubscribeModel)
-admin.site.register(models.ProjectsModel,ProjectsAdmin)
-admin.site.register(models.ExtractedData,ExtractedAdmin)
+admin.site.register(models.ProjectsModel, ProjectsAdmin)
+admin.site.register(models.ExtractedData, ExtractedAdmin)
+admin.site.register(models.CronJobs)

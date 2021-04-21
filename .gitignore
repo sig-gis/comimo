@@ -1,18 +1,16 @@
 gee-auth-key.json
-api/shapes/*
 config.py
 appconfigs.js
 *.pyc
-venv
 venv/*
-ceo-gateway
-ceodev-gateway
+logs
+package-lock.json
 
-__pycache__
 __pycache__/*
 
 db.sqlite3
-Readme.md
 
-static/*
-migrations/*
+static
+node_modules
+# Webpack output
+gmw/statics/js/home.js

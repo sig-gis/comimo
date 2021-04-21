@@ -3,24 +3,26 @@ import requests
 from datetime import datetime
 import json
 
-def getCeoProjectURL(points, latest_date, email, name):
+
+def getCeoProjectURL(points, email, name):
     try:
         reqobj = {
             "classes": PROJ_CLASSES,
             "plots": getPlots(points),
-            "title": "_".join([PROJ_TITLE_PREFIX, datetime.today().strftime("%Y-%m-%d"), email, name]),
+            "title": email + "_" + name,
             "plotSize": PLOT_SIZE,
-            # "baseMapSource": PROJ_DEFAULT_BM
+            "imageryId": PROJ_IMAGERY
         }
         headers = {'Content-type': 'application/json', 'Accept': 'text/plain'}
-        resp = requests.post(CEO_GATEWAY_URL+CEO_CREATE, data=json.dumps(reqobj), headers=headers)
+        resp = requests.post(CEO_GATEWAY_URL+CEO_CREATE,
+                             data=json.dumps(reqobj),
+                             headers=headers,
+                             timeout=300)
         proj = resp.text
-        # print(json.dumps(reqobj))
-        # print("resp",resp)
-        # print("proj",proj)
         return json.loads(proj)
     except Exception as e:
         print(e)
+
 
 def getPlots(points):
     import random
@@ -31,33 +33,34 @@ def getPlots(points):
             coords = feature['geometry']['coordinates']
             lon = coords[0]
             lat = coords[1]
-            plots.append({'lat':lat,'lon':lon})
+            plots.append({'lat': lat, 'lon': lon})
         except Exception as e:
             print("issue with feature:", feature)
     random.shuffle(plots)
     return plots
 
+
 def getProjectInfo(pid):
     headers = {'Content-type': 'application/json', 'Accept': 'text/plain'}
-    resp = requests.get(CEO_GATEWAY_URL+CEO_INFO+pid, headers=headers)
+    resp = requests.get(CEO_GATEWAY_URL + CEO_INFO + str(pid), headers=headers)
     return json.loads(resp.text)
+
 
 def getCollectedData(pid):
     headers = {'Content-type': 'application/json', 'Accept': 'text/plain'}
-    resp = requests.get(CEO_GATEWAY_URL+CEO_GETDATA+pid, headers=headers)
-    csv = resp.text.split('\n')
-    csv = list(map(lambda x: x.split(','), csv))
-    csv = list(filter(lambda x: x[3] != '',csv))
-    return csv
+    resp = requests.get(CEO_GATEWAY_URL + CEO_GETDATA + str(pid),
+                        headers=headers)
+    if (resp.status_code == 200):
+        csv = resp.text.split('\n')
+        csv = list(map(lambda x: x.split(','), csv))
+        csv = list(filter(lambda x: x[3] != '', csv))
+        return csv
+    else:
+        return list()
+
 
 def deleteProject(pid):
     headers = {'Content-type': 'application/json', 'Accept': 'text/plain'}
-    print(CEO_GATEWAY_URL+CEO_DELETE+pid)
-    resp = requests.get(CEO_GATEWAY_URL+CEO_DELETE+pid, headers=headers)
-    return resp.text
-
-def deleteDevProject(pid):
-    headers = {'Content-type': 'application/json', 'Accept': 'text/plain'}
-    print(CEODEV_GATEWAY_URL+CEO_DELETE+pid)
-    resp = requests.get(CEO_GATEWAY_URL+CEO_DELETE+pid, headers=headers)
+    resp = requests.get(CEO_GATEWAY_URL + CEO_DELETE + str(pid),
+                        headers=headers)
     return resp.text

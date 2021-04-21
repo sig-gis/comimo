@@ -1,79 +1,95 @@
-from django_cron import CronJobBase, Schedule
 from django.db.models import Min, Max
 from subscribe.models import SubscribeModel, ProjectsModel
-from subscribe.utils import saveProject, projectExists
+from subscribe.utils import saveProject, projectExists, saveCron
 from accounts.models import Profile
-import os, json
-import datetime, pytz
+import os
+import json
+import datetime
+import pytz
 from api.utils import authGEE, getLatestImage, getShape, reduceRegion, getPointsWithin
 from api.config import *
 
 from subscribe.mailhelper import sendmail
-from subscribe.ceohelper import getCeoProjectURL
 from subscribe import utils as subutils
 
-class GoldAlerts(CronJobBase):
-    RUN_EVERY_MINS = 0.001 # every 0.001 min (doesn't run on it's timer but blocks if executed in less that that interval)
 
-    schedule = Schedule(run_every_mins=RUN_EVERY_MINS)
-    code = 'gmw.cronalerts'    # a unique code
-
-    def do(self):
-        try:
-            authGEE()
-            latest_image, latest_date = getLatestImage()
-            today = datetime.datetime.now().strftime("%Y-%m-%d")
-            users = SubscribeModel.objects.all().values('user').annotate(alert = Min('last_alert_for'))
-            alertables = filter(lambda x: x['alert'] < latest_date, users)
-            for alertable in iter(alertables):
-                try:
-                    user = alertable['user']
-                    email = Profile.objects.filter(user=user).values().first()['email']
-                    regions = '__'.join(subutils.getSubscribedRegions(user))
-                    if regions and email:
-                        proj_created = subutils.createProject(user, latest_date, 'Alert-for-'+today, regions)
-
-                        if (proj_created['action'] == "Created"):
-                            SubscribeModel.objects.filter(user=user).update(last_alert_for=latest_date)
-                            sendmail(email, proj_created['proj'][3])
-                            print('mail sent to ', email)
-                        else:
-                            print(proj_created)
-                except Exception as ee:
-                    print(ee)
-        except Exception as e:
-            print(e)
+def safeGetEmailRegions(user):
+    try:
+        email = Profile.objects.filter(user=user).values().first()['email']
+        regions = '__'.join(subutils.getSubscribedRegions(user))
+        return email, regions
+    except Exception as e:
+        return None, None
 
 
-class CleanStaleProjects(CronJobBase):
-    RUN_EVERY_MINS = 0.01  # every 0.001 min (doesn't run on it's timer but blocks if executed in less that that interval)
+def sendGoldAlerts():
+    jobCode = 'Auto alerts'
+    try:
+        authGEE()
+        latest_image, latest_date = getLatestImage()
+        today = datetime.datetime.now().strftime("%Y-%m-%d")
+        users = SubscribeModel.objects.all() \
+            .values('user__user_id', 'user') \
+            .filter(last_alert_for__lt=latest_date) \
+            .annotate(alert=Min('last_alert_for'))
+        for alertable in iter(users):
+            print(alertable)
+            try:
+                user = alertable['user__user_id']
+                email, regions = safeGetEmailRegions(user)
+                print(regions)
+                if regions and email:
+                    proj_created = subutils.createProject(
+                        user, latest_date, 'Alert-for-' + today, regions)
+                    if (proj_created['action'] == "Created"):
+                        sendmail('mspencer@sig-gis.com',
+                                 proj_created['proj'][3])
+                        saveCron(jobCode,
+                                 'Success: Mail sent to ' + email,
+                                 regions)
+                        SubscribeModel.objects.filter(user=alertable['user']).update(
+                            last_alert_for=latest_date)
+                    elif (proj_created['action'] == "Error"):
+                        saveCron(jobCode, 'Error: ' +
+                                 proj_created['message'], regions)
+                    else:
+                        saveCron(jobCode, 'Error: Unknown cron error.', regions)
+            except Exception as ee:
+                print('Error: {0}'.format(ee))
+                saveCron(jobCode, 'Error: {0}'.format(ee))
+        saveCron(jobCode, 'Completed Successfully')
+    except Exception as e:
+        print("OS error: {0}".format(e))
+        saveCron(jobCode, 'Error: {0}'.format(e))
 
-    schedule = Schedule(run_every_mins=RUN_EVERY_MINS)
-    code = 'gmw.cleanstaleprojects'
 
-    def do(self):
-        try:
-            import datetime
-            fields = ['user','projid','data_date']
-            bardate = datetime.datetime.now() + datetime.timedelta(days = -15)
-            staleprojects = list(ProjectsModel.objects.filter(status='active',created_date__lt=bardate).values_list(*fields))
-            for project in staleprojects:
-                result = subutils.archiveProject(project[0],str(project[1]),project[2]);
-                print(result)
-        except Exception as e:
-            print(e)
+def cleanStaleProjects():
+    jobCode = 'Close 30 day projects'
+    try:
+        import datetime
+        fields = ['user__user_id', 'projid', 'name']
+        bardate = datetime.datetime.now() + datetime.timedelta(days=-30)
+        staleprojects = list(ProjectsModel.objects.filter(
+            status='active', created_date__lt=bardate)
+            .values_list(*fields))
+        for project in staleprojects:
+            print(project)
+            result = subutils.archiveProject(project[0], project[1])
+            print(result)
+            saveCron(jobCode,
+                     result['action'] + " " + str(project[1]) + ": " + result['message'])
+    except Exception as e:
+        print(e)
+        saveCron(jobCode, 'Error: {0}'.format(e))
 
-class CleanCorruptProjects(CronJobBase):
-    RUN_EVERY_MINS = 0.01
 
-    schedule = Schedule(run_every_mins=RUN_EVERY_MINS)
-    code = 'gmw.cleancorruptprojects'
-    def do(self):
-        try:
-            import datetime
-            fields = ['user','name','data_date','projurl']
-            corruptProjects = ProjectsModel.objects.filter(projurl='')
-            corruptProjects.delete()
-            print("done")
-        except Exception as e:
-            print(e)
+def cleanCorruptProjects():
+    jobCode = 'gmw.cleancorruptprojects'
+    try:
+        import datetime
+        corruptProjects = ProjectsModel.objects.filter(projurl='')
+        corruptProjects.delete()
+        saveCron(jobCode, 'Completed Successfully')
+    except Exception as e:
+        print(e)
+        saveCron(jobCode, 'Error: {0}'.format(e))
