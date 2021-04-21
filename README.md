@@ -50,7 +50,7 @@ Some resources on how-to:
 ### Required packages
 
 ```shell
-sudo apt install python3 python3-venv
+sudo apt -y install python3 python3-venv npm
 ```
 
 ### Clone the repo and initialize virtual env
@@ -119,7 +119,7 @@ well as the CEO related configurations.
 ```text
 EMAIL_HOST_USER = '<your email address>'
 EMAIL_HOST_PASSWORD = '<your password>'
-APP_URL = '<your app URL>'
+APP_URL = '<your app URL>' // This is currently unused
 
 CEO_GATEWAY_URL = 'http://127.0.0.1:3000/'
 CEO_CREATE = "create-project/"
@@ -165,7 +165,7 @@ IMPORTANT! remember to have the service account address whitelisted by Google ea
 The project connects to CEO through an application package called CEO gateway
 which uses our credentials to make changes to CEO projects such as create,
 delete, get info, etc. The gateway can be cloned from here
-<https://github.com/rfontanarosa/ceo-gateway>
+<https://gitlab.com/sig-gis/ceo-gateway>
 
 **src/config.js** needs to be configured with CEO details before it can properly
 function.
@@ -173,7 +173,7 @@ function.
 To activate navigate to the project directory and run `npm run start`
 
 ```shell
-git@github.com:rfontanarosa/ceo-gateway.git
+git@gitlab.com:sig-gis/ceo-gateway.git
 cd ceo-gateway
 nano src/config.js
 npm run start

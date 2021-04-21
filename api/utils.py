@@ -15,7 +15,7 @@ def authGEE():
     if os.path.exists(geeAuthKey):
         service_account = 'comimo@earth-engine-comimo.iam.gserviceaccount.com'
         credentials = ee.ServiceAccountCredentials(
-            service_account, os.path.join(module_dir, 'gee-auth-key.json'))
+            service_account, geeAuthKey)
         ee.Initialize(credentials)
     else:
         ee.Initialize()
