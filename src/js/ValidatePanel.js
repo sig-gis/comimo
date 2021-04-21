@@ -151,11 +151,11 @@ export default class ValidatePanel extends React.Component {
                     className="del-btn green-btn p-0"
                     disabled={this.state.deleting.includes(pid)}
                     onClick={() => this.closeProject(pid)}
-                    style={{height: "30px", width: "30px"}}
+                    style={{height: "1.75rem", width: "1.75rem"}}
                     title={"Close " + projectName}
                     type="button"
                 >
-                    <SvgIcon extraStyle={{margin: "3px"}} icon="check" size="24px"/>
+                    <SvgIcon extraStyle={{margin: "0px .3rem .1rem"}} icon="check" size="1.25rem"/>
                 </button>
             </td>
         </tr>

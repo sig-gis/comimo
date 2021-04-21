@@ -33,6 +33,8 @@ export default class AppInfo extends React.Component {
                     <h2 className="heading3">{appInfo.title}</h2>
                     <h3 style={{margin: "1rem 0"}}>{appInfo.termsOfUse}</h3>
                     <p>{appInfo.shortTerms}</p>
+                    {/* FIXME, these urls need to be in the local file */}
+                    {/* https://docs.google.com/document/d/1xrLgL_Ai8lR8E4ZsF0AnzjlZESMVwKuUjOgSBJE3bqo */}
                     <a
                         href="https://docs.google.com/document/d/1kJrlXUlyDRVeVEb1WcPOWBNnzJ1s-9spLTHCxnk8o5E"
                         rel="noopener noreferrer"
@@ -41,8 +43,9 @@ export default class AppInfo extends React.Component {
                     >
                         {appInfo.viewTerms}
                     </a>
+                    {/* https://docs.google.com/document/d/1XtkDwENUM3JAQbecGgT6myU55Qc5HO5eT_PW0wzEhyI */}
                     <a
-                        href="https://docs.google.com/document/d/1kJrlXUlyDRVeVEb1WcPOWBNnzJ1s-9spLTHCxnk8o5E"
+                        href="https://docs.google.com/document/d/1Kcn9u_umMVleYqVqFkxiSypMPxDUXkodsDbjAB2z-xU"
                         rel="noopener noreferrer"
                         style={{margin: ".5rem 0"}}
                         target="_blank"
