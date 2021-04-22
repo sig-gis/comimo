@@ -354,6 +354,7 @@ class Home extends React.Component {
                             position: "relative"
                         }}
                     />
+                    <div id="mobile-title"><h2>Comimo</h2></div>
                     {home && (
                         <>
                             {/* Layers */}

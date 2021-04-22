@@ -56,14 +56,13 @@ export default class StatsPanel extends React.Component {
             .then(result => {
                 const data = [];
                 for (let i = 0; i < result.names.length; i++) {
-                    const area = result.area[i] / 1e6;
-                    const count = area / 0.54 ** 2;
+                    const count = result.area[i] / 1e6 / 0.54 ** 2;
                     const name = result.names[i];
-                    if (area > 0.0) {
+                    if (count > 0.0) {
                         data.push([
                             name,
                             count,
-                            this.createTooltipHTML(name, area, count, stats.countLabel)
+                            this.createTooltipHTML(name, count, stats.countLabel)
                         ]);
                     }
                 }
@@ -104,15 +103,14 @@ export default class StatsPanel extends React.Component {
                 const data = [];
                 let nonzero = false;
                 for (let i = 0; i < result.names.length; i++) {
-                    const area = result.area[i] / 1e6;
-                    const count = area / 0.54 ** 2;
+                    const count = result.area[i] / 1e6 / 0.54 ** 2;
                     const name = result.names[i];
                     data.push([
                         name.substring(5),
                         count,
-                        this.createTooltipHTML(name, area, count, stats.countLabel)
+                        this.createTooltipHTML(name, count, stats.countLabel)
                     ]);
-                    if (area > 0.0) nonzero = true;
+                    if (count > 0.0) nonzero = true;
                 }
                 if (nonzero) {
                     const dataTable = new google.visualization.DataTable();

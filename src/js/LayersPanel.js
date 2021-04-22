@@ -68,7 +68,10 @@ export default class LayersPanel extends React.Component {
         const {availableLayers, isHidden} = this.props;
         const {localeText: {layers}} = this.context;
         return (
-            <div className={"layer-container" + (isHidden ? " see-through" : "")}>
+            <div
+                className={"layer-container overflow-scroll " + (isHidden ? " see-through" : "")}
+                style={{overflow: "auto"}}
+            >
                 <h3>{layers.title.toUpperCase()}</h3>
                 <div className="d-flex justify-content-between mb-2">
                     <label style={{margin: "0 .25rem"}}>{layers.nameLabel}</label>

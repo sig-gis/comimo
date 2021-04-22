@@ -80,11 +80,9 @@ export default class DownloadPanel extends React.Component {
                         <p>
                             <span>
                                 <a href={downloadURL[3]}>
-                                    {download.clickHere
-                                    + downloadURL[0] === "all"
-                                        ? download.completeData
-                                        : download.numData + downloadURL[0]
-                                    + download.prep + downloadURL[2] + "."}
+                                    {`${download.clickHere}`
+                                     + ` ${downloadURL[0] === "all" ? download.completeData : download.numData + downloadURL[0]} `
+                                     + `${download.prep} ${ downloadURL[2]}.`}
                                 </a>
                             </span>
                         </p>
