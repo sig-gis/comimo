@@ -75,7 +75,7 @@
         "munLabel": "Municipality",
         "defaultMun": "Select a Municipality",
         "title": "Search Location",
-        "internetLabel": "Internet Search",
+        "internetLabel": "Search by Municipality",
         "goButton": "Go",
         "coordLabel": "Lat Long Search",
         "selectLabel": "Select Sate/Municipality"

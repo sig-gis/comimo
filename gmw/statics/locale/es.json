@@ -73,7 +73,7 @@
         "munLabel": "Municipio",
         "defaultMun": "Seleccionar un Municipio",
         "title": "Buscar ubicación",
-        "internetLabel": "Buscar en Internet",
+        "internetLabel": "Buscar por Municipio",
         "goButton": "Ir",
         "coordLabel": "Lat Long Buscar",
         "selectLabel": "Seleccionar Departamento/Municipio"

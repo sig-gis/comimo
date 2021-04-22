@@ -115,7 +115,8 @@ def getFeatures(request):
         return JsonResponse(fcoll)
 
 # get mapid for the legal mines layer
-## FIXME, these look unused
+# FIXME, these look unused
+
 
 def getLegalMines(request):
     authGEE()
