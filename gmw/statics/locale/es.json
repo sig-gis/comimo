@@ -111,7 +111,7 @@
         "errorDubName": "Ya existe un proyecto con ese nombre. Elija un nombre diferente.",
         "errorUnknown": "Error desconocido.",
         "errorClose": "No se pudo cerrar el proyecto.",
-        "confirmQuestion": "¿Continuar con la siguiente configuración?\nFecha de npredicción = %s\nNombre del proyecto = %s\nRegiones = %s",
+        "confirmQuestion": "¿Continuar con la siguiente configuración?\nFecha de npredicción = {%date}\nNombre del proyecto = {%name}\nRegiones = {%region}",
         "closeConfirm": "¿Estás seguro de que quieres cerrar este proyecto? Cerrar el proyecto significa que ya no podrá validar los puntos a menos que configure otro proyecto.",
         "predictionLabel": "Fecha de Predicción",
         "createdLabel": "Fecha de creación",
