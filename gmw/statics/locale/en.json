@@ -113,7 +113,7 @@
         "errorDubName": "A project with that name already exists. Please choose a different name.",
         "errorUnknown": "Unknown Error.",
         "errorClose": "Could not close project.",
-        "confirmQuestion": "Proceed with the following configuration?\nprediction date = {%date}\nproject name = {%name} \nregions = {%region}",
+        "confirmQuestion": "Proceed with the following configuration?\nPrediction date = %s\nProject name = %s \nRegions = %s",
         "closeConfirm": "Are you sure you want to close this project? Closing the project means you will no longer be able to validate the points unless you set up another project.",
         "predictionLabel": "Prediction date",
         "createdLabel": "Created date",
