@@ -228,10 +228,6 @@ class Home extends React.Component {
                           lat,
                           lng,
                           date: this.state.selectedDate,
-                          minp: this.state.compositeParams.minProbability,
-                          maxp: this.state.compositeParams.maxProbability,
-                          miny: this.state.compositeParams.minYear,
-                          maxy: this.state.compositeParams.maxYear,
                           visible
                       })
                   })
