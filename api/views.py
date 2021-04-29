@@ -302,37 +302,33 @@ def getInfo(request):
                                                        pa.first().get('nombre')],
                                                       [False, False]).getInfo()
 
-        # npark = ee.FeatureCollection("users/comimoapp/Shapes/National_Parks").filterBounds(point)
-        # npark = ee.Algorithms.If(npark.size().gt(0),[npark.first().get('Name')],[False])
-
         if "otherAuthorizations" in visible:
-            oth_auth = ee.FeatureCollection("users/comimoapp/Shapes/Solicitudes_de_Legalizacion_2001")\
-                .merge(ee.FeatureCollection("users/comimoapp/Shapes/Solicitudes_de_Legalizacion_2010"))\
+            oth_auth = ee.FeatureCollection("users/comimoapp/Shapes/Solicitudes_de_Legalizacion_2010")\
                 .filterBounds(point)
             vals["otherAuthorizations"] = ee.Algorithms.If(oth_auth.size().gt(0),
-                                                           oth_auth.first().get('Name'),
+                                                           oth_auth.first().get('ID'),
                                                            False).getInfo()
 
         if "legalMines" in visible:
             legal_mine = ee.FeatureCollection(
                 "users/comimoapp/Shapes/Legal_Mines").filterBounds(point)
             vals["legalMines"] = ee.Algorithms.If(legal_mine.size().gt(0),
-                                                  legal_mine.first().get('CODIGO_RMN'),
+                                                  legal_mine.first().get('ID'),
                                                   False).getInfo()
 
         if "tierrasDeCom" in visible:
             et1 = ee.FeatureCollection(
                 "users/comimoapp/Shapes/Tierras_de_comunidades_negras").filterBounds(point)
             vals["tierrasDeCom"] = ee.Algorithms.If(et1.size().gt(0),
-                                                    et1.first().get('Name'),
+                                                    et1.first().get('NOMBRE'),
                                                     False).getInfo()
 
-        if "ResguardosIndigenas" in visible:
+        if "resguardos" in visible:
             et2 = ee.FeatureCollection(
                 "users/comimoapp/Shapes/Resguardos_Indigenas").filterBounds(point)
-            vals["ResguardosIndigenas"] = ee.Algorithms.If(et1.size().gt(0),
-                                                           et1.first().get('RINOMBRE'),
-                                                           False).getInfo()
+            vals["resguardos"] = ee.Algorithms.If(et2.size().gt(0),
+                                                  et2.first().get('NOMBRE'),
+                                                  False).getInfo()
 
         return JsonResponse({'action': 'Success', 'value': vals})
     except Exception as e:
