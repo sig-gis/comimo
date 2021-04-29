@@ -58,16 +58,16 @@ select {
 }
 
 button {
+  background: lightgray;
   display: inline-block;
   font-weight: 400;
-  color: #212529;
+  color: black;
   text-align: center;
   vertical-align: middle;
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
-  background-color: transparent;
   border: 1px solid transparent;
   padding: .2rem .5rem;
   font-size: 1rem;
