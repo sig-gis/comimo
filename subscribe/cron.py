@@ -6,7 +6,7 @@ import os
 import json
 import datetime
 import pytz
-from api.utils import authGEE, getLatestImage, getShape, reduceRegion, getPointsWithin
+from api.utils import authGEE, getLatestImage, getPointsWithin
 from api.config import *
 
 from subscribe.mailhelper import sendmail

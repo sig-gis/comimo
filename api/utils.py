@@ -39,40 +39,6 @@ def getLatestImage():
     return ee.Image(IMAGE_REPO+'/'+latest), datetime.datetime(y, m, d).replace(tzinfo=pytz.UTC)
 
 
-def getComposite(miny, maxy):
-    imageDates = getImageList()
-    validDates = [ee.Image(IMAGE_REPO+'/'+imageDates[i]).selfMask() for i in range(
-        len(imageDates)) if (imageDates[i] >= miny and imageDates[i] <= maxy)]
-    icoll = ee.ImageCollection.fromImages(validDates)
-    count = icoll.count()
-    percent = icoll.sum().reproject(crs='EPSG:4326', scale=540).divide(count)
-    return percent
-
-
-def getShape(region, level):
-    module_dir = os.path.dirname(__file__)
-    shapefile = os.path.join(module_dir, 'shapes', 'Level'+str(level)+'.shp')
-    iterator = fiona.open(shapefile)
-
-    if (level == 0):
-        return next(iter(iterator))
-    elif (level == 1):
-        for feature in iterator:
-            if (feature['properties']['admin1RefN'] == region):
-                return feature
-    elif (level == 2):
-        for feature in iterator:
-            if (feature['properties']['admin2RefN'] == region):
-                return feature
-
-
-def reduceRegion(shapeObj, raster):
-    authGEE()
-    polygon = ee.Geometry.MultiPolygon(shapeObj['coordinates'])
-    value = raster.reduceRegion(ee.Reducer.sum(), polygon, 30, bestEffort=True)
-    return value.getInfo()['b1'] > 0
-
-
 def getDefaultStyled(img):
     img = img.select(0).selfMask()
     visparams = {'palette': ['f00']}
@@ -103,20 +69,3 @@ def getPointsWithin(regions, date):
         return points.filterBounds(fc)
     except Exception as e:
         print(e)
-
-# helper functions
-
-
-def explode(coords):
-    for e in coords:
-        if isinstance(e, (float, int)):
-            yield coords
-            break
-        else:
-            for f in explode(e):
-                yield f
-
-
-def bounds(feature):
-    x, y = zip(*list(explode(feature['geometry']['coordinates'])))
-    return [[min(x), min(y)], [max(x), max(y)]]
