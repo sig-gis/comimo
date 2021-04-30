@@ -27,7 +27,6 @@ class ProjectsModel(models.Model):
     projurl = models.TextField(null=False)
     name = models.TextField(null=False)
     regions = models.TextField(null=False)
-    data_date = models.DateTimeField()
     data_layer = models.CharField(max_length=25, default='')
     created_date = models.DateTimeField(null=False, blank=True)
     status = models.TextField(null=False, default='active')
@@ -37,7 +36,7 @@ class ProjectsModel(models.Model):
         db_table = "gmw_projects"
 
     def __str__(self):
-        return '(' + self.status + ') ' + self.name + ' : ' + self.user.user.username + ' - ' + self.data_date.strftime('%Y-%m-%d')
+        return '(' + self.status + ') ' + self.name + ' : ' + self.user.user.username + ' - ' + self.data_layer
 
 
 class ExtractedData(models.Model):
@@ -45,7 +44,6 @@ class ExtractedData(models.Model):
     user = models.ForeignKey(Profile, on_delete=models.CASCADE)
     y = models.FloatField(null=False)
     x = models.FloatField(null=False)
-    data_date = models.DateTimeField()
     data_layer = models.CharField(max_length=25, default='')
     class_num = models.CharField(max_length=2, null=False)
     class_name = models.CharField(max_length=10, null=False)
@@ -55,7 +53,7 @@ class ExtractedData(models.Model):
         db_table = "gmw_extracted_data"
 
     def __str__(self):
-        return str(self.id) + ' - ' + self.class_name + ' by ' + self.user.user.username
+        return str(self.id) + ' - ' + self.data_layer + ' - ' + self.class_name + ' by ' + self.user.user.username
 
 
 class CronJobs(models.Model):

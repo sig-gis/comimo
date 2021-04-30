@@ -65,7 +65,6 @@ def saveProject(email, projurl, projid, dataLayer, name, regions):
         projects_model_instance.projurl = projurl
         projects_model_instance.name = name
         projects_model_instance.regions = regions
-        projects_model_instance.data_date = datetime.now()
         projects_model_instance.data_layer = dataLayer
         projects_model_instance.created_date = datetime.now()
         projects_model_instance.status = 'active'
@@ -160,7 +159,6 @@ def insertCollectedData(data, user, dataLayer):
         data_instance.user = user
         data_instance.y = float(data[1])
         data_instance.x = float(data[2])
-        data_instance.data_date = datetime.now()
         data_instance.data_layer = dataLayer
         data_instance.class_num = data[3]
         data_instance.class_name = data[4]
