@@ -27,7 +27,6 @@ def saveEmail(user, region, level):
         subscribe_model_instance.last_alert_for = datetime.now()
         subscribe_model_instance.mail_count = 0
         subscribe_model_instance.created_date = datetime.now()
-        subscribe_model_instance.updated_date = datetime.now()
         subscribe_model_instance.save()
         return 'Created'
     except Exception as e:
