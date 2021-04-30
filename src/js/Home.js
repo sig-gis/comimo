@@ -231,7 +231,7 @@ class Home extends React.Component {
                       body: JSON.stringify({
                           lat,
                           lng,
-                          date: this.state.selectedDate,
+                          dates: this.state.selectedDates,
                           visible
                       })
                   })
@@ -244,7 +244,9 @@ class Home extends React.Component {
                         innerHTML += resp.message;
                     } else {
                         const {
-                            eeLayer,
+                            nMines,
+                            pMines,
+                            cMines,
                             municipalBounds,
                             protectedAreas,
                             otherAuthorizations,
@@ -252,9 +254,17 @@ class Home extends React.Component {
                             tierrasDeCom,
                             resguardos
                         } = resp.value;
-                        if (this.isLayerVisible("eeLayer")) {
-                            const cl = eeLayer ? home.eeLayerDetected : home.eeLayerNotDetected;
-                            innerHTML += `<b>${home.eeLayerPopup}</b>: ${cl}<br/>`;
+                        if (this.isLayerVisible("nMines")) {
+                            const cl = nMines ? home.eeLayerDetected : home.eeLayerNotDetected;
+                            innerHTML += `<b>${home.nMines}</b>: ${cl}<br/>`;
+                        }
+                        if (this.isLayerVisible("pMines")) {
+                            const cl = pMines ? home.eeLayerDetected : home.eeLayerNotDetected;
+                            innerHTML += `<b>${home.pMines}</b>: ${cl}<br/>`;
+                        }
+                        if (this.isLayerVisible("cMines")) {
+                            const cl = cMines ? home.eeLayerDetected : home.eeLayerNotDetected;
+                            innerHTML += `<b>${home.cMines}</b>: ${cl}<br/>`;
                         }
                         if (this.isLayerVisible("municipalBounds")) {
                             const loc = municipalBounds || home.municipalBoundsNotFound;

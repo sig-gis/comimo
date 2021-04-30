@@ -177,20 +177,36 @@ def getAreaPredictedTS(request):
 
 def getInfo(request):
     try:
-        req = json.loads(request.body)
-        date = req.get('date')
         authGEE()
-        image = ee.Image(IMAGE_REPO + '/' + date).select([0], ['cval'])
+        req = json.loads(request.body)
+        dates = req.get('dates')
+        visible = req.get('visible')
         lat = float(req.get('lat'))
         lng = float(req.get('lng'))
         point = ee.Geometry.Point(lng, lat)
+        pointFeature = ee.Feature(ee.Geometry.Point(lng, lat))
 
-        visible = req.get('visible')
         vals = {}
 
-        if "eeLayer" in visible:
-            pt = image.sampleRegions(ee.Feature(point))
-            vals["eeLayer"] = ee.Algorithms.If(
+        if "nMines" in visible:
+            nDate = dates.get('nMines')
+            image = ee.Image(IMAGE_REPO + '/' + nDate).select([0], ['cval'])
+            pt = image.sampleRegions(pointFeature)
+            vals["nMines"] = ee.Algorithms.If(
+                pt.size().gt(0), pt.first().get('cval'), 0).getInfo()
+
+        if "pMines" in visible:
+            pDate = dates.get('pMines')
+            image = ee.Image(IMAGE_REPO + '/' + pDate).select([0], ['cval'])
+            pt = image.sampleRegions(pointFeature)
+            vals["pMines"] = ee.Algorithms.If(
+                pt.size().gt(0), pt.first().get('cval'), 0).getInfo()
+
+        if "cMines" in visible:
+            cDate = dates.get('cMines')
+            image = ee.Image(IMAGE_REPO + '/' + cDate).select([0], ['cval'])
+            pt = image.sampleRegions(pointFeature)
+            vals["cMines"] = ee.Algorithms.If(
                 pt.size().gt(0), pt.first().get('cval'), 0).getInfo()
 
         if "municipalBounds" in visible:

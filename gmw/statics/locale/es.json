@@ -1,6 +1,8 @@
 {
     "home": {
-        "eeLayerPopup": "Actividad minera",
+        "cMines": "Minas Confirmadas",
+        "nMines": "Nuevas Predicciones",
+        "pMines": "Predicciones Actuales",
         "eeLayerDetected": "Detectada",
         "eeLayerNotDetected": "No detectada",
         "municipalBoundsPopup": "Localizada en",
