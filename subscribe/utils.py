@@ -105,8 +105,7 @@ def createNewProject(userId, dataLayer, name, regions):
             points = points.getInfo()
             proj = getCeoProjectURL(
                 points,
-                user.email,
-                name + "_" + dataLayer)
+                user.email + "_" + name + "_" + dataLayer)
             if proj is not None:
                 projid = proj['projectId']
                 projurl = proj['ceoCollectionUrl']
