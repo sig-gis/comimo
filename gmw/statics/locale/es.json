@@ -127,10 +127,14 @@
         "noProjects": "No tienes ningún proyecto activo.",
         "createProject": "Crea un nuevo proyecto",
         "projectName": "Ingresar el nombre del proyecto",
-        "projectRegion": "Seleccionar la región del proyecto",
+        "projectRegion": "Seleccione la región del proyecto",
         "subscribedRadio": "Regiones suscritas",
         "customRadio": "Regiones personalizadas",
         "createButton": "Crear nuevo proyecto para",
-        "loginAction": "proyectos"
+        "loginAction": "proyectos",
+        "typeLabel": "Seleccione el tipo de predicción",
+        "cMines": "Minas Confirmadas",
+        "nMines": "Nuevas Predicciones",
+        "pMines": "Predicciones Actuales"
     }
 }

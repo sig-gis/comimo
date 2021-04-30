@@ -133,6 +133,10 @@
         "subscribedRadio": "Subscribed Regions",
         "customRadio": "Custom Regions",
         "createButton": "Create new project for",
-        "loginAction": "projects"
+        "loginAction": "projects",
+        "typeLabel": "Select Prediction Type",
+        "cMines": "Confirmed Mines",
+        "nMines": "New Predictions",
+        "pMines": "Current Predictions"
     }
 }

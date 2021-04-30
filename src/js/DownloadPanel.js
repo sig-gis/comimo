@@ -23,7 +23,7 @@ export default class DownloadPanel extends React.Component {
         this.setState({fetching: true});
 
         const [level, region] = clipOption === 1 ? ["", "all"] : selectedRegion;
-        fetch(this.URL.GETDL + "?region=" + region + "&level=" + level + "&date=" + selectedDate)
+        fetch(this.URL.GETDL + "?region=" + region + "&level=" + level + "&dataLayer=" + selectedDate)
             .then(res => res.json())
             .then(res => {
                 if (res.action === "success") {

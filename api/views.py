@@ -83,10 +83,10 @@ def getGEETiles(request):
 def getDownloadURL(request):
     region = request.GET.get('region')
     level = request.GET.get('level')
-    date = request.GET.get('date')
-    if (region and date and region != 'undefined' and date != 'undefined'):
+    dataLayer = request.GET.get('dataLayer')
+    if (region and dataLayer and region != 'undefined' and dataLayer != 'undefined'):
         authGEE()
-        img = ee.Image(IMAGE_REPO+'/'+date)
+        img = ee.Image(IMAGE_REPO + '/' + dataLayer)
         if (region == 'all'):
             regionFC = ee.FeatureCollection(LEVELS['l0'])
         else:

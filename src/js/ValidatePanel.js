@@ -21,7 +21,8 @@ export default class ValidatePanel extends React.Component {
             projectCreating: false,
             errorMsg: false,
             regionType: 1,
-            customRegions: []
+            customRegions: [],
+            mineType: "pMines"
         };
     }
 
@@ -191,7 +192,7 @@ export default class ValidatePanel extends React.Component {
 
     render() {
         const {isHidden} = this.props;
-        const {projects, projectName, regionType, projectCreating, errorMsg} = this.state;
+        const {projects, projectName, regionType, projectCreating, errorMsg, mineType} = this.state;
         const {selectedDates, isUser, localeText: {validate}} = this.context;
         return (
             <div className={"popup-container validate-panel " + (isHidden ? "see-through" : "")}>
@@ -223,6 +224,15 @@ export default class ValidatePanel extends React.Component {
                                 style={{width: "100%"}}
                                 value={projectName}
                             />
+                            <label>{`${validate.typeLabel}:`}</label>
+                            <select
+                                onChange={e => this.setState({mineType: e.target.value})}
+                                style={{width: "100%"}}
+                                value={mineType}
+                            >
+                                {["pMines", "nMines", "cMines"].map(m =>
+                                    <option key={m} value={m}>{validate[m]}</option>)}
+                            </select>
                             <label>{`${validate.projectRegion}:`}</label>
                             <span style={{marginTop: ".25rem"}}>
                                 <input
@@ -247,11 +257,11 @@ export default class ValidatePanel extends React.Component {
                             <button
                                 className="map-upd-btn"
                                 disabled={projectCreating}
-                                onClick={() => this.createProject(selectedDates.pMines)}
+                                onClick={() => this.createProject(selectedDates[mineType])}
                                 style={{marginTop: ".25rem"}}
                                 type="button"
                             >
-                                {`${validate.createButton} ${selectedDates.pMines}`}
+                                {`${validate.createButton} ${selectedDates[mineType]}`}
                             </button>
                             <p>{errorMsg}</p>
                         </div>

@@ -338,6 +338,7 @@ class Home extends React.Component {
                 value={{
                     isAdmin: this.props.isAdmin,
                     isUser: this.props.isUser,
+                    selectedDate: this.state.selectedDates.pMines,
                     selectedDates: this.state.selectedDates,
                     selectedRegion: this.state.selectedRegion,
                     featureNames: this.state.featureNames,
@@ -450,7 +451,7 @@ class Home extends React.Component {
                                         />
                                         <StatsPanel
                                             isHidden={this.state.statsHidden}
-                                            selectedDate={this.state.selectedDate}
+                                            selectedDate={this.state.selectedDates.pMines}
                                             subscribedList={this.state.subscribedList}
                                         />
 
