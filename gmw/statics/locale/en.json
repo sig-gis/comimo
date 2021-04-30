@@ -48,13 +48,16 @@
     },
     "filter": {
         "title": "Filter Data",
-        "selectLabel": "Select a date of prediction",
+        "selectLabel": "Select a dates of prediction",
         "updateMap": "Update Map"
     },
     "layers": {
         "title": "Select Layers",
         "nameLabel": "Layer Name",
         "opacityLabel": "Opacity",
+        "cMines": "Confirmed Mines",
+        "nMines": "New Predictions",
+        "pMines": "Current Predictions",
         "eeLayer": "Prediction",
         "municipalBounds": "Municipal Boundaries",
         "legalMines": "Legal Mines",

@@ -6,30 +6,53 @@ export default class FilterPanel extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            newSelectedDate: null
+            newSelectedDates: null
         };
     }
 
     componentDidUpdate(prevProps, prevState) {
         if (prevProps.isHidden === true && this.props.isHidden === false) {
-            this.setState({newSelectedDate: this.context.selectedDate});
+            this.setState({newSelectedDates: this.context.selectedDates});
         }
     }
 
+    setSelectedDate = (type, date) => {
+        this.setState({newSelectedDates: {...this.newSelectedDates, [type]: date}});
+    };
+
     render() {
-        const {isHidden, selectDate, imageDates} = this.props;
-        const {newSelectedDate} = this.state;
-        const {selectedDate, localeText: {filter}} = this.context;
+        const {isHidden, selectDates, imageDates: {nMines, pMines, cMines}} = this.props;
+        const {newSelectedDates} = this.state;
+        const {selectedDates, localeText: {filter, layers}} = this.context;
         return (
             <div className={"popup-container filter-panel " + (isHidden ? "see-through" : "")}>
                 <h3>{filter.title.toUpperCase()}</h3>
+                <span htmlFor="select-image-date">{filter.selectLabel}</span>
                 <div style={{display: "flex", flexDirection: "column"}}>
-                    <label htmlFor="select-image-date">{filter.selectLabel}</label>
+                    <label htmlFor="select-image-date">{layers.nMines}</label>
                     <select
                         id="select-image-date"
-                        onChange={e => this.setState({newSelectedDate: e.target.value})}
+                        onChange={e => this.setSelectedDate("nMines", e.target.value)}
                     >
-                        {(imageDates || []).map(d => (
+                        {(nMines || []).map(d => (
+                            <option key={d} value={d}>{d}</option>
+                        ))}
+                    </select>
+                    <label htmlFor="select-image-date">{layers.pMines}</label>
+                    <select
+                        id="select-image-date"
+                        onChange={e => this.setSelectedDate("pMines", e.target.value)}
+                    >
+                        {(pMines || []).map(d => (
+                            <option key={d} value={d}>{d}</option>
+                        ))}
+                    </select>
+                    <label htmlFor="select-image-date">{layers.cMines}</label>
+                    <select
+                        id="select-image-date"
+                        onChange={e => this.setSelectedDate("cMines", e.target.value)}
+                    >
+                        {(cMines || []).map(d => (
                             <option key={d} value={d}>{d}</option>
                         ))}
                     </select>
@@ -37,8 +60,8 @@ export default class FilterPanel extends React.Component {
                 <div style={{textAlign: "center", width: "100%"}}>
                     <button
                         className="map-upd-btn"
-                        disabled={newSelectedDate === selectedDate}
-                        onClick={() => selectDate(newSelectedDate)}
+                        // disabled={newSelectedDates === selectedDates}
+                        onClick={() => selectDates(newSelectedDates)}
                         style={{marginTop: ".5rem"}}
                         type="button"
                     >

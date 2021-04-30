@@ -47,13 +47,16 @@
     },
     "filter": {
         "title": "Filtrar datos",
-        "selectLabel": "Seleccionar una fecha de predicción",
+        "selectLabel": "Seleccionar una fechas de predicción",
         "updateMap": "Actualizar mapa"
     },
     "layers": {
         "title": "Seleccionar capas",
         "nameLabel": "Nombre capa",
         "opacityLabel": "Opacidad",
+        "cMines": "Minas Confirmadas",
+        "nMines": "Nuevas Predicciones",
+        "pMines": "Predicciones Actuales",
         "eeLayer": "Predicción",
         "municipalBounds": "Límites Municipales",
         "legalMines": "Minas legales",

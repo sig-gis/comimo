@@ -25,26 +25,17 @@ def authGEE():
 
 def getImageList():
     assetList = ee.data.getList({'id': IMAGE_REPO})
-    dates = map(lambda img: img['id'].split('/')[-1], assetList)
-    predictionDates = filter(lambda d:
-                             re.fullmatch(r"\d{4}-\d{2}-\d{2}", d), dates)
-    return list(predictionDates)
+    dates = list(map(lambda img: img['id'].split('/')[-1], assetList))
+    dates.sort(reverse=True)
+    return dates
 
 
 def getLatestImage():
+    # TODO filter P type.  Move to cron.py
     imgList = getImageList()
-    imgList.sort(reverse=True)
     latest = imgList[0]
     y, m, d = list(map(lambda x: int(x), latest.split('-')))
     return ee.Image(IMAGE_REPO+'/'+latest), datetime.datetime(y, m, d).replace(tzinfo=pytz.UTC)
-
-
-def getDefaultStyled(img):
-    img = img.select(0).selfMask()
-    visparams = {'palette': ['f00']}
-    mapid = ee.data.getTileUrl(img.getMapId(visparams), 0, 0, 0)[
-        : -5]+'{z}/{x}/{y}'
-    return {'url': mapid, 'visparams': visparams}
 
 
 def subscribedRegionsToFC(regions):

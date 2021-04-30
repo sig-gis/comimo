@@ -27,13 +27,14 @@ class Home extends React.Component {
             FEATURE_NAMES: "api/getfeaturenames",
             IMG_DATES: "/api/getimagenames",
             SINGLE_IMAGE: "/api/getsingleimage",
-            COMPOSITE_IMAGE: "/api/getcompositeimage",
             GEE_LAYER: "api/getgeetiles",
             INFO: "api/getinfo"
         };
         // Layers available
         this.availableLayers = [
-            "eeLayer",
+            "nMines",
+            "pMines",
+            "cMines",
             "municipalBounds",
             "legalMines",
             "otherAuthorizations",
@@ -61,7 +62,7 @@ class Home extends React.Component {
             advancedOptions: false,
             compositeParams: {},
             imageDates: [],
-            selectedDate: false,
+            selectedDates: {},
             selectedRegion: false,
             featureNames: {},
             subscribedList: [],
@@ -80,7 +81,7 @@ class Home extends React.Component {
         Promise.all([this.getLocalText(), this.getFeatureNames(), this.getImageDates()])
             .then(() => {
                 this.loadMapLocalEvents();
-                this.updateEELayer(this.URLS.SINGLE_IMAGE + "?id=" + this.state.selectedDate);
+                this.updateEELayer();
             })
             .catch(error => console.log(error));
         window.addEventListener("touchend", this.updateWindow);
@@ -108,10 +109,7 @@ class Home extends React.Component {
 
     updateSubList = list => this.setState({subscribedList: list});
 
-    selectDate = newDate => {
-        this.setState({selectedDate: newDate});
-        this.updateEELayer(this.URLS.SINGLE_IMAGE + "?id=" + newDate);
-    };
+    selectDates = newDates => this.setState({selectedDates: newDates}, this.updateEELayer);
 
     selectRegion = (level, name) => this.setState({selectedRegion: [level, name]});
 
@@ -127,11 +125,11 @@ class Home extends React.Component {
     getImageDates = () => fetch(this.URLS.IMG_DATES)
         .then(res => res.json())
         .then(result => {
-            result.ids.sort();
-            result.ids.reverse();
+            const initialDates = Object.keys(result).reduce((acc, cur) =>
+                ({...acc, [cur]: result[cur][0]}), {});
             this.setState({
-                imageDates: result.ids,
-                selectedDate: result.ids[0]
+                imageDates: result,
+                selectedDates: initialDates
             });
         });
 
@@ -147,27 +145,33 @@ class Home extends React.Component {
         fetch(this.URLS.GEE_LAYER + "?name=" + name)
             .then(res => res.json())
             .then(result => {
-                const style = this.state.theMap.getStyle();
-                style.sources[name].tiles = [result.url];
-                this.state.theMap.setStyle(style);
+                const {url} = result;
+                if (url) {
+                    const style = this.state.theMap.getStyle();
+                    style.sources[name].tiles = [result.url];
+                    this.state.theMap.setStyle(style);
+                }
                 if (list.length > 0) this.getGEELayers(list);
             })
             .catch(error => console.log(error));
     };
 
-    updateEELayer = tileURL => {
-        fetch(tileURL)
-            .then(res => res.json())
-            .then(result => {
-                const style = this.state.theMap.getStyle();
-                const layers = style.layers;
-                const layerIdx = layers.findIndex(l => l.id === "eeLayer");
-                const layer = layers.find(l => l.id === "eeLayer");
-                style.sources.eeLayer.tiles = [result.url];
-                style.layers[layerIdx] = {...layer, layout: {visibility: "visible"}};
-                this.state.theMap.setStyle(style);
-            })
-            .catch(error => console.log(error));
+    updateEELayer = () => {
+        const eeLayers = ["pMines", "cMines", "nMines"];
+        const {theMap, selectedDates} = this.state;
+        eeLayers.forEach(eeLayer => {
+            fetch(this.URLS.SINGLE_IMAGE + "?id=" + selectedDates[eeLayer] + "&type=" + eeLayer)
+                .then(res => res.json())
+                .then(result => {
+                    const style = theMap.getStyle();
+                    const layers = style.layers;
+                    const layerIdx = layers.findIndex(l => l.id === eeLayer);
+                    style.sources[eeLayer].tiles = [result.url];
+                    style.layers[layerIdx] = {...layers[layerIdx], layout: {visibility: "visible"}};
+                    theMap.setStyle(style);
+                })
+                .catch(error => console.log(error));
+        });
     };
 
     /// Mapbox TODO move to separate component
@@ -186,8 +190,8 @@ class Home extends React.Component {
             theMap.addControl(new mapboxgl.NavigationControl({showCompass: false}));
 
             // these are launched async it only works because the fetch command takes longer than creating a layer
-            this.addLayerSources(this.availableLayers);
-            this.getGEELayers(this.availableLayers.slice(1));
+            this.addLayerSources([...this.availableLayers].reverse());
+            this.getGEELayers(this.availableLayers.slice(3));
 
             theMap.on("mousemove", e => {
                 const lat = toPrecision(e.lngLat.lat, 4);
@@ -195,7 +199,7 @@ class Home extends React.Component {
                 const hudShell = document.getElementById("lnglathud-shell");
                 const hud = document.getElementById("lnglathud");
                 hudShell.style.display = "inherit";
-                hud.innerHTML = [lat, lng].join(", ");
+                hud.innerHTML = lat + ", " + lng;
             });
             theMap.on("mouseout", () => {
                 const hudShell = document.getElementById("lnglathud-shell");
@@ -299,6 +303,7 @@ class Home extends React.Component {
 
     isLayerVisible = layer => this.state.theMap.getLayer(layer).visibility === "visible";
 
+    // Adds layers initially with no styling, URL is updated later.
     addLayerSources = list => {
         const {theMap} = this.state;
         list.forEach(name => {
@@ -323,7 +328,7 @@ class Home extends React.Component {
                 value={{
                     isAdmin: this.props.isAdmin,
                     isUser: this.props.isUser,
-                    selectedDate: this.state.selectedDate,
+                    selectedDates: this.state.selectedDates,
                     selectedRegion: this.state.selectedRegion,
                     featureNames: this.state.featureNames,
                     subscribedList: this.state.subscribedList,
@@ -361,7 +366,7 @@ class Home extends React.Component {
                                 <LayersPanel
                                     availableLayers={this.availableLayers}
                                     isHidden={this.state.layersHidden}
-                                    startVisible={["eeLayer"]}
+                                    startVisible={["nMines", "pMines", "cMines"]}
                                     theMap={this.state.theMap}
                                 />
                                 <SideIcon
@@ -449,7 +454,7 @@ class Home extends React.Component {
                                         <FilterPanel
                                             imageDates={this.state.imageDates}
                                             isHidden={this.state.slidersHidden}
-                                            selectDate={this.selectDate}
+                                            selectDates={this.selectDates}
                                         />
 
                                         {/* Download */}

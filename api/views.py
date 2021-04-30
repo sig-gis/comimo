@@ -14,57 +14,68 @@ from subscribe.utils import getSubscribedRegions
 
 def getSingleImage(request):
     authGEE()
-    img = ee.Image(IMAGE_REPO+'/'+request.GET.get('id'))
-    resp = getDefaultStyled(img)
-    return JsonResponse(resp)
+    layerName = request.GET.get("id")
+    layerType = request.GET.get("type")
+    palettes = {"nMines": "f00", "cMine": "fff", "pMines": "000"}
+    img = ee.Image(IMAGE_REPO + "/" + layerName)
+    img = img.select(0).selfMask()
+    mapid = ee.data.getTileUrl(img.getMapId(
+        {"palette": [palettes.get(layerType, "eee")]}), 0, 0, 0)[:-5]+"{z}/{x}/{y}"
+    return JsonResponse({"url": mapid})
 
 # get get the list of available images
 
 
 def getImageNames(request):
     authGEE()
-    return JsonResponse({'ids': getImageList()})
-    # return HttpResponse('T')
+    layerList = getImageList()
+    nMines = list(filter(lambda d:
+                         re.fullmatch(r"\d{4}-\d{2}-\d{2}-N", d),
+                         layerList))
+    pMines = list(filter(lambda d:
+                         re.fullmatch(r"\d{4}-\d{2}-\d{2}-P", d),
+                         layerList))
+    cMines = list(filter(lambda d:
+                         re.fullmatch(
+                             r"\d{4}-\d{2}-\d{2}-\d{4}-\d{2}-\d{2}-C", d),
+                         layerList))
+    return JsonResponse({
+        'cMines': cMines,
+        'nMines': nMines,
+        'pMines': pMines
+    })
 
 # get the names of features (municipality) and their bounding boxes
 
 
 def getFeatureNames(request):
     module_dir = os.path.dirname(__file__)
-    f = open(os.path.join(module_dir, 'shapes',
-             'featureNames.json'), 'r').read()
+    f = open(os.path.join(module_dir,
+                          'shapes',
+                          'featureNames.json'), 'r').read()
     return JsonResponse(json.loads(f))
 
 
 def getGEETiles(request):
-    name = request.GET.get('name')
-    if (name == "municipalBounds"):
-        table = ee.FeatureCollection("users/comimoapp/Shapes/Municipal_Bounds")
-        style = {'color': '#f66', 'fillColor': '#0000', 'width': 1}
-    elif (name == "otherAuthorizations"):
-        table = ee.FeatureCollection("users/comimoapp/Shapes/Solicitudes_de_Legalizacion_2001")\
-                  .merge(ee.FeatureCollection("users/comimoapp/Shapes/Solicitudes_de_Legalizacion_2010"))
-        style = {"color": "#047", "fillColor": "#00447711", "width": 1}
-    elif (name == "legalMines"):
-        table = ee.FeatureCollection("users/comimoapp/Shapes/Legal_Mines")
-        style = {'color': '#ff0', 'fillColor': '#ffff0011', 'width': 1}
-    elif (name == 'tierrasDeCom'):
-        table = ee.FeatureCollection(
-            "users/comimoapp/Shapes/Tierras_de_comunidades_negras")
-        style = {'color': '#fd9', 'fillColor': '#ffdd9911', 'width': 1}
-    elif (name == 'resguardos'):
-        table = ee.FeatureCollection(
-            "users/comimoapp/Shapes/Resguardos_Indigenas")
-        style = {'color': '#d9d', 'fillColor': '#dd99dd11', 'width': 1}
-    elif (name == 'protectedAreas'):
-        table = ee.FeatureCollection(
-            "users/comimoapp/Shapes/RUNAP")  # .filterBounds(bounds)
-        style = {'color': '#35f0ab', 'fillColor': '#dd99dd11', 'width': 1}
+    name = request.GET.get("name")
+    layerList = {
+        "municipalBounds": ["users/comimoapp/Shapes/Municipal_Bounds", "#f66", "#0000"],
+        "otherAuthorizations": ["users/comimoapp/Shapes/Solicitudes_de_Legalizacion_2010", "#047", "#00447711"],
+        "legalMines": ["users/comimoapp/Shapes/Legal_Mines", "#ff0", "#ffff0011"],
+        "tierrasDeCom": ["users/comimoapp/Shapes/Tierras_de_comunidades_negras", "#fd9", "#ffdd9911"],
+        "resguardos": ["users/comimoapp/Shapes/Resguardos_Indigenas", "#d9d", "#dd99dd11"],
+        "protectedAreas": ["users/comimoapp/Shapes/RUNAP", "#35f0ab", "#dd99dd11"]
+    }
+    shape, color, fill = layerList.get(name, [None, None, None])
+    if (shape):
+        table = ee.FeatureCollection(shape)
+        layer = table.style(color=color, fillColor=fill, width=1)
+        mapid = ee.data.getTileUrl(layer.getMapId(), 0, 0, 0)[
+            :-5]+"{z}/{x}/{y}"
+        return JsonResponse({"url": mapid})
+    else:
+        return JsonResponse({"url": None})
 
-    layer = table.style(
-        color=style['color'], fillColor=style['fillColor'], width=style['width'])
-    mapid = ee.data.getTileUrl(layer.getMapId(), 0, 0, 0)[:-5]+'{z}/{x}/{y}'
-    return JsonResponse({'url': mapid, 'style': style})
 
 # get the downloadurl for images
 
