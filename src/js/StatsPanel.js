@@ -56,7 +56,7 @@ export default class StatsPanel extends React.Component {
             .then(result => {
                 const data = [];
                 for (let i = 0; i < result.names.length; i++) {
-                    const count = result.area[i] / 1e6 / 0.54 ** 2;
+                    const count = result.count[i];
                     const name = result.names[i];
                     if (count > 0.0) {
                         data.push([
@@ -103,7 +103,7 @@ export default class StatsPanel extends React.Component {
                 const data = [];
                 let nonzero = false;
                 for (let i = 0; i < result.names.length; i++) {
-                    const count = result.area[i] / 1e6 / 0.54 ** 2;
+                    const count = result.count[i];
                     const name = result.names[i];
                     data.push([
                         name.substring(5),

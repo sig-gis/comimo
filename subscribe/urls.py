@@ -1,15 +1,14 @@
 # accounts/urls.py
 from django.urls import path, include
-
-from . import views
 from . import apps
+from subscribe.views import addSubs, closeProject, createProject, deleteSubs, getProjects, getSubs
 
 app_name = apps.SubscribeConfig.name
 urlpatterns = [
-    path('addsubs', views.addSubs, name='addsubs'),
-    path('delsubs', views.deleteSubs, name='delsubs'),
-    path('getsubs', views.getSubs, name='getsubs'),
-    path('getprojects', views.getProjects, name='getprojects'),
-    path('closeproject', views.closeProject, name='closeproject'),
-    path('createproject', views.createProject, name='createproject')
+    path('addsubs', addSubs, name='addsubs'),
+    path('delsubs', deleteSubs, name='delsubs'),
+    path('getsubs', getSubs, name='getsubs'),
+    path('getprojects', getProjects, name='getprojects'),
+    path('closeproject', closeProject, name='closeproject'),
+    path('createproject', createProject, name='createproject')
 ]

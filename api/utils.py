@@ -1,10 +1,6 @@
 import ee
 import os
-import re
-import datetime
-import pytz
-import fiona
-from api.config import *
+from api.config import IMAGE_REPO, LEVELS, FIELDS, POINTS_FOL
 
 # codes to interface with GEE
 

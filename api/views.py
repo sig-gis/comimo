@@ -1,13 +1,13 @@
-from django.shortcuts import render, redirect
-from django.http import JsonResponse, HttpResponse
 import ee
 import json
-import fiona
 import os
-from api.utils import *
-from api.config import LEVELS, FIELDS
+import re
+from django.http import JsonResponse
+from api.utils import authGEE, getImageList, subscribedRegionsToFC
+from api.config import LEVELS, FIELDS, IMAGE_REPO
 from accounts.models import Profile
 from subscribe.utils import getSubscribedRegions
+from subscribe.views import requestLogin
 
 # view to get a single image (prediction) of a certain date
 
@@ -123,12 +123,12 @@ def getAreaPredicted(request):
             pa = ee.Image.pixelArea()
             image = image.selfMask().multiply(pa)
             rr = image.reduceRegions(collection=fc,
-                                     reducer=ee.Reducer.sum(),
+                                     reducer=ee.Reducer.count(),
                                      scale=540,
                                      crs='EPSG:4326')
-            area = rr.aggregate_array('sum')
+            count = rr.aggregate_array('count')
             names = rr.aggregate_array('MPIO_CNMBR')
-            resp = ee.Dictionary({'area': area, 'names': names}).getInfo()
+            resp = ee.Dictionary({'count': count, 'names': names}).getInfo()
             resp['action'] = 'Success'
             return JsonResponse(resp)
         except Exception as e:
@@ -148,26 +148,24 @@ def getAreaPredictedTS(request):
             regions = getSubscribedRegions(user)
             authGEE()
             fc = subscribedRegionsToFC(regions)
-            # print(fc.getInfo())
 
             def asBands(image, passedImage):
                 image = ee.Image(image)
                 id = image.id()
-                pa = ee.Image.pixelArea()
-                image = image.selfMask().multiply(pa)
+                image = image.selfMask()
                 passedImage = ee.Image(passedImage)
                 return passedImage.addBands(image.rename(id))
             image = ee.Image(ee.ImageCollection(
                 IMAGE_REPO).iterate(asBands, ee.Image()))
             image = image.select(image.bandNames().remove('constant'))
             rr = image.reduceRegion(geometry=fc.geometry(),
-                                    reducer=ee.Reducer.sum(),
+                                    reducer=ee.Reducer.count(),
                                     scale=540,
                                     crs='EPSG:4326',
                                     bestEffort=True)
-            area = rr.values()
+            count = rr.values()
             names = rr.keys()
-            resp = ee.Dictionary({'area': area, 'names': names}).getInfo()
+            resp = ee.Dictionary({'count': count, 'names': names}).getInfo()
             resp['action'] = 'Success'
             return JsonResponse(resp)
         except Exception as e:

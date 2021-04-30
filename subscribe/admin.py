@@ -1,8 +1,6 @@
 from django.contrib import admin
 from django.utils.translation import ugettext_lazy as _
 from django.db.models import Q
-from accounts.models import Profile
-from django.contrib.admin import DateFieldListFilter
 
 # Register your models here.
 from . import models

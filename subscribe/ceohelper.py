@@ -1,27 +1,7 @@
-from subscribe.config import *
 import requests
-from datetime import datetime
 import json
-
-
-def getCeoProjectURL(points, email, name):
-    try:
-        reqobj = {
-            "classes": PROJ_CLASSES,
-            "plots": getPlots(points),
-            "title": email + "_" + name,
-            "plotSize": PLOT_SIZE,
-            "imageryId": PROJ_IMAGERY
-        }
-        headers = {'Content-type': 'application/json', 'Accept': 'text/plain'}
-        resp = requests.post(CEO_GATEWAY_URL+CEO_CREATE,
-                             data=json.dumps(reqobj),
-                             headers=headers,
-                             timeout=300)
-        proj = resp.text
-        return json.loads(proj)
-    except Exception as e:
-        print(e)
+from subscribe.config import PROJ_CLASSES, PLOT_SIZE, PROJ_IMAGERY, CEO_GATEWAY_URL, CEO_CREATE, CEO_INFO, CEO_GETDATA, CEO_DELETE
+from datetime import datetime
 
 
 def getPlots(points):
@@ -38,6 +18,26 @@ def getPlots(points):
             print("issue with feature:", feature)
     random.shuffle(plots)
     return plots
+
+
+def getCeoProjectURL(points, email, name):
+    try:
+        reqobj = {
+            "classes": PROJ_CLASSES,
+            "plots": getPlots(points),
+            "title": email + "_" + name,
+            "plotSize": PLOT_SIZE,
+            "imageryId": PROJ_IMAGERY
+        }
+        headers = {'Content-type': 'application/json', 'Accept': 'text/plain'}
+        resp = requests.post(CEO_GATEWAY_URL + CEO_CREATE,
+                             data=json.dumps(reqobj),
+                             headers=headers,
+                             timeout=300)
+        proj = resp.text
+        return json.loads(proj)
+    except Exception as e:
+        print(e)
 
 
 def getProjectInfo(pid):

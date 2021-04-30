@@ -5,10 +5,9 @@ import pytz
 from datetime import datetime
 
 from subscribe.models import SubscribeModel, ProjectsModel, ExtractedData, CronJobs
-from subscribe.ceohelper import getProjectInfo, deleteProject, getCollectedData, getCeoProjectURL
+from subscribe.ceohelper import deleteProject, getCollectedData, getCeoProjectURL
 from accounts.models import Profile
-
-from api import utils as apiutils
+from api.utils import authGEE, getPointsWithin
 
 # function to add entry to model
 
@@ -93,14 +92,14 @@ def getSubscribedRegions(user):
         return 'Error'
 
 
-def createProject(userId, dataLayer, name, regions):
+def createNewProject(userId, dataLayer, name, regions):
     user = Profile.objects.get(user=userId)
     exists, projName = projectExists(user, dataLayer, regions)
     if (not exists):
-        apiutils.authGEE()
+        authGEE()
         regions = regions.split('__')
         regions.sort()
-        points = apiutils.getPointsWithin(regions, dataLayer)
+        points = getPointsWithin(regions, dataLayer)
         number = points.size().getInfo()
         if (number > 0):
             points = points.getInfo()

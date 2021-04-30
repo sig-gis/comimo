@@ -1,22 +1,18 @@
-from django.db.models import Min, Max
-from subscribe.models import SubscribeModel, ProjectsModel
-from subscribe.utils import saveCron
-from accounts.models import Profile
 import os
-import json
 import pytz
 from datetime import datetime, timedelta
-from api.utils import authGEE, getPointsWithin, getImageList
-from api.config import *
-
+from django.db.models import Min
 from subscribe.mailhelper import sendmail
-from subscribe import utils as subutils
+from subscribe.models import SubscribeModel, ProjectsModel
+from subscribe.utils import archiveProject, createNewProject, getSubscribedRegions, saveCron
+from accounts.models import Profile
+from api.utils import authGEE, getImageList
 
 
 def safeGetEmailRegions(user):
     try:
         email = Profile.objects.filter(user=user).values().first()['email']
-        regions = '__'.join(subutils.getSubscribedRegions(user))
+        regions = '__'.join(getSubscribedRegions(user))
         return email, regions
     except Exception as e:
         return None, None
@@ -40,7 +36,7 @@ def sendGoldAlerts():
                 user = alertable['user__user_id']
                 email, regions = safeGetEmailRegions(user)
                 if regions and email:
-                    proj_created = subutils.createProject(
+                    proj_created = createNewProject(
                         user, latest_image, 'Alerta', regions)
                     if (proj_created['action'] == "Created"):
                         sendmail('mspencer@sig-gis.com',
@@ -75,7 +71,7 @@ def cleanStaleProjects():
             .values_list(*fields))
         for project in staleprojects:
             print(project)
-            result = subutils.archiveProject(project[0], project[1])
+            result = archiveProject(project[0], project[1])
             print(result)
             saveCron(jobCode,
                      result['action'] + " " + str(project[1]) + ": " + result['message'])

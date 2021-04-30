@@ -1,5 +1,5 @@
+from subscribe.config import EMAIL_HOST_USER, EMAIL_HOST_USER, EMAIL_HOST_PASSWORD
 from django.core.mail import send_mail
-from . import config as C
 
 
 def sendmail(email, projurl):
@@ -9,11 +9,11 @@ def sendmail(email, projurl):
         sendSuccess = send_mail(
             'COMIMO ha detectado posibles sitios de explotación minera',
             textContent,
-            C.EMAIL_HOST_USER,
+            EMAIL_HOST_USER,
             [email],
             fail_silently=False,
-            auth_user=C.EMAIL_HOST_USER,
-            auth_password=C.EMAIL_HOST_PASSWORD,
+            auth_user=EMAIL_HOST_USER,
+            auth_password=EMAIL_HOST_PASSWORD,
             html_message=htmlContent
         )
         print(sendSuccess)
