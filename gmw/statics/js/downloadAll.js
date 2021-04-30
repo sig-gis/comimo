@@ -1,3 +1,5 @@
+// https://www.npmjs.com/package/react-tabulator
+
 const table = new Tabulator("#datTable", {
     // data:data,           //load row data from array
     layout: "fitColumns", // fit columns to width of table
@@ -44,7 +46,7 @@ function fetchDataFor(date) {
 }
 
 $.ajax({
-    url: "/getDataDates",
+    url: "/get-data-dates",
     success(resp) {
         dates = resp.map(x => x.split("T")[0]);
         const options = dates.map(x => `<option value='${x}' disabled=true>${x}</option>`);
