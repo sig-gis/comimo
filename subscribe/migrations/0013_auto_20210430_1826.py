@@ -8,6 +8,10 @@ def data_to_layer(apps, schema_editor):
     for project in ProjectsModel.objects.all():
         project.data_layer = project.data_date.strftime('%Y-%m-%d')
         project.save()
+    ExtractedData = apps.get_model('subscribe', 'ExtractedData')
+    for savedVal in ExtractedData.objects.all():
+        savedVal.data_layer = savedVal.data_date.strftime('%Y-%m-%d')
+        savedVal.save()
 
 
 class Migration(migrations.Migration):

@@ -84,23 +84,35 @@ class RegionFilter(InputFilter):
             return queryset
 
 
+class LayerFilter(InputFilter):
+    parameter_name = 'data_layer'
+    title = _('Data Layer')
+
+    def queryset(self, request, queryset):
+        if self.value() is not None:
+            name = self.value()
+            return queryset.filter(Q(data_layer__contains=name))
+        else:
+            return queryset
+
+
 class ProjectsAdmin(admin.ModelAdmin):
-    search_fields = ('name', 'status', 'data_date', 'user__user__username')
+    search_fields = ('name', 'status', 'data_layer', 'user__user__username')
     list_filter = (
         CEOidFilter,
         NameFilter,
         UserFilter,
         StatusFilter,
         RegionFilter,
-        ('data_date', DateFieldListFilter)
+        LayerFilter
     )
 
 
 class ExtractedAdmin(admin.ModelAdmin):
-    search_fields = ('user__user__username', 'data_date', 'class_name')
+    search_fields = ('user__user__username', 'data_layer', 'class_name')
     list_filter = (
         UserFilter,
-        ('data_date', DateFieldListFilter),
+        LayerFilter,
     )
 
 

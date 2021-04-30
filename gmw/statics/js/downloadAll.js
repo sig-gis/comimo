@@ -13,10 +13,10 @@ const table = new Tabulator("#datTable", {
     resizableRows: true, // allow row order to be changed
     columns: [
         // define the table columns
-        {title: "user", field: "id", headerFilter: "input"},
+        {title: "user", field: "username", headerFilter: "input"},
         {title: "longitude", field: "y", headerFilter: "input"},
         {title: "latitude", field: "x", headerFilter: "input"},
-        {title: "date", field: "dataDate", headerFilter: "number"},
+        {title: "dataLayer", field: "dataLayer", headerFilter: "input"},
         {title: "mine", field: "classNum", headerFilter: "number"},
         {title: "label", field: "className", headerFilter: "input"}
     ]
@@ -40,7 +40,7 @@ function fetchDataFor(date) {
             }
         },
         error(err) {
-            fetchDataFor(date);
+            console.log(err);
         }
     });
 }

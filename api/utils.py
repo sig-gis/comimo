@@ -30,14 +30,6 @@ def getImageList():
     return dates
 
 
-def getLatestImage():
-    # TODO filter P type.  Move to cron.py
-    imgList = getImageList()
-    latest = imgList[0]
-    y, m, d = list(map(lambda x: int(x), latest.split('-')))
-    return ee.Image(IMAGE_REPO+'/'+latest), datetime.datetime(y, m, d).replace(tzinfo=pytz.UTC)
-
-
 def subscribedRegionsToFC(regions):
     fc = ee.FeatureCollection([])
     for region in regions:
@@ -53,10 +45,10 @@ def subscribedRegionsToFC(regions):
     return fc
 
 
-def getPointsWithin(regions, date):
+def getPointsWithin(regions, dataLayer):
     fc = subscribedRegionsToFC(regions)
     try:
-        points = ee.FeatureCollection(POINTS_FOL+'/'+date.strftime("%Y-%m-%d"))
+        points = ee.FeatureCollection(POINTS_FOL + '/' + dataLayer)
         return points.filterBounds(fc)
     except Exception as e:
         print(e)

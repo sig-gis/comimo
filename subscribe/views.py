@@ -56,11 +56,14 @@ def getProjects(request):
     else:
         queryset = utils.getActiveProjects(user)
         if queryset != 'Error':
-            fields = ['data_date', 'created_date',
+            fields = ['data_layer', 'created_date',
                       'projurl', 'projid', 'name', 'regions']
-            projList = list(queryset.values(*fields))
-            projList = [[x['data_date'].strftime('%Y-%m-%d'), x['created_date'].strftime(
-                '%Y-%m-%d'), x['projid'], x['projurl'], x['name'], x['regions']] for x in projList]
+            projList = [[x['data_layer'],
+                         x['created_date'].strftime('%Y-%m-%d'),
+                         x['projid'],
+                         x['projurl'],
+                         x['name'],
+                         x['regions']] for x in list(queryset.values(*fields))]
             return JsonResponse({'action': 'Success', 'projects': projList})
         else:
             return JsonResponse({'action': 'Error', 'message': 'No active projects.'})
@@ -84,18 +87,14 @@ def createProject(request):
     if not(user.is_authenticated):
         return requestLogin(request)
     else:
-        pdate = request.GET.get('pdate')
+        dataLayer = request.GET.get('dataLayer')
         name = request.GET.get('name')
         regions = request.GET.get('regions')
-        if (pdate):
-            from datetime import datetime
-            import pytz
-            pdate = datetime.strptime(
-                pdate, "%Y-%m-%d").replace(tzinfo=pytz.UTC)
-            result = utils.createProject(user, pdate, name, regions)
+        if (dataLayer and name and regions):
+            result = utils.createProject(user, dataLayer, name, regions)
             return JsonResponse(result)
         else:
-            return JsonResponse({'action': 'Error', 'message': 'Make sure projet date is supplied'})
+            return JsonResponse({'action': 'Error', 'message': 'Make sure projet name, date, and regions are supplied.'})
 
 
 def downloadData(request):
@@ -115,22 +114,23 @@ def downloadAllInCSV(request):
         from accounts.models import Profile
         date = request.GET.get('date')
         data = ExtractedData.objects.filter(
-            data_date__startswith=date).values()
+            data_layer=date).values()
         user = Profile.objects.get(user=user)
         d = []
         for point in iter(data):
             try:
-                prof = Profile.objects.get(user=point['user_id'])
-                id = str(prof.user)
+                username = Profile.objects.get(
+                    id=point['user_id']).user.username
             except Exception as e:
-                id = 'N/A'
-            temp = {}
-            temp['id'] = id
-            temp['y'] = point['y']
-            temp['x'] = point['x']
-            temp['dataDate'] = point['data_date']
-            temp['classNum'] = point['class_num']
-            temp['className'] = point['class_name']
+                username = 'N/A'
+            temp = {
+                'username': username,
+                'y': point['y'],
+                'x': point['x'],
+                'dataLayer': point['data_layer'],
+                'classNum': point['class_num'],
+                'className': point['class_name'],
+            }
             d.append(temp)
         context = {'data': d}
         return JsonResponse(d, safe=False)
@@ -143,7 +143,7 @@ def getDataDates(request):
     else:
         from subscribe.models import ExtractedData
         data = ExtractedData.objects.order_by().values_list(
-            'data_date', flat=True).distinct()
+            'data_layer', flat=True).distinct()
         list = []
         for d in data:
             list.append(d)

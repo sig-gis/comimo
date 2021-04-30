@@ -45,9 +45,9 @@ export default class ValidatePanel extends React.Component {
             .catch(err => console.log(err));
     };
 
-    checkProjectErrors = (pDate, selected, projectName, projects, type, validate) => {
+    checkProjectErrors = (dataLayer, selected, projectName, projects, type, validate) => {
         const errors = [
-            !pDate && validate.errorDate,
+            !dataLayer && validate.errorDate,
             selected.length === 0 && (type === 1 ? validate.errorNoSubscribe : validate.errorNoRegion),
             !projectName && validate.errorNoName,
             projects.find(pr => pr[4] === projectName) && validate.errorDubName
@@ -55,7 +55,7 @@ export default class ValidatePanel extends React.Component {
         return errors.length === 0 || this.setState({errorMsg: errors.join("\n\n")});
     };
 
-    createProject = pDate => {
+    createProject = dataLayer => {
         const {customRegions, projectName, projects, regionType} = this.state;
         const {subscribedList, localeText: {validate}} = this.context;
 
@@ -68,15 +68,15 @@ export default class ValidatePanel extends React.Component {
             })
             .join(";");
         const question = validate.confirmQuestion
-            .replace("{%date}", pDate)
+            .replace("{%date}", dataLayer)
             .replace("{%name}", projectName)
             .replace("{%region}", regions);
 
-        if (this.checkProjectErrors(pDate, selectedArr, projectName, projects, regionType, validate)
+        if (this.checkProjectErrors(dataLayer, selectedArr, projectName, projects, regionType, validate)
             && confirm(question)) {
             const url = this.URLS.CRTPROJ
-                    + "?pdate="
-                    + pDate
+                    + "?dataLayer="
+                    + dataLayer
                     + "&name="
                     + projectName
                     + "&regions="
@@ -138,7 +138,7 @@ export default class ValidatePanel extends React.Component {
                     </a>
                     <small>{`${validate.predictionLabel}: ${predDate}`}</small>
                     <small>{`${validate.createdLabel}: ${createdDate}`}</small>
-                    <small>{`${validate.regions}: ${regions
+                    <small>{`${validate.regionsLabel}: ${regions
                         .split("__")
                         .map(x => x.split("_"))
                         .map(x => x[2] + ", " + x[1])
@@ -192,7 +192,7 @@ export default class ValidatePanel extends React.Component {
     render() {
         const {isHidden} = this.props;
         const {projects, projectName, regionType, projectCreating, errorMsg} = this.state;
-        const {selectedDate, isUser, localeText: {validate}} = this.context;
+        const {selectedDates, isUser, localeText: {validate}} = this.context;
         return (
             <div className={"popup-container validate-panel " + (isHidden ? "see-through" : "")}>
                 <h3>{validate.title.toUpperCase()}</h3>
@@ -247,11 +247,11 @@ export default class ValidatePanel extends React.Component {
                             <button
                                 className="map-upd-btn"
                                 disabled={projectCreating}
-                                onClick={() => this.createProject(selectedDate)}
+                                onClick={() => this.createProject(selectedDates.pMines)}
                                 style={{marginTop: ".25rem"}}
                                 type="button"
                             >
-                                {`${validate.createButton} ${selectedDate}`}
+                                {`${validate.createButton} ${selectedDates.pMines}`}
                             </button>
                             <p>{errorMsg}</p>
                         </div>

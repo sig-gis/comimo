@@ -45,10 +45,10 @@ def delEmail(user, region, level):
     return 'Deleted'
 
 
-def projectExists(user, data_date, regions):
+def projectExists(user, dataLayer, regions):
     try:
         projects_model_instance = ProjectsModel.objects.get(
-            user=user, data_date=data_date, regions=regions, status='active')
+            user=user, data_layer=dataLayer, regions=regions, status='active')
         return True, projects_model_instance.name
     except ObjectDoesNotExist as e:
         return False, 'NA'
@@ -56,7 +56,7 @@ def projectExists(user, data_date, regions):
 # function to add entry to model
 
 
-def saveProject(email, projurl, projid, data_date, name, regions):
+def saveProject(email, projurl, projid, dataLayer, name, regions):
     user = Profile.objects.get(email=email)
     try:
         projects_model_instance = ProjectsModel()
@@ -65,7 +65,8 @@ def saveProject(email, projurl, projid, data_date, name, regions):
         projects_model_instance.projurl = projurl
         projects_model_instance.name = name
         projects_model_instance.regions = regions
-        projects_model_instance.data_date = data_date
+        projects_model_instance.data_date = datetime.now()
+        projects_model_instance.data_layer = dataLayer
         projects_model_instance.created_date = datetime.now()
         projects_model_instance.status = 'active'
         projects_model_instance.save()
@@ -77,6 +78,7 @@ def saveProject(email, projurl, projid, data_date, name, regions):
 
 
 def getSubscribedRegions(user):
+    # user is most likely auth-user not profile-user.  Convert because SubscribeModel uses profile-user
     if (not isinstance(user, Profile)):
         user = Profile.objects.get(user=user)
     try:
@@ -92,37 +94,37 @@ def getSubscribedRegions(user):
         return 'Error'
 
 
-def createProject(userId, data_date, name, regions):
+def createProject(userId, dataLayer, name, regions):
     user = Profile.objects.get(user=userId)
-    exists, ename = projectExists(user, data_date, regions)
+    exists, projName = projectExists(user, dataLayer, regions)
     if (not exists):
         apiutils.authGEE()
         regions = regions.split('__')
         regions.sort()
-        points = apiutils.getPointsWithin(regions, data_date)
+        points = apiutils.getPointsWithin(regions, dataLayer)
         number = points.size().getInfo()
         if (number > 0):
             points = points.getInfo()
             proj = getCeoProjectURL(
                 points,
                 user.email,
-                name + "_" + data_date.strftime("%Y-%m-%d"))
+                name + "_" + dataLayer)
             if proj is not None:
                 projid = proj['projectId']
                 projurl = proj['ceoCollectionUrl']
                 if (projurl and projurl != ""):
                     regions = '__'.join(regions)
                     entry_added = saveProject(
-                        user.email, projurl, projid, data_date, name, regions)
-                    return {'action': entry_added, 'proj': [data_date.strftime('%Y-%m-%d'), datetime.today().strftime("%Y-%m-%d"), projid, projurl, name, regions]}
+                        user.email, projurl, projid, dataLayer, name, regions)
+                    return {'action': entry_added, 'proj': [dataLayer, datetime.today().strftime("%Y-%m-%d"), projid, projurl, name, regions]}
                 else:
                     return {'action': 'Error', 'message': 'Error creating CEO project. Please try again later.'}
             else:
                 return {'action': 'Error', 'message': 'Error with CEO Gateway. Please contact support.'}
         else:
-            return {'action': 'Error', 'message': 'No mines detected within specified region(s)! Subscribe to other regions, or use custom regions.'}
+            return {'action': 'Error', 'message': 'No mines detected within specified region(s). Subscribe to other regions, or use custom regions.'}
     else:
-        return {'action': 'Error', 'message': 'Project for those regions already exists for the day! It\'s name is "' + ename + '". Close that one to create another.'}
+        return {'action': 'Error', 'message': 'Project for those regions already exists for the selected layer. It\'s name is "' + projName + '". Close that one to create another.'}
 
 
 def delProject(user, pid):
@@ -140,7 +142,7 @@ def delProject(user, pid):
 def getActiveProjects(user):
     try:
         user = Profile.objects.get(user=user)
-        fields = ['data_date', 'projurl']
+        fields = ['data_layer', 'projurl']
         queryset = ProjectsModel.objects.filter(
             user=user, status='active').values_list(*fields)
         return queryset
@@ -152,13 +154,14 @@ def getActiveProjects(user):
         return 'Error'
 
 
-def insertCollectedData(data, user, date):
+def insertCollectedData(data, user, dataLayer):
     try:
         data_instance = ExtractedData()
         data_instance.user = user
         data_instance.y = float(data[1])
         data_instance.x = float(data[2])
-        data_instance.data_date = date
+        data_instance.data_date = datetime.now()
+        data_instance.data_layer = dataLayer
         data_instance.class_num = data[3]
         data_instance.class_name = data[4]
         data_instance.save()
@@ -180,7 +183,7 @@ def archiveProject(user, pid):
         collectedSamples = getCollectedData(pid)
         collectedSamples = collectedSamples[1:]
         for sample in collectedSamples:
-            insertCollectedData(sample, user, project.data_date)
+            insertCollectedData(sample, user, project.data_layer)
         status = delProject(user, pid)
         if (status == 'Archived'):
             project.status = 'archived'
@@ -194,10 +197,10 @@ def archiveProject(user, pid):
             return {'action': status}
     except ObjectDoesNotExist as e:
         print('no user/project')
-        return {'action': 'Error', 'message': 'Project does not exist!'}
+        return {'action': 'Error', 'message': 'Project does not exist.'}
     except Exception as e:
         print(e)
-        return {'action': 'Error', 'message': 'Something went wrong!'}
+        return {'action': 'Error', 'message': 'Unknown error while archiving project.'}
 
 
 def saveCron(jobType, message, regions=''):
