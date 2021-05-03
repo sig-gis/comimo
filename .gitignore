@@ -4,7 +4,6 @@ src/js/appConfig.js
 *.pyc
 venv/*
 logs
-package-lock.json
 
 __pycache__/*
 
@@ -12,5 +11,6 @@ db.sqlite3
 
 static
 node_modules
+package-lock.json
 # Webpack output
 gmw/statics/js/home.js

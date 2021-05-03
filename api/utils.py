@@ -2,12 +2,11 @@ import ee
 import os
 from api.config import IMAGE_REPO, LEVELS, FIELDS, POINTS_FOL
 
-# codes to interface with GEE
-
-# function to authenticate GEE
+# code to interface with GEE
 
 
 def authGEE():
+    # function to authenticate GEE
     geeAuthKey = os.path.join(os.path.dirname(__file__), 'gee-auth-key.json')
     if os.path.exists(geeAuthKey):
         service_account = 'comimo@earth-engine-comimo.iam.gserviceaccount.com'
@@ -30,7 +29,6 @@ def subscribedRegionsToFC(regions):
     fc = ee.FeatureCollection([])
     for region in regions:
         r = region.split("_")
-        # print(r)
         f = ee.FeatureCollection([])
         if (r[0] == 'mun'):
             # filter by level 1 name and then by mun name

@@ -20,12 +20,12 @@ def getPlots(points):
     return plots
 
 
-def getCeoProjectURL(points, name):
+def getCeoProjectURL(points, title):
     try:
         reqobj = {
             "classes": PROJ_CLASSES,
             "plots": getPlots(points),
-            "title": name,
+            "title": title,
             "plotSize": PLOT_SIZE,
             "imageryId": PROJ_IMAGERY
         }

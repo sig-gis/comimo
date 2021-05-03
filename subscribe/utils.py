@@ -3,7 +3,6 @@ import logging
 import traceback
 import pytz
 from datetime import datetime
-
 from subscribe.models import SubscribeModel, ProjectsModel, ExtractedData, CronJobs
 from subscribe.ceohelper import deleteProject, getCollectedData, getCeoProjectURL
 from accounts.models import Profile

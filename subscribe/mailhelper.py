@@ -1,5 +1,5 @@
-from subscribe.config import EMAIL_HOST_USER, EMAIL_HOST_USER, EMAIL_HOST_PASSWORD
 from django.core.mail import send_mail
+from subscribe.config import EMAIL_HOST_USER, EMAIL_HOST_USER, EMAIL_HOST_PASSWORD
 
 
 def sendmail(email, projurl):
@@ -39,6 +39,6 @@ def build_HTML_contnet(projurl):
             Puede visualizar estas áreas <a href='http://comimo.sig-gis.com'>aquí</a>.
             <br/><br/>
             Para validar esta información, diríjase al panel de validación en la aplicación o acceda directamente a
-            <a href='"""+projurl+"""'>CEO</a>.
+            <a href='""" + projurl + """'>CEO</a>.
         </html>
     """

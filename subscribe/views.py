@@ -7,10 +7,9 @@ from subscribe.utils import archiveProject, createNewProject, delEmail, getActiv
 def requestLogin(request):
     return redirect(reverse('login') + '?next=' + request.build_absolute_uri())
 
-# request handler to add subscriptions
-
 
 def addSubs(request):
+    # request handler to add subscriptions
     user = request.user
     if not(user.is_authenticated):
         return requestLogin(request)
