@@ -14,3 +14,4 @@ node_modules
 package-lock.json
 # Webpack output
 gmw/statics/js/home.js
+gmw/statics/js/login.js

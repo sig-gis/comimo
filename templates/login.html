@@ -1,0 +1,24 @@
+<!-- templates/login.html-->
+{% extends 'base.html' %}
+{% load static %}
+
+{% block pagescripts %}
+<!-- add classes for the application -->
+<script type='text/javascript' src='{% static "js/login.js" %}'></script>
+{% endblock %}
+
+{% block pagestyles %}
+<link rel='stylesheet' href='{% static "css/gmw_accounts.css" %}' />
+<style>
+    .app-icon {
+        background-image: url('{% static "images/app-logo.jpg" %}');
+        background-size: cover;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div id='main-container'>
+</div>
+<script type='text/javascript'>window.onload = function () {login.pageInit()}</script>
+{% endblock %}

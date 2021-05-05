@@ -1,5 +1,4 @@
 import React from "react";
-import ReactDOM from "react-dom";
 import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 
@@ -17,7 +16,7 @@ import {toPrecision, getCookie, getLanguage} from "../utils";
 import {MainContext} from "./context";
 import {mapboxToken} from "../appConfig";
 
-class Home extends React.Component {
+export default class PageLayout extends React.Component {
     // set up class flags so each component update doesn't do redundant JS tasks
     constructor(props) {
         super(props);
@@ -73,7 +72,7 @@ class Home extends React.Component {
             reloadCount: 0,
             theMap: null,
             myHeight: 0,
-            localeText: null
+            localeText: {}
         };
     }
 
@@ -339,14 +338,12 @@ class Home extends React.Component {
 
     // set up actions to render app
     render() {
-        const {myHeight, localeText} = this.state;
-        const {home} = localeText || {};
+        const {myHeight, localeText: {home}} = this.state;
         return (
             <MainContext.Provider
                 value={{
                     isAdmin: this.props.isAdmin,
                     isUser: this.props.isUser,
-                    selectedDate: this.state.selectedDates.pMines,
                     selectedDates: this.state.selectedDates,
                     selectedRegion: this.state.selectedRegion,
                     featureNames: this.state.featureNames,
@@ -507,8 +504,4 @@ class Home extends React.Component {
             </MainContext.Provider>
         );
     }
-}
-
-export function pageInit(args) {
-    ReactDOM.render(<Home {...args}/>, document.getElementById("main-container"));
 }

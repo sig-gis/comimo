@@ -20,7 +20,7 @@ from subscribe.views import downloadData, downloadAllInCSV, getDataDates
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('accounts/', include('accounts.urls')),
+    path('', include('accounts.urls')),
     path('accounts/', include('django.contrib.auth.urls')),
     path('api/', include('api.urls')),
     path('subscribe/', include('subscribe.urls', namespace='subscribe')),

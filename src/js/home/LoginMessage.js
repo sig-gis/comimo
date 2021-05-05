@@ -11,7 +11,7 @@ export default function LoginMessage({actionText}) {
                     <button
                         className="map-upd-btn"
                         onClick={() => {
-                            location.href = "accounts/login";
+                            location.href = "login/";
                         }}
                         type="button"
                     >

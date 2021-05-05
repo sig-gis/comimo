@@ -5,7 +5,8 @@ module.exports = env => ({
     devtool: env.dev ? "eval-cheap-module-source-map" : "",
     watch: env.dev,
     entry: {
-        home: path.resolve(__dirname, "src/js/home/Home.js")
+        home: path.resolve(__dirname, "src/js/home/home.js"),
+        login: path.resolve(__dirname, "src/js/login.js")
     },
     output: {
         path: path.resolve(__dirname, "gmw/statics/js"),

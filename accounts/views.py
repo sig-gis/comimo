@@ -1,4 +1,6 @@
+import json
 from django.contrib.auth import login, authenticate
+from django.http import JsonResponse, HttpResponse
 from django.shortcuts import render, redirect
 from .forms import SignUpForm
 
@@ -27,3 +29,18 @@ def signupView(request):
     else:
         pass
     return render(request, 'registration/signup.html', {'form': form})
+
+
+def loginView(request):
+    print(request.method)
+    if request.method == "POST":
+        JSONbody = json.loads(request.body)
+        user = authenticate(username=JSONbody.get('username'),
+                            password=JSONbody.get('password'))
+        if user is not None:
+            login(request, user)
+            return HttpResponse("")
+        else:
+            return HttpResponse("errorLogin")
+    else:
+        return render(request, 'login.html')
