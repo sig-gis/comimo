@@ -1,7 +1,7 @@
 import React from "react";
 
 import {MainContext} from "./context";
-import {toPrecision} from "./utils";
+import {toPrecision} from "../utils";
 
 export default class StatsPanel extends React.Component {
     constructor(props) {

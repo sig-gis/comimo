@@ -13,9 +13,9 @@ import StatsPanel from "./StatsPanel";
 import SubscribePanel from "./SubscribePanel";
 import ValidatePanel from "./ValidatePanel";
 
-import {toPrecision, getCookie, getLanguage} from "./utils";
+import {toPrecision, getCookie, getLanguage} from "../utils";
 import {MainContext} from "./context";
-import {mapboxToken} from "./appConfig";
+import {mapboxToken} from "../appConfig";
 
 class Home extends React.Component {
     // set up class flags so each component update doesn't do redundant JS tasks

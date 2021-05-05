@@ -1,7 +1,7 @@
 import React from "react";
 
 import {MainContext} from "./context";
-import {mapQuestKey} from "./appConfig";
+import {mapQuestKey} from "../appConfig";
 
 export default class SearchPanel extends React.Component {
     constructor(props) {
