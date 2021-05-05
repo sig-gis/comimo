@@ -32,15 +32,18 @@ class Home extends React.Component {
         };
         // Layers available
         this.availableLayers = [
+            "cMines",
             "nMines",
             "pMines",
-            "cMines",
             "municipalBounds",
             "legalMines",
             "otherAuthorizations",
             "tierrasDeCom",
             "resguardos",
             "protectedAreas"
+        ];
+        this.startVisible = [
+            "cMines"
         ];
         // Set panels as a group
         this.panelState = {
@@ -81,7 +84,7 @@ class Home extends React.Component {
         Promise.all([this.getLocalText(), this.getFeatureNames(), this.getImageDates()])
             .then(() => {
                 this.loadMapLocalEvents();
-                this.updateEELayer();
+                this.updateEELayer(true);
             })
             .catch(error => console.log(error));
         window.addEventListener("touchend", this.updateWindow);
@@ -156,7 +159,7 @@ class Home extends React.Component {
             .catch(error => console.log(error));
     };
 
-    updateEELayer = () => {
+    updateEELayer = (firstTime = false) => {
         const eeLayers = ["pMines", "cMines", "nMines"];
         const {theMap, selectedDates} = this.state;
         eeLayers.forEach(eeLayer => {
@@ -166,8 +169,13 @@ class Home extends React.Component {
                     const style = theMap.getStyle();
                     const layers = style.layers;
                     const layerIdx = layers.findIndex(l => l.id === eeLayer);
+                    const thisLayer = layers[layerIdx];
+                    const {layout: {visibility}} = thisLayer;
                     style.sources[eeLayer].tiles = [result.url];
-                    style.layers[layerIdx] = {...layers[layerIdx], layout: {visibility: "visible"}};
+                    style.layers[layerIdx] = {
+                        ...thisLayer,
+                        layout: {visibility: firstTime && this.startVisible.includes(eeLayer) ? "visible" : visibility}
+                    };
                     theMap.setStyle(style);
                 })
                 .catch(error => console.log(error));
@@ -377,7 +385,7 @@ class Home extends React.Component {
                                 <LayersPanel
                                     availableLayers={this.availableLayers}
                                     isHidden={this.state.layersHidden}
-                                    startVisible={["nMines", "pMines", "cMines"]}
+                                    startVisible={this.startVisible}
                                     theMap={this.state.theMap}
                                 />
                                 <SideIcon

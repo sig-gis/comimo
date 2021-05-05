@@ -16,7 +16,7 @@ def getSingleImage(request):
     authGEE()
     layerName = request.GET.get("id")
     layerType = request.GET.get("type")
-    palettes = {"nMines": "f00", "cMine": "fff", "pMines": "000"}
+    palettes = {"nMines": "red", "cMines": "purple", "pMines": "orange"}
     img = ee.Image(IMAGE_REPO + "/" + layerName)
     img = img.select(0).selfMask()
     mapid = ee.data.getTileUrl(img.getMapId(

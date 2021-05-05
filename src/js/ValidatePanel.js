@@ -207,8 +207,7 @@ export default class ValidatePanel extends React.Component {
                                     <table style={{width: "100%", textAlign: "left"}}>
                                         <thead>
                                             <tr>
-                                                {/* FIXME, name missing in localeText */}
-                                                <th style={{width: "calc(100% - 50px)"}}>Name</th>
+                                                <th style={{width: "calc(100% - 50px)"}}>{validate.name}</th>
                                                 <th/>
                                             </tr>
                                         </thead>

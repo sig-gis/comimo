@@ -13,21 +13,22 @@ export default class DownloadPanel extends React.Component {
         this.state = {
             clipOption: 1,
             downloadURL: false,
-            fetching: false
+            fetching: false,
+            mineType: "cMines"
         };
     }
 
     getDownloadUrl = () => {
-        const {selectedRegion, selectedDate} = this.context;
-        const {clipOption} = this.state;
+        const {selectedRegion, selectedDates} = this.context;
+        const {clipOption, mineType} = this.state;
         this.setState({fetching: true});
 
         const [level, region] = clipOption === 1 ? ["", "all"] : selectedRegion;
-        fetch(this.URL.GETDL + "?region=" + region + "&level=" + level + "&dataLayer=" + selectedDate)
+        fetch(this.URL.GETDL + "?region=" + region + "&level=" + level + "&dataLayer=" + selectedDates[mineType])
             .then(res => res.json())
             .then(res => {
                 if (res.action === "success") {
-                    this.setState({downloadURL: [region, level, selectedDate, res.url]});
+                    this.setState({downloadURL: [region, level, selectedDates[mineType], res.url]});
                 }
             })
             .catch(err => {
@@ -38,11 +39,20 @@ export default class DownloadPanel extends React.Component {
 
     render() {
         const {isHidden} = this.props;
-        const {clipOption, fetching, downloadURL} = this.state;
-        const {selectedRegion, selectedDate, localeText: {download}} = this.context;
+        const {clipOption, fetching, downloadURL, mineType} = this.state;
+        const {selectedRegion, selectedDates, localeText: {download, validate}} = this.context;
         return (
             <div className={"popup-container download-panel " + (isHidden ? "see-through" : "")}>
                 <h3>{download.title.toUpperCase()}</h3>
+                <label>{`${validate.typeLabel}:`}</label>
+                <select
+                    onChange={e => this.setState({mineType: e.target.value})}
+                    style={{width: "100%"}}
+                    value={mineType}
+                >
+                    {["pMines", "nMines", "cMines"].map(m =>
+                        <option key={m} value={m}>{validate[m]}</option>)}
+                </select>
                 <label>{download.regionLabel}</label>
                 <div style={{marginTop: ".25rem"}}>
                     <input
@@ -62,7 +72,7 @@ export default class DownloadPanel extends React.Component {
                     />
                     <span>{download.selectedRadio}</span>
                 </div>
-                {selectedDate && (
+                {selectedDates && (
                     <div style={{textAlign: "center", width: "100%", marginTop: ".5rem"}}>
                         <button
                             className="map-upd-btn"
@@ -70,7 +80,7 @@ export default class DownloadPanel extends React.Component {
                             onClick={this.getDownloadUrl}
                             type="button"
                         >
-                            {download.getUrl} {selectedDate}
+                            {download.getUrl} {selectedDates[mineType]}
                         </button>
                     </div>
                 )}

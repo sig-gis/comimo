@@ -127,6 +127,7 @@
         "title": "Validation",
         "subtitle": "View or add projects to validate mine data",
         "noProjects": "You don't have any active projects.",
+        "name": "Name",
         "createProject": "Create a new project",
         "projectName": "Enter Project Name",
         "projectRegion": "Select Project Region",

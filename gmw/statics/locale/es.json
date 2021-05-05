@@ -125,6 +125,7 @@
         "title": "Validación",
         "subtitle": "Ver o agregar proyectos para validar los datos de la mina",
         "noProjects": "No tienes ningún proyecto activo.",
+        "name": "Nombre",
         "createProject": "Crea un nuevo proyecto",
         "projectName": "Ingresar el nombre del proyecto",
         "projectRegion": "Seleccione la región del proyecto",
