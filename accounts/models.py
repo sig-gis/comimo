@@ -6,12 +6,15 @@ from django.dispatch import receiver
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
+    full_name = models.CharField(max_length=100, blank=True)
+    # Remove other names
     first_name = models.CharField(max_length=100, blank=True)
     middle_name = models.CharField(max_length=100, blank=True)
     second_last_name = models.CharField(max_length=100, blank=True)
     last_name = models.CharField(max_length=100, blank=True)
     sector = models.CharField(max_length=100, blank=True)
     institution = models.CharField(max_length=100, blank=True)
+    # Remove ID cards
     idtype = models.CharField(max_length=100, blank=True)
     idnumber = models.CharField(max_length=100, blank=True)
     email = models.EmailField(max_length=150, unique=True)
