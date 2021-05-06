@@ -123,7 +123,7 @@ CEO_INFO = "get-project-stats/"
 CEO_DELETE = "delete-project/"
 CEO_GETDATA = "get-collected-data/"
 
-PROJ_CLASSES = ['MINE','NOT MINE'] # list of classes for labelling
+PROJ_CLASSES = ['Mina','No Mina'] # list of classes for labelling
 PLOT_SIZE = 540 # size of plots in meters for CEO Project
 PROJ_IMAGERY = 1301 # default imagery selection
 ```
