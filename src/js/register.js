@@ -116,7 +116,7 @@ class Register extends React.Component {
                     <div className="card-header">{localeText.registerTitle}</div>
                     <div className="card-body">
                         {this.renderField(localeText.username, "text", "username")}
-                        {this.renderField(localeText.email, "text", "email")}
+                        {this.renderField(localeText.email, "email", "email")}
                         {this.renderField(localeText.fullName, "text", "fullName")}
                         {this.renderField(localeText.institution, "text", "institution")}
                         {this.renderSelect(

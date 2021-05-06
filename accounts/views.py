@@ -7,6 +7,7 @@ from django.db.models import Q
 from django.contrib.auth.models import User
 from accounts.models import Profile
 from django.db import transaction
+from subscribe.mailhelper import sendResetMail
 
 
 def getUser(email):
@@ -97,7 +98,7 @@ def forgotView(request):
         if user is not None:
             gen = PasswordResetTokenGenerator()
             token = gen.make_token(user)
-            # Email the token to the user
+            sendResetMail(user.email, token)
             return HttpResponse("")
         else:
             return HttpResponse("errorNotFound")
@@ -110,7 +111,7 @@ def resetView(request):
         JSONbody = json.loads(request.body)
         token = JSONbody.get("token")
         password = JSONbody.get("password")
-        user = getUser(JSONbody.get("username"))
+        user = getUser(JSONbody.get("email"))
         gen = PasswordResetTokenGenerator()
 
         if user is None:

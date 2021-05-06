@@ -2,7 +2,7 @@ import os
 import pytz
 from datetime import datetime, timedelta
 from django.db.models import Min
-from subscribe.mailhelper import sendmail
+from subscribe.mailhelper import sendAlertMail
 from subscribe.models import SubscribeModel, ProjectsModel
 from subscribe.utils import archiveProject, createNewProject, getSubscribedRegions, saveCron
 from accounts.models import Profile
@@ -39,8 +39,8 @@ def sendGoldAlerts():
                     proj_created = createNewProject(
                         user, latest_image, 'Alerta', regions)
                     if (proj_created['action'] == "Created"):
-                        sendmail('mspencer@sig-gis.com',
-                                 proj_created['proj'][3])
+                        sendAlertMail('mspencer@sig-gis.com',
+                                      proj_created['proj'][3])
                         saveCron(jobCode,
                                  'Success: Mail sent to ' + email,
                                  regions)

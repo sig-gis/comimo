@@ -38,7 +38,8 @@ class PasswordForgot extends React.Component {
             .then(response => Promise.all([response.ok, response.text()]))
             .then(data => {
                 if (data[0] && data[1] === "") {
-                    window.location = "/password-reset";
+                    alert(this.state.localeText.tokenSent);
+                    window.location = "/";
                 } else {
                     alert(this.state.localeText[data[1]]);
                 }

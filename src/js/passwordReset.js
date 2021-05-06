@@ -7,7 +7,7 @@ class PasswordReset extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            username: "",
+            email: "",
             token: "",
             password: "",
             passwordConfirmation: "",
@@ -23,12 +23,17 @@ class PasswordReset extends React.Component {
             .then(response => (response.ok ? response.json() : Promise.reject(response)))
             .then(data => this.setState({localeText: data.users}))
             .catch(error => console.log(error));
+        const urlParams = new URLSearchParams(window.location.search);
+        this.setState({
+            email: urlParams.get("email") || "",
+            token: urlParams.get("token") || ""
+        });
     }
 
     verifyInputs = () => {
-        const {username, password, passwordConfirmation} = this.state;
+        const {email, password, passwordConfirmation} = this.state;
         return [
-            username.length === 0 && "- Please enter your username.",
+            email.length === 0 && "- Please enter your email.",
             !validatePassword(password) && "- Your password must be a minimum eight characters and contain at least one uppercase letter, one lowercase letter, one number and one special character -or- be a minimum of 16 characters.",
             password !== passwordConfirmation && "- Your passwords must match."
         ].filter(e => e);
@@ -48,7 +53,7 @@ class PasswordReset extends React.Component {
                           "X-CSRFToken": getCookie("csrftoken")
                       },
                       body: JSON.stringify({
-                          username: this.state.username,
+                          email: this.state.email,
                           password: this.state.password,
                           token: this.state.token
                       })
@@ -89,11 +94,9 @@ class PasswordReset extends React.Component {
                 <div className="card">
                     <div className="card-header">{localeText.resetTitle}</div>
                     <div className="card-body">
-                        {this.renderField(localeText.username, "text", "username")}
+                        {this.renderField(localeText.email, "email", "email")}
                         {this.renderField(localeText.password, "password", "password")}
                         {this.renderField(localeText.confirm, "password", "passwordConfirmation")}
-                        {/* TODO hide me */}
-                        {this.renderField("Token", "enterToken", "text", "token")}
                         <div className="d-flex justify-content-end">
                             <button
                                 className="btn orange-btn mt-3"
