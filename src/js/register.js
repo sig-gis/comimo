@@ -2,7 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom";
 import EmailValidator from "email-validator";
 
-import {getCookie, getLanguage} from "./utils";
+import {getCookie, getLanguage, validatePassword} from "./utils";
 
 class Register extends React.Component {
     constructor(props) {
@@ -29,9 +29,6 @@ class Register extends React.Component {
             .catch(error => console.log(error));
     }
 
-    validatePassword = password => /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/.test(password)
-        || password.length >= 16;
-
     verifyInputs = () => {
         const {username, email, fullName, institution, password, passwordConfirmation} = this.state;
         return [
@@ -39,7 +36,7 @@ class Register extends React.Component {
             !EmailValidator.validate(email) && "- Invalid email.",
             fullName.length === 0 && "- A name is required.",
             institution.length === 0 && "- An institution is required.",
-            !this.validatePassword(password) && "- Your password must be a minimum eight characters and contain at least one uppercase letter, one lowercase letter, one number and one special character -or- be a minimum of 16 characters.",
+            !validatePassword(password) && "- Your password must be a minimum eight characters and contain at least one uppercase letter, one lowercase letter, one number and one special character -or- be a minimum of 16 characters.",
             password !== passwordConfirmation && "- Your passwords must match."
         ].filter(e => e);
     };

@@ -1,7 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom";
 
-import {getCookie, getLanguage} from "./utils";
+import {getCookie, getLanguage, validatePassword} from "./utils";
 
 class PasswordReset extends React.Component {
     constructor(props) {
@@ -25,10 +25,19 @@ class PasswordReset extends React.Component {
             .catch(error => console.log(error));
     }
 
+    verifyInputs = () => {
+        const {username, password, passwordConfirmation} = this.state;
+        return [
+            username.length === 0 && "- Please enter your username.",
+            !validatePassword(password) && "- Your password must be a minimum eight characters and contain at least one uppercase letter, one lowercase letter, one number and one special character -or- be a minimum of 16 characters.",
+            password !== passwordConfirmation && "- Your passwords must match."
+        ].filter(e => e);
+    };
+
     resetPassword = () => {
-        const {username, token, password, passwordConfirmation} = this.state;
-        if (password !== passwordConfirmation) {
-            alert("Your passwords must match.");
+        const errors = this.verifyInputs();
+        if (errors.length > 0) {
+            alert(errors.join("\n"));
         } else {
             fetch("/password-reset/",
                   {
@@ -39,9 +48,9 @@ class PasswordReset extends React.Component {
                           "X-CSRFToken": getCookie("csrftoken")
                       },
                       body: JSON.stringify({
-                          username,
-                          password,
-                          token
+                          username: this.state.username,
+                          password: this.state.password,
+                          token: this.state.token
                       })
                   })
                 .then(response => Promise.all([response.ok, response.text()]))
@@ -85,7 +94,7 @@ class PasswordReset extends React.Component {
                         {this.renderField(localeText.confirm, "password", "passwordConfirmation")}
                         {/* TODO hide me */}
                         {this.renderField("Token", "enterToken", "text", "token")}
-                        <div className="d-flex justify-content-between align-items-center">
+                        <div className="d-flex justify-content-end">
                             <button
                                 className="btn orange-btn mt-3"
                                 onClick={this.resetPassword}

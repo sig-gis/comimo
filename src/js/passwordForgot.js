@@ -71,7 +71,7 @@ class PasswordForgot extends React.Component {
                     <div className="card-header">{localeText.requestTitle}</div>
                     <div className="card-body">
                         {this.renderField(localeText.email, "email", "email")}
-                        <div className="d-flex justify-content-between align-items-center">
+                        <div className="d-flex justify-content-end">
                             <button
                                 className="btn orange-btn mt-3"
                                 onClick={this.requestPassword}
