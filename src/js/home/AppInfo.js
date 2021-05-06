@@ -28,7 +28,7 @@ export default class AppInfo extends React.Component {
                                 {appInfo.download}
                             </a>
                         )}
-                        <a href="/accounts/logout">{appInfo.logout}</a>
+                        <a href="/logout">{appInfo.logout}</a>
                     </div>
                     <h2 className="heading3">{appInfo.title}</h2>
                     <h3 style={{margin: "1rem 0"}}>{appInfo.termsOfUse}</h3>

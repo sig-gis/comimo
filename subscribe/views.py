@@ -5,7 +5,7 @@ from subscribe.utils import archiveProject, createNewProject, delEmail, getActiv
 
 
 def requestLogin(request):
-    return redirect(reverse('login-js') + '?next=' + request.build_absolute_uri())
+    return redirect(reverse('login') + '?next=' + request.build_absolute_uri())
 
 
 def addSubs(request):

@@ -6,7 +6,9 @@ module.exports = env => ({
     watch: env.dev,
     entry: {
         home: path.resolve(__dirname, "src/js/home/home.js"),
-        login: path.resolve(__dirname, "src/js/login.js")
+        login: path.resolve(__dirname, "src/js/login.js"),
+        passwordForgot: path.resolve(__dirname, "src/js/passwordForgot.js"),
+        passwordReset: path.resolve(__dirname, "src/js/passwordReset.js")
     },
     output: {
         path: path.resolve(__dirname, "gmw/statics/js"),
