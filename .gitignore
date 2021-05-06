@@ -18,3 +18,4 @@ gmw/statics/js/login.js
 gmw/statics/js/passwordForgot.js
 gmw/statics/js/passwordReset.js
 gmw/statics/js/register.js
+gmw/statics/js/vendor.js

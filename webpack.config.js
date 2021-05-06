@@ -45,6 +45,16 @@ module.exports = env => ({
         ]
     },
     optimization: {
-        minimize: true
+        minimize: true,
+        splitChunks: {
+            cacheGroups: {
+                vendor: {
+                    chunks: "initial",
+                    name: "vendor",
+                    test: /node_modules/,
+                    enforce: true
+                }
+            }
+        }
     }
 });
