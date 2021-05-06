@@ -1,14 +1,26 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import {getCookie} from "./utils";
+
+import {getCookie, getLanguage} from "./utils";
 
 class Login extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             username: "",
-            password: ""
+            password: "",
+            localeText: {}
         };
+    }
+
+    componentDidMount() {
+        fetch(
+            `/static/locale/${getLanguage(["en", "es"])}.json`,
+            {headers: {"Cache-Control": "no-cache", "Pragma": "no-cache", "Accept": "application/json"}}
+        )
+            .then(response => (response.ok ? response.json() : Promise.reject(response)))
+            .then(data => this.setState({localeText: data.users}))
+            .catch(error => console.log(error));
     }
 
     requestLogin = () => {
@@ -30,20 +42,20 @@ class Login extends React.Component {
                 if (data[0] && data[1] === "") {
                     window.location = "/";
                 } else {
-                    alert(data[1]);
+                    alert(this.state.localeText[data[1]]);
                 }
             })
             .catch(err => console.log(err));
     };
 
-    renderField = (label, placeholder, type, stateKey) => (
+    renderField = (label, type, stateKey) => (
         <div className="d-flex flex-column">
             <label htmlFor={stateKey}>{label}</label>
             <input
                 className="p-2"
                 id={stateKey}
                 onChange={e => this.setState({[stateKey]: e.target.value})}
-                placeholder={placeholder}
+                placeholder={`Enter ${(label || "").toLowerCase()}`}
                 type={type}
                 value={this.state[stateKey]}
             />
@@ -51,28 +63,29 @@ class Login extends React.Component {
     );
 
     render() {
+        const {localeText} = this.state;
         return (
             <div
                 className="d-flex justify-content-center"
                 style={{paddingTop: "20vh"}}
             >
                 <div className="card">
-                    <div className="card-header">Sign into your account</div>
+                    <div className="card-header">{localeText.loginTitle}</div>
                     <div className="card-body">
-                        {this.renderField("Username", "Enter username", "text", "username")}
-                        {this.renderField("Password", "Enter password", "password", "password")}
+                        {this.renderField(localeText.username, "text", "username")}
+                        {this.renderField(localeText.password, "password", "password")}
                         <div className="d-flex justify-content-between align-items-center">
-                            <a href="/password-forgot">Forgot Password?</a>
+                            <a href="/password-forgot">{localeText.forgot}</a>
                             <button
                                 className="btn orange-btn mt-3"
                                 onClick={this.requestLogin}
                                 type="button"
                             >
-                                    Login
+                                {localeText.login}
                             </button>
                         </div>
                         <div className="d-flex flex-column align-items-center">
-                            <h3 className="">New to CoMiMo?</h3>
+                            <h3 className="">{localeText.newUser}</h3>
                             <div className="">
                                 <div >
                                     <button
@@ -81,13 +94,12 @@ class Login extends React.Component {
                                         onClick={() => window.location = "/register"}
                                         type="button"
                                     >
-                                        Register
+                                        {localeText.register}
                                     </button>
                                 </div>
                             </div>
                         </div>
                     </div>
-
                 </div>
             </div>
         );

@@ -5,9 +5,9 @@ import {MainContext} from "./context";
 export default function LoginMessage({actionText}) {
     return (
         <MainContext.Consumer>
-            {({localeText: {login}}) => (
+            {({localeText: {users}}) => (
                 <div style={{textAlign: "center", width: "100%"}}>
-                    <p>{`${login.toView} ${actionText}.`}</p>
+                    <p>{`${users.toView} ${actionText}.`}</p>
                     <button
                         className="map-upd-btn"
                         onClick={() => {
@@ -15,7 +15,7 @@ export default function LoginMessage({actionText}) {
                         }}
                         type="button"
                     >
-                        {login.login}
+                        {users.login}
                     </button>
                 </div>
             )}

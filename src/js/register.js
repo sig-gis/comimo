@@ -2,7 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom";
 import EmailValidator from "email-validator";
 
-import {getCookie} from "./utils";
+import {getCookie, getLanguage} from "./utils";
 
 class Register extends React.Component {
     constructor(props) {
@@ -14,8 +14,19 @@ class Register extends React.Component {
             institution: "",
             sector: "academic",
             password: "",
-            passwordConfirmation: ""
+            passwordConfirmation: "",
+            localeText: {}
         };
+    }
+
+    componentDidMount() {
+        fetch(
+            `/static/locale/${getLanguage(["en", "es"])}.json`,
+            {headers: {"Cache-Control": "no-cache", "Pragma": "no-cache", "Accept": "application/json"}}
+        )
+            .then(response => (response.ok ? response.json() : Promise.reject(response)))
+            .then(data => this.setState({localeText: data.users}))
+            .catch(error => console.log(error));
     }
 
     validatePassword = password => /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/.test(password)
@@ -60,21 +71,21 @@ class Register extends React.Component {
                     if (data[0] && data[1] === "") {
                         window.location = "/";
                     } else {
-                        alert(data[1]);
+                        alert(this.state.localeText[data[1]]);
                     }
                 })
                 .catch(err => console.log(err));
         }
     };
 
-    renderField = (label, placeholder, type, stateKey) => (
+    renderField = (label, type, stateKey) => (
         <div className="d-flex flex-column">
             <label htmlFor={stateKey}>{label}</label>
             <input
                 className="p-2"
                 id={stateKey}
                 onChange={e => this.setState({[stateKey]: e.target.value})}
-                placeholder={`Enter ${label.toLowerCase()}`}
+                placeholder={`Enter ${(label || "").toLowerCase()}`}
                 type={type}
                 value={this.state[stateKey]}
             />
@@ -90,37 +101,46 @@ class Register extends React.Component {
                 onChange={e => this.setState({[stateKey]: e.target.value})}
                 value={this.state[stateKey]}
             >
-                {options.map(o => (
-                    <option key={o} value={o.toLowerCase()}>{o}</option>
+                {options.map(({key, optLabel}) => (
+                    <option key={key} value={key}>{optLabel}</option>
                 ))}
             </select>
         </div>
     );
 
     render() {
+        const {localeText} = this.state;
         return (
             <div
                 className="d-flex justify-content-center"
                 style={{paddingTop: "2rem"}}
             >
                 <div className="card">
-                    <div className="card-header">Register for a New Account</div>
+                    <div className="card-header">{localeText.registerTitle}</div>
                     <div className="card-body">
-                        {this.renderField("Username", "text", "username")}
-                        {this.renderField("Email", "text", "email")}
-                        {this.renderField("Full Name", "text", "fullName")}
-                        {this.renderField("Institution", "text", "institution")}
-                        {this.renderSelect("Sector", ["Academic", "Government", "NGO"], "sector")}
-                        {this.renderField("Password", "password", "password")}
-                        {this.renderField("Confirm Password", "password", "passwordConfirmation")}
+                        {this.renderField(localeText.username, "text", "username")}
+                        {this.renderField(localeText.email, "text", "email")}
+                        {this.renderField(localeText.fullName, "text", "fullName")}
+                        {this.renderField(localeText.institution, "text", "institution")}
+                        {this.renderSelect(
+                            localeText.sector,
+                            [
+                                {key: "academic", optLabel: localeText.academic},
+                                {key: "government", optLabel: localeText.government},
+                                {key: "ngo", optLabel: localeText.ngo}
+                            ],
+                            "sector"
+                        )}
+                        {this.renderField(localeText.password, "password", "password")}
+                        {this.renderField(localeText.confirm, "password", "passwordConfirmation")}
                         <div className="d-flex justify-content-between align-items-center">
-                            <span style={{color: "red"}}>All Fields are Required</span>
+                            <span style={{color: "red"}}>{localeText.allRequired}</span>
                             <button
                                 className="btn orange-btn mt-3"
                                 onClick={this.registerUser}
                                 type="button"
                             >
-                                Register
+                                {localeText.register}
                             </button>
                         </div>
                     </div>

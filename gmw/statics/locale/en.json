@@ -68,10 +68,6 @@
         "resguardos": "Ethnic territories II",
         "protectedAreas": "Protected Areas"
     },
-    "login": {
-        "toView": "Login to view your",
-        "login": "Login"
-    },
     "search": {
         "noResults": "No Results",
         "stateLabel": "State",
@@ -139,5 +135,34 @@
         "cMines": "Confirmed Mines",
         "nMines": "New Predictions",
         "pMines": "Current Predictions"
+    },
+    "users": {
+        "toView": "Login to view your",
+        "login": "Login",
+        "loginTitle": "Sign Into Your Account",
+        "username": "Username",
+        "password": "Password",
+        "forgot": "Forgot Password?",
+        "register": "Register",
+        "newUser": "New to CoMiMo?",
+        "registerTitle": "Register for a New Account",
+        "email": "Email",
+        "fullName": "Full Name",
+        "institution": "Institution",
+        "sector": "Sector",
+        "academic": "Academic",
+        "government": "Government",
+        "ngo": "NGO",
+        "allRequired": "All Fields are Required",
+        "confirm": "Confirm Password",
+        "resetTitle": "Reset Password",
+        "requestTitle": "Request Password Reset",
+        "request": "Request",
+        "errorEmail": "A user with this email already exists.",
+        "errorUsername": "A user with this username already exists.",
+        "errorCreating": "An error occurred while creating a new user. Contact support.",
+        "errorLogin": "Invalid username and password combination.",
+        "errorNotFound": "No users with the provided email / username is found.",
+        "errorToken": "Invalid reset token.  Please request another reset token."
     }
 }

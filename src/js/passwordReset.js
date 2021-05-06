@@ -1,6 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import {getCookie} from "./utils";
+
+import {getCookie, getLanguage} from "./utils";
 
 class PasswordReset extends React.Component {
     constructor(props) {
@@ -9,8 +10,19 @@ class PasswordReset extends React.Component {
             username: "",
             token: "",
             password: "",
-            passwordConfirmation: ""
+            passwordConfirmation: "",
+            localeText: {}
         };
+    }
+
+    componentDidMount() {
+        fetch(
+            `/static/locale/${getLanguage(["en", "es"])}.json`,
+            {headers: {"Cache-Control": "no-cache", "Pragma": "no-cache", "Accept": "application/json"}}
+        )
+            .then(response => (response.ok ? response.json() : Promise.reject(response)))
+            .then(data => this.setState({localeText: data.users}))
+            .catch(error => console.log(error));
     }
 
     resetPassword = () => {
@@ -37,21 +49,21 @@ class PasswordReset extends React.Component {
                     if (data[0] && data[1] === "") {
                         window.location = "/";
                     } else {
-                        alert(data[1]);
+                        alert(this.state.localeText[data[1]]);
                     }
                 })
                 .catch(err => console.log(err));
         }
     };
 
-    renderField = (label, placeholder, type, stateKey) => (
+    renderField = (label, type, stateKey) => (
         <div className="d-flex flex-column">
             <label htmlFor={stateKey}>{label}</label>
             <input
                 className="p-2"
                 id={stateKey}
                 onChange={e => this.setState({[stateKey]: e.target.value})}
-                placeholder={placeholder}
+                placeholder={`Enter ${(label || "").toLowerCase()}`}
                 type={type}
                 value={this.state[stateKey]}
             />
@@ -59,17 +71,18 @@ class PasswordReset extends React.Component {
     );
 
     render() {
+        const {localeText} = this.state;
         return (
             <div
                 className="d-flex justify-content-center"
                 style={{paddingTop: "20vh"}}
             >
                 <div className="card">
-                    <div className="card-header">Reset Password</div>
+                    <div className="card-header">{localeText.resetTitle}</div>
                     <div className="card-body">
-                        {this.renderField("Username", "Enter username", "text", "username")}
-                        {this.renderField("Password", "Enter password", "password", "password")}
-                        {this.renderField("Confirm Password", "Confirm password", "password", "passwordConfirmation")}
+                        {this.renderField(localeText.username, "text", "username")}
+                        {this.renderField(localeText.password, "password", "password")}
+                        {this.renderField(localeText.confirm, "password", "passwordConfirmation")}
                         {/* TODO hide me */}
                         {this.renderField("Token", "enterToken", "text", "token")}
                         <div className="d-flex justify-content-between align-items-center">
@@ -78,7 +91,7 @@ class PasswordReset extends React.Component {
                                 onClick={this.resetPassword}
                                 type="button"
                             >
-                                Reset
+                                {localeText.resetTitle}
                             </button>
                         </div>
                     </div>
