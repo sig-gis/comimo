@@ -4,19 +4,14 @@
 
 {% block pagescripts %}
 <!-- add classes for the application -->
-<script
-    src="https://code.jquery.com/jquery-3.4.1.min.js"
-    integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
-    crossorigin="anonymous">
-</script>
-<script type="text/javascript" src="https://unpkg.com/tabulator-tables@4.5.3/dist/js/tabulator.min.js"></script>
+<script type='text/javascript' src='{% static "js/jquery-3.4.1.min.js" %}'></script>
+<script type='text/javascript' src='{% static "js/tabulator-4.5.3.min.js" %}'></script>
 <script type='text/javascript' src='{% static "js/downloadAll.js" %}'></script>
 {% endblock %}
 
 {% block pagestyles %}
-<link href="https://unpkg.com/tabulator-tables@4.5.3/dist/css/tabulator.min.css" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tabulator/4.4.3/css/bootstrap/tabulator_bootstrap4.min.css" integrity="sha256-+AmauyGZPl0HNTBQ5AMZBxfzP+rzXJjraezMKpWwWSE=" crossorigin="anonymous" />
-
+<link rel='stylesheet' href='{% static "css/tabulator-4.5.3.min.css" %}' />
+<link rel='stylesheet' href='{% static "css/tabulator_bootstrap4-4.5.3.min.css" %}' />
 {% endblock %}
 
 {% block content %}

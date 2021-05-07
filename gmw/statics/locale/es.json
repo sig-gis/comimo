@@ -158,7 +158,7 @@
         "resetTitle": "Reset Password",
         "requestTitle": "Request Password Reset",
         "request": "Request",
-        "tokenSent": "An email has been set with a reset token. Please check your email and click the link to reset your password.",
+        "tokenSent": "Se ha enviado un correo electrónico con un enlace para restablecer la contraseña. Por favor, revisar su correo y presionar en el enlace para restablecer su clave.",
         "errorEmail": "A user with this email already exists.",
         "errorUsername": "A user with this username already exists.",
         "errorCreating": "An error occurred while creating a new user. Contact support.",
