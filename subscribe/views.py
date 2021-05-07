@@ -96,7 +96,7 @@ def downloadData(request):
         return render(request, 'download-all.html')
 
 
-def downloadAllInCSV(request):
+def downloadAll(request):
     user = request.user
     if not(user.is_authenticated):
         return requestLogin(request)

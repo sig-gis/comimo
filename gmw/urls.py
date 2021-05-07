@@ -16,7 +16,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from django.views.generic.base import TemplateView
-from subscribe.views import downloadData, downloadAllInCSV, getDataDates
+from subscribe.views import downloadData, downloadAll, getDataDates
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -24,7 +24,7 @@ urlpatterns = [
     path('api/', include('api.urls')),
     path('subscribe/', include('subscribe.urls', namespace='subscribe')),
     path('', TemplateView.as_view(template_name='home.html'), name='home'),
-    path('download/', downloadData, name='dldata'),
-    path('download-all/', downloadAllInCSV, name='dlalldata'),
+    path('download-data/', downloadData, name='downloadData'),
+    path('download-all/', downloadAll, name='downloadAll'),
     path('get-data-dates/', getDataDates, name='getDataDates'),
 ]

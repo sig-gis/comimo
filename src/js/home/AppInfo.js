@@ -24,7 +24,7 @@ export default class AppInfo extends React.Component {
                     </div>
                     <div style={{display: "flex", justifyContent: "flex-end", marginBottom: ".5rem"}}>
                         {isAdmin && (
-                            <a href="/download" style={{margin: "0 1rem"}}>
+                            <a href="/download-data" style={{margin: "0 1rem"}}>
                                 {appInfo.download}
                             </a>
                         )}
