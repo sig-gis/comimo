@@ -1,6 +1,5 @@
 # accounts/urls.py
 from django.urls import path
-from django.views.generic.base import TemplateView
 from accounts.views import registerView, loginView, logoutView, forgotView, resetView
 
 
