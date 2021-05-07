@@ -33,7 +33,9 @@
         "termsOfUse": "Terms of Use",
         "shortTerms": "Welcome to Colombian Mining Monitoring. All services available through our website are owned and operated by Universidad del Rosario. By accessing and using the Colombian Mining Monitoring platform, you agree to comply with our Terms of Service and avoid any misuse of its contents.",
         "viewTerms": "Click here for the terms of use",
-        "viewInstructions": "Click here for instructions"
+        "termsUrl": "https://docs.google.com/document/d/1kJrlXUlyDRVeVEb1WcPOWBNnzJ1s-9spLTHCxnk8o5E",
+        "viewInstructions": "Click here for instructions",
+        "instructionsUrl": "https://docs.google.com/document/d/1Kcn9u_umMVleYqVqFkxiSypMPxDUXkodsDbjAB2z-xU"
     },
     "download": {
         "title": "Download Data",

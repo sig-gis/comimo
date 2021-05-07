@@ -33,7 +33,9 @@
         "termsOfUse": "Condiciones De Uso",
         "shortTerms": "Bienvenidos a la Plataforma Monitoreo Minero Colombiano (COMIMO siglas en inglés). Todos los servicios disponibles a través de nuestro sitio web son operados por la Universidad del Rosario, y ésta es su única propietaria. Al acceder a COMIMO y usar sus servicios, acepta cumplir con nuestros Términos de Uso y evitar cualquier uso indebido de la plataforma y su contenido",
         "viewTerms": "Hacer clic aquí del condiciones de uso",
-        "viewInstructions": "Hacer clic aquí para obtener instrucciones."
+        "termsUrl": "https://docs.google.com/document/d/1xrLgL_Ai8lR8E4ZsF0AnzjlZESMVwKuUjOgSBJE3bqo",
+        "viewInstructions": "Hacer clic aquí para obtener instrucciones.",
+        "instructionsUrl": "https://docs.google.com/document/d/1XtkDwENUM3JAQbecGgT6myU55Qc5HO5eT_PW0wzEhyI"
     },
     "download": {
         "title": "Descargar datos",
