@@ -110,7 +110,7 @@ def getDownloadURL(request):
 
 def getAreaPredicted(request):
     user = request.user
-    date = request.GET.get('date')
+    layerName = request.GET.get('layerName')
     if not(user.is_authenticated):
         return requestLogin(request)
     else:
@@ -119,7 +119,7 @@ def getAreaPredicted(request):
             regions = getSubscribedRegions(user)
             authGEE()
             fc = subscribedRegionsToFC(regions)
-            image = ee.Image(IMAGE_REPO+'/'+date)
+            image = ee.Image(IMAGE_REPO + '/' + layerName)
             pa = ee.Image.pixelArea()
             image = image.selfMask().multiply(pa)
             rr = image.reduceRegions(collection=fc,
@@ -155,8 +155,9 @@ def getAreaPredictedTS(request):
                 image = image.selfMask()
                 passedImage = ee.Image(passedImage)
                 return passedImage.addBands(image.rename(id))
-            image = ee.Image(ee.ImageCollection(
-                IMAGE_REPO).iterate(asBands, ee.Image()))
+            image = ee.Image(ee.ImageCollection(IMAGE_REPO)
+                             .filter(ee.Filter.stringEndsWith('system:index', '-C'))
+                             .iterate(asBands, ee.Image()))
             image = image.select(image.bandNames().remove('constant'))
             rr = image.reduceRegion(geometry=fc.geometry(),
                                     reducer=ee.Reducer.count(),

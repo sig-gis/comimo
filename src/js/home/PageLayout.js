@@ -111,7 +111,10 @@ export default class PageLayout extends React.Component {
 
     updateSubList = list => this.setState({subscribedList: list});
 
-    selectDates = newDates => this.setState({selectedDates: newDates}, this.updateEELayer);
+    selectDates = newDates => this.setState(
+      {selectedDates: {...this.state.selectedDates, ...newDates}},
+      this.updateEELayer
+    );
 
     selectRegion = (level, name) => this.setState({selectedRegion: [level, name]});
 
@@ -159,7 +162,7 @@ export default class PageLayout extends React.Component {
     };
 
     updateEELayer = (firstTime = false) => {
-      const eeLayers = ["pMines", "cMines", "nMines"];
+      const eeLayers = ["nMines", "pMines", "cMines"];
       const {theMap, selectedDates} = this.state;
       eeLayers.forEach(eeLayer => {
         fetch(this.URLS.SINGLE_IMAGE + "?id=" + selectedDates[eeLayer] + "&type=" + eeLayer)
@@ -456,7 +459,7 @@ export default class PageLayout extends React.Component {
                       />
                       <StatsPanel
                         isHidden={this.state.statsHidden}
-                        selectedDate={this.state.selectedDates.pMines}
+                        selectedDate={this.state.selectedDates.cMines}
                         subscribedList={this.state.subscribedList}
                       />
 

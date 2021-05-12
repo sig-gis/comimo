@@ -42,16 +42,17 @@ export default class StatsPanel extends React.Component {
     }
 
     if (initialLoad || refreshNeeded) {
-      this.getAreaStats(this.props.selectedDate);
+      this.getAreaStats();
       this.getAreaTS();
       this.setState({fetchedFor: this.props.selectedDate, subsListChanged: false});
     }
   }
 
-  getAreaStats(date) {
+  getAreaStats() {
+    const {selectedDate} = this.props;
     const {localeText: {stats}} = this.context;
     document.getElementById("stats1").innerHTML = `${stats.loading}...`;
-    fetch(this.URL.ARSTATS + "?date=" + date)
+    fetch(this.URL.ARSTATS + "?layerName=" + selectedDate)
       .then(res => res.json())
       .then(result => {
         const data = [];
@@ -75,7 +76,7 @@ export default class StatsPanel extends React.Component {
           dataTable.addRows(data);
 
           const options = {
-            title: "For " + date,
+            title: "Por " + selectedDate,
             width: 290,
             height: 200,
             legend: "none",
@@ -121,11 +122,6 @@ export default class StatsPanel extends React.Component {
           dataTable.addRows(data);
 
           const options = {
-            title:
-                            "From "
-                            + result.names[0]
-                            + " to "
-                            + result.names[result.names.length - 1],
             width: 290,
             height: 200,
             legend: "none",
