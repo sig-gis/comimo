@@ -110,9 +110,11 @@ FIELDS = {
 3. subscribe/config.py
 
 This file contains the configurations for all the email client to be used as
-well as the CEO related configurations.
+well as the CEO related configurations. The secret key must be a large random
+value and it must be kept secret.
 
 ```text
+SECRET_KEY = 'gfsdflksjdfg43453kj3h45k3jh45k3h45'
 EMAIL_HOST_USER = '<your email address>'
 EMAIL_HOST_PASSWORD = '<your password>'
 APP_URL = '<your app URL>' // This is currently unused
@@ -145,6 +147,14 @@ this authentication.
 cd gold-mine-watch
 source venv/bin/activate
 earthengine authenticate
+```
+
+In a separate terminal run webpack. In dev mode, webpack is a continually running
+process.
+
+```shell
+npm install
+npm run webpack-dev
 ```
 
 #### Production
@@ -183,6 +193,7 @@ Navigate to the project directory, and enter the virtual environment.
 
 ```shell
 cd gold-mine-watch
+npm run webpack-prod
 source venv/bin/activate
 ```
 
