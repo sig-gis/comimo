@@ -374,7 +374,7 @@ export default class PageLayout extends React.Component {
                 position: "relative"
               }}
             />
-            <div id="mobile-title"><h2>Comimo</h2></div>
+            <div id="mobile-title"><h2>CoMiMo</h2></div>
             {home && (
               <>
                 {/* Layers */}
