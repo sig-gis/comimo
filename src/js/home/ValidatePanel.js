@@ -162,6 +162,16 @@ export default class ValidatePanel extends React.Component {
       </tr>
     );
 
+    customSelect = val => {
+      const {customRegions} = this.state;
+      const newRegions = customRegions.includes(val)
+        ? customRegions.filter(r => r !== val)
+        : [...customRegions, val];
+      this.setState({
+        customRegions: newRegions
+      });
+    };
+
     renderCustomRegions = () => {
       const {customRegions} = this.state;
       const {featureNames, localeText: {validate}} = this.context;
@@ -172,18 +182,25 @@ export default class ValidatePanel extends React.Component {
           <select
             id="selectProjRegions"
             multiple
-            onChange={e => this.setState({
-              customRegions: Array.from(e.target.selectedOptions, option => option.value)
-            })}
+            onChange={() => null} // This is to squash the react warning
             size="8"
             style={{width: "100%", float: "left", marginBottom: "10px"}}
             value={customRegions}
           >
-            {states.map(scrollX => (
-              <optgroup key={scrollX} label={scrollX}>
-                {Object.keys(featureNames[scrollX]).sort().map(mun => (
-                  <option key={mun} value={scrollX + "_" + mun}>{mun}</option>
-                ))}
+            {states.map(state => (
+              <optgroup key={state} label={state}>
+                {Object.keys(featureNames[state]).sort().map(mun => {
+                  const combined = state + "_" + mun;
+                  return (
+                    <option
+                      key={mun}
+                      onClick={() => this.customSelect(combined)}
+                      value={combined}
+                    >
+                      {mun}
+                    </option>
+                  );
+                })}
               </optgroup>
             ))}
           </select>

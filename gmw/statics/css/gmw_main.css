@@ -235,6 +235,8 @@ span.advanced-text {
 select[multiple] optgroup option:checked::before {
   content: '\2713\0020';
   font-weight: bold;
+  font-size: .75rem;
+  margin: .2rem;
 }
 #lnglathud-shell {
   position: absolute;

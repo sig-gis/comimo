@@ -486,7 +486,7 @@ export default class PageLayout extends React.Component {
                       <DownloadPanel isHidden={this.state.downloadHidden}/>
                     </React.Fragment>
                   )}
-                  {/* Info dialoge */}
+                  {/* Info dialogue */}
                   <SideIcon
                     clickHandler={() => this.togglePanel("appInfoHidden")}
                     icon="info"
