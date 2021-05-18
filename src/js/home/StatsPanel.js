@@ -1,7 +1,6 @@
 import React from "react";
 
 import {MainContext} from "./context";
-import {toPrecision} from "../utils";
 
 export default class StatsPanel extends React.Component {
   constructor(props) {
@@ -56,14 +55,13 @@ export default class StatsPanel extends React.Component {
       .then(res => res.json())
       .then(result => {
         const data = [];
-        for (let i = 0; i < result.names.length; i++) {
+        for (let i = 0; i < result.names.length; i += 1) {
           const count = result.count[i];
           const name = result.names[i];
           if (count > 0.0) {
             data.push([
               name,
-              count,
-              this.createTooltipHTML(name, count, stats.countLabel)
+              count
             ]);
           }
         }
@@ -71,7 +69,6 @@ export default class StatsPanel extends React.Component {
           const dataTable = new google.visualization.DataTable();
           dataTable.addColumn("string", stats.munLabel);
           dataTable.addColumn("number", stats.countLabel);
-          dataTable.addColumn({type: "string", role: "tooltip", p: {html: true}});
 
           dataTable.addRows(data);
 
@@ -79,8 +76,7 @@ export default class StatsPanel extends React.Component {
             title: "Por " + selectedDate,
             width: 290,
             height: 200,
-            legend: "none",
-            tooltip: {isHtml: true}
+            legend: "none"
           };
 
           // Display the chart inside the <div> element with id="stats1"
@@ -103,13 +99,13 @@ export default class StatsPanel extends React.Component {
       .then(result => {
         const data = [];
         let nonzero = false;
-        for (let i = 0; i < result.names.length; i++) {
+        for (let i = 0; i < result.names.length; i += 1) {
           const count = result.count[i];
-          const name = result.names[i];
+          const dateParts = result.names[i].split("-");
+          const shortDate = `${dateParts[1]}/${dateParts[0].slice(2)} a ${dateParts[4]}/${dateParts[3].slice(2)}`;
           data.push([
-            name.substring(5),
-            count,
-            this.createTooltipHTML(name, count, stats.countLabel)
+            shortDate,
+            count
           ]);
           if (count > 0.0) nonzero = true;
         }
@@ -117,7 +113,6 @@ export default class StatsPanel extends React.Component {
           const dataTable = new google.visualization.DataTable();
           dataTable.addColumn("string", stats.dateLabel);
           dataTable.addColumn("number", stats.countLabel);
-          dataTable.addColumn({type: "string", role: "tooltip", p: {html: true}});
 
           dataTable.addRows(data);
 
@@ -125,7 +120,6 @@ export default class StatsPanel extends React.Component {
             width: 290,
             height: 200,
             legend: "none",
-            tooltip: {isHtml: true},
             hAxis: {slantedText: true}
           };
 
@@ -141,38 +135,31 @@ export default class StatsPanel extends React.Component {
       .catch(e => console.log(stats.errorStats, e));
   }
 
-    createTooltipHTML = (region, count, countLabel) => (
-        `<div style="min-width: max-content; display: flex; flex-direction: column; padding: .4rem; line-height: 1rem">
-            <span>${region}</span>
-            <span><strong>${countLabel}: </strong>${toPrecision(count, 0)}</span>
-        </div>`
-    );
-
-    render() {
-      const {isHidden} = this.props;
-      const {localeText: {stats}} = this.context;
-      return (
-        <div
-          className={"popup-container stat-panel " + (isHidden ? "see-through" : "")}
-        >
-          <div>
-            <h3>{stats.regionTitle}</h3>
-            <p style={{lineHeight: "1rem", fontSize: ".75rem"}}>
-              {stats.regionSubTitle}
-            </p>
-            <div id="stats1">
-              {`${stats.loading}...`}
-            </div>
-            <h3>{stats.dateTitle}</h3>
-            <div id="stats2">
-              {`${stats.loading}...`}
-            </div>
-            <p style={{lineHeight: "1rem", fontSize: ".75rem"}}>
-              {stats.areaWarning}
-            </p>
+  render() {
+    const {isHidden} = this.props;
+    const {localeText: {stats}} = this.context;
+    return (
+      <div
+        className={"popup-container stat-panel " + (isHidden ? "see-through" : "")}
+      >
+        <div>
+          <h3>{stats.regionTitle}</h3>
+          <p style={{lineHeight: "1rem", fontSize: ".75rem"}}>
+            {stats.regionSubTitle}
+          </p>
+          <div id="stats1">
+            {`${stats.loading}...`}
           </div>
+          <h3>{stats.dateTitle}</h3>
+          <div id="stats2">
+            {`${stats.loading}...`}
+          </div>
+          <p style={{lineHeight: "1rem", fontSize: ".75rem"}}>
+            {stats.areaWarning}
+          </p>
         </div>
-      );
-    }
+      </div>
+    );
+  }
 }
 StatsPanel.contextType = MainContext;
