@@ -5,6 +5,7 @@ import "mapbox-gl/dist/mapbox-gl.css";
 import AppInfo from "./AppInfo";
 import DownloadPanel from "./DownloadPanel";
 import LayersPanel from "./LayersPanel";
+import LanguageSelector from "./LanguageSelector";
 import FilterPanel from "./FilterPanel";
 import SearchPanel from "./SearchPanel";
 import SideIcon from "./SideIcon";
@@ -72,20 +73,24 @@ export default class PageLayout extends React.Component {
       reloadCount: 0,
       theMap: null,
       myHeight: 0,
-      localeText: {}
+      localeText: {},
+      selectLanguage: "en"
     };
   }
 
   // set up parameters after components are mounted
   componentDidMount() {
-    this.updateWindow();
-    this.initMap();
-    Promise.all([this.getLocalText(), this.getFeatureNames(), this.getImageDates()])
+    const lang = getLanguage(["en", "es"]);
+    this.setState({selectedLanguage: lang});
+
+    Promise.all([this.getLocalText(lang), this.getFeatureNames(), this.getImageDates()])
       .then(() => {
         this.loadMapLocalEvents();
         this.updateEELayer(true);
       })
       .catch(error => console.log(error));
+    this.updateWindow();
+    this.initMap();
     window.addEventListener("touchend", this.updateWindow);
     window.addEventListener("resize", this.updateWindow);
   }
@@ -118,10 +123,15 @@ export default class PageLayout extends React.Component {
 
     selectRegion = (level, name) => this.setState({selectedRegion: [level, name]});
 
+    selectLanguage = newLang => {
+      this.setState({selectedLanguage: newLang});
+      this.getLocalText(newLang);
+    };
+
     /// Fetch calls
 
-    getLocalText = () => fetch(
-        `/static/locale/${getLanguage(["en", "es"])}.json`,
+    getLocalText = lang => fetch(
+        `/static/locale/${lang}.json`,
         {headers: {"Cache-Control": "no-cache", "Pragma": "no-cache", "Accept": "application/json"}}
     )
       .then(response => (response.ok ? response.json() : Promise.reject(response)))
@@ -373,6 +383,10 @@ export default class PageLayout extends React.Component {
                 padding: 0,
                 position: "relative"
               }}
+            />
+            <LanguageSelector
+              selectedLanguage={this.state.selectedLanguage}
+              selectLanguage={this.selectLanguage}
             />
             <div id="mobile-title"><h2>CoMiMo</h2></div>
             {home && (
