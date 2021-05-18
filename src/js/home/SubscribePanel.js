@@ -25,17 +25,20 @@ export default class SubscribePanel extends React.Component {
 
   getSubs() {
     const {updateSubList} = this.props;
-    fetch(this.URLS.SUBS)
-      .then(res => res.json())
-      .then(result => {
-        if (result.action === "Success") {
-          this.setState({
-            subsLoaded: true
-          });
-          updateSubList(result.regions.sort());
-        }
-      })
-      .catch(err => console.log(err));
+    const {isUser} = this.context;
+    if (isUser) {
+      fetch(this.URLS.SUBS)
+        .then(res => res.json())
+        .then(result => {
+          if (result.action === "Success") {
+            this.setState({
+              subsLoaded: true
+            });
+            updateSubList(result.regions.sort());
+          }
+        })
+        .catch(err => console.log(err));
+    }
   }
 
   addSubs(region) {

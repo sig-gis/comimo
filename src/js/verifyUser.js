@@ -24,7 +24,7 @@ class PasswordReset extends React.Component {
           window.location = "/login";
         } else {
           console.log(data[1]);
-          alert(this.state.localeText[data[1]] || this.state.localeText.errorCreating));
+          alert(this.state.localeText[data[1]] || this.state.localeText.errorCreating);
           window.location = "/password-forgot";
         }
       })

@@ -43,7 +43,7 @@ class Login extends React.Component {
             window.location = "/";
           } else {
             console.log(data[1]);
-            alert(this.state.localeText[data[1]] || this.state.localeText.errorCreating));
+            alert(this.state.localeText[data[1]] || this.state.localeText.errorCreating);
           }
         })
         .catch(err => console.log(err));
