@@ -3,6 +3,8 @@ config.py
 src/js/appConfig.js
 *.pyc
 venv/*
+gmwuwsgi.ini
+gmw.sock
 logs
 
 __pycache__/*
