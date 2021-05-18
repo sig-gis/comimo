@@ -160,11 +160,15 @@
         "resetTitle": "Reset Password",
         "requestTitle": "Request Password Reset",
         "request": "Request",
-        "tokenSent": "An email has been sent with a password reset link. Please check your email and click the link to reset your password.",
+        "registered": "You have successfully registered for a new account.  Please check your email for a link to verify your account.",
+        "tokenSent": "An email has been sent with a password reset link.  Please check your email and click the link to reset your password.",
+        "verifyUser": "Verify user",
+        "verifying": "Verifying email",
+        "verified": "Account has been verified.  Please log in to continue.",
         "errorEmail": "A user with this email already exists.",
         "errorUsername": "A user with this username already exists.",
         "errorCreating": "An error occurred while creating a new user. Contact support.",
-        "errorLogin": "Invalid username and password combination.",
+        "errorLogin": "Invalid username and password combination.  If you have registered, check your email for a new user verification link.",
         "errorNotFound": "No users with the provided email / username is found.",
         "errorToken": "Invalid reset token.  Please request another reset token."
     }

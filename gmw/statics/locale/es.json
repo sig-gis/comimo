@@ -158,11 +158,15 @@
         "resetTitle": "Restablecer la contraseña",
         "requestTitle": "Solicitar restablecimiento de contraseña",
         "request": "Solicitar",
-        "tokenSent": "Usted recibirá un código de recuperación en su correo electrónico. Por favor, ingrese a su buzón y haga clic en el enlace para restablecer la contraseña.",
+        "registered": "You have successfully registered for a new account.  Please check your email for a link to verify your account.",
+        "tokenSent": "Usted recibirá un código de recuperación en su correo electrónico.  Por favor, ingrese a su buzón y haga clic en el enlace para restablecer la contraseña.",
+        "verifyUser": "Verify user",
+        "verifying": "Verifying email",
+        "verified": "Account has been verified.  Please log in to continue.",
         "errorEmail": "Ya existe un usuario con este correo electrónico.",
         "errorUsername": "Ya existe un usuario con este nombre de usuario.",
         "errorCreating": "Se produjo un error al crear un nuevo usuario. Contactar con el soporte.",
-        "errorLogin": "Combinación de nombre de usuario y contraseña no válida.",
+        "errorLogin": "Combinación de nombre de usuario y contraseña no válida.  If you have registered, check your email for a new user verification link.",
         "errorNotFound": "No se encuentra ningún usuario con el correo electrónico / Nombre de usuario es encontrado.",
         "errorToken": "Token de reinicio no válido. Solicitar otro restablecimiento de token."
     }

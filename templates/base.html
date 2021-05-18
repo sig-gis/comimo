@@ -15,10 +15,11 @@
             {% if user.is_superuser %}
             data-admin = 'true'
             {% endif %}
-            data-test = 100
+            data-csrf = '{% csrf_token %}'
         >
             USER_STATE = document.currentScript.dataset.auth;
             USER_ADM = document.currentScript.dataset.admin;
+            CSRF_TOKEN = document.currentScript.dataset.csrf
         </script>
         <script type='text/javascript' src='{% static "js/vendor.js" %}'></script>
         {% block pagescripts %}

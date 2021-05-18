@@ -7,7 +7,7 @@ from django.db.models import Q
 from django.contrib.auth.models import User
 from accounts.models import Profile
 from django.db import transaction
-from subscribe.mailhelper import sendResetMail
+from subscribe.mailhelper import sendResetMail, sendNewUserMail
 
 
 def getUser(email):
@@ -51,7 +51,8 @@ def registerView(request):
                     new_user = User()
                     new_user.username = username
                     new_user.email = email
-                    new_user.set_password = JSONbody.get("password")
+                    new_user.is_active = False
+                    new_user.set_password(JSONbody.get("password"))
                     new_user.save()
 
                     new_user.profile.full_name = JSONbody.get(
@@ -62,13 +63,34 @@ def registerView(request):
                     new_user.profile.email = email
                     new_user.save()
 
-                    login(request, new_user)
+                    gen = PasswordResetTokenGenerator()
+                    token = gen.make_token(new_user)
+                    sendNewUserMail(email, token)
                 return HttpResponse("")
         except Exception as e:
             print(e)
             return HttpResponse("errorCreating")
     else:
         return render(request, "register.html")
+
+
+def verifyUserView(request):
+    if request.method == "POST":
+        JSONbody = json.loads(request.body)
+        token = JSONbody.get("token")
+        user = getUser(JSONbody.get("email"))
+        gen = PasswordResetTokenGenerator()
+
+        if user is None:
+            return HttpResponse("errorNotFound")
+        elif gen.check_token(user, token):
+            user.is_active = True
+            user.save()
+            return HttpResponse("")
+        else:
+            return HttpResponse("errorToken")
+    else:
+        return render(request, "verify-user.html")
 
 
 def loginView(request):
@@ -118,6 +140,7 @@ def resetView(request):
             return HttpResponse("errorNotFound")
         elif gen.check_token(user, token):
             user.set_password(password)
+            user.is_active = True
             user.save()
             login(request, user)
             return HttpResponse("")

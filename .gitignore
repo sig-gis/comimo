@@ -20,3 +20,4 @@ gmw/statics/js/passwordReset.js
 gmw/statics/js/register.js
 gmw/statics/js/vendor.js
 gmw/statics/js/downloadAll.js
+gmw/statics/js/verifyUser.js

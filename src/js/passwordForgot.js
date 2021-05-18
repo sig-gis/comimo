@@ -41,7 +41,8 @@ class PasswordForgot extends React.Component {
             alert(this.state.localeText.tokenSent);
             window.location = "/";
           } else {
-            alert(this.state.localeText[data[1]]);
+            console.log(data[1]);
+            alert(this.state.localeText[data[1]] || this.state.localeText.errorCreating));
           }
         })
         .catch(err => console.log(err));

@@ -2,10 +2,10 @@ from django.core.mail import send_mail
 from subscribe.config import APP_URL, EMAIL_HOST_USER, EMAIL_HOST_USER, EMAIL_HOST_PASSWORD
 
 
-def sendMail(email, textContent, htmlContent):
+def sendMail(email, subject, textContent, htmlContent):
     try:
         sendSuccess = send_mail(
-            'COMIMO ha detectado posibles sitios de explotación minera',
+            subject,
             textContent,
             EMAIL_HOST_USER,
             [email],
@@ -19,8 +19,32 @@ def sendMail(email, textContent, htmlContent):
         print(e)
 
 
+def sendNewUserMail(email, token):
+    sendMail(email, "Welcome to COMIMO", newUserText(
+        email, token), newUserHTML(email, token))
+
+
+def newUserText(email, token):
+    return "Welcome to COMIMO\n\n" \
+        + "Please verify your email by clicking the following link \n\n" \
+        + APP_URL + "/verify-user?token=" + token + "&email=" + email
+
+
+def newUserHTML(email, token):
+    return """\
+        <html>
+        <body>
+            <h3>Welcome to COMIMO</h3>
+            Please verify your email by clicking <a href='""" + APP_URL + "/verify-user?token=" + token + "&email=" + email + """'>here</a>.
+        </html>
+    """
+
+
 def sendAlertMail(email, projurl):
-    sendMail(email, alertText(projurl), alertHTML(projurl))
+    sendMail(email,
+             "COMIMO minera alerta",
+             alertText(projurl),
+             alertHTML(projurl))
 
 
 def alertText(projurl):
@@ -47,7 +71,10 @@ def alertHTML(projurl):
 
 
 def sendResetMail(email, token):
-    sendMail(email, resetText(email, token), resetHTML(email, token))
+    sendMail(email,
+             "COMIMO restablecimiento de contraseña",
+             resetText(email, token),
+             resetHTML(email, token))
 
 
 def resetText(email, token):
