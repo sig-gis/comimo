@@ -18,21 +18,45 @@ def sendMail(email, subject, textContent, htmlContent):
     except Exception as e:
         print(e)
 
-
-def sendNewUserMail(email, token):
-    sendMail(email,
-             "Bienvenida a CoMiMo",
-             newUserText(email, token),
-             newUserHTML(email, token))
+### New User ###
 
 
-def newUserText(email, token):
+def sendNewUserMail(email, token, lang):
+    if lang == "es":
+        sendMail(email,
+                 "Bienvenida a CoMiMo",
+                 newUserTextES(email, token),
+                 newUserHTMLES(email, token))
+    else:
+        sendMail(email,
+                 "Welcome to CoMiMo",
+                 newUserTextEN(email, token),
+                 newUserHTMLEN(email, token))
+
+
+def newUserTextEN(email, token):
+    return "Welcome to CoMiMo\n\n" \
+        + "Please verify your email by clicking the following link: \n\n" \
+        + APP_URL + "/verify-user?token=" + token + "&email=" + email
+
+
+def newUserHTMLEN(email, token):
+    return """\
+        <html>
+        <body>
+            <h3>Welcome to CoMiMo</h3>
+            Please verify your email by clicking <a href='""" + APP_URL + "/verify-user?token=" + token + "&email=" + email + """'>here</a>.
+        </html>
+    """
+
+
+def newUserTextES(email, token):
     return "Bienvenida a CoMiMo\n\n" \
         + "Verifique su correo electrónico haciendo clic en el siguiente enlace: \n\n" \
         + APP_URL + "/verify-user?token=" + token + "&email=" + email
 
 
-def newUserHTML(email, token):
+def newUserHTMLES(email, token):
     return """\
         <html>
         <body>
@@ -41,23 +65,54 @@ def newUserHTML(email, token):
         </html>
     """
 
-
-def sendAlertMail(email, projurl):
-    sendMail(email,
-             "COMIMO minera alerta",
-             alertText(projurl),
-             alertHTML(projurl))
+### Alerts ###
 
 
-def alertText(projurl):
+def sendAlertMail(email, projurl, lang):
+    if lang == "es":
+        sendMail(email,
+                 "CoMiMo minera alerta",
+                 alertTextES(projurl),
+                 alertHTMLES(projurl))
+    else:
+        sendMail(email,
+                 "CoMiMo Mine alert",
+                 alertTextEN(projurl),
+                 alertHTMLES(projurl))
+
+
+def alertTextEN(projurl):
+    return "Maine Alert\n\n" \
+        + "We have detected possible mining sites in the areas to which it is subscribed.\n\n" \
+        + "You can see the new validations listed in CoMiMo here: " + APP_URL + "'\n\n" \
+        + "To validate this information, go to the validation panel in the application or go directly to CEO: " \
+        + projurl + "&locale=en"
+
+
+def alertHTMLEN(projurl):
+    return """\
+        <html>
+        <body>
+            <h3>¡Alerta!</h3>
+            Hemos detectado posibles sitios de explotación minera en las áreas a las cuales se encuentra suscrito.
+            <br/><br/>
+            You can see the new validations listed in CoMiMo <a href='""" + APP_URL + """'>here.</a>.
+            <br/><br/>
+            To validate this information, go to the validation panel in the application or go directly to
+            <a href='""" + projurl + "&locale=en" + """'>CEO</a>.
+        </html>
+    """
+
+
+def alertTextES(projurl):
     return "¡Alerta!\n\n" \
         + "Hemos detectado posibles sitios de explotación minera en las áreas a las cuales se encuentra suscrito.\n\n" \
         + "Puede visualizar estas áreas aquí: " + APP_URL + "'\n\n" \
         + "Para validar esta información, diríjase al panel de validación en la aplicación o acceda directamente a CEO: " \
-        + projurl
+        + projurl + "&locale=en"
 
 
-def alertHTML(projurl):
+def alertHTMLES(projurl):
     return """\
         <html>
         <body>
@@ -67,25 +122,50 @@ def alertHTML(projurl):
             Puede visualizar estas áreas <a href='""" + APP_URL + """'>aquí</a>.
             <br/><br/>
             Para validar esta información, diríjase al panel de validación en la aplicación o acceda directamente a
-            <a href='""" + projurl + """'>CEO</a>.
+            <a href='""" + projurl + "&locale=en" + """'>CEO</a>.
+        </html>
+    """
+
+### Reset Password ###
+
+
+def sendResetMail(email, token, lang):
+    if lang == "es":
+        sendMail(email,
+                 "CoMiMo restablecimiento de contraseña",
+                 resetTextES(email, token),
+                 resetHTMLES(email, token))
+    else:
+        sendMail(email,
+                 "CoMiMo password reset",
+                 resetTextEN(email, token),
+                 resetHTMLEN(email, token))
+
+
+def resetTextEN(email, token):
+    return "Password Reset\n\n" \
+        + "To reset your password, click the link below and enter your new password:\n\n" \
+        + APP_URL + "/password-reset?token=" + token + "&email=" + email
+
+
+def resetHTMLEN(email, token):
+    return """\
+        <html>
+        <body>
+            <h3>Password reset</h3>
+            To reset your password, click <a href='""" + APP_URL + "/password-reset?token=" + token + "&email=" + email + """'>here</a>
+            and enter your new password.
         </html>
     """
 
 
-def sendResetMail(email, token):
-    sendMail(email,
-             "COMIMO restablecimiento de contraseña",
-             resetText(email, token),
-             resetHTML(email, token))
-
-
-def resetText(email, token):
+def resetTextES(email, token):
     return "Restablecimiento de contraseña\n\n" \
         + "Para restablecer su contraseña haga clic en el siguiente enlace e ingrese su nueva contraseña\n\n" \
         + APP_URL + "/password-reset?token=" + token + "&email=" + email
 
 
-def resetHTML(email, token):
+def resetHTMLES(email, token):
     return """\
         <html>
         <body>

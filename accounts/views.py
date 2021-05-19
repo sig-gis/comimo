@@ -48,6 +48,7 @@ def registerView(request):
                 return HttpResponse("errorUsername")
             else:
                 with transaction.atomic():
+                    defaultLang = JSONbody.get("defaultLang")
                     new_user = User()
                     new_user.username = username
                     new_user.email = email
@@ -61,12 +62,12 @@ def registerView(request):
                     new_user.profile.institution = JSONbody.get(
                         "institution").strip()
                     new_user.profile.email = email
-                    new_user.profile.default_lang = JSONbody.get("defaultLang")
+                    new_user.profile.default_lang = defaultLang
                     new_user.save()
 
                     gen = PasswordResetTokenGenerator()
                     token = gen.make_token(new_user)
-                    sendNewUserMail(email, token)
+                    sendNewUserMail(email, token, defaultLang)
                 return HttpResponse("")
         except Exception as e:
             print(e)
@@ -121,7 +122,9 @@ def forgotView(request):
         if user is not None:
             gen = PasswordResetTokenGenerator()
             token = gen.make_token(user)
-            sendResetMail(user.email, token)
+            lang = Profile.objects.filter(user=user) \
+                .values().first()['default_lang']
+            sendResetMail(user.email, token, lang)
             return HttpResponse("")
         else:
             return HttpResponse("errorNotFound")

@@ -62,8 +62,7 @@ export default function LanguageSelector({selectedLanguage, selectLanguage}) {
             }}
           >
             {Object.keys(languageList).map(l => (
-              <div className="pt-1">{renderOption(l)}</div>
-
+              <div key={l} className="pt-1">{renderOption(l)}</div>
             ))}
           </div>
         </div>
