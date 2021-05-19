@@ -142,6 +142,7 @@
         "toView": "Login to view",
         "login": "Login",
         "loginTitle": "Sign In",
+        "enter": "Enter",
         "username": "Username",
         "password": "Password",
         "forgot": "Forgot password?",
@@ -170,6 +171,13 @@
         "errorCreating": "An error occurred while creating a new user. Contact support.",
         "errorLogin": "Invalid username and password combination.  If you have registered, check your email for a new user verification link.",
         "errorNotFound": "No users with the provided email / username is found.",
-        "errorToken": "Invalid reset token.  Please request another reset token."
+        "errorToken": "Invalid reset token.  Please request another reset token.",
+        "errorUsernameLen": "Username must be 5 or more characters long.",
+        "errorInvalidEmail": "Invalid email.",
+        "errorNameReq": "A name is required.",
+        "errorInstitutionReq": "An institution is required.",
+        "errorPassword": "Your password must be a minimum eight characters and contain at least one uppercase letter, one lowercase letter, one number and one special character -or- be a minimum of 16 characters.",
+        "errorPassMatch": "Your passwords must match.",
+        "errorEmailReq": "Please enter your email."
     }
 }

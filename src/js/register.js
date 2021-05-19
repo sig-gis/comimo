@@ -30,21 +30,21 @@ class Register extends React.Component {
   }
 
     verifyInputs = () => {
-      const {username, email, fullName, institution, password, passwordConfirmation} = this.state;
+      const {username, email, fullName, institution, password, passwordConfirmation, localeText} = this.state;
       return [
-        username.length < 6 && "- Username must be 5 or more characters long.",
-        !EmailValidator.validate(email) && "- Invalid email.",
-        fullName.length === 0 && "- A name is required.",
-        institution.length === 0 && "- An institution is required.",
-        !validatePassword(password) && "- Your password must be a minimum eight characters and contain at least one uppercase letter, one lowercase letter, one number and one special character -or- be a minimum of 16 characters.",
-        password !== passwordConfirmation && "- Your passwords must match."
+        username.length < 6 && localeText.errorUsernameLen,
+        !EmailValidator.validate(email) && localeText.errorInvalidEmail,
+        fullName.length === 0 && localeText.errorNameReq,
+        institution.length === 0 && localeText.errorInstitutionReq,
+        !validatePassword(password) && localeText.errorPassword,
+        password !== passwordConfirmation && localeText.errorPassMatch
       ].filter(e => e);
     };
 
     registerUser = () => {
       const errors = this.verifyInputs();
       if (errors.length > 0) {
-        alert(errors.join("\n"));
+        alert(errors.map(e => " - " + e).join("\n"));
       } else {
         fetch("/register/",
               {

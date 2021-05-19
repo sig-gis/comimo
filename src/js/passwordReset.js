@@ -31,18 +31,18 @@ class PasswordReset extends React.Component {
   }
 
     verifyInputs = () => {
-      const {email, password, passwordConfirmation} = this.state;
+      const {email, password, passwordConfirmation, localeText} = this.state;
       return [
-        email.length === 0 && "- Please enter your email.",
-        !validatePassword(password) && "- Your password must be a minimum eight characters and contain at least one uppercase letter, one lowercase letter, one number and one special character -or- be a minimum of 16 characters.",
-        password !== passwordConfirmation && "- Your passwords must match."
+        email.length === 0 && localeText.errorEmailReq,
+        !validatePassword(password) && localeText.errorPassword,
+        password !== passwordConfirmation && localeText.errorPassMatch
       ].filter(e => e);
     };
 
     resetPassword = () => {
       const errors = this.verifyInputs();
       if (errors.length > 0) {
-        alert(errors.join("\n"));
+        alert(errors.map(e => " - " + e).join("\n"));
       } else {
         fetch("/password-reset/",
               {
