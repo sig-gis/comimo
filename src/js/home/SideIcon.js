@@ -1,6 +1,6 @@
 import React from "react";
 
-import SvgIcon from "../SvgIcon";
+import SvgIcon from "../components/SvgIcon";
 
 export default function SideIcon({parentClass, clickHandler, tooltip, icon, subtext}) {
   return (

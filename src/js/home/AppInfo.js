@@ -1,7 +1,7 @@
 import React from "react";
 
 import {MainContext} from "./context";
-import SvgIcon from "../SvgIcon";
+import SvgIcon from "../components/SvgIcon";
 
 export default class AppInfo extends React.Component {
   render() {

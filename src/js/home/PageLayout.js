@@ -5,7 +5,7 @@ import "mapbox-gl/dist/mapbox-gl.css";
 import AppInfo from "./AppInfo";
 import DownloadPanel from "./DownloadPanel";
 import LayersPanel from "./LayersPanel";
-import LanguageSelector from "./LanguageSelector";
+import LanguageSelector from "../components/LanguageSelector";
 import FilterPanel from "./FilterPanel";
 import SearchPanel from "./SearchPanel";
 import SideIcon from "./SideIcon";
@@ -385,10 +385,18 @@ export default class PageLayout extends React.Component {
                 position: "relative"
               }}
             />
-            <LanguageSelector
-              selectedLanguage={this.state.selectedLanguage}
-              selectLanguage={this.selectLanguage}
-            />
+            <div
+              style={{
+                position: "fixed",
+                top: "1rem",
+                right: "4rem"
+              }}
+            >
+              <LanguageSelector
+                selectedLanguage={this.state.selectedLanguage}
+                selectLanguage={this.selectLanguage}
+              />
+            </div>
             <div id="mobile-title"><h2>CoMiMo</h2></div>
             {home && (
               <>

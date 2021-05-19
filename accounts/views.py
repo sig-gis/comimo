@@ -61,6 +61,7 @@ def registerView(request):
                     new_user.profile.institution = JSONbody.get(
                         "institution").strip()
                     new_user.profile.email = email
+                    new_user.profile.default_lang = JSONbody.get("defaultLang")
                     new_user.save()
 
                     gen = PasswordResetTokenGenerator()

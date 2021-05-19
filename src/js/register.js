@@ -3,6 +3,7 @@ import ReactDOM from "react-dom";
 import EmailValidator from "email-validator";
 
 import LoadingModal from "./components/LoadingModal";
+import LanguageSelector from "./components/LanguageSelector";
 
 import {getCookie, getLanguage, validatePassword} from "./utils";
 
@@ -18,6 +19,7 @@ class Register extends React.Component {
       password: "",
       passwordConfirmation: "",
       localeText: {},
+      defaultLang: "en",
       showModal: false
     };
   }
@@ -37,16 +39,21 @@ class Register extends React.Component {
     )
   ));
 
+  selectLanguage = newLang => {
+    this.setState({defaultLang: newLang});
+    this.getLocalText(newLang);
+  };
+
   /// API Calls ///
 
   getLocalText = lang => {
     fetch(
-            `/static/locale/${getLanguage(lang)}.json`,
-            {headers: {"Cache-Control": "no-cache", "Pragma": "no-cache", "Accept": "application/json"}}
+    `/static/locale/${lang}.json`,
+    {headers: {"Cache-Control": "no-cache", "Pragma": "no-cache", "Accept": "application/json"}}
     )
       .then(response => (response.ok ? response.json() : Promise.reject(response)))
       .then(data => this.setState({localeText: data.users}))
-      .catch(error => console.log(error));
+      .catch(err => console.error(err));
   };
 
     verifyInputs = () => {
@@ -76,6 +83,7 @@ class Register extends React.Component {
                     "X-CSRFToken": getCookie("csrftoken")
                   },
                   body: JSON.stringify({
+                    defaultLang: this.state.defaultLang,
                     username: this.state.username,
                     email: this.state.email,
                     fullName: this.state.fullName,
@@ -97,6 +105,8 @@ class Register extends React.Component {
             .catch(err => console.log(err)));
       }
     };
+
+    /// Render Functions ///
 
     renderField = (label, type, stateKey) => (
       <div className="d-flex flex-column">
@@ -129,7 +139,7 @@ class Register extends React.Component {
     );
 
     render() {
-      const {localeText} = this.state;
+      const {localeText, defaultLang} = this.state;
       return (
         <div
           className="d-flex justify-content-center"
@@ -139,6 +149,13 @@ class Register extends React.Component {
           <div className="card">
             <div className="card-header">{localeText.registerTitle}</div>
             <div className="card-body">
+              <div className="d-flex">
+                <label className="mr-3">{localeText.language}</label>
+                <LanguageSelector
+                  selectedLanguage={defaultLang}
+                  selectLanguage={this.selectLanguage}
+                />
+              </div>
               {this.renderField(localeText.username, "text", "username")}
               {this.renderField(localeText.email, "email", "email")}
               {this.renderField(localeText.fullName, "text", "fullName")}

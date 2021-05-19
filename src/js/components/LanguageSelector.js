@@ -1,6 +1,6 @@
 import React, {useState} from "react";
 
-import SvgIcon from "../SvgIcon";
+import SvgIcon from "./SvgIcon";
 
 export default function LanguageSelector({selectedLanguage, selectLanguage}) {
   const [show, setShow] = useState(false);
@@ -16,7 +16,7 @@ export default function LanguageSelector({selectedLanguage, selectLanguage}) {
         selectLanguage(language);
         setShow(false);
       }}
-      style={{width: "42px", maxWidth: "42px"}}
+      style={{height: "30px", maxHeight: "30px"}}
     >
       <img
         alt={language}
@@ -30,12 +30,9 @@ export default function LanguageSelector({selectedLanguage, selectLanguage}) {
     <div
       style={{
         background: "white",
-        position: "fixed",
-        top: "1rem",
-        right: "4rem",
         zIndex: 10000,
-        height: "28px",
-        maxHeight: "28px",
+        height: "30px",
+        maxHeight: "30px",
         borderRadius: "0 3px 3px 0"
       }}
     >
@@ -45,8 +42,9 @@ export default function LanguageSelector({selectedLanguage, selectLanguage}) {
           onClick={() => setShow(!show)}
           style={{
             width: "18px",
-            paddingTop: "4px",
-            borderRadius: "0 3px 3px 0"
+            paddingTop: "2px",
+            borderRadius: "0 3px 3px 0",
+            border: "2px solid black"
           }}
         >
           <SvgIcon icon="down"/>
@@ -54,9 +52,20 @@ export default function LanguageSelector({selectedLanguage, selectLanguage}) {
       </div>
       {show && (
         <div>
-          {Object.keys(languageList).map(l => (
-            renderOption(l)
-          ))}
+          <div
+            style={{
+              background: "white",
+              width: "fit-content",
+              borderBottom: "1px solid",
+              borderRight: "1px solid",
+              borderLeft: "1px solid"
+            }}
+          >
+            {Object.keys(languageList).map(l => (
+              <div className="pt-1">{renderOption(l)}</div>
+
+            ))}
+          </div>
         </div>
       )}
 
