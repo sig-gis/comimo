@@ -80,7 +80,9 @@ export default class PageLayout extends React.Component {
 
   // set up parameters after components are mounted
   componentDidMount() {
-    const lang = getLanguage(["en", "es"]);
+    const lang = ["en", "es"].includes(this.props.defaultLang)
+      ? this.props.defaultLang
+      : getLanguage(["en", "es"]);
     this.setState({selectedLanguage: lang});
 
     Promise.all([this.getLocalText(lang), this.getFeatureNames(), this.getImageDates()])

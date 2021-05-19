@@ -20,13 +20,14 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 from subscribe.views import downloadData, downloadAll, getDataDates
+from gmw.views import homeView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('accounts.urls')),
     path('api/', include('api.urls')),
     path('subscribe/', include('subscribe.urls', namespace='subscribe')),
-    path('', TemplateView.as_view(template_name='home.html'), name='home'),
+    path('', homeView, name='home'),
     path('download-data/', downloadData, name='downloadData'),
     path('download-all/', downloadAll, name='downloadAll'),
     path('get-data-dates/', getDataDates, name='getDataDates'),
