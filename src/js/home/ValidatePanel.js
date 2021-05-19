@@ -130,37 +130,40 @@ export default class ValidatePanel extends React.Component {
       }
     };
 
-    renderProject = (predDate, createdDate, pid, url, projectName, regions, validate) => (
-      <tr key={pid}>
-        <td style={{width: "calc(100% - 30px)"}}>
-          <div style={{display: "flex", flexDirection: "column"}}>
-            <a href={url} rel="noreferrer" target="_blank">
-              {projectName}
-            </a>
-            <small>{`${validate.predictionLabel}: ${predDate}`}</small>
-            <small>{`${validate.createdLabel}: ${createdDate}`}</small>
-            <small>{`${validate.regionsLabel}: ${regions
-              .split("__")
-              .map(x => x.split("_"))
-              .map(x => x[2] + ", " + x[1])
-              .join(";")}`}
-            </small>
-          </div>
-        </td>
-        <td style={{verticalAlign: "top"}}>
-          <button
-            className="del-btn green-btn p-0"
-            disabled={this.state.deleting.includes(pid)}
-            onClick={() => this.closeProject(pid)}
-            style={{height: "1.75rem", width: "1.75rem"}}
-            title={"Close " + projectName}
-            type="button"
-          >
-            <SvgIcon extraStyle={{margin: "0px .3rem .1rem"}} icon="check" size="1.25rem"/>
-          </button>
-        </td>
-      </tr>
-    );
+    renderProject = (predDate, createdDate, pid, url, projectName, regions) => {
+      const {selectedLanguage, localeText: {validate}} = this.context;
+      return (
+        <tr key={pid}>
+          <td style={{width: "calc(100% - 30px)"}}>
+            <div style={{display: "flex", flexDirection: "column"}}>
+              <a href={`${url}&locale=${selectedLanguage}`} rel="noreferrer" target="_blank">
+                {projectName}
+              </a>
+              <small>{`${validate.predictionLabel}: ${predDate}`}</small>
+              <small>{`${validate.createdLabel}: ${createdDate}`}</small>
+              <small>{`${validate.regionsLabel}: ${regions
+                .split("__")
+                .map(x => x.split("_"))
+                .map(x => x[2] + ", " + x[1])
+                .join(";")}`}
+              </small>
+            </div>
+          </td>
+          <td style={{verticalAlign: "top"}}>
+            <button
+              className="del-btn green-btn p-0"
+              disabled={this.state.deleting.includes(pid)}
+              onClick={() => this.closeProject(pid)}
+              style={{height: "1.75rem", width: "1.75rem"}}
+              title={"Close " + projectName}
+              type="button"
+            >
+              <SvgIcon extraStyle={{margin: "0px .3rem .1rem"}} icon="check" size="1.25rem"/>
+            </button>
+          </td>
+        </tr>
+      );
+    };
 
     customSelect = val => {
       const {customRegions} = this.state;
@@ -228,7 +231,7 @@ export default class ValidatePanel extends React.Component {
                           <th/>
                         </tr>
                       </thead>
-                      <tbody>{projects.map(p => this.renderProject(...p, validate))}</tbody>
+                      <tbody>{projects.map(p => this.renderProject(...p))}</tbody>
                     </table>
                   )}
                 <h3 style={{marginBottom: 0}}>{`${validate.createProject}:`}</h3>

@@ -361,7 +361,8 @@ export default class PageLayout extends React.Component {
             selectedRegion: this.state.selectedRegion,
             featureNames: this.state.featureNames,
             subscribedList: this.state.subscribedList,
-            localeText: this.state.localeText
+            localeText: this.state.localeText,
+            selectedLanguage: this.state.selectedLanguage
           }}
         >
           <div
