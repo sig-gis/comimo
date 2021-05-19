@@ -166,6 +166,7 @@
         "verifyUser": "Verify user",
         "verifying": "Verifying email",
         "verified": "Account has been verified.  Please log in to continue.",
+        "modalMessage": "Loading",
         "errorEmail": "A user with this email already exists.",
         "errorUsername": "A user with this username already exists.",
         "errorCreating": "An error occurred while creating a new user. Contact support.",

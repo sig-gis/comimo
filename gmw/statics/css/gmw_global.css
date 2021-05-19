@@ -135,3 +135,24 @@ small {
 .circle {
   border-radius: 100%;
 }
+
+/****************************/
+/* Project Creation Spinner */
+/****************************/
+#spinner {
+  position: absolute;
+  left: calc(50% - 2rem);
+  width: 4rem;
+  height: 4rem;
+  border-radius: 2rem;
+  border-bottom: 0.5rem solid #3fabc6;
+  animation: sweep 1s infinite linear;
+  -o-animation: sweep 1s infinite linear;
+  -moz-animation: sweep 1s infinite linear;
+  -webkit-animation: sweep 1s infinite linear;
+}
+
+@keyframes         sweep { to { transform: rotate(360deg); } }
+@-o-keyframes      sweep { to { -o-transform: rotate(360deg); } }
+@-moz-keyframes    sweep { to { -moz-transform: rotate(360deg); } }
+@-webkit-keyframes sweep { to { -webkit-transform: rotate(360deg); } }

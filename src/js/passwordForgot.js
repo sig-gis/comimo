@@ -1,6 +1,8 @@
 import React from "react";
 import ReactDOM from "react-dom";
 
+import LoadingModal from "./components/LoadingModal";
+
 import {getCookie, getLanguage} from "./utils";
 
 class PasswordForgot extends React.Component {
@@ -8,7 +10,8 @@ class PasswordForgot extends React.Component {
     super(props);
     this.state = {
       email: "",
-      localeText: {}
+      localeText: {},
+      showModal: false
     };
   }
 
@@ -22,31 +25,37 @@ class PasswordForgot extends React.Component {
       .catch(error => console.log(error));
   }
 
-    requestPassword = () => {
-      fetch("/password-forgot/",
-            {
-              method: "POST",
-              headers: {
-                Accept: "application/json",
-                "Content-Type": "application/json",
-                "X-CSRFToken": getCookie("csrftoken")
-              },
-              body: JSON.stringify({
-                email: this.state.email
-              })
+  processModal = callBack => new Promise(() => Promise.resolve(
+    this.setState(
+      {showModal: true},
+      () => callBack().finally(() => this.setState({showModal: false}))
+    )
+  ));
+
+  requestPassword = () => this.processModal(() =>
+    fetch("/password-forgot/",
+          {
+            method: "POST",
+            headers: {
+              Accept: "application/json",
+              "Content-Type": "application/json",
+              "X-CSRFToken": getCookie("csrftoken")
+            },
+            body: JSON.stringify({
+              email: this.state.email
             })
-        .then(response => Promise.all([response.ok, response.text()]))
-        .then(data => {
-          if (data[0] && data[1] === "") {
-            alert(this.state.localeText.tokenSent);
-            window.location = "/";
-          } else {
-            console.log(data[1]);
-            alert(this.state.localeText[data[1]] || this.state.localeText.errorCreating);
-          }
-        })
-        .catch(err => console.log(err));
-    };
+          })
+      .then(response => Promise.all([response.ok, response.text()]))
+      .then(data => {
+        if (data[0] && data[1] === "") {
+          alert(this.state.localeText.tokenSent);
+          window.location = "/";
+        } else {
+          console.log(data[1]);
+          alert(this.state.localeText[data[1]] || this.state.localeText.errorCreating);
+        }
+      })
+      .catch(err => console.log(err)));
 
     renderField = (label, type, stateKey) => (
       <div className="d-flex flex-column">
@@ -69,6 +78,7 @@ class PasswordForgot extends React.Component {
           className="d-flex justify-content-center"
           style={{paddingTop: "20vh"}}
         >
+          {this.state.showModal && <LoadingModal message={localeText.modalMessage}/>}
           <div className="card">
             <div className="card-header">{localeText.requestTitle}</div>
             <div className="card-body">
