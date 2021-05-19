@@ -20,13 +20,15 @@ def sendMail(email, subject, textContent, htmlContent):
 
 
 def sendNewUserMail(email, token):
-    sendMail(email, "Welcome to COMIMO", newUserText(
-        email, token), newUserHTML(email, token))
+    sendMail(email,
+             "Bienvenida a CoMiMo",
+             newUserText(email, token),
+             newUserHTML(email, token))
 
 
 def newUserText(email, token):
-    return "Welcome to COMIMO\n\n" \
-        + "Please verify your email by clicking the following link \n\n" \
+    return "Bienvenida a CoMiMo\n\n" \
+        + "Verifique su correo electrónico haciendo clic en el siguiente enlace: \n\n" \
         + APP_URL + "/verify-user?token=" + token + "&email=" + email
 
 
@@ -34,8 +36,8 @@ def newUserHTML(email, token):
     return """\
         <html>
         <body>
-            <h3>Welcome to COMIMO</h3>
-            Please verify your email by clicking <a href='""" + APP_URL + "/verify-user?token=" + token + "&email=" + email + """'>here</a>.
+            <h3>Bienvenida a CoMiMo</h3>
+            Verifique su correo electrónico haciendo clic <a href='""" + APP_URL + "/verify-user?token=" + token + "&email=" + email + """'>aquí</a>.
         </html>
     """
 
