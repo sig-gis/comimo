@@ -12,6 +12,7 @@ import SideIcon from "./SideIcon";
 import StatsPanel from "./StatsPanel";
 import SubscribePanel from "./SubscribePanel";
 import ValidatePanel from "./ValidatePanel";
+import SvgIcon from "../components/SvgIcon";
 
 import {toPrecision, getCookie, getLanguage} from "../utils";
 import {MainContext} from "./context";
@@ -354,6 +355,7 @@ export default class PageLayout extends React.Component {
     // set up actions to render app
     render() {
       const {myHeight, localeText: {home}} = this.state;
+      const {isUser, username} = this.props;
       return (
         <MainContext.Provider
           value={{
@@ -387,18 +389,34 @@ export default class PageLayout extends React.Component {
                 position: "relative"
               }}
             />
-            <div
-              style={{
-                position: "fixed",
-                top: "1rem",
-                right: "4rem"
-              }}
-            >
-              <LanguageSelector
-                selectedLanguage={this.state.selectedLanguage}
-                selectLanguage={this.selectLanguage}
-              />
-            </div>
+            {isUser
+              ? (
+                <button
+                  onClick={() => window.location = "/user-account"}
+                  style={{
+                    alignItems: "center",
+                    background: "white",
+                    borderRadius: "8px",
+                    cursor: "pointer"
+                    display: "flex",
+                    padding: ".25rem",
+                    position: "fixed",
+                    right: "56px",
+                    top: "10px",
+                  }}
+                  type="button"
+                >
+                  <span className="px-2">{username}</span>
+                  <SvgIcon icon="user" size="2rem"/>
+                </button>
+              ) : (
+                <div style={{position: "fixed", top: "24px", right: "56px"}}>
+                  <LanguageSelector
+                    selectedLanguage={this.state.selectedLanguage}
+                    selectLanguage={this.selectLanguage}
+                  />
+                </div>
+              )}
             <div id="mobile-title"><h2>CoMiMo</h2></div>
             {home && (
               <>

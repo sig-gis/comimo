@@ -11,6 +11,7 @@ module.exports = env => ({
     passwordForgot: path.resolve(__dirname, "src/js/passwordForgot.js"),
     passwordReset: path.resolve(__dirname, "src/js/passwordReset.js"),
     register: path.resolve(__dirname, "src/js/register.js"),
+    userAccount: path.resolve(__dirname, "src/js/userAccount.js"),
     verifyUser: path.resolve(__dirname, "src/js/verifyUser.js")
   },
   output: {

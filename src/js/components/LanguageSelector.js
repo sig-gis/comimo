@@ -28,6 +28,7 @@ export default function LanguageSelector({selectedLanguage, selectLanguage}) {
 
   return (
     <div
+      onClick={() => setShow(!show)}
       style={{
         background: "white",
         zIndex: 10000,
@@ -39,7 +40,6 @@ export default function LanguageSelector({selectedLanguage, selectLanguage}) {
       <div style={{display: "flex"}}>
         {renderOption(selectedLanguage)}
         <div
-          onClick={() => setShow(!show)}
           style={{
             width: "18px",
             paddingTop: "2px",

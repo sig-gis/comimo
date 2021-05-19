@@ -2,12 +2,14 @@ import json
 from django.contrib.auth import login, logout, authenticate, tokens
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from django.http import JsonResponse, HttpResponse
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, reverse
 from django.db.models import Q
 from django.contrib.auth.models import User
 from accounts.models import Profile
 from django.db import transaction
+
 from subscribe.mailhelper import sendResetMail, sendNewUserMail
+from accounts.utils import getUserInfo
 
 
 def getUser(email):
@@ -74,6 +76,32 @@ def registerView(request):
             return HttpResponse("errorCreating")
     else:
         return render(request, "register.html")
+
+
+def userAccountView(request):
+    user = request.user
+    if not(user.is_authenticated):
+        return redirect(reverse('login') + '?next=' + request.build_absolute_uri())
+    else:
+        if request.method == "POST":
+            try:
+                JSONbody = json.loads(request.body)
+                with transaction.atomic():
+                    profile = Profile.objects.filter(
+                        user=user).first()
+                    profile.full_name = JSONbody.get(
+                        "fullName").strip()
+                    profile.sector = JSONbody.get("sector").strip()
+                    profile.institution = JSONbody.get(
+                        "institution").strip()
+                    profile.default_lang = JSONbody.get("defaultLang")
+                    profile.save()
+                    return HttpResponse("")
+            except Exception as e:
+                print(e)
+                return HttpResponse("errorUpdating")
+        else:
+            return render(request, "user-account.html", getUserInfo(user))
 
 
 def verifyUserView(request):
