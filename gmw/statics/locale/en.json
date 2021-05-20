@@ -143,6 +143,7 @@
         "login": "Login",
         "loginTitle": "Sign In",
         "enter": "Enter",
+        "language": "Default Language",
         "username": "Username",
         "password": "Password",
         "forgot": "Forgot password?",
@@ -157,7 +158,7 @@
         "government": "Government",
         "ngo": "Civil",
         "allRequired": "All fields are required",
-        "confirm": "Confirm password",
+        "confirm": "Confirm Password",
         "resetTitle": "Reset password",
         "requestTitle": "Request password reset",
         "request": "Request",
@@ -166,6 +167,10 @@
         "verifyUser": "Verify user",
         "verifying": "Verifying email",
         "verified": "Account has been verified.  Please log in to continue.",
+        "modalMessage": "Loading",
+        "userAccountTitle": "Update account",
+        "updated": "Your account has been updated.",
+        "save": "Save",
         "errorEmail": "A user with this email already exists.",
         "errorUsername": "A user with this username already exists.",
         "errorCreating": "An error occurred while creating a new user. Contact support.",
@@ -178,6 +183,7 @@
         "errorInstitutionReq": "An institution is required.",
         "errorPassword": "Your password must be a minimum eight characters and contain at least one uppercase letter, one lowercase letter, one number and one special character -or- be a minimum of 16 characters.",
         "errorPassMatch": "Your passwords must match.",
-        "errorEmailReq": "Please enter your email."
+        "errorEmailReq": "Please enter your email.",
+        "errorUpdating": "An error occurred while updating account. Contact support."
     }
 }

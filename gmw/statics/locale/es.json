@@ -73,6 +73,7 @@
         "noResults": "Sin resultados",
         "stateLabel": "Departamento",
         "defaultState": "Selecciona un departamento",
+        "modalMessage": "Cargando",
         "munLabel": "Municipio",
         "defaultMun": "Selecciona un municipio",
         "title": "Buscar ubicación",
@@ -141,6 +142,7 @@
         "login": "Entrar",
         "loginTitle": "Iniciar sesión",
         "enter": "Anotar",
+        "language": "Idioma predeterminado",
         "username": "Nombre de usuario",
         "password": "Contraseña",
         "forgot": "¿Has olvidado tu contraseña?",
@@ -164,6 +166,10 @@
         "verifyUser": "Verificar cuenta",
         "verifying": "Verificando email",
         "verified": "Cuenta verificada. Por favor accede con tu usuario y clave para continuar.",
+        "modalMessage": "Cargando",
+        "userAccountTitle": "Actualizar cuenta",
+        "updated": "Tu cuenta ha sido actualizada.",
+        "save": "Archivar",
         "errorEmail": "Ya existe un usuario con este correo electrónico.",
         "errorUsername": "Ya existe un usuario con este nombre.",
         "errorCreating": "Se produjo un error al crear nuevo usuario. Contactar con soporte.",
@@ -176,6 +182,7 @@
         "errorInstitutionReq": "Escribe a que institución perteneces. Si no perteneces a ninguna institución escribe: 'Sin afiliación'",
         "errorPassword": "Tu contraseña debe tener 8 o más caracteres y contener al menos una letra mayúscula, una letra minúscula, un número y un carácter especial (@!#$%&?*), o tener al menos 16 caracteres.",
         "errorPassMatch": "Tus contraseñas deben coincidir.",
-        "errorEmailReq": "Por favor ingresa tu email."
+        "errorEmailReq": "Por favor ingresa tu email.",
+        "errorUpdating": "Se produjo un error al cuenta. Contactar con soporte."
     }
 }

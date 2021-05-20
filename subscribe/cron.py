@@ -9,11 +9,11 @@ from accounts.models import Profile
 from api.utils import authGEE, getImageList
 
 
-def safeGetEmailRegions(user):
+def safeGetUserInfo(user):
     try:
-        email = Profile.objects.filter(user=user).values().first()['email']
+        profile = Profile.objects.filter(user=user).values().first()
         regions = '__'.join(getSubscribedRegions(user))
-        return email, regions
+        return profile['email'], profile['default_lang'], regions
     except Exception as e:
         return None, None
 
@@ -34,13 +34,14 @@ def sendGoldAlerts():
             print(alertable)
             try:
                 user = alertable['user__user_id']
-                email, regions = safeGetEmailRegions(user)
+                email, lang, regions = safeGetUserInfo(user)
                 if regions and email:
                     proj_created = createNewProject(
                         user, latest_image, 'Alerta', regions)
                     if (proj_created['action'] == "Created"):
                         sendAlertMail('mspencer@sig-gis.com',
-                                      proj_created['proj'][3])
+                                      proj_created['proj'][3],
+                                      lang)
                         saveCron(jobCode,
                                  'Success: Mail sent to ' + email,
                                  regions)

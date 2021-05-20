@@ -1,6 +1,6 @@
 import React, {useState} from "react";
 
-import SvgIcon from "../SvgIcon";
+import SvgIcon from "./SvgIcon";
 
 export default function LanguageSelector({selectedLanguage, selectLanguage}) {
   const [show, setShow] = useState(false);
@@ -16,7 +16,7 @@ export default function LanguageSelector({selectedLanguage, selectLanguage}) {
         selectLanguage(language);
         setShow(false);
       }}
-      style={{width: "42px", maxWidth: "42px"}}
+      style={{height: "30px", maxHeight: "30px"}}
     >
       <img
         alt={language}
@@ -28,34 +28,40 @@ export default function LanguageSelector({selectedLanguage, selectLanguage}) {
 
   return (
     <div
+      onClick={() => setShow(!show)}
       style={{
-        background: "white",
-        position: "fixed",
-        top: "1rem",
-        right: "4rem",
-        zIndex: 10000,
-        height: "28px",
-        maxHeight: "28px",
-        borderRadius: "0 3px 3px 0"
+        borderRadius: "0 3px 3px 0",
+        height: "30px",
+        maxHeight: "30px",
+        zIndex: 1
       }}
     >
-      <div style={{display: "flex"}}>
+      <div style={{display: "flex", height: "100%"}}>
         {renderOption(selectedLanguage)}
         <div
-          onClick={() => setShow(!show)}
           style={{
-            width: "18px",
-            paddingTop: "4px",
-            borderRadius: "0 3px 3px 0"
+            background: "white",
+            borderRadius: "0 3px 3px 0",
+            border: "2px solid black",
+            paddingTop: "2px",
+            width: "18px"
           }}
         >
           <SvgIcon icon="down"/>
         </div>
       </div>
       {show && (
-        <div>
+        <div
+          style={{
+            background: "white",
+            borderBottom: "1px solid",
+            borderRight: "1px solid",
+            borderLeft: "1px solid",
+            width: "fit-content"
+          }}
+        >
           {Object.keys(languageList).map(l => (
-            renderOption(l)
+            <div key={l} className="pt-1">{renderOption(l)}</div>
           ))}
         </div>
       )}

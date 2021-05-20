@@ -5,13 +5,14 @@ import "mapbox-gl/dist/mapbox-gl.css";
 import AppInfo from "./AppInfo";
 import DownloadPanel from "./DownloadPanel";
 import LayersPanel from "./LayersPanel";
-import LanguageSelector from "./LanguageSelector";
+import LanguageSelector from "../components/LanguageSelector";
 import FilterPanel from "./FilterPanel";
 import SearchPanel from "./SearchPanel";
 import SideIcon from "./SideIcon";
 import StatsPanel from "./StatsPanel";
 import SubscribePanel from "./SubscribePanel";
 import ValidatePanel from "./ValidatePanel";
+import SvgIcon from "../components/SvgIcon";
 
 import {toPrecision, getCookie, getLanguage} from "../utils";
 import {MainContext} from "./context";
@@ -80,7 +81,9 @@ export default class PageLayout extends React.Component {
 
   // set up parameters after components are mounted
   componentDidMount() {
-    const lang = getLanguage(["en", "es"]);
+    const lang = ["en", "es"].includes(this.props.defaultLang)
+      ? this.props.defaultLang
+      : getLanguage(["en", "es"]);
     this.setState({selectedLanguage: lang});
 
     Promise.all([this.getLocalText(lang), this.getFeatureNames(), this.getImageDates()])
@@ -349,9 +352,30 @@ export default class PageLayout extends React.Component {
       });
     };
 
+    renderUserButton = () => {
+      const {username} = this.props;
+      return (
+        <div
+          onClick={() => window.location = "/user-account"}
+          style={{display: "flex", alignItems: "center", cursor: "pointer"}}
+        >
+          <span className="px-2">{username}</span>
+          <SvgIcon icon="user" size="2rem"/>
+        </div>
+      );
+    };
+
+    renderLanguage = () => (
+      <LanguageSelector
+        selectedLanguage={this.state.selectedLanguage}
+        selectLanguage={this.selectLanguage}
+      />
+    );
+
     // set up actions to render app
     render() {
       const {myHeight, localeText: {home}} = this.state;
+      const {isUser} = this.props;
       return (
         <MainContext.Provider
           value={{
@@ -385,11 +409,38 @@ export default class PageLayout extends React.Component {
                 position: "relative"
               }}
             />
-            <LanguageSelector
-              selectedLanguage={this.state.selectedLanguage}
-              selectLanguage={this.selectLanguage}
-            />
-            <div id="mobile-title"><h2>CoMiMo</h2></div>
+            {isUser
+              ? (
+                <button
+                  id="desktop-panel"
+                  style={{
+                    alignItems: "center",
+                    background: "white",
+                    borderRadius: "8px",
+                    display: "flex",
+                    padding: ".25rem",
+                    position: "fixed",
+                    right: "56px",
+                    top: "10px"
+                  }}
+                  type="button"
+                >
+                  {this.renderUserButton()}
+                </button>
+              ) : (
+                <div
+                  id="desktop-panel"
+                  style={{position: "fixed", top: "24px", right: "56px"}}
+                >
+                  {this.renderLanguage()}
+                </div>
+              )}
+            <div id="mobile-title">
+              <h2>CoMiMo</h2>
+              {isUser
+                ? (<div>{this.renderUserButton()}</div>)
+                : this.renderLanguage()}
+            </div>
             {home && (
               <>
                 {/* Layers */}

@@ -298,13 +298,17 @@ select[multiple] optgroup option:checked::before {
   html {
     font-size: 24px;
   }
+  #desktop-panel {
+    display: none !important;
+  }
   #mobile-title {
     display: flex;
     background-color: #f0ad4e;
     position: absolute;
     top: 0;
     width: 100%;
-    justify-content: center;
+    justify-content: space-around;
+    align-items: center;
   }
   .app-bar {
     display: block;

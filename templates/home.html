@@ -21,6 +21,12 @@
 {% block content %}
 <div id='main-container'>
 </div>
-<script
-    type='text/javascript'>window.onload = function () { home.pageInit({ isUser: USER_STATE, isAdmin: USER_ADM }) }</script>
+<script type='text/javascript'>
+    window.onload = function () {home.pageInit({
+        isUser: USER_STATE,
+        isAdmin: USER_ADM,
+        defaultLang: '{{defaultLang}}',
+        username: '{{username}}',
+    })}
+</script>
 {% endblock %}

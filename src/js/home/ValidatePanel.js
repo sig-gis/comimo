@@ -2,7 +2,7 @@ import React from "react";
 import {MainContext} from "./context";
 
 import LoginMessage from "./LoginMessage";
-import SvgIcon from "../SvgIcon";
+import SvgIcon from "../components/SvgIcon";
 
 export default class ValidatePanel extends React.Component {
   constructor(props) {
