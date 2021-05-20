@@ -205,12 +205,22 @@ export default class PageLayout extends React.Component {
     };
 
     submitMine = () => {
-      const {selectedLatLon} = this.state;
-      if (selectedLatLon) {
-        const [lat, lon] = selectedLatLon;
-        fetch("subscribe/report-mine?lat=" + lat + "&lon=" + lon)
-          .then(res => res.json())
-          .then(res => alert(res))
+      const {selectedLatLon, localeText: {report}} = this.state;
+      const [lat, lon] = selectedLatLon;
+      if (lat && lon) {
+        return fetch("subscribe/report-mine?lat=" + lat + "&lon=" + lon)
+          .then(result => result.json())
+          .then(result => {
+            if (result.action === "Created") {
+              alert(report.created);
+            } else if (result.action === "Exists") {
+              alert(report.existing);
+            } else if (result.action === "Outside") {
+              alert("Outside");
+            } else {
+              alert(report.error);
+            }
+          })
           .catch(error => console.log(error));
       } else {
         alert("You must select a location to continue.");
@@ -252,7 +262,7 @@ export default class PageLayout extends React.Component {
     };
 
     addPopup = (lat, lon) => {
-      const {theMap, selectedDates, thePopup, localeText: {home}} = this.state;
+      const {theMap, selectedDates, thePopup, localeText: {home}, localeText} = this.state;
       const {reportHidden} = this.state;
 
       // Remove old popup
@@ -280,7 +290,7 @@ export default class PageLayout extends React.Component {
         ReactDOM.render(
           <ReportPopupContent
             lat={lat}
-            localeText={home}
+            localeText={localeText}
             lon={lon}
             submitMine={this.submitMine}
           />, document.getElementById(divId)
@@ -668,12 +678,12 @@ class InfoPopupContent extends React.Component {
   }
 }
 
-function ReportPopupContent({lat, lon, submitMine, localeText}) {
+function ReportPopupContent({lat, lon, submitMine, localeText: {report}}) {
   return (
     <div style={{display: "flex", flexDirection: "column", alignItems: "flex-start"}}>
-      <label><b>{localeText.latitude}</b>:</label>
+      <label><b>{report.latitude}</b>:</label>
       <label>{lat}</label>
-      <label><b>{localeText.longitude}</b>:</label>
+      <label><b>{report.longitude}</b>:</label>
       <label>{lon}</label>
       <div style={{display: "flex", width: "100%", justifyContent: "flex-end"}}>
         <button
@@ -681,7 +691,7 @@ function ReportPopupContent({lat, lon, submitMine, localeText}) {
           onClick={submitMine}
           type="button"
         >
-          {localeText.reportMine}
+          {report.reportMine}
         </button>
       </div>
     </div>

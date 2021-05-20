@@ -26,10 +26,7 @@
         "downloadTooltip": "Descargar datos",
         "appInfoTooltip": "Información de la aplicación",
         "reportToolTip": "Reportar mina",
-        "loading": "Cargando",
-        "reportMine": "Reportar mina",
-        "latitude": "Latitud",
-        "longitude": "Longitud"
+        "loading": "Cargando"
     },
     "appInfo": {
         "download": "Descargar datos validados",
@@ -83,13 +80,17 @@
         "latitude": "Latitud",
         "longitude": "Longitud",
         "submit": "Reportar mina",
-        "noLocation": "Seleccionar un punto para continuar."
+        "noLocation": "Seleccionar un punto para continuar.",
+        "reportMine": "Reportar mina",
+        "existing": "Ya ha informado de una mina aquí.",
+        "created": "Mina informado con éxito.",
+        "error": "Error desconocido."
     },
     "search": {
         "noResults": "Sin resultados",
         "stateLabel": "Departamento",
         "defaultState": "Selecciona un departamento",
-        "modalMessage": "Cargando",
+        "loading": "Cargando",
         "munLabel": "Municipio",
         "defaultMun": "Selecciona un municipio",
         "title": "Buscar ubicación",

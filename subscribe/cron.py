@@ -33,7 +33,9 @@ def sendGoldAlerts():
         for alertable in iter(users):
             print(alertable)
             try:
+                # createNewProject uses auth-user
                 user = alertable['user__user_id']
+                # alertable['user'] should already be profile-user
                 email, lang, regions = safeGetUserInfo(user)
                 if regions and email:
                     proj_created = createNewProject(

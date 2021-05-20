@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, reverse
 from django.contrib.auth import login, authenticate
 from django.http import JsonResponse
-from subscribe.utils import archiveProject, createNewProject, delEmail, getActiveProjects, getSubscribedRegions, saveEmail
+from subscribe.utils import archiveProject, createNewProject, delEmail, getActiveProjects, getSubscribedRegions, saveEmail, saveMine
 
 
 def requestLogin(request):
@@ -13,11 +13,10 @@ def reportMine(request):
     if not(user.is_authenticated):
         return requestLogin(request)
     else:
-        lat = request.GET.get('lat')
-        lon = request.GET.get('lon')
-        print(lat)
-        print(lon)
-        return JsonResponse({'action': 'Success'})
+        lat = float(request.GET.get('lat'))
+        lon = float(request.GET.get('lon'))
+        subaction = saveMine(user, lat, lon)
+        return JsonResponse({'action': subaction})
 
 
 def addSubs(request):

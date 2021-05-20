@@ -26,10 +26,7 @@
         "downloadTooltip": "Download data",
         "appInfoTooltip": "App info",
         "reportToolTip": "Report mine",
-        "loading": "Loading",
-        "reportMine": "Report Mine",
-        "latitude": "Latitude",
-        "longitude": "Longitude"
+        "loading": "Loading"
     },
     "appInfo": {
         "download": "Download validated data",
@@ -77,6 +74,7 @@
     },
     "report": {
         "title": "Report Mines",
+        "subTitle": "Click on the map or enter coordinates into the box below.",
         "goButton": "Go",
         "coordLabel": "Latitude, Longitude Search",
         "selectedLocation": "Selected Location",
@@ -84,7 +82,10 @@
         "longitude": "Longitude",
         "submit": "Report Mine",
         "noLocation": "Select point to continue.",
-        "subTitle": "Click on the map or enter coordinates into the box below."
+        "reportMine": "Report Mine",
+        "existing": "You have already reported a mine here.",
+        "created": "Mine successfully reported.",
+        "error": "Unknown error."
     },
     "search": {
         "noResults": "No Results",

@@ -20,6 +20,23 @@ class SubscribeModel(models.Model):
         return str(self.user.user.id) + ' ' + self.user.user.username + ' : ' + self.region
 
 
+class UserMinesModel(models.Model):
+    id = models.AutoField(primary_key=True, null=False)
+    user = models.ForeignKey(Profile, on_delete=models.CASCADE)
+    # Latitude
+    x = models.FloatField(null=False)
+    # Longitude
+    y = models.FloatField(null=False)
+    reported_date = models.DateTimeField(null=False, blank=True)
+
+    class Meta:
+        app_label = "subscribe"
+        db_table = "gmw_usermines"
+
+    def __str__(self):
+        return str(self.user.user.id) + ' ' + self.user.user.username + ' : ' + str(self.y) + ', ' + str(self.x)
+
+
 class ProjectsModel(models.Model):
     id = models.AutoField(primary_key=True, null=False)
     user = models.ForeignKey(Profile, on_delete=models.CASCADE)
@@ -42,8 +59,10 @@ class ProjectsModel(models.Model):
 class ExtractedData(models.Model):
     id = models.AutoField(primary_key=True, null=False)
     user = models.ForeignKey(Profile, on_delete=models.CASCADE)
-    y = models.FloatField(null=False)
+    # Latitude
     x = models.FloatField(null=False)
+    # Longitude
+    y = models.FloatField(null=False)
     data_layer = models.CharField(max_length=25, default='')
     class_num = models.CharField(max_length=2, null=False)
     class_name = models.CharField(max_length=10, null=False)

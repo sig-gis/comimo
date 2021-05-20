@@ -46,3 +46,10 @@ def getPointsWithin(regions, dataLayer):
         return points.filterBounds(fc)
     except Exception as e:
         print(e)
+
+
+def locationInCountry(lat, lon):
+    point = ee.Geometry.Point(lon, lat)
+    admnames = ee.FeatureCollection(
+        "users/comimoapp/Shapes/Level0").filterBounds(point)
+    return ee.Algorithms.If(admnames.size().gt(0), True, False).getInfo()

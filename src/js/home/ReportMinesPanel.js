@@ -11,6 +11,8 @@ export default class ReportMinesPanel extends React.Component {
     };
   }
 
+  /// Helper functions ///
+
   processLatLng = () => {
     const {latLonText} = this.state;
     const {fitMap, addPopup} = this.props;
