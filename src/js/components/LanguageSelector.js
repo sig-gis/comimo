@@ -30,41 +30,39 @@ export default function LanguageSelector({selectedLanguage, selectLanguage}) {
     <div
       onClick={() => setShow(!show)}
       style={{
-        zIndex: 1,
+        borderRadius: "0 3px 3px 0",
         height: "30px",
         maxHeight: "30px",
-        borderRadius: "0 3px 3px 0"
+        zIndex: 1
       }}
     >
       <div style={{display: "flex", height: "100%"}}>
         {renderOption(selectedLanguage)}
         <div
           style={{
-            width: "18px",
-            paddingTop: "2px",
+            background: "white",
             borderRadius: "0 3px 3px 0",
             border: "2px solid black",
-            background: "white"
+            paddingTop: "2px",
+            width: "18px"
           }}
         >
           <SvgIcon icon="down"/>
         </div>
       </div>
       {show && (
-        <div>
-          <div
-            style={{
-              background: "white",
-              width: "fit-content",
-              borderBottom: "1px solid",
-              borderRight: "1px solid",
-              borderLeft: "1px solid"
-            }}
-          >
-            {Object.keys(languageList).map(l => (
-              <div key={l} className="pt-1">{renderOption(l)}</div>
-            ))}
-          </div>
+        <div
+          style={{
+            background: "white",
+            borderBottom: "1px solid",
+            borderRight: "1px solid",
+            borderLeft: "1px solid",
+            width: "fit-content"
+          }}
+        >
+          {Object.keys(languageList).map(l => (
+            <div key={l} className="pt-1">{renderOption(l)}</div>
+          ))}
         </div>
       )}
 

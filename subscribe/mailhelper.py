@@ -78,11 +78,11 @@ def sendAlertMail(email, projurl, lang):
         sendMail(email,
                  "CoMiMo Mine alert",
                  alertTextEN(projurl),
-                 alertHTMLES(projurl))
+                 alertHTMLEN(projurl))
 
 
 def alertTextEN(projurl):
-    return "Maine Alert\n\n" \
+    return "Mine Alert\n\n" \
         + "We have detected possible mining sites in the areas to which it is subscribed.\n\n" \
         + "You can see the new validations listed in CoMiMo here: " + APP_URL + "'\n\n" \
         + "To validate this information, go to the validation panel in the application or go directly to CEO: " \
@@ -93,8 +93,8 @@ def alertHTMLEN(projurl):
     return """\
         <html>
         <body>
-            <h3>¡Alerta!</h3>
-            Hemos detectado posibles sitios de explotación minera en las áreas a las cuales se encuentra suscrito.
+            <h3>Mine Alert</h3>
+            We have detected possible mining sites in the areas to which it is subscribed.
             <br/><br/>
             You can see the new validations listed in CoMiMo <a href='""" + APP_URL + """'>here.</a>.
             <br/><br/>
