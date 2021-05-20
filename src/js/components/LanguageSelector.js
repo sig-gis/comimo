@@ -30,21 +30,21 @@ export default function LanguageSelector({selectedLanguage, selectLanguage}) {
     <div
       onClick={() => setShow(!show)}
       style={{
-        background: "white",
-        zIndex: 10000,
+        zIndex: 1,
         height: "30px",
         maxHeight: "30px",
         borderRadius: "0 3px 3px 0"
       }}
     >
-      <div style={{display: "flex"}}>
+      <div style={{display: "flex", height: "100%"}}>
         {renderOption(selectedLanguage)}
         <div
           style={{
             width: "18px",
             paddingTop: "2px",
             borderRadius: "0 3px 3px 0",
-            border: "2px solid black"
+            border: "2px solid black",
+            background: "white"
           }}
         >
           <SvgIcon icon="down"/>

@@ -352,10 +352,30 @@ export default class PageLayout extends React.Component {
       });
     };
 
+    renderUserButton = () => {
+      const {username} = this.props;
+      return (
+        <div
+          onClick={() => window.location = "/user-account"}
+          style={{display: "flex", alignItems: "center", cursor: "pointer"}}
+        >
+          <span className="px-2">{username}</span>
+          <SvgIcon icon="user" size="2rem"/>
+        </div>
+      );
+    };
+
+    renderLanguage = () => (
+      <LanguageSelector
+        selectedLanguage={this.state.selectedLanguage}
+        selectLanguage={this.selectLanguage}
+      />
+    );
+
     // set up actions to render app
     render() {
       const {myHeight, localeText: {home}} = this.state;
-      const {isUser, username} = this.props;
+      const {isUser} = this.props;
       return (
         <MainContext.Provider
           value={{
@@ -392,32 +412,35 @@ export default class PageLayout extends React.Component {
             {isUser
               ? (
                 <button
-                  onClick={() => window.location = "/user-account"}
+                  id="desktop-panel"
                   style={{
                     alignItems: "center",
                     background: "white",
                     borderRadius: "8px",
-                    cursor: "pointer"
                     display: "flex",
                     padding: ".25rem",
                     position: "fixed",
                     right: "56px",
-                    top: "10px",
+                    top: "10px"
                   }}
                   type="button"
                 >
-                  <span className="px-2">{username}</span>
-                  <SvgIcon icon="user" size="2rem"/>
+                  {this.renderUserButton()}
                 </button>
               ) : (
-                <div style={{position: "fixed", top: "24px", right: "56px"}}>
-                  <LanguageSelector
-                    selectedLanguage={this.state.selectedLanguage}
-                    selectLanguage={this.selectLanguage}
-                  />
+                <div
+                  id="desktop-panel"
+                  style={{position: "fixed", top: "24px", right: "56px"}}
+                >
+                  {this.renderLanguage()}
                 </div>
               )}
-            <div id="mobile-title"><h2>CoMiMo</h2></div>
+            <div id="mobile-title">
+              <h2>CoMiMo</h2>
+              {isUser
+                ? (<div>{this.renderUserButton()}</div>)
+                : this.renderLanguage()}
+            </div>
             {home && (
               <>
                 {/* Layers */}
