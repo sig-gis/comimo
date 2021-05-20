@@ -8,6 +8,18 @@ def requestLogin(request):
     return redirect(reverse('login') + '?next=' + request.build_absolute_uri())
 
 
+def reportMine(request):
+    user = request.user
+    if not(user.is_authenticated):
+        return requestLogin(request)
+    else:
+        lat = request.GET.get('lat')
+        lon = request.GET.get('lon')
+        print(lat)
+        print(lon)
+        return JsonResponse({'action': 'Success'})
+
+
 def addSubs(request):
     # request handler to add subscriptions
     user = request.user

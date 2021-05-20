@@ -41,8 +41,8 @@ module.exports = {
     ],
     // Hacks for this code
     "react/prefer-stateless-function": 0,
-    "react/jsx-fragments": 0,
     // Override recommends
+    "react/jsx-fragments": 1,
     "import/prefer-default-export": 0,
     "implicit-arrow-linebreak": 0,
     "jsx-a11y/label-has-associated-control": 0,
