@@ -6,7 +6,7 @@
 <!-- add classes for the application -->
 <script type='text/javascript' src='{% static "js/jquery-3.4.1.min.js" %}'></script>
 <script type='text/javascript' src='{% static "js/tabulator-4.5.3.min.js" %}'></script>
-<script type='text/javascript' src='{% static "js/downloadAll.js" %}'></script>
+<script type='text/javascript' src='{% static "js/downloadData.js" %}'></script>
 {% endblock %}
 
 {% block pagestyles %}
@@ -17,5 +17,5 @@
 {% block content %}
 <div id='main-container'>
 </div>
-<script type='text/javascript'>window.onload = function () {downloadAll.pageInit()}</script>
+<script type='text/javascript'>window.onload = function () {downloadData.pageInit()}</script>
 {% endblock %}

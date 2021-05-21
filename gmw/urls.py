@@ -19,7 +19,7 @@ from django.views.generic.base import TemplateView
 from django.conf import settings
 from django.conf.urls.static import static
 
-from subscribe.views import downloadData, downloadAll, getDataDates
+from subscribe.views import downloadData
 from gmw.views import homeView
 
 urlpatterns = [
@@ -29,6 +29,4 @@ urlpatterns = [
     path('subscribe/', include('subscribe.urls', namespace='subscribe')),
     path('', homeView, name='home'),
     path('download-data/', downloadData, name='downloadData'),
-    path('download-all/', downloadAll, name='downloadAll'),
-    path('get-data-dates/', getDataDates, name='getDataDates'),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

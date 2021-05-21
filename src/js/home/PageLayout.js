@@ -204,29 +204,6 @@ export default class PageLayout extends React.Component {
       });
     };
 
-    submitMine = () => {
-      const {selectedLatLon, localeText: {report}} = this.state;
-      const [lat, lon] = selectedLatLon;
-      if (lat && lon) {
-        return fetch("subscribe/report-mine?lat=" + lat + "&lon=" + lon)
-          .then(result => result.json())
-          .then(result => {
-            if (result.action === "Created") {
-              alert(report.created);
-            } else if (result.action === "Exists") {
-              alert(report.existing);
-            } else if (result.action === "Outside") {
-              alert("Outside");
-            } else {
-              alert(report.error);
-            }
-          })
-          .catch(error => console.log(error));
-      } else {
-        alert("You must select a location to continue.");
-      }
-    };
-
     /// Mapbox TODO move to separate component
 
     initMap = () => {
@@ -292,7 +269,6 @@ export default class PageLayout extends React.Component {
             lat={lat}
             localeText={localeText}
             lon={lon}
-            submitMine={this.submitMine}
           />, document.getElementById(divId)
         );
       }
@@ -678,22 +654,13 @@ class InfoPopupContent extends React.Component {
   }
 }
 
-function ReportPopupContent({lat, lon, submitMine, localeText: {report}}) {
+function ReportPopupContent({lat, lon, localeText: {report}}) {
   return (
     <div style={{display: "flex", flexDirection: "column", alignItems: "flex-start"}}>
       <label><b>{report.latitude}</b>:</label>
       <label>{lat}</label>
       <label><b>{report.longitude}</b>:</label>
       <label>{lon}</label>
-      <div style={{display: "flex", width: "100%", justifyContent: "flex-end"}}>
-        <button
-          className="btn map-upd-btn mt-3"
-          onClick={submitMine}
-          type="button"
-        >
-          {report.reportMine}
-        </button>
-      </div>
     </div>
   );
 }

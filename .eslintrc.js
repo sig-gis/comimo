@@ -98,7 +98,7 @@ module.exports = {
       ignoreRegExpLiterals: true
     }],
     "no-trailing-spaces" : 2,
-    "no-console": 0,
+    "no-console": ["warn", {allow: ["warn", "error"]}],
     "no-duplicate-imports": 1,
     "no-multi-spaces": 2,
     "no-prototype-builtins": 0,

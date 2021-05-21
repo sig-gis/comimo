@@ -7,9 +7,40 @@ export default class ReportMinesPanel extends React.Component {
     super(props);
 
     this.state = {
-      latLonText: ""
+      latLonText: "",
+      reportedLatLon: null,
+      reportingMine: false
     };
   }
+
+  /// API Calls ///
+
+  submitMine = () => {
+    const {selectedLatLon} = this.props;
+    const {localeText: {report}} = this.context;
+    const [lat, lon] = selectedLatLon;
+    if (lat && lon) {
+      this.setState({reportingMine: true});
+      fetch("subscribe/report-mine?lat=" + lat + "&lon=" + lon)
+        .then(result => result.json())
+        .then(result => {
+          if (result.action === "Created") {
+            this.setState({reportedLatLon: selectedLatLon});
+            alert(report.created);
+          } else if (result.action === "Exists") {
+            alert(report.existing);
+          } else if (result.action === "Outside") {
+            alert(report.outside);
+          } else {
+            alert(report.error);
+          }
+        })
+        .catch(error => console.error(error))
+        .finally(() => this.setState({reportingMine: false}));
+    } else {
+      alert("You must select a location to continue.");
+    }
+  };
 
   /// Helper functions ///
 
@@ -28,10 +59,11 @@ export default class ReportMinesPanel extends React.Component {
   };
 
   render() {
-    const {latLonText} = this.state;
-    const {isHidden, selectedLatLon, submitMine} = this.props;
+    const {latLonText, reportingMine, reportedLatLon} = this.state;
+    const {isHidden, selectedLatLon} = this.props;
     const {localeText: {report}} = this.context;
 
+    const reported = reportedLatLon === selectedLatLon;
     return (
       <div className={"popup-container search-panel " + (isHidden ? "see-through" : "")}>
         <h3>{report.title}</h3>
@@ -57,10 +89,11 @@ export default class ReportMinesPanel extends React.Component {
               <div style={{display: "flex", width: "100%", justifyContent: "flex-end"}}>
                 <button
                   className="btn map-upd-btn mt-1"
-                  onClick={submitMine}
+                  disabled={reportingMine || reported}
+                  onClick={this.submitMine}
                   type="button"
                 >
-                  {report.submit}
+                  {reported ? report.reported : report.submit}
                 </button>
               </div>
             </>

@@ -81,10 +81,12 @@
         "latitude": "Latitude",
         "longitude": "Longitude",
         "submit": "Report Mine",
+        "reported": "Reported",
         "noLocation": "Select point to continue.",
         "reportMine": "Report Mine",
         "existing": "You have already reported a mine here.",
         "created": "Mine successfully reported.",
+        "outside": "You can only report mines inside Colomdia.",
         "error": "Unknown error."
     },
     "search": {
