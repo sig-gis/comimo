@@ -1,7 +1,8 @@
 import os
 import pytz
 from datetime import datetime, timedelta
-from django.db.models import Min
+from django.db.models import Aggregate, CharField
+
 from subscribe.mailhelper import sendAlertMail
 from subscribe.models import SubscribeModel, ProjectsModel
 from subscribe.utils import archiveProject, createNewProject, getSubscribedRegions, saveCron
@@ -9,13 +10,15 @@ from accounts.models import Profile
 from api.utils import authGEE, getImageList
 
 
-def safeGetUserInfo(user):
-    try:
-        profile = Profile.objects.filter(user=user).values().first()
-        regions = '__'.join(getSubscribedRegions(user))
-        return profile['email'], profile['default_lang'], regions
-    except Exception as e:
-        return None, None
+class RegionConcat(Aggregate):
+    template = """GROUP_CONCAT(level || '_' || region, '__')"""
+
+    def __init__(self, expression, **extra):
+        super(RegionConcat, self).__init__(
+            expression,
+            output_field=CharField(),
+            **extra
+        )
 
 
 def sendGoldAlerts():
@@ -27,38 +30,41 @@ def sendGoldAlerts():
         latest_date = datetime.strptime(
             latest_image[:-2], "%Y-%m-%d").replace(tzinfo=pytz.UTC)
         users = SubscribeModel.objects.all() \
-            .values('user__user_id', 'user') \
+            .values('user__email', 'user__default_lang', 'user__user_id', 'user') \
             .filter(last_alert_for__lt=latest_date) \
-            .annotate(alert=Min('last_alert_for'))
+            .annotate(regions=RegionConcat('level'))
         for alertable in iter(users):
-            print(alertable)
             try:
+                email = alertable['user__email']
+                lang = alertable['user__default_lang']
+                userId = alertable['user__user_id']
+                profileId = alertable['user']
+                regions = alertable['regions']
                 # createNewProject uses auth-user
-                user = alertable['user__user_id']
-                # alertable['user'] should already be profile-user
-                email, lang, regions = safeGetUserInfo(user)
-                if regions and email:
-                    proj_created = createNewProject(
-                        user, latest_image, 'Alerta', regions)
-                    if (proj_created['action'] == "Created"):
-                        sendAlertMail('mspencer@sig-gis.com',
-                                      proj_created['proj'][3],
-                                      lang)
-                        saveCron(jobCode,
-                                 'Success: Mail sent to ' + email,
-                                 regions)
-                        SubscribeModel.objects.filter(user=alertable['user']).update(
-                            last_alert_for=latest_date)
-                    elif (proj_created['action'] == "Error"):
-                        saveCron(jobCode,
-                                 'Error: ' + proj_created['message'],
-                                 regions)
-                    else:
-                        saveCron(jobCode, 'Error: Unknown cron error.', regions)
+                proj_created = createNewProject(
+                    userId,
+                    latest_image,
+                    'Alerta' if lang == "es" else 'Alert',
+                    regions)
+                if (proj_created['action'] == "Created"):
+                    sendAlertMail(email,
+                                  proj_created['proj'][3],
+                                  lang)
+                    saveCron(jobCode,
+                             'Success: Mail sent to ' + email,
+                             regions)
+                    SubscribeModel.objects.filter(user=profileId).update(
+                        last_alert_for=latest_date)
+                elif (proj_created['action'] == "Error"):
+                    saveCron(jobCode,
+                             'Error: ' + proj_created['message'],
+                             regions)
+                else:
+                    saveCron(jobCode, 'Error: Unknown cron error.', regions)
             except Exception as ee:
                 print('Error: {0}'.format(ee))
                 saveCron(jobCode, 'Error: {0}'.format(ee))
-        saveCron(jobCode, 'Completed Successfully')
+        saveCron(jobCode, 'Email alert job complete.')
     except Exception as e:
         print("OS error: {0}".format(e))
         saveCron(jobCode, 'Error: {0}'.format(e))
