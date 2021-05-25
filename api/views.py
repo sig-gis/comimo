@@ -183,7 +183,7 @@ def getInfo(request):
         lat = float(req.get('lat'))
         lon = float(req.get('lon'))
         point = ee.Geometry.Point(lon, lat)
-        pointFeature = ee.Feature(ee.Geometry.Point(lon, lat))
+        pointFeature = ee.Feature(point)
 
         vals = {}
 

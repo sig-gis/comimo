@@ -30,8 +30,7 @@ export default class PageLayout extends React.Component {
       FEATURE_NAMES: "api/getfeaturenames",
       IMG_DATES: "/api/getimagenames",
       SINGLE_IMAGE: "/api/getsingleimage",
-      GEE_LAYER: "api/getgeetiles",
-      INFO: "api/getinfo"
+      GEE_LAYER: "api/getgeetiles"
     };
     // Layers available
     this.availableLayers = [
