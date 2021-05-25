@@ -52,15 +52,20 @@ def sendGoldAlerts():
                                   lang)
                     saveCron(jobCode,
                              'Success: Mail sent to ' + email,
-                             regions)
+                             regions,
+                             email)
                     SubscribeModel.objects.filter(user=profileId).update(
                         last_alert_for=latest_date)
                 elif (proj_created['action'] == "Error"):
                     saveCron(jobCode,
                              'Error: ' + proj_created['message'],
-                             regions)
+                             regions,
+                             email)
                 else:
-                    saveCron(jobCode, 'Error: Unknown cron error.', regions)
+                    saveCron(jobCode,
+                             'Error: Unknown cron error.',
+                             regions,
+                             email)
             except Exception as ee:
                 print('Error: {0}'.format(ee))
                 saveCron(jobCode, 'Error: {0}'.format(ee))
@@ -73,17 +78,16 @@ def sendGoldAlerts():
 def cleanStaleProjects():
     jobCode = 'Close 30 day projects'
     try:
-        fields = ['user__user_id', 'projid', 'name']
         bardate = datetime.now() + timedelta(days=-30)
         staleprojects = list(ProjectsModel.objects.filter(
             status='active', created_date__lt=bardate)
-            .values_list(*fields))
+            .values('user__user_id', 'projid'))
         for project in staleprojects:
-            print(project)
-            result = archiveProject(project[0], project[1])
-            print(result)
+            userId = project['user__user_id']
+            projId = project['projid']
+            result = archiveProject(userId, projId)
             saveCron(jobCode,
-                     result['action'] + " " + str(project[1]) + ": " + result['message'])
+                     result['action'] + " " + str(projId) + ": " + result['message'])
     except Exception as e:
         print(e)
         saveCron(jobCode, 'Error: {0}'.format(e))

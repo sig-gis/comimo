@@ -81,6 +81,7 @@ class CronJobs(models.Model):
     job_type = models.CharField(max_length=20, null=False)
     finish_message = models.CharField(max_length=500, null=False)
     regions = models.TextField(null=False, default="")
+    email = models.EmailField(max_length=150, default="")
 
     class Meta:
         app_label = "subscribe"
