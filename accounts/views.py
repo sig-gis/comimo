@@ -12,6 +12,10 @@ from subscribe.mailhelper import sendResetMail, sendNewUserMail
 from accounts.utils import getUserInfo
 
 
+def clean(string):
+    return string.strip().lower()
+
+
 def getUser(email):
     try:
         return User.objects.get(Q(email=email) | Q(username=email))
@@ -37,8 +41,8 @@ def registerView(request):
     if request.method == "POST":
         try:
             JSONbody = json.loads(request.body)
-            email = JSONbody.get("email").strip()
-            username = JSONbody.get("username").strip()
+            email = clean(JSONbody.get("email"))
+            username = clean(JSONbody.get("username"))
             # check for email
             emailUser = getUserByEmail(email)
             # check for username
@@ -89,11 +93,9 @@ def userAccountView(request):
                 with transaction.atomic():
                     profile = Profile.objects.filter(
                         user=user).first()
-                    profile.full_name = JSONbody.get(
-                        "fullName").strip()
-                    profile.sector = JSONbody.get("sector").strip()
-                    profile.institution = JSONbody.get(
-                        "institution").strip()
+                    profile.full_name = clean(JSONbody.get("fullName"))
+                    profile.sector = clean(JSONbody.get("sector"))
+                    profile.institution = clean(JSONbody.get("institution"))
                     profile.default_lang = JSONbody.get("defaultLang")
                     profile.save()
                     return HttpResponse("")
@@ -108,7 +110,7 @@ def verifyUserView(request):
     if request.method == "POST":
         JSONbody = json.loads(request.body)
         token = JSONbody.get("token")
-        user = getUser(JSONbody.get("email"))
+        user = getUser(clean(JSONbody.get("email")))
         gen = PasswordResetTokenGenerator()
 
         if user is None:
@@ -126,8 +128,8 @@ def verifyUserView(request):
 def loginView(request):
     if request.method == "POST":
         JSONbody = json.loads(request.body)
-        user = authenticate(username=JSONbody.get("username"),
-                            password=JSONbody.get("password"))
+        user = authenticate(username=clean(JSONbody.get("username")),
+                            password=clean(JSONbody.get("password")))
         if user is not None:
             login(request, user)
             return HttpResponse("")
@@ -145,7 +147,7 @@ def logoutView(request):
 def forgotView(request):
     if request.method == "POST":
         JSONbody = json.loads(request.body)
-        user = getUser(JSONbody.get("email"))
+        user = getUser(clean(JSONbody.get("email")))
 
         if user is not None:
             gen = PasswordResetTokenGenerator()
@@ -165,7 +167,7 @@ def resetView(request):
         JSONbody = json.loads(request.body)
         token = JSONbody.get("token")
         password = JSONbody.get("password")
-        user = getUser(JSONbody.get("email"))
+        user = getUser(clean(JSONbody.get("email")))
         gen = PasswordResetTokenGenerator()
 
         if user is None:

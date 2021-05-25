@@ -11,7 +11,6 @@ def combine_name(apps, schema_editor):
                                      user.last_name, user.second_last_name))
             user.full_name = ' '.join(combinedName.split())
             user.save()
-        # print(user.full_name == "")
 
 
 class Migration(migrations.Migration):
