@@ -117,4 +117,5 @@ class ExtractedAdmin(admin.ModelAdmin):
 admin.site.register(models.SubscribeModel)
 admin.site.register(models.ProjectsModel, ProjectsAdmin)
 admin.site.register(models.ExtractedData, ExtractedAdmin)
+admin.site.register(models.UserMinesModel)
 admin.site.register(models.CronJobs)

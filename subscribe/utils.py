@@ -3,50 +3,85 @@ import logging
 import traceback
 import pytz
 from datetime import datetime
-from subscribe.models import SubscribeModel, ProjectsModel, ExtractedData, CronJobs
-from subscribe.ceohelper import deleteProject, getCollectedData, getCeoProjectURL
+from subscribe.models import CronJobs, ExtractedData, ProjectsModel, SubscribeModel, UserMinesModel
+from subscribe.ceohelper import deleteProject, getCollectedData, createCEOProject
 from accounts.models import Profile
-from api.utils import authGEE, getPointsWithin
+from api.utils import authGEE, getPointsWithin, locationInCountry
+
+##! Note, all subscribe models take user=Profile !##
+
+
+def getProfile(user):
+    if (isinstance(user, Profile)):
+        return user
+    else:
+        return Profile.objects.get(user=user)
 
 # function to add entry to model
 
 
 def saveEmail(user, region, level):
     try:
-        user = Profile.objects.get(user=user)
-        subscribe_model_instance = SubscribeModel.objects.get(
-            user=user, region=region, level=level)
-        return 'Exists'
-    except ObjectDoesNotExist as e:
-        subscribe_model_instance = SubscribeModel()
-        subscribe_model_instance.user = user
-        subscribe_model_instance.region = region
-        subscribe_model_instance.level = level
-        subscribe_model_instance.last_alert_for = datetime.now()
-        subscribe_model_instance.mail_count = 0
-        subscribe_model_instance.created_date = datetime.now()
-        subscribe_model_instance.save()
+        profile = getProfile(user)
+        subsCount = SubscribeModel.objects.filter(
+            user=profile, region=region, level=level).count()
+        if subsCount > 0:
+            return 'Exists'
+        else:
+            new_subs = SubscribeModel()
+            new_subs.user = profile
+            new_subs.region = region
+            new_subs.level = level
+            new_subs.last_alert_for = datetime.now()
+            new_subs.mail_count = 0
+            new_subs.created_date = datetime.now()
+            new_subs.save()
         return 'Created'
     except Exception as e:
-        logging.getLogger("error").error(traceback.format_exc())
+        print(e)
         return 'Error'
 
 
 def delEmail(user, region, level):
     try:
-        user = Profile.objects.get(user=user)
+        profile = getProfile(user)
         subscribe_model_instance = SubscribeModel.objects.get(
-            user=user, region=region, level=level)
+            user=profile, region=region, level=level)
+        subscribe_model_instance.delete()
+        return 'Deleted'
     except Exception as e:
         return 'Error'
-    subscribe_model_instance.delete()
-    return 'Deleted'
 
 
-def projectExists(user, dataLayer, regions):
+def saveMine(user, lat, lon):
+    try:
+        authGEE()
+        profile = getProfile(user)
+        mineCount = UserMinesModel.objects \
+            .filter(x=lat, y=lon, user=profile) \
+            .count()
+
+        if mineCount > 0:
+            return 'Exists'
+        elif not locationInCountry(lat, lon):
+            return 'Outside'
+        else:
+            new_mine = UserMinesModel()
+            new_mine.user = profile
+            new_mine.x = lat
+            new_mine.y = lon
+            new_mine.reported_date = datetime.now()
+            new_mine.save()
+            return 'Created'
+    except Exception as e:
+        print(e)
+        return 'Error'
+
+
+def projectExists(profile, dataLayer, regions):
     try:
         projects_model_instance = ProjectsModel.objects.get(
-            user=user, data_layer=dataLayer, regions=regions, status='active')
+            user=profile, data_layer=dataLayer, regions=regions, status='active')
         return True, projects_model_instance.name
     except ObjectDoesNotExist as e:
         return False, 'NA'
@@ -54,32 +89,28 @@ def projectExists(user, dataLayer, regions):
 # function to add entry to model
 
 
-def saveProject(email, projurl, projid, dataLayer, name, regions):
-    user = Profile.objects.get(email=email)
+def saveProject(profile, projurl, projid, dataLayer, name, regions):
     try:
-        projects_model_instance = ProjectsModel()
-        projects_model_instance.user = user
-        projects_model_instance.projid = int(projid)
-        projects_model_instance.projurl = projurl
-        projects_model_instance.name = name
-        projects_model_instance.regions = regions
-        projects_model_instance.data_layer = dataLayer
-        projects_model_instance.created_date = datetime.now()
-        projects_model_instance.status = 'active'
-        projects_model_instance.save()
+        new_project = ProjectsModel()
+        new_project.user = profile
+        new_project.projid = int(projid)
+        new_project.projurl = projurl
+        new_project.name = name
+        new_project.regions = regions
+        new_project.data_layer = dataLayer
+        new_project.created_date = datetime.now()
+        new_project.status = 'active'
+        new_project.save()
         return 'Created'
     except Exception as e:
         print(e)
-        logging.getLogger("error").error(traceback.format_exc())
         return 'Error'
 
 
 def getSubscribedRegions(user):
-    # user is most likely auth-user not profile-user.  Convert because SubscribeModel uses profile-user
-    if (not isinstance(user, Profile)):
-        user = Profile.objects.get(user=user)
     try:
-        subscribe_instances = SubscribeModel.objects.all().filter(user=user)
+        profile = getProfile(user)
+        subscribe_instances = SubscribeModel.objects.all().filter(user=profile)
         sub_list = []
         for instance in iter(subscribe_instances):
             region = instance.region
@@ -91,9 +122,9 @@ def getSubscribedRegions(user):
         return 'Error'
 
 
-def createNewProject(userId, dataLayer, name, regions):
-    user = Profile.objects.get(user=userId)
-    exists, projName = projectExists(user, dataLayer, regions)
+def createNewProject(user, dataLayer, name, regions):
+    profile = getProfile(user)
+    exists, projName = projectExists(profile, dataLayer, regions)
     if (not exists):
         authGEE()
         regions = regions.split('__')
@@ -102,16 +133,16 @@ def createNewProject(userId, dataLayer, name, regions):
         number = points.size().getInfo()
         if (number > 0):
             points = points.getInfo()
-            proj = getCeoProjectURL(
+            proj = createCEOProject(
                 points,
-                user.email + "_" + name + "_" + dataLayer)
+                profile.email + "_" + name + "_" + dataLayer)
             if proj is not None:
                 projid = proj['projectId']
                 projurl = proj['ceoCollectionUrl']
                 if (projurl and projurl != ""):
                     regions = '__'.join(regions)
                     entry_added = saveProject(
-                        user.email, projurl, projid, dataLayer, name, regions)
+                        profile, projurl, projid, dataLayer, name, regions)
                     return {'action': entry_added, 'proj': [dataLayer, datetime.today().strftime("%Y-%m-%d"), projid, projurl, name, regions]}
                 else:
                     return {'action': 'Error', 'message': 'Error creating CEO project. Please try again later.'}
@@ -123,7 +154,7 @@ def createNewProject(userId, dataLayer, name, regions):
         return {'action': 'Error', 'message': 'Project for those regions already exists for the selected layer. It\'s name is "' + projName + '". Close that one to create another.'}
 
 
-def delProject(user, pid):
+def delProject(pid):
     try:
         result = deleteProject(pid)
         if (result == 'OK'):
@@ -137,10 +168,10 @@ def delProject(user, pid):
 
 def getActiveProjects(user):
     try:
-        user = Profile.objects.get(user=user)
+        profile = getProfile(user)
         fields = ['data_layer', 'projurl']
         queryset = ProjectsModel.objects.filter(
-            user=user, status='active').values_list(*fields)
+            user=profile, status='active').values_list(*fields)
         return queryset
     except ObjectDoesNotExist as e:
         print('no row')
@@ -150,10 +181,10 @@ def getActiveProjects(user):
         return 'Error'
 
 
-def insertCollectedData(data, user, dataLayer):
+def insertCollectedData(profile, data, dataLayer):
     try:
         data_instance = ExtractedData()
-        data_instance.user = user
+        data_instance.user = profile
         data_instance.y = float(data[1])
         data_instance.x = float(data[2])
         data_instance.data_layer = dataLayer
@@ -172,14 +203,14 @@ def archiveProject(user, pid):
     # user is auth_user
     # Gathers saved samples from CEO and stores them, then deletes project from CEO
     try:
-        user = Profile.objects.get(user=user)
+        profile = getProfile(user)
         project = ProjectsModel.objects.get(
-            user=user, projid=pid, status='active')
+            user=profile, projid=pid, status='active')
         collectedSamples = getCollectedData(pid)
         collectedSamples = collectedSamples[1:]
         for sample in collectedSamples:
-            insertCollectedData(sample, user, project.data_layer)
-        status = delProject(user, pid)
+            insertCollectedData(profile, sample, project.data_layer)
+        status = delProject(pid)
         if (status == 'Archived'):
             project.status = 'archived'
             project.save()

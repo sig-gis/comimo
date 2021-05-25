@@ -24,7 +24,9 @@
         "statsTooltip": "Stats",
         "filterTooltip": "Select date",
         "downloadTooltip": "Download data",
-        "appInfoTooltip": "App info"
+        "appInfoTooltip": "App info",
+        "reportToolTip": "Report mine",
+        "loading": "Loading"
     },
     "appInfo": {
         "download": "Download validated data",
@@ -70,6 +72,23 @@
         "resguardos": "Indigenous Reservations",
         "protectedAreas": "Protected Areas"
     },
+    "report": {
+        "title": "Report Mines",
+        "subTitle": "Click on the map or enter coordinates into the box below.",
+        "goButton": "Go",
+        "coordLabel": "Latitude, Longitude Search",
+        "selectedLocation": "Selected Location",
+        "latitude": "Latitude",
+        "longitude": "Longitude",
+        "submit": "Report Mine",
+        "reported": "Reported",
+        "noLocation": "Select point to continue.",
+        "reportMine": "Report Mine",
+        "existing": "You have already reported a mine here.",
+        "created": "Mine successfully reported.",
+        "outside": "You can only report mines inside Colomdia.",
+        "error": "Unknown error."
+    },
     "search": {
         "noResults": "No Results",
         "stateLabel": "State",
@@ -80,7 +99,7 @@
         "title": "Search Location",
         "internetLabel": "Search by municipality",
         "goButton": "Go",
-        "coordLabel": "Lat Long Search",
+        "coordLabel": "Latitude, Longitude Search",
         "selectLabel": "Select Sate/Municipality"
     },
     "stats": {

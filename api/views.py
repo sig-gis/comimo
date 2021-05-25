@@ -179,11 +179,11 @@ def getInfo(request):
         authGEE()
         req = json.loads(request.body)
         dates = req.get('dates')
-        visible = req.get('visible')
+        visible = req.get('visibleLayers')
         lat = float(req.get('lat'))
-        lng = float(req.get('lng'))
-        point = ee.Geometry.Point(lng, lat)
-        pointFeature = ee.Feature(ee.Geometry.Point(lng, lat))
+        lon = float(req.get('lon'))
+        point = ee.Geometry.Point(lon, lat)
+        pointFeature = ee.Feature(point)
 
         vals = {}
 

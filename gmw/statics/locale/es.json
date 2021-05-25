@@ -24,7 +24,9 @@
         "statsTooltip": "Estadísticas",
         "filterTooltip": "Filtrar por fecha",
         "downloadTooltip": "Descargar datos",
-        "appInfoTooltip": "Información de la aplicación"
+        "appInfoTooltip": "Información de la aplicación",
+        "reportToolTip": "Reportar mina",
+        "loading": "Cargando"
     },
     "appInfo": {
         "download": "Descargar datos validados",
@@ -69,11 +71,28 @@
         "resguardos": "Resguardos indígenas",
         "protectedAreas": "Áreas Protegidas"
     },
+    "report": {
+        "title": "Reportar minas",
+        "subTitle": "Haz clic en la mina que quieres reportar o ingresa sus coordenadas",
+        "goButton": "Ir",
+        "coordLabel": "Buscar por coordenadas (Latitud, Longitud)",
+        "selectedLocation": "Punto seleccionado",
+        "latitude": "Latitud",
+        "longitude": "Longitud",
+        "submit": "Reportar mina",
+        "reported": "Reportó",
+        "noLocation": "Seleccionar un punto para continuar.",
+        "reportMine": "Reportar mina",
+        "existing": "Ya ha informado de una mina aquí.",
+        "created": "Mina informado con éxito.",
+        "outside": "Solo puede reportar sobre minas dentro de Colomdia.",
+        "error": "Error desconocido."
+    },
     "search": {
         "noResults": "Sin resultados",
         "stateLabel": "Departamento",
         "defaultState": "Selecciona un departamento",
-        "modalMessage": "Cargando",
+        "loading": "Cargando",
         "munLabel": "Municipio",
         "defaultMun": "Selecciona un municipio",
         "title": "Buscar ubicación",

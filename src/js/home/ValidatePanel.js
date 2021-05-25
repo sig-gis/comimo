@@ -18,7 +18,7 @@ export default class ValidatePanel extends React.Component {
       projects: [],
       deleting: [],
       projectName: "",
-      projectCreating: false,
+      creatingProject: false,
       errorMsg: false,
       regionType: 1,
       customRegions: [],
@@ -60,7 +60,7 @@ export default class ValidatePanel extends React.Component {
       const {customRegions, projectName, projects, regionType} = this.state;
       const {subscribedList, localeText: {validate}} = this.context;
 
-      this.setState({projectCreating: true, errorMsg: false});
+      this.setState({creatingProject: true, errorMsg: false});
       const selectedArr = regionType === 1 ? subscribedList : customRegions.map(x => "mun_" + x);
       const regions = selectedArr
         .map(r => {
@@ -88,22 +88,22 @@ export default class ValidatePanel extends React.Component {
             if (res.action !== "Error") {
               this.getProjects();
               this.setState({
-                projectCreating: false,
+                creatingProject: false,
                 errorMsg: ""
               });
             } else {
-              this.setState({projectCreating: false, errorMsg: res.message});
+              this.setState({creatingProject: false, errorMsg: res.message});
             }
           })
           .catch(err => {
             console.log(err);
             this.setState({
-              projectCreating: false,
+              creatingProject: false,
               errorMsg: validate.errorUnknown
             });
           });
       } else {
-        this.setState({projectCreating: false});
+        this.setState({creatingProject: false});
       }
     };
 
@@ -212,7 +212,7 @@ export default class ValidatePanel extends React.Component {
 
     render() {
       const {isHidden} = this.props;
-      const {projects, projectName, regionType, projectCreating, errorMsg, mineType} = this.state;
+      const {projects, projectName, regionType, creatingProject, errorMsg, mineType} = this.state;
       const {selectedDates, isUser, localeText: {validate}} = this.context;
       return (
         <div className={"popup-container validate-panel " + (isHidden ? "see-through" : "")}>
@@ -275,7 +275,7 @@ export default class ValidatePanel extends React.Component {
                 {regionType === 2 && this.renderCustomRegions()}
                 <button
                   className="map-upd-btn"
-                  disabled={projectCreating}
+                  disabled={creatingProject}
                   onClick={() => this.createProject(selectedDates[mineType])}
                   style={{marginTop: ".25rem"}}
                   type="button"

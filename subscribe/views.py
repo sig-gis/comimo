@@ -1,11 +1,28 @@
+from datetime import datetime
 from django.shortcuts import render, redirect, reverse
 from django.contrib.auth import login, authenticate
 from django.http import JsonResponse
-from subscribe.utils import archiveProject, createNewProject, delEmail, getActiveProjects, getSubscribedRegions, saveEmail
+from django.db.models.functions import TruncMonth
+from django.db.models import Count, F
+
+from subscribe.models import ExtractedData, UserMinesModel
+from subscribe.utils import archiveProject, createNewProject, delEmail, getActiveProjects, getSubscribedRegions, saveEmail, saveMine
+from accounts.models import Profile
 
 
 def requestLogin(request):
     return redirect(reverse('login') + '?next=' + request.build_absolute_uri())
+
+
+def reportMine(request):
+    user = request.user
+    if not(user.is_authenticated):
+        return requestLogin(request)
+    else:
+        lat = float(request.GET.get('lat'))
+        lon = float(request.GET.get('lon'))
+        subaction = saveMine(user, lat, lon)
+        return JsonResponse({'action': subaction})
 
 
 def addSubs(request):
@@ -93,37 +110,38 @@ def downloadData(request):
     if not(user.is_authenticated):
         return requestLogin(request)
     else:
-        return render(request, 'download-all.html')
+        return render(request, 'download-data.html')
 
 
-def downloadAll(request):
+def downloadPredictions(request):
     user = request.user
     if not(user.is_authenticated):
         return requestLogin(request)
     else:
-        from subscribe.models import ExtractedData
-        from accounts.models import Profile
-        date = request.GET.get('date')
-        data = ExtractedData.objects.filter(
-            data_layer=date).values()
-        user = Profile.objects.get(user=user)
-        d = []
-        for point in iter(data):
-            try:
-                username = Profile.objects.get(
-                    id=point['user_id']).user.username
-            except Exception as e:
-                username = 'N/A'
-            temp = {
-                'username': username,
-                'y': point['y'],
-                'x': point['x'],
-                'dataLayer': point['data_layer'],
-                'classNum': point['class_num'],
-                'className': point['class_name'],
-            }
-            d.append(temp)
-        return JsonResponse(d, safe=False)
+        dataLayer = request.GET.get('dataLayer')
+        data = ExtractedData.objects.filter(data_layer=dataLayer) \
+            .annotate(username=F('user__user__username'),
+                      dataLayer=F('data_layer'),
+                      className=F('class_num'),
+                      classNum=F('class_name')) \
+            .values('username', 'x', 'y', 'dataLayer', 'className', 'classNum')
+        return JsonResponse(list(data), safe=False)
+
+
+def downloadUserMines(request):
+    user = request.user
+    if not(user.is_authenticated):
+        return requestLogin(request)
+    else:
+        month = datetime.strptime(request.GET.get('month'), "%Y-%m")
+        data = UserMinesModel.objects \
+            .annotate(month=TruncMonth('reported_date')) \
+            .values('month') \
+            .filter(month=month) \
+            .annotate(username=F('user__user__username'),
+                      reportedDate=F('reported_date')) \
+            .values('username', 'x', 'y', 'reportedDate')
+        return JsonResponse(list(data), safe=False)
 
 
 def getDataDates(request):
@@ -131,10 +149,13 @@ def getDataDates(request):
     if not(user.is_authenticated):
         return requestLogin(request)
     else:
-        from subscribe.models import ExtractedData
+        userCollected = UserMinesModel.objects \
+            .annotate(month=TruncMonth('reported_date')) \
+            .values('month') \
+            .annotate(count=Count('id')) \
+            .values_list('month', flat=True)[:5]
+        formatted = list(map(lambda x: x.strftime("%Y-%m"),
+                         list(userCollected)))
         data = ExtractedData.objects.order_by().values_list(
             'data_layer', flat=True).distinct()
-        list = []
-        for d in data:
-            list.append(d)
-        return JsonResponse(list, safe=False)
+        return JsonResponse({'predictions': list(data), 'userMines': formatted}, safe=False)

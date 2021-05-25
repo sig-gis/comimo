@@ -1,4 +1,5 @@
 import React from "react";
+import ReactDOM from "react-dom";
 import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 
@@ -13,6 +14,7 @@ import StatsPanel from "./StatsPanel";
 import SubscribePanel from "./SubscribePanel";
 import ValidatePanel from "./ValidatePanel";
 import SvgIcon from "../components/SvgIcon";
+import ReportMinesPanel from "./ReportMinesPanel";
 
 import {toPrecision, getCookie, getLanguage} from "../utils";
 import {MainContext} from "./context";
@@ -28,8 +30,7 @@ export default class PageLayout extends React.Component {
       FEATURE_NAMES: "api/getfeaturenames",
       IMG_DATES: "/api/getimagenames",
       SINGLE_IMAGE: "/api/getsingleimage",
-      GEE_LAYER: "api/getgeetiles",
-      INFO: "api/getinfo"
+      GEE_LAYER: "api/getgeetiles"
     };
     // Layers available
     this.availableLayers = [
@@ -56,7 +57,8 @@ export default class PageLayout extends React.Component {
     this.advancedPanelState = {
       slidersHidden: true,
       statsHidden: true,
-      downloadHidden: true
+      downloadHidden: true,
+      reportHidden: true
     };
     // combining everything to app state
     this.state = {
@@ -64,18 +66,17 @@ export default class PageLayout extends React.Component {
       ...this.advancedPanelState,
       layersHidden: true,
       advancedOptions: false,
-      compositeParams: {},
       imageDates: [],
       selectedDates: {},
       selectedRegion: false,
       featureNames: {},
       subscribedList: [],
-      // reload limit for layers that could not be loaded
-      reloadCount: 0,
       theMap: null,
       myHeight: 0,
       localeText: {},
-      selectLanguage: "en"
+      selectLanguage: "en",
+      selectedLatLon: null,
+      thePopup: null
     };
   }
 
@@ -101,6 +102,11 @@ export default class PageLayout extends React.Component {
   componentDidUpdate(prevProps, prevState) {
     if (prevState.myHeight !== this.state.myHeight) {
       setTimeout(() => this.state.theMap.resize(), 50);
+    }
+
+    if (this.state.thePopup && prevState.reportHidden !== this.state.reportHidden) {
+      this.setState({selectedLatLon: null});
+      this.state.thePopup.remove();
     }
   }
 
@@ -231,89 +237,47 @@ export default class PageLayout extends React.Component {
       });
     };
 
+    addPopup = (lat, lon) => {
+      const {theMap, selectedDates, thePopup, localeText: {home}, localeText} = this.state;
+      const {reportHidden} = this.state;
+
+      // Remove old popup
+      if (thePopup) thePopup.remove();
+
+      const divId = Date.now();
+      const popup = new mapboxgl.Popup()
+        .setLngLat([lon, lat])
+        .setHTML(`<div id="${divId}"></div>`)
+        .addTo(theMap);
+      this.setState({thePopup: popup});
+      if (reportHidden) {
+        const visibleLayers = this.availableLayers.map(l => this.isLayerVisible(l) && l).filter(l => l);
+        ReactDOM.render(
+          <InfoPopupContent
+            lat={lat}
+            localeText={home}
+            lon={lon}
+            selectedDates={selectedDates}
+            visibleLayers={visibleLayers}
+          />, document.getElementById(divId)
+        );
+      } else {
+        this.setState({selectedLatLon: [lat, lon]});
+        ReactDOM.render(
+          <ReportPopupContent
+            lat={lat}
+            localeText={localeText}
+            lon={lon}
+          />, document.getElementById(divId)
+        );
+      }
+    };
+
     loadMapLocalEvents = () => {
-      const {theMap, localeText: {home}} = this.state;
+      const {theMap} = this.state;
       theMap.on("click", e => {
-        const {lat, lng} = e.lngLat;
-
-        const popup = new mapboxgl.Popup({closeOnClick: true})
-          .setLngLat([lng, lat])
-          .setHTML("<p>Loading...<p>")
-          .addTo(theMap);
-
-        const visible = this.availableLayers.map(l => this.isLayerVisible(l) && l).filter(l => l);
-
-        fetch(this.URLS.INFO,
-              {
-                method: "POST",
-                headers: {
-                  Accept: "application/json",
-                  "Content-Type": "application/json",
-                  "X-CSRFToken": getCookie("csrftoken")
-                },
-                body: JSON.stringify({
-                  lat,
-                  lng,
-                  dates: this.state.selectedDates,
-                  visible
-                })
-              })
-          .then(resp => resp.json())
-          .then(resp => {
-            const ln = toPrecision(lng, 4);
-            const lt = toPrecision(lat, 4);
-            let innerHTML = `<b>Lat, lon</b>: ${lt}, ${ln}<br/>`;
-            if (resp.action === "Error") {
-              innerHTML += resp.message;
-            } else {
-              const {
-                nMines,
-                pMines,
-                cMines,
-                municipalBounds,
-                protectedAreas,
-                otherAuthorizations,
-                legalMines,
-                tierrasDeCom,
-                resguardos
-              } = resp.value;
-              if (this.isLayerVisible("nMines")) {
-                const cl = nMines ? home.eeLayerDetected : home.eeLayerNotDetected;
-                innerHTML += `<b>${home.nMines}</b>: ${cl}<br/>`;
-              }
-              if (this.isLayerVisible("pMines")) {
-                const cl = pMines ? home.eeLayerDetected : home.eeLayerNotDetected;
-                innerHTML += `<b>${home.pMines}</b>: ${cl}<br/>`;
-              }
-              if (this.isLayerVisible("cMines")) {
-                const cl = cMines ? home.eeLayerDetected : home.eeLayerNotDetected;
-                innerHTML += `<b>${home.cMines}</b>: ${cl}<br/>`;
-              }
-              if (this.isLayerVisible("municipalBounds")) {
-                const loc = municipalBounds || home.municipalBoundsNotFound;
-                innerHTML += `<b>${home.municipalBoundsPopup}:</b> ${loc}<br/>`;
-              }
-              if (this.isLayerVisible("protectedAreas") && protectedAreas[0]) {
-                const pa = `${home.protectedAreasCategory}: ${protectedAreas[0]}
-                                        <br/> ${home.protectedAreasName}: ${protectedAreas[1]}`;
-                innerHTML += `<b>${home.protectedAreasPopup}:</b><br> ${pa}<br/>`;
-              }
-              if (this.isLayerVisible("otherAuthorizations") && otherAuthorizations) {
-                innerHTML += `<b>${home.otherAuthorizationsPopup}:</b> ${otherAuthorizations} <br/>`;
-              }
-              if (this.isLayerVisible("legalMines") && legalMines) {
-                innerHTML += `<b>${home.legalMinesPopup}:</b> ${legalMines} <br/>`;
-              }
-              if (this.isLayerVisible("tierrasDeCom") && tierrasDeCom) {
-                innerHTML += `<b>${home.tierrasDeComPopup}:</b> ${tierrasDeCom} <br/>`;
-              }
-              if (this.isLayerVisible("resguardos") && resguardos) {
-                innerHTML += `<b>${home.resguardosPopup}:</b> ${resguardos} <br/>`;
-              }
-            }
-            popup.setHTML(innerHTML);
-          })
-          .catch(err => console.log(err));
+        const {lng, lat} = e.lngLat;
+        this.addPopup(lat, lng);
       });
     };
 
@@ -515,7 +479,7 @@ export default class PageLayout extends React.Component {
                     />
                   )}
                   {this.state.advancedOptions && (
-                    <React.Fragment>
+                    <>
                       {/* Stats graphs */}
                       <SideIcon
                         clickHandler={() => this.togglePanel("statsHidden")}
@@ -542,6 +506,21 @@ export default class PageLayout extends React.Component {
                         selectDates={this.selectDates}
                       />
 
+                      {/* Report mines */}
+                      <SideIcon
+                        clickHandler={() => this.togglePanel("reportHidden")}
+                        icon="mine"
+                        parentClass={this.state.reportHidden ? "" : "active-icon"}
+                        tooltip={home.reportTooltip}
+                      />
+                      <ReportMinesPanel
+                        addPopup={this.addPopup}
+                        fitMap={this.fitMap}
+                        isHidden={this.state.reportHidden}
+                        selectedLatLon={this.state.selectedLatLon}
+                        submitMine={this.submitMine}
+                      />
+
                       {/* Download */}
                       <SideIcon
                         clickHandler={() => this.togglePanel("downloadHidden")}
@@ -550,7 +529,7 @@ export default class PageLayout extends React.Component {
                         tooltip={home.downloadTooltip}
                       />
                       <DownloadPanel isHidden={this.state.downloadHidden}/>
-                    </React.Fragment>
+                    </>
                   )}
                   {/* Info dialogue */}
                   <SideIcon
@@ -573,4 +552,114 @@ export default class PageLayout extends React.Component {
         </MainContext.Provider>
       );
     }
+}
+
+class InfoPopupContent extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      layerInfo: null
+    };
+  }
+
+  componentDidMount() {
+    const {selectedDates, lat, lon, visibleLayers} = this.props;
+    fetch("api/getinfo",
+          {
+            method: "POST",
+            headers: {
+              Accept: "application/json",
+              "Content-Type": "application/json",
+              "X-CSRFToken": getCookie("csrftoken")
+            },
+            body: JSON.stringify({
+              lat,
+              lon,
+              dates: selectedDates,
+              visibleLayers
+            })
+          })
+      .then(resp => resp.json())
+      .then(resp => {
+        this.setState({layerInfo: resp.value});
+      })
+      .catch(err => console.log(err));
+  }
+
+  render() {
+    const {
+      layerInfo,
+      nMines,
+      pMines,
+      cMines,
+      municipalBounds,
+      protectedAreas,
+      otherAuthorizations,
+      legalMines,
+      tierrasDeCom,
+      resguardos
+    } = this.state;
+    const {visibleLayers, localeText, lat, lon} = this.props;
+    return layerInfo
+      ? (
+        <div className="d-flex flex-column font-small">
+          <div>
+            <b>Lat, lon:</b> {toPrecision(lat, 4)}, {toPrecision(lon, 4)}
+          </div>
+          {visibleLayers.includes("nMines") && (
+            <div>
+              <b>{localeText.nMines}:</b> {nMines ? localeText.eeLayerDetected : localeText.eeLayerNotDetected}
+            </div>
+          )}
+          {visibleLayers.includes("pMines") && (
+            <div>
+              <b>{localeText.pMines}:</b> {pMines ? localeText.eeLayerDetected : localeText.eeLayerNotDetected}
+            </div>
+          )}
+          {visibleLayers.includes("cMines") && (
+            <div>
+              <b>{localeText.cMines}:</b> {cMines ? localeText.eeLayerDetected : localeText.eeLayerNotDetected}
+            </div>
+          )}
+          {visibleLayers.includes("municipalBounds") && (
+            <div>
+              <b>{localeText.municipalBoundsPopup}:</b> {municipalBounds || localeText.municipalBoundsNotFound}
+            </div>
+          )}
+          {visibleLayers.includes("protectedAreas") && (
+            <div>
+              <b>{localeText.protectedAreasPopup}:</b> {municipalBounds || localeText.municipalBoundsNotFound}
+              {localeText.protectedAreasCategory}: {protectedAreas[0]}
+              {localeText.protectedAreasName}: {protectedAreas[1]}
+            </div>
+          )}
+          {visibleLayers.includes("otherAuthorizations") && (
+            <div><b>{localeText.otherAuthorizationsPopup}:</b> {otherAuthorizations}</div>
+          )}
+          {visibleLayers.includes("legalMines") && (
+            <div><b>{localeText.legalMinesPopup}:</b> {legalMines}</div>
+          )}
+          {visibleLayers.includes("tierrasDeCom") && (
+            <div><b>{localeText.tierrasDeComPopup}:</b> {tierrasDeCom}</div>
+          )}
+          {visibleLayers.includes("resguardos") && (
+            <div><b>{localeText.resguardosPopup}:</b> {resguardos}</div>
+          )}
+        </div>
+      ) : (
+        <div>Loading...</div>
+      );
+  }
+}
+
+function ReportPopupContent({lat, lon, localeText: {report}}) {
+  return (
+    <div style={{display: "flex", flexDirection: "column", alignItems: "flex-start"}}>
+      <label><b>{report.latitude}</b>:</label>
+      <label>{lat}</label>
+      <label><b>{report.longitude}</b>:</label>
+      <label>{lon}</label>
+    </div>
+  );
 }
