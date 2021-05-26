@@ -74,12 +74,12 @@ that are not included in git repository but are essential to the working of the
 application.
 
 ```shell
-nano src/js/appconfigs.js
+nano src/js/appConfig.js
 nano api/config.py
 nano subscribe/config.py
 ```
 
-1. src/js/appconfigs.js
+1. src/js/appConfig.js
 
 This file contains the access details to your Mapbox and MapQuest accounts.
 
@@ -179,7 +179,7 @@ function.
 To activate navigate to the project directory and run `npm run start`
 
 ```shell
-git@gitlab.com:sig-gis/ceo-gateway.git
+git clone git@gitlab.com:sig-gis/ceo-gateway.git
 cd ceo-gateway
 nano src/config.js
 npm run start

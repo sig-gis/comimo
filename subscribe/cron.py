@@ -1,12 +1,10 @@
-import os
 import pytz
 from datetime import datetime, timedelta
 from django.db.models import Aggregate, CharField
 
 from subscribe.mailhelper import sendAlertMail
 from subscribe.models import SubscribeModel, ProjectsModel
-from subscribe.utils import archiveProject, createNewProject, getSubscribedRegions, saveCron
-from accounts.models import Profile
+from subscribe.utils import archiveProject, createNewProject, saveCron
 from api.utils import authGEE, getImageList
 
 
@@ -88,17 +86,6 @@ def cleanStaleProjects():
             result = archiveProject(userId, projId)
             saveCron(jobCode,
                      result['action'] + " " + str(projId) + ": " + result['message'])
-    except Exception as e:
-        print(e)
-        saveCron(jobCode, 'Error: {0}'.format(e))
-
-
-def cleanCorruptProjects():
-    jobCode = 'gmw.cleancorruptprojects'
-    try:
-        corruptProjects = ProjectsModel.objects.filter(projurl='')
-        corruptProjects.delete()
-        saveCron(jobCode, 'Completed Successfully')
     except Exception as e:
         print(e)
         saveCron(jobCode, 'Error: {0}'.format(e))
