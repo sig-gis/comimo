@@ -29,4 +29,4 @@ urlpatterns = [
     path('subscribe/', include('subscribe.urls', namespace='subscribe')),
     path('', homeView, name='home'),
     path('download-data/', downloadData, name='downloadData'),
-] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+]  # + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

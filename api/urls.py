@@ -1,16 +1,17 @@
 # accounts/urls.py
 from django.urls import path
 
-from . import views
+from api.views import getAreaPredicted, getAreaPredictedTS, getDownloadURL, getFeatureNames, \
+    getGEETiles, getImageNames, getInfo, getSingleImage
 
 
 urlpatterns = [
-    path('getfeaturenames', views.getFeatureNames, name='getfeaturenames'),
-    path('getimagenames', views.getImageNames, name='getimagenames'),
-    path('getsingleimage', views.getSingleImage, name='getsingleimage'),
-    path('getgeetiles', views.getGEETiles, name='getgeetiles'),
-    path('getdownloadurl', views.getDownloadURL, name='getdownloadurl'),
-    path('getareapredicted', views.getAreaPredicted, name='getareapredicted'),
-    path('getareats', views.getAreaPredictedTS, name='getareats'),
-    path('getinfo', views.getInfo, name='getinfo')
+    path('getfeaturenames', getFeatureNames, name='getfeaturenames'),
+    path('getimagenames', getImageNames, name='getimagenames'),
+    path('getsingleimage', getSingleImage, name='getsingleimage'),
+    path('getgeetiles', getGEETiles, name='getgeetiles'),
+    path('getdownloadurl', getDownloadURL, name='getdownloadurl'),
+    path('getareapredicted', getAreaPredicted, name='getareapredicted'),
+    path('getareats', getAreaPredictedTS, name='getareats'),
+    path('getinfo', getInfo, name='getinfo')
 ]

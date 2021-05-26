@@ -1,13 +1,11 @@
 from datetime import datetime
 from django.shortcuts import render, redirect, reverse
-from django.contrib.auth import login, authenticate
 from django.http import JsonResponse
 from django.db.models.functions import TruncMonth
 from django.db.models import Count, F
 
 from subscribe.models import ExtractedData, UserMinesModel
 from subscribe.utils import archiveProject, createNewProject, delEmail, getActiveProjects, getSubscribedRegions, saveEmail, saveMine
-from accounts.models import Profile
 
 
 def requestLogin(request):

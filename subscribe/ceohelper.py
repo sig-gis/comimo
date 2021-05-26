@@ -29,13 +29,13 @@ def createCEOProject(points, title):
             "plotSize": PLOT_SIZE,
             "imageryId": PROJ_IMAGERY
         }
-        headers = {'Content-type': 'application/json', 'Accept': 'text/plain'}
+        headers = {'Content-type': 'application/json',
+                   'Accept': 'application/json'}
         resp = requests.post(CEO_GATEWAY_URL + CEO_CREATE,
                              data=json.dumps(reqobj),
                              headers=headers,
                              timeout=300)
-        proj = resp.text
-        return json.loads(proj)
+        return json.loads(resp.text)
     except Exception as e:
         print(e)
 

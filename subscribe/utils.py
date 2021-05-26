@@ -1,8 +1,9 @@
-from django.core.exceptions import ObjectDoesNotExist
 import logging
 import traceback
 import pytz
 from datetime import datetime
+from django.core.exceptions import ObjectDoesNotExist
+
 from subscribe.models import CronJobs, ExtractedData, ProjectsModel, SubscribeModel, UserMinesModel
 from subscribe.ceohelper import deleteProject, getCollectedData, createCEOProject
 from accounts.models import Profile
@@ -137,13 +138,16 @@ def createNewProject(user, dataLayer, name, regions):
                 points,
                 profile.email + "_" + name + "_" + dataLayer)
             if proj is not None:
-                projid = proj['projectId']
-                projurl = proj['ceoCollectionUrl']
-                if (projurl and projurl != ""):
+                projId = proj['projectId']
+                tokenKey = proj['tokenKey']
+                ceoUrl = proj['ceoUrl']
+                projUrl = ceoUrl + "/simple-collection?projectId=" + \
+                    str(projId) + "&tokenKey=" + tokenKey
+                if (projId and projId > 0):
                     regions = '__'.join(regions)
                     entry_added = saveProject(
-                        profile, projurl, projid, dataLayer, name, regions)
-                    return {'action': entry_added, 'proj': [dataLayer, datetime.today().strftime("%Y-%m-%d"), projid, projurl, name, regions]}
+                        profile, projUrl, projId, dataLayer, name, regions)
+                    return {'action': entry_added, 'proj': [dataLayer, datetime.today().strftime("%Y-%m-%d"), projId, projUrl, name, regions]}
                 else:
                     return {'action': 'Error', 'message': 'Error creating CEO project. Please try again later.'}
             else:
