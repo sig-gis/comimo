@@ -12,9 +12,9 @@ import SearchPanel from "./SearchPanel";
 import SideIcon from "./SideIcon";
 import StatsPanel from "./StatsPanel";
 import SubscribePanel from "./SubscribePanel";
-import ValidatePanel from "./ValidatePanel";
 import SvgIcon from "../components/SvgIcon";
 import ReportMinesPanel from "./ReportMinesPanel";
+import ValidatePanel from "./ValidatePanel";
 
 import {toPrecision, getCookie, getLanguage} from "../utils";
 import {MainContext} from "./context";
@@ -80,7 +80,8 @@ export default class PageLayout extends React.Component {
     };
   }
 
-  // set up parameters after components are mounted
+  /// Lifecycle Functions ///
+
   componentDidMount() {
     const lang = ["en", "es"].includes(this.props.defaultLang)
       ? this.props.defaultLang
@@ -89,10 +90,10 @@ export default class PageLayout extends React.Component {
 
     Promise.all([this.getLocalText(lang), this.getFeatureNames(), this.getImageDates()])
       .then(() => {
-        this.loadMapLocalEvents();
+        // this.loadMapLocalEvents();
         this.updateEELayer(true);
       })
-      .catch(error => console.log(error));
+      .catch(error => console.error(error));
     this.updateWindow();
     this.initMap();
     window.addEventListener("touchend", this.updateWindow);
@@ -115,7 +116,7 @@ export default class PageLayout extends React.Component {
       this.setState({myHeight: window.innerHeight});
     };
 
-    /// State update
+    /// State Update ///
 
     togglePanel = panelKey => this.setState({
       ...this.panelState,
@@ -137,7 +138,7 @@ export default class PageLayout extends React.Component {
       this.getLocalText(newLang);
     };
 
-    /// Fetch calls
+    /// API Calls ///
 
     getLocalText = lang => fetch(
         `/static/locale/${lang}.json`,
@@ -177,7 +178,7 @@ export default class PageLayout extends React.Component {
           }
           if (list.length > 0) this.getGEELayers(list);
         })
-        .catch(error => console.log(error));
+        .catch(error => console.error(error));
     };
 
     updateEELayer = (firstTime = false) => {
@@ -199,7 +200,7 @@ export default class PageLayout extends React.Component {
             };
             theMap.setStyle(style);
           })
-          .catch(error => console.log(error));
+          .catch(error => console.error(error));
       });
     };
 
@@ -233,6 +234,10 @@ export default class PageLayout extends React.Component {
         theMap.on("mouseout", () => {
           const hudShell = document.getElementById("lnglathud-shell");
           hudShell.style.display = "none";
+        });
+        theMap.on("click", e => {
+          const {lng, lat} = e.lngLat;
+          this.addPopup(lat, lng);
         });
       });
     };
@@ -273,27 +278,19 @@ export default class PageLayout extends React.Component {
       }
     };
 
-    loadMapLocalEvents = () => {
-      const {theMap} = this.state;
-      theMap.on("click", e => {
-        const {lng, lat} = e.lngLat;
-        this.addPopup(lat, lng);
-      });
-    };
-
     fitMap = (type, arg) => {
       const {theMap, localeText: {home}} = this.state;
       if (type === "point") {
         try {
           theMap.flyTo({center: arg, essential: true});
         } catch (err) {
-          console.log(home.errorCoordinates);
+          console.error(home.errorCoordinates);
         }
       } else if (type === "bbox") {
         try {
           theMap.fitBounds(arg);
         } catch (error) {
-          console.log(home.errorBounds);
+          console.error(home.errorBounds);
         }
       }
     };
@@ -316,11 +313,13 @@ export default class PageLayout extends React.Component {
       });
     };
 
+    /// Render Functions ///
+
     renderUserButton = () => {
       const {username} = this.props;
       return (
         <div
-          onClick={() => window.location = "/user-account"}
+          onClick={() => window.location.assign("/user-account")}
           style={{display: "flex", alignItems: "center", cursor: "pointer"}}
         >
           <span className="px-2">{username}</span>
@@ -473,7 +472,6 @@ export default class PageLayout extends React.Component {
                         );
                       }}
                       icon={this.state.advancedOptions ? "minus" : "plus"}
-                      parentClass=""
                       subtext={home.advancedTooltip}
                       tooltip={home.advancedTooltip}
                     />
@@ -559,49 +557,53 @@ class InfoPopupContent extends React.Component {
     super(props);
 
     this.state = {
-      layerInfo: null
+      layerInfo: {}
     };
   }
 
   componentDidMount() {
     const {selectedDates, lat, lon, visibleLayers} = this.props;
-    fetch("api/getinfo",
-          {
-            method: "POST",
-            headers: {
-              Accept: "application/json",
-              "Content-Type": "application/json",
-              "X-CSRFToken": getCookie("csrftoken")
-            },
-            body: JSON.stringify({
-              lat,
-              lon,
-              dates: selectedDates,
-              visibleLayers
+    if (visibleLayers.length > 0) {
+      fetch("api/getinfo",
+            {
+              method: "POST",
+              headers: {
+                Accept: "application/json",
+                "Content-Type": "application/json",
+                "X-CSRFToken": getCookie("csrftoken")
+              },
+              body: JSON.stringify({
+                lat,
+                lon,
+                dates: selectedDates,
+                visibleLayers
+              })
             })
-          })
-      .then(resp => resp.json())
-      .then(resp => {
-        this.setState({layerInfo: resp.value});
-      })
-      .catch(err => console.log(err));
+        .then(resp => resp.json())
+        .then(resp => {
+          this.setState({layerInfo: resp.value});
+        })
+        .catch(err => console.error(err));
+    }
   }
 
   render() {
     const {
       layerInfo,
-      nMines,
-      pMines,
-      cMines,
-      municipalBounds,
-      protectedAreas,
-      otherAuthorizations,
-      legalMines,
-      tierrasDeCom,
-      resguardos
+      layerInfo: {
+        nMines,
+        pMines,
+        cMines,
+        municipalBounds,
+        protectedAreas,
+        otherAuthorizations,
+        legalMines,
+        tierrasDeCom,
+        resguardos
+      }
     } = this.state;
     const {visibleLayers, localeText, lat, lon} = this.props;
-    return layerInfo
+    return Object.keys(layerInfo).length === visibleLayers.length
       ? (
         <div className="d-flex flex-column font-small">
           <div>

@@ -88,7 +88,7 @@ export default class StatsPanel extends React.Component {
           document.getElementById("stats1").innerHTML = `<i>${stats.noDataFound}</i>`;
         }
       })
-      .catch(e => console.log(stats.errorStats, e));
+      .catch(e => console.error(stats.errorStats, e));
   }
 
   getAreaTS() {
@@ -132,7 +132,7 @@ export default class StatsPanel extends React.Component {
           document.getElementById("stats2").innerHTML = `<i>${stats.noDataFound}</i>`;
         }
       })
-      .catch(e => console.log(stats.errorStats, e));
+      .catch(e => console.error(stats.errorStats, e));
   }
 
   render() {

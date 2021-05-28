@@ -19,16 +19,15 @@ class PasswordReset extends React.Component {
     ])
       .then(data => {
         if (data[0] && data[1] === "") {
-          console.log(this.state.localeText);
           alert(this.state.localeText.verified);
           window.location = "/login";
         } else {
-          console.log(data[1]);
+          console.error(data[1]);
           alert(this.state.localeText[data[1]] || this.state.localeText.errorCreating);
           window.location = "/password-forgot";
         }
       })
-      .catch(error => console.log(error));
+      .catch(error => console.error(error));
   }
 
   getLocale = () => fetch(

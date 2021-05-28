@@ -98,11 +98,11 @@ class Register extends React.Component {
                 alert(this.state.localeText.registered);
                 window.location = "/";
               } else {
-                console.log(data[1]);
+                console.error(data[1]);
                 alert(this.state.localeText[data[1]] || this.state.localeText.errorCreating);
               }
             })
-            .catch(err => console.log(err)));
+            .catch(err => console.error(err)));
       }
     };
 

@@ -37,7 +37,7 @@ export default class SubscribePanel extends React.Component {
             updateSubList(result.regions.sort());
           }
         })
-        .catch(err => console.log(err));
+        .catch(err => console.error(err));
     }
   }
 
@@ -56,7 +56,7 @@ export default class SubscribePanel extends React.Component {
             alert(subscribe.existing);
           }
         })
-        .catch(err => console.log(err));
+        .catch(err => console.error(err));
     }
   }
 
@@ -77,7 +77,7 @@ export default class SubscribePanel extends React.Component {
             updateSubList(newList);
           }
         })
-        .catch(err => console.log(err));
+        .catch(err => console.error(err));
     }
   }
 
@@ -132,7 +132,7 @@ export default class SubscribePanel extends React.Component {
               ? <p>{subsLoaded ? subscribe.noSubs : subscribe.loadingSubs}</p>
               : (
                 <div>
-                  <span> {subscribe.subscribedTo}</span>
+                  <span>{subscribe.subscribedTo}:</span>
                   {this.renderSubscribedTable(subscribedList)}
                 </div>
               )}

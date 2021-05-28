@@ -27,7 +27,7 @@ export default class FilterPanel extends React.Component {
       return (
         <div className={"popup-container filter-panel " + (isHidden ? "see-through" : "")}>
           <h3>{filter.title.toUpperCase()}</h3>
-          <span htmlFor="select-image-date">{filter.selectLabel}</span>
+          <span htmlFor="select-image-date">{filter.selectLabel}:</span>
           <div style={{display: "flex", flexDirection: "column"}}>
             <label htmlFor="select-image-date">{layers.cMines}</label>
             <select

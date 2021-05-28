@@ -20,7 +20,7 @@ class Login extends React.Component {
     )
       .then(response => (response.ok ? response.json() : Promise.reject(response)))
       .then(data => this.setState({localeText: data.users}))
-      .catch(error => console.log(error));
+      .catch(error => console.error(error));
   }
 
     requestLogin = () => {
@@ -42,11 +42,11 @@ class Login extends React.Component {
           if (data[0] && data[1] === "") {
             window.location = "/";
           } else {
-            console.log(data[1]);
+            console.error(data[1]);
             alert(this.state.localeText[data[1]] || this.state.localeText.errorCreating);
           }
         })
-        .catch(err => console.log(err));
+        .catch(err => console.error(err));
     };
 
     renderField = (label, type, stateKey) => (

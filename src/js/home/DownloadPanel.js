@@ -32,7 +32,7 @@ export default class DownloadPanel extends React.Component {
           }
         })
         .catch(err => {
-          console.log(err);
+          console.error(err);
         })
         .finally(() => this.setState({fetching: false}));
     };

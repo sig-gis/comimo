@@ -43,7 +43,7 @@ export default class ValidatePanel extends React.Component {
             });
           }
         })
-        .catch(err => console.log(err));
+        .catch(err => console.error(err));
     };
 
     checkProjectErrors = (dataLayer, selected, projectName, projects, type, validate) => {
@@ -96,7 +96,7 @@ export default class ValidatePanel extends React.Component {
             }
           })
           .catch(err => {
-            console.log(err);
+            console.error(err);
             this.setState({
               creatingProject: false,
               errorMsg: validate.errorUnknown
@@ -123,7 +123,7 @@ export default class ValidatePanel extends React.Component {
             }
           })
           .catch(err => {
-            console.log(err);
+            console.error(err);
           })
           .finally(() =>
             this.setState(prevState => ({deleting: prevState.deleting.filter(p => p !== pid)})));
@@ -228,7 +228,7 @@ export default class ValidatePanel extends React.Component {
                       <thead>
                         <tr>
                           <th style={{width: "calc(100% - 50px)"}}>{validate.name}</th>
-                          <th/>
+                          <th>{}</th>
                         </tr>
                       </thead>
                       <tbody>{projects.map(p => this.renderProject(...p))}</tbody>
