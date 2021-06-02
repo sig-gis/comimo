@@ -323,7 +323,7 @@ export default class PageLayout extends React.Component {
           style={{display: "flex", alignItems: "center", cursor: "pointer"}}
         >
           <span className="px-2">{username}</span>
-          <SvgIcon icon="user" size="2rem"/>
+          <SvgIcon icon="user" size="1.2rem"/>
         </div>
       );
     };
@@ -372,37 +372,42 @@ export default class PageLayout extends React.Component {
                 position: "relative"
               }}
             />
-            {isUser
-              ? (
+            <div
+              id="desktop-panel"
+              style={{
+                alignItems: "flex-end",
+                display: "flex",
+                position: "fixed",
+                right: "56px",
+                top: "10px",
+                zIndex: 1000
+              }}
+            >
+              {isUser && (
                 <button
-                  id="desktop-panel"
                   style={{
                     alignItems: "center",
+                    border: "2px solid",
                     background: "white",
                     borderRadius: "8px",
                     display: "flex",
-                    padding: ".25rem",
-                    position: "fixed",
-                    right: "56px",
-                    top: "10px"
+                    padding: "2px",
+                    marginRight: ".5rem"
                   }}
                   type="button"
                 >
                   {this.renderUserButton()}
                 </button>
-              ) : (
-                <div
-                  id="desktop-panel"
-                  style={{position: "fixed", top: "24px", right: "56px"}}
-                >
-                  {this.renderLanguage()}
-                </div>
               )}
+              {this.renderLanguage()}
+            </div>
             <div id="mobile-title">
-              <h2>CoMiMo</h2>
-              {isUser
-                ? (<div>{this.renderUserButton()}</div>)
-                : this.renderLanguage()}
+              <h2 style={{width: "50%"}}>CoMiMo</h2>
+              <div style={{display: "flex", justifyContent: "flex-end", paddingRight: "1rem", width: "50%"}}>
+                {isUser && <div>{this.renderUserButton()}</div>}
+                <span className="mx-1"/>
+                {this.renderLanguage()}
+              </div>
             </div>
             {home && (
               <>

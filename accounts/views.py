@@ -129,7 +129,7 @@ def loginView(request):
     if request.method == "POST":
         JSONbody = json.loads(request.body)
         user = authenticate(username=clean(JSONbody.get("username")),
-                            password=clean(JSONbody.get("password")))
+                            password=JSONbody.get("password"))
         if user is not None:
             login(request, user)
             return HttpResponse("")

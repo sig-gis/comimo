@@ -42,12 +42,20 @@ export default class AppInfo extends React.Component {
             {appInfo.viewTerms}
           </a>
           <a
-            href={appInfo.instructionsUrl}
+            href={appInfo.methodUrl}
             rel="noopener noreferrer"
             style={{margin: ".5rem 0"}}
             target="_blank"
           >
-            {appInfo.viewInstructions}
+            {appInfo.viewMethod}
+          </a>
+          <a
+            href={appInfo.manualUrl}
+            rel="noopener noreferrer"
+            style={{margin: ".5rem 0"}}
+            target="_blank"
+          >
+            {appInfo.viewManual}
           </a>
         </div>
       </div>

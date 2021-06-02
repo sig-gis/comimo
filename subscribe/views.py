@@ -137,8 +137,9 @@ def downloadUserMines(request):
             .values('month') \
             .filter(month=month) \
             .annotate(username=F('user__user__username'),
+                      email=F('user__email'),
                       reportedDate=F('reported_date')) \
-            .values('username', 'x', 'y', 'reportedDate')
+            .values('username', 'email', 'x', 'y', 'reportedDate')
         return JsonResponse(list(data), safe=False)
 
 
