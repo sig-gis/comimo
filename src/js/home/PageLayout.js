@@ -90,7 +90,7 @@ export default class PageLayout extends React.Component {
 
     Promise.all([this.getLocalText(lang), this.getFeatureNames(), this.getImageDates()])
       .then(() => {
-        // this.loadMapLocalEvents();
+        this.loadMapLocalEvents();
         this.updateEELayer(true);
       })
       .catch(error => console.error(error));
