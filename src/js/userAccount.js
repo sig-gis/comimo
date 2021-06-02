@@ -81,11 +81,11 @@ class UserAccount extends React.Component {
               alert(this.state.localeText.updated);
               window.location = "/";
             } else {
-              console.log(data[1]);
+              console.error(data[1]);
               alert(this.state.localeText[data[1]] || this.state.localeText.errorUpdating);
             }
           })
-          .catch(err => console.log(err)));
+          .catch(err => console.error(err)));
     }
   };
 

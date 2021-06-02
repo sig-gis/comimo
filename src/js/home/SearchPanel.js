@@ -8,7 +8,7 @@ export default class SearchPanel extends React.Component {
     super(props);
 
     this.URLS = {
-      GEOCODE: "http://open.mapquestapi.com/geocoding/v1/address"
+      GEOCODE: "https://open.mapquestapi.com/geocoding/v1/address"
     };
 
     this.state = {
@@ -40,34 +40,8 @@ export default class SearchPanel extends React.Component {
             })
           });
         })
-        .catch(error => console.log(error));
+        .catch(error => console.error(error));
     };
-
-    // This is incomplete
-    // searchDataset(searchString) {
-    //     const regexp = new RegExp("^" + searchString.toUpperCase() + "[A-Z]*");
-    //     const mapped = this.props.featureNames.filter(feat => feat[0].toUpperCase().match(regexp));
-    //     this.setState({
-    //         dataSetSearch: mapped.sort()
-    //     });
-    // }
-
-    // clearSearchDataset() {
-    //     this.setState({
-    //         dataSetSearch: [],
-    //         geoCodedSearch: []
-    //     });
-    // }
-
-    inputChanged(key, value) {
-      this.setState({searchText: value});
-      if (key === "Enter") this.searchGeocode();
-      // if (value) {
-      //     this.searchDataset(value);
-      // } else {
-      //     this.clearSearchDataset();
-      // }
-    }
 
     processLatLng = () => {
       const {latLngText} = this.state;
@@ -98,9 +72,7 @@ export default class SearchPanel extends React.Component {
                 fitMap("bbox", featureNames[state][mun]);
                 selectRegion(
                   "mun",
-                  item.adminArea3.toUpperCase()
-                                + "_"
-                                + item.adminArea4.toUpperCase()
+                  item.adminArea3.toUpperCase() + "_" + item.adminArea4.toUpperCase()
                 );
               }}
               style={{display: "flex", flexDirection: "column"}}
@@ -119,7 +91,7 @@ export default class SearchPanel extends React.Component {
             <small>{search.stateLabel}</small>
             <select
               className="w_100"
-              onChange={e => this.setState({selectedL1: e.target.value})}
+              onChange={e => this.setState({selectedL1: e.target.value, selectedL2: -1})}
               value={selectedL1}
             >
               <option key={-1} disabled value={-1}>{search.defaultState}</option>
@@ -146,9 +118,7 @@ export default class SearchPanel extends React.Component {
                 if (Array.isArray(coords)) fitMap("bbox", coords);
                 selectRegion(
                   "mun",
-                  selectedL1
-                                    + "_"
-                                    + e.target.value
+                  selectedL1 + "_" + e.target.value
                 );
               }}
               value={selectedL2}

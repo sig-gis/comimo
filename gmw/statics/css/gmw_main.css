@@ -26,8 +26,6 @@
   height: 100%;
   width: 50px;
   background: #ffffee;
-  /* background: #000000;
-  color: #ffe100; */
   margin: 0;
   padding: 0;
   box-shadow: 0px 0px 0px 1px rgba(0,0,0,.1);
@@ -90,9 +88,6 @@
   background: white;
 }
 
-.slider-div {
-  padding: 50px 30px 10px 30px;
-}
 
 .map-upd-btn {
   color: #fff;
@@ -100,14 +95,12 @@
   border-color: #eea236;
   border-radius: 3px;
 }
-
 .map-upd-btn:hover {
   color: #fff;
   background-color: #ff9f17;
   border-color: #eea236;
   border-radius: 3px;
 }
-
 .map-upd-btn:disabled {
   background: #ddd;
   color: #aaa;
@@ -151,10 +144,6 @@
   white-space: pre-wrap;
 }
 
-.rs-tooltip {
-  padding: 0px;
-  font-size: 10px;
-}
 
 .search-results:hover {
   background: #eee;
@@ -212,11 +201,6 @@
   margin-left: 10px;
   padding-left: 10px;
   list-style: disc;
-}
-span.advanced-icon {
-  height: 30px;
-  font-size: 20px;
-  padding: 5px 15px 0px 15px
 }
 span.advanced-text {
   font-size: 10px;
@@ -286,13 +270,6 @@ select[multiple] optgroup option:checked::before {
   top: 350px;
 }
 
-.expand-legend-div button {
-  text-align: center;
-}
-#legend-div {
-  margin-top: 15px;
-}
-
 
 @media only screen and (orientation: portrait) {
   html {
@@ -344,14 +321,6 @@ select[multiple] optgroup option:checked::before {
   .info-modal .inner-container {
     padding: 1.5rem;
     line-height: 1rem;
-  }
-  .advanced-icons {
-    display: inline-block;
-    white-space: nowrap;
-    width: 60%;
-  }
-  .advanced-icons .sidebar-icon {
-    width: 33.33%;
   }
   .sidebar .app-icon {
     display: none;
@@ -424,19 +393,6 @@ select[multiple] optgroup option:checked::before {
   }
   .mapboxgl-ctrl-logo {
     margin: 0 0 78px 4px !important;
-  }
-  #legend-div div input[type="checkbox"] {
-    width: 30px;
-    height: 30px;
-  }
-  #legend-div div input[type="range"] {
-    margin-bottom: 20px;
-    height: 15px;
-    padding: 5px 0px;
-  }
-  .legend-icon {
-    height: 20px;
-    width: 20px;
   }
   #lnglathud-shell {
     top: unset;

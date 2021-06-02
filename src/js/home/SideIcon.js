@@ -5,7 +5,7 @@ import SvgIcon from "../components/SvgIcon";
 export default function SideIcon({parentClass, clickHandler, tooltip, icon, subtext}) {
   return (
     <button
-      className={"sidebar-icon " + parentClass}
+      className={`sidebar-icon ${(parentClass || "")}`}
       onClick={clickHandler}
       title={tooltip}
       type="button"

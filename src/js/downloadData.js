@@ -257,6 +257,7 @@ class UserMines extends React.Component {
       columns: [
         // define the table columns
         {title: "user", field: "username", headerFilter: "input"},
+        {title: "email", field: "email", headerFilter: "input"},
         {title: "longitude", field: "y", headerFilter: "input"},
         {title: "latitude", field: "x", headerFilter: "input"},
         {title: "reportedDate", field: "reportedDate", headerFilter: "date"}
