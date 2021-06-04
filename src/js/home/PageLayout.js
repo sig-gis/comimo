@@ -66,7 +66,7 @@ export default class PageLayout extends React.Component {
       ...this.advancedPanelState,
       layersHidden: true,
       advancedOptions: false,
-      imageDates: [],
+      imageDates: {},
       selectedDates: {},
       selectedRegion: false,
       featureNames: {},

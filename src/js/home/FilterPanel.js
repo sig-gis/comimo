@@ -6,7 +6,7 @@ export default class FilterPanel extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      newSelectedDates: null
+      newSelectedDates: {}
     };
   }
 
