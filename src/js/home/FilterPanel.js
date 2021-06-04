@@ -11,7 +11,8 @@ export default class FilterPanel extends React.Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    if (prevProps.isHidden === true && this.props.isHidden === false) {
+    if ((prevProps.isHidden && !this.props.isHidden)
+        || (!prevProps.imageDates.pMines && this.props.imageDates.pMines)) {
       this.setState({newSelectedDates: this.context.selectedDates});
     }
   }
@@ -33,6 +34,7 @@ export default class FilterPanel extends React.Component {
             <select
               id="select-image-date"
               onChange={e => this.setSelectedDate("cMines", e.target.value)}
+              value={newSelectedDates.cMines}
             >
               {(cMines || []).map(d => (
                 <option key={d} value={d}>{d}</option>
@@ -42,6 +44,7 @@ export default class FilterPanel extends React.Component {
             <select
               id="select-image-date"
               onChange={e => this.setSelectedDate("nMines", e.target.value)}
+              value={newSelectedDates.nMines}
             >
               {(nMines || []).map(d => (
                 <option key={d} value={d}>{d}</option>
@@ -51,6 +54,7 @@ export default class FilterPanel extends React.Component {
             <select
               id="select-image-date"
               onChange={e => this.setSelectedDate("pMines", e.target.value)}
+              value={newSelectedDates.pMines}
             >
               {(pMines || []).map(d => (
                 <option key={d} value={d}>{d}</option>

@@ -136,6 +136,7 @@ export default class StatsPanel extends React.Component {
   }
 
   render() {
+    const {chartsLoaded} = this.state;
     const {isHidden} = this.props;
     const {localeText: {stats}} = this.context;
     return (
@@ -147,13 +148,11 @@ export default class StatsPanel extends React.Component {
           <p style={{lineHeight: "1rem", fontSize: ".75rem"}}>
             {stats.regionSubTitle}
           </p>
-          <div id="stats1">
-            {`${stats.loading}...`}
-          </div>
+          <div id="stats1"/>
+          {!chartsLoaded && <div>{`${stats.loading}...`}</div>}
           <h3>{stats.dateTitle}</h3>
-          <div id="stats2">
-            {`${stats.loading}...`}
-          </div>
+          <div id="stats2"/>
+          {!chartsLoaded && <div>{`${stats.loading}...`}</div>}
           <p style={{lineHeight: "1rem", fontSize: ".75rem"}}>
             {stats.areaWarning}
           </p>

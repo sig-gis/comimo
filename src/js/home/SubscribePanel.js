@@ -66,7 +66,7 @@ export default class SubscribePanel extends React.Component {
     const arr = data.split("_");
     const level = arr.splice(0, 1);
     const delConfirm = confirm(
-            `${subscribe.delConfirm1} ${arr.reverse().join(", ")}? ${subscribe.delConfirm2}`
+      `${subscribe.delConfirm1} ${arr.reverse().join(", ")}? ${subscribe.delConfirm2}`
     );
     if (delConfirm) {
       fetch(this.URLS.DELSUBS + "?region=" + arr.reverse().join("_") + "&level=" + level)

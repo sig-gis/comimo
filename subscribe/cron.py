@@ -52,8 +52,6 @@ def sendGoldAlerts():
                              'Success: Mail sent to ' + email,
                              regions,
                              email)
-                    SubscribeModel.objects.filter(user=profileId).update(
-                        last_alert_for=latest_date)
                 elif (proj_created['action'] == "Error"):
                     saveCron(jobCode,
                              'Error: ' + proj_created['message'],
@@ -64,6 +62,8 @@ def sendGoldAlerts():
                              'Error: Unknown cron error.',
                              regions,
                              email)
+                SubscribeModel.objects.filter(user=profileId)\
+                    .update(last_alert_for=latest_date)
             except Exception as ee:
                 print('Error: {0}'.format(ee))
                 saveCron(jobCode, 'Error: {0}'.format(ee))

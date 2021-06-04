@@ -633,23 +633,23 @@ class InfoPopupContent extends React.Component {
               <b>{localeText.municipalBoundsPopup}:</b> {municipalBounds || localeText.municipalBoundsNotFound}
             </div>
           )}
-          {visibleLayers.includes("protectedAreas") && (
+          {visibleLayers.includes("protectedAreas") && protectedAreas && (
             <div>
-              <b>{localeText.protectedAreasPopup}:</b> {municipalBounds || localeText.municipalBoundsNotFound}
+              <b>{localeText.protectedAreasPopup}:</b>
               {localeText.protectedAreasCategory}: {protectedAreas[0]}
               {localeText.protectedAreasName}: {protectedAreas[1]}
             </div>
           )}
-          {visibleLayers.includes("otherAuthorizations") && (
+          {visibleLayers.includes("otherAuthorizations") && otherAuthorizations && (
             <div><b>{localeText.otherAuthorizationsPopup}:</b> {otherAuthorizations}</div>
           )}
-          {visibleLayers.includes("legalMines") && (
+          {visibleLayers.includes("legalMines") && legalMines && (
             <div><b>{localeText.legalMinesPopup}:</b> {legalMines}</div>
           )}
-          {visibleLayers.includes("tierrasDeCom") && (
+          {visibleLayers.includes("tierrasDeCom") && tierrasDeCom && (
             <div><b>{localeText.tierrasDeComPopup}:</b> {tierrasDeCom}</div>
           )}
-          {visibleLayers.includes("resguardos") && (
+          {visibleLayers.includes("resguardos") && resguardos && (
             <div><b>{localeText.resguardosPopup}:</b> {resguardos}</div>
           )}
         </div>
