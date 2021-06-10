@@ -22,7 +22,7 @@ Now, to set up a new virtual environment, the following command can be used
 virtualenv venv
 ```
 
-*venv* can be replaced witht the name of your choice.
+*venv* can be replaced with the name of your choice.
 
 ### Clone the repo Install requirements
 
@@ -53,7 +53,7 @@ Some resources on how-to:
 sudo apt -y install python3 python3-venv npm
 ```
 
-### Clone the repo and initialize virtual env
+### Clone the repo and initialize virtual env / npm
 
 ```shell
 git clone git@gitlab.com:sig-gis/gold-mine-watch.git
@@ -62,6 +62,7 @@ python3 -m venv --prompt comimo venv/
 source venv/bin/activate
 pip install -r requirements.txt
 deactivate
+npm install
 ```
 
 ## Configuration
@@ -75,7 +76,6 @@ application.
 
 ```shell
 nano src/js/appConfig.js
-nano api/config.py
 nano subscribe/config.py
 ```
 
@@ -88,25 +88,6 @@ mapboxToken = '<your access token>';
 mapQuestKey = '<your key>'
 ```
 
-2. api/config.py
-
-This file is intended to contain all the GEE assets relevant to your project
-and should look something like this
-
-```text
-# repository containing all the gold mine rasters
-IMAGE_REPO = 'users/[user]/Images'
-POINTS_FOL = 'users/[user]/ValidationPoints'
-LEVELS = {
-    'mun': 'users/[user]/Shapes/Municipal_Bounds',
-    'l0': 'users/[user]/Shapes/Level0'
-}
-FIELDS = {
-    'mun': 'MPIO_CNMBR',
-    'mun_l1': 'DPTO_CNMBR'
-}
-```
-
 3. subscribe/config.py
 
 This file contains the configurations for all the email client to be used as
@@ -115,6 +96,7 @@ value and it must be kept secret.
 
 ```text
 SECRET_KEY = 'gfsdflksjdfg43453kj3h45k3jh45k3h45'
+
 EMAIL_HOST_USER = '<your email address>'
 EMAIL_HOST_PASSWORD = '<your password>'
 APP_URL = '<your app URL>' // This is currently unused
@@ -147,14 +129,6 @@ this authentication.
 cd gold-mine-watch
 source venv/bin/activate
 earthengine authenticate
-```
-
-In a separate terminal run webpack. In dev mode, webpack is a continually running
-process.
-
-```shell
-npm install
-npm run webpack-dev
 ```
 
 #### Production
@@ -193,7 +167,6 @@ Navigate to the project directory, and enter the virtual environment.
 
 ```shell
 cd gold-mine-watch
-npm run webpack-prod
 source venv/bin/activate
 ```
 
@@ -207,8 +180,41 @@ These steps only need to be done once after the server is set up.
 
 ### Run Django
 
-1. Run `python manage.py collectstatic` to collect the static files. Type yes to
+1. Compile js files with webpack `npm run webpack-[prod dev]` In dev mode, run
+   separate terminal, as webpack-dev is a continually running process.
+2. Run `python manage.py collectstatic` to collect the static files. Type yes to
    replace the existing files on prompt.
-2. Run `python manage.py runserver [ip, default 127.0.0.1]:[port, default 8000]`
+3. Run `python manage.py runserver [ip, default 127.0.0.1]:[port, default 8000]`
    to start the server. To have access to the server outside the local
    environment start with the ip 0.0.0.0.
+
+## Running https via nginx (optional)
+
+### Install required packages
+
+```shell
+sudo apt -y install nginx uwsgi uwsgi-plugin-python3
+```
+
+### Copy the nginx template and update
+
+```shell
+sudo cp nginx/gmw-template.conf /etc/nginx/sites-available/gmw.conf
+sudo ln -s /etc/nginx/sites-available/gmw.conf /etc/nginx/sites-enabled/
+sudo nano /etc/nginx/sites-available/gmw.conf
+sudo service nginx restart
+```
+
+### Diagnose errors with nginx by looking in the log
+
+```shell
+sudo less +G /var/log/nginx/error.log
+```
+
+### Running django under uwsgi
+
+Instead of `python manage.py runserver`, use:
+
+```shell
+uwsgi --ini gmwuwsgi.ini
+```

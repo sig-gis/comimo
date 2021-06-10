@@ -1,9 +1,8 @@
 gee-auth-key.json
-config.py
+subscribe/config.py
 src/js/appConfig.js
 *.pyc
 venv/*
-gmwuwsgi.ini
 gmw.sock
 logs
 

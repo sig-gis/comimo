@@ -25,6 +25,12 @@ def getImageList():
     return dates
 
 
+def addBuffer(feature):
+    feature.buffer(1000)
+
+# ee.Filter.inList(FIELDS['mun'], [...all distros])
+
+
 def subscribedRegionsToFC(regions):
     fc = ee.FeatureCollection([])
     for region in regions:
@@ -33,8 +39,13 @@ def subscribedRegionsToFC(regions):
         if (r[0] == 'mun'):
             # filter by level 1 name and then by mun name
             f = ee.FeatureCollection(LEVELS[r[0]])\
-                .filter(ee.Filter.eq(FIELDS['mun_l1'], r[1]))\
-                .filter(ee.Filter.eq(FIELDS['mun'], r[2]))
+                .filter(ee.Filter.And(
+                    ee.Filter.eq(FIELDS['mun_l1'], r[1]),
+                    ee.Filter.eq(FIELDS['mun'], r[2])))
+        if (r[0] == 'nationalPark'):
+            f = ee.FeatureCollection(LEVELS[r[0]])\
+                .filter(ee.Filter.eq(FIELDS['nombre'], r[1]))\
+                .map(addBuffer)
         fc = fc.merge(f)
     return fc
 
