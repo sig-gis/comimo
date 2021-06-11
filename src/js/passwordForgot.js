@@ -57,49 +57,49 @@ class PasswordForgot extends React.Component {
       })
       .catch(err => console.error(err)));
 
-    renderField = (label, type, stateKey) => (
-      <div className="d-flex flex-column">
-        <label htmlFor={stateKey}>{label}</label>
-        <input
-          className="p-2"
-          id={stateKey}
-          onChange={e => this.setState({[stateKey]: e.target.value})}
-          onKeyPress={e => {
-            if (e.key === "Enter") this.requestPassword();
-          }}
-          placeholder={`Enter ${(label || "").toLowerCase()}`}
-          type={type}
-          value={this.state[stateKey]}
-        />
-      </div>
-    );
+  renderField = (label, type, stateKey) => (
+    <div className="d-flex flex-column">
+      <label htmlFor={stateKey}>{label}</label>
+      <input
+        className="p-2"
+        id={stateKey}
+        onChange={e => this.setState({[stateKey]: e.target.value})}
+        onKeyPress={e => {
+          if (e.key === "Enter") this.requestPassword();
+        }}
+        placeholder={`Enter ${(label || "").toLowerCase()}`}
+        type={type}
+        value={this.state[stateKey]}
+      />
+    </div>
+  );
 
-    render() {
-      const {localeText} = this.state;
-      return (
-        <div
-          className="d-flex justify-content-center"
-          style={{paddingTop: "20vh"}}
-        >
-          {this.state.showModal && <LoadingModal message={localeText.modalMessage}/>}
-          <div className="card">
-            <div className="card-header">{localeText.requestTitle}</div>
-            <div className="card-body">
-              {this.renderField(localeText.email, "email", "email")}
-              <div className="d-flex justify-content-end">
-                <button
-                  className="btn orange-btn mt-3"
-                  onClick={this.requestPassword}
-                  type="button"
-                >
-                  {localeText.request}
-                </button>
-              </div>
+  render() {
+    const {localeText} = this.state;
+    return (
+      <div
+        className="d-flex justify-content-center"
+        style={{paddingTop: "20vh"}}
+      >
+        {this.state.showModal && <LoadingModal message={localeText.modalMessage}/>}
+        <div className="card">
+          <div className="card-header">{localeText.requestTitle}</div>
+          <div className="card-body">
+            {this.renderField(localeText.email, "email", "email")}
+            <div className="d-flex justify-content-end">
+              <button
+                className="btn orange-btn mt-3"
+                onClick={this.requestPassword}
+                type="button"
+              >
+                {localeText.request}
+              </button>
             </div>
           </div>
         </div>
-      );
-    }
+      </div>
+    );
+  }
 }
 
 export function pageInit(args) {

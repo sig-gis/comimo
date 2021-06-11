@@ -110,450 +110,450 @@ export default class PageLayout extends React.Component {
     }
   }
 
-    updateWindow = () => {
-      window.scrollTo(0, 0);
-      this.setState({myHeight: window.innerHeight});
-    };
+  updateWindow = () => {
+    window.scrollTo(0, 0);
+    this.setState({myHeight: window.innerHeight});
+  };
 
-    /// State Update ///
+  /// State Update ///
 
-    togglePanel = panelKey => this.setState({
-      ...this.panelState,
-      ...this.advancedPanelState,
-      [panelKey]: !this.state[panelKey]
+  togglePanel = panelKey => this.setState({
+    ...this.panelState,
+    ...this.advancedPanelState,
+    [panelKey]: !this.state[panelKey]
+  });
+
+  updateSubList = list => this.setState({subscribedList: list});
+
+  selectDates = newDates => this.setState(
+    {selectedDates: {...this.state.selectedDates, ...newDates}},
+    this.updateEELayer
+  );
+
+  selectRegion = (level, name) => this.setState({selectedRegion: [level, name]});
+
+  selectLanguage = newLang => {
+    this.setState({selectedLanguage: newLang});
+    this.getLocalText(newLang);
+  };
+
+  /// API Calls ///
+
+  getLocalText = lang => fetch(
+      `/static/locale/${lang}.json`,
+      {headers: {"Cache-Control": "no-cache", "Pragma": "no-cache", "Accept": "application/json"}}
+  )
+    .then(response => (response.ok ? response.json() : Promise.reject(response)))
+    .then(data => this.setState({localeText: data}));
+
+  getImageDates = () => fetch(this.URLS.IMG_DATES)
+    .then(res => res.json())
+    .then(result => {
+      const initialDates = Object.keys(result).reduce((acc, cur) =>
+        ({...acc, [cur]: result[cur][0]}), {});
+      this.setState({
+        imageDates: result,
+        selectedDates: initialDates
+      });
     });
 
-    updateSubList = list => this.setState({subscribedList: list});
+  getFeatureNames = () => fetch(this.URLS.FEATURE_NAMES)
+    .then(res => res.json())
+    .then(result => {
+      if (result.action === "FeatureNames") this.setState({featureNames: result.features});
+    });
 
-    selectDates = newDates => this.setState(
-      {selectedDates: {...this.state.selectedDates, ...newDates}},
-      this.updateEELayer
-    );
-
-    selectRegion = (level, name) => this.setState({selectedRegion: [level, name]});
-
-    selectLanguage = newLang => {
-      this.setState({selectedLanguage: newLang});
-      this.getLocalText(newLang);
-    };
-
-    /// API Calls ///
-
-    getLocalText = lang => fetch(
-        `/static/locale/${lang}.json`,
-        {headers: {"Cache-Control": "no-cache", "Pragma": "no-cache", "Accept": "application/json"}}
-    )
-      .then(response => (response.ok ? response.json() : Promise.reject(response)))
-      .then(data => this.setState({localeText: data}));
-
-    getImageDates = () => fetch(this.URLS.IMG_DATES)
+  getGEELayers = list => {
+    const name = list.shift();
+    // TODO make one fetch call for all layer names
+    fetch(this.URLS.GEE_LAYER + "?name=" + name)
       .then(res => res.json())
       .then(result => {
-        const initialDates = Object.keys(result).reduce((acc, cur) =>
-          ({...acc, [cur]: result[cur][0]}), {});
-        this.setState({
-          imageDates: result,
-          selectedDates: initialDates
-        });
-      });
+        const {url} = result;
+        if (url) {
+          const style = this.state.theMap.getStyle();
+          style.sources[name].tiles = [result.url];
+          this.state.theMap.setStyle(style);
+        }
+        if (list.length > 0) this.getGEELayers(list);
+      })
+      .catch(error => console.error(error));
+  };
 
-    getFeatureNames = () => fetch(this.URLS.FEATURE_NAMES)
-      .then(res => res.json())
-      .then(result => {
-        if (result.action === "FeatureNames") this.setState({featureNames: result.features});
-      });
-
-    getGEELayers = list => {
-      const name = list.shift();
-      // TODO make one fetch call for all layer names
-      fetch(this.URLS.GEE_LAYER + "?name=" + name)
+  updateEELayer = (firstTime = false) => {
+    const eeLayers = ["nMines", "pMines", "cMines"];
+    const {theMap, selectedDates} = this.state;
+    eeLayers.forEach(eeLayer => {
+      fetch(this.URLS.SINGLE_IMAGE + "?id=" + selectedDates[eeLayer] + "&type=" + eeLayer)
         .then(res => res.json())
         .then(result => {
-          const {url} = result;
-          if (url) {
-            const style = this.state.theMap.getStyle();
-            style.sources[name].tiles = [result.url];
-            this.state.theMap.setStyle(style);
-          }
-          if (list.length > 0) this.getGEELayers(list);
+          const style = theMap.getStyle();
+          const layers = style.layers;
+          const layerIdx = layers.findIndex(l => l.id === eeLayer);
+          const thisLayer = layers[layerIdx];
+          const {layout: {visibility}} = thisLayer;
+          style.sources[eeLayer].tiles = [result.url];
+          style.layers[layerIdx] = {
+            ...thisLayer,
+            layout: {visibility: firstTime && this.startVisible.includes(eeLayer) ? "visible" : visibility}
+          };
+          theMap.setStyle(style);
         })
         .catch(error => console.error(error));
-    };
+    });
+  };
 
-    updateEELayer = (firstTime = false) => {
-      const eeLayers = ["nMines", "pMines", "cMines"];
-      const {theMap, selectedDates} = this.state;
-      eeLayers.forEach(eeLayer => {
-        fetch(this.URLS.SINGLE_IMAGE + "?id=" + selectedDates[eeLayer] + "&type=" + eeLayer)
-          .then(res => res.json())
-          .then(result => {
-            const style = theMap.getStyle();
-            const layers = style.layers;
-            const layerIdx = layers.findIndex(l => l.id === eeLayer);
-            const thisLayer = layers[layerIdx];
-            const {layout: {visibility}} = thisLayer;
-            style.sources[eeLayer].tiles = [result.url];
-            style.layers[layerIdx] = {
-              ...thisLayer,
-              layout: {visibility: firstTime && this.startVisible.includes(eeLayer) ? "visible" : visibility}
-            };
-            theMap.setStyle(style);
-          })
-          .catch(error => console.error(error));
+  /// Mapbox TODO move to separate component
+
+  initMap = () => {
+    mapboxgl.accessToken = mapboxToken;
+    const theMap = new mapboxgl.Map({
+      container: "mapbox",
+      style: "mapbox://styles/mapbox/satellite-streets-v9",
+      center: [-73.5609339, 4.6371205],
+      zoom: 5
+    });
+    this.setState({theMap});
+
+    theMap.on("load", () => {
+      theMap.addControl(new mapboxgl.NavigationControl({showCompass: false}));
+
+      // these are launched async it only works because the fetch command takes longer than creating a layer
+      this.addLayerSources([...this.availableLayers].reverse());
+      this.getGEELayers(this.availableLayers.slice(3));
+
+      theMap.on("mousemove", e => {
+        const lat = toPrecision(e.lngLat.lat, 4);
+        const lng = toPrecision(e.lngLat.lng, 4);
+        const hudShell = document.getElementById("lnglathud-shell");
+        const hud = document.getElementById("lnglathud");
+        hudShell.style.display = "inherit";
+        hud.innerHTML = lat + ", " + lng;
       });
-    };
-
-    /// Mapbox TODO move to separate component
-
-    initMap = () => {
-      mapboxgl.accessToken = mapboxToken;
-      const theMap = new mapboxgl.Map({
-        container: "mapbox",
-        style: "mapbox://styles/mapbox/satellite-streets-v9",
-        center: [-73.5609339, 4.6371205],
-        zoom: 5
+      theMap.on("mouseout", () => {
+        const hudShell = document.getElementById("lnglathud-shell");
+        hudShell.style.display = "none";
       });
-      this.setState({theMap});
-
-      theMap.on("load", () => {
-        theMap.addControl(new mapboxgl.NavigationControl({showCompass: false}));
-
-        // these are launched async it only works because the fetch command takes longer than creating a layer
-        this.addLayerSources([...this.availableLayers].reverse());
-        this.getGEELayers(this.availableLayers.slice(3));
-
-        theMap.on("mousemove", e => {
-          const lat = toPrecision(e.lngLat.lat, 4);
-          const lng = toPrecision(e.lngLat.lng, 4);
-          const hudShell = document.getElementById("lnglathud-shell");
-          const hud = document.getElementById("lnglathud");
-          hudShell.style.display = "inherit";
-          hud.innerHTML = lat + ", " + lng;
-        });
-        theMap.on("mouseout", () => {
-          const hudShell = document.getElementById("lnglathud-shell");
-          hudShell.style.display = "none";
-        });
-        theMap.on("click", e => {
-          const {lng, lat} = e.lngLat;
-          this.addPopup(lat, lng);
-        });
+      theMap.on("click", e => {
+        const {lng, lat} = e.lngLat;
+        this.addPopup(lat, lng);
       });
-    };
+    });
+  };
 
-    addPopup = (lat, lon) => {
-      const {theMap, selectedDates, thePopup, localeText: {home}, localeText} = this.state;
-      const {reportHidden} = this.state;
+  addPopup = (lat, lon) => {
+    const {theMap, selectedDates, thePopup, localeText: {home}, localeText} = this.state;
+    const {reportHidden} = this.state;
 
-      // Remove old popup
-      if (thePopup) thePopup.remove();
+    // Remove old popup
+    if (thePopup) thePopup.remove();
 
-      const divId = Date.now();
-      const popup = new mapboxgl.Popup()
-        .setLngLat([lon, lat])
-        .setHTML(`<div id="${divId}"></div>`)
-        .addTo(theMap);
-      this.setState({thePopup: popup});
-      if (reportHidden) {
-        const visibleLayers = this.availableLayers.map(l => this.isLayerVisible(l) && l).filter(l => l);
-        ReactDOM.render(
-          <InfoPopupContent
-            lat={lat}
-            localeText={home}
-            lon={lon}
-            selectedDates={selectedDates}
-            visibleLayers={visibleLayers}
-          />, document.getElementById(divId)
-        );
-      } else {
-        this.setState({selectedLatLon: [lat, lon]});
-        ReactDOM.render(
-          <ReportPopupContent
-            lat={lat}
-            localeText={localeText}
-            lon={lon}
-          />, document.getElementById(divId)
-        );
-      }
-    };
-
-    fitMap = (type, arg) => {
-      const {theMap, localeText: {home}} = this.state;
-      if (type === "point") {
-        try {
-          theMap.flyTo({center: arg, essential: true});
-        } catch (err) {
-          console.error(home.errorCoordinates);
-        }
-      } else if (type === "bbox") {
-        try {
-          theMap.fitBounds(arg);
-        } catch (error) {
-          console.error(home.errorBounds);
-        }
-      }
-    };
-
-    isLayerVisible = layer => this.state.theMap.getLayer(layer).visibility === "visible";
-
-    // Adds layers initially with no styling, URL is updated later.
-    addLayerSources = list => {
-      const {theMap} = this.state;
-      list.forEach(name => {
-        theMap.addSource(name, {type: "raster", tiles: [], tileSize: 256, vis: {palette: []}});
-        theMap.addLayer({
-          id: name,
-          type: "raster",
-          source: name,
-          minzoom: 0,
-          maxzoom: 22,
-          layout: {visibility: "none"}
-        });
-      });
-    };
-
-    /// Render Functions ///
-
-    renderUserButton = () => {
-      const {username} = this.props;
-      return (
-        <div
-          onClick={() => window.location.assign("/user-account")}
-          style={{display: "flex", alignItems: "center", cursor: "pointer"}}
-        >
-          <span className="px-2">{username}</span>
-          <SvgIcon icon="user" size="1.2rem"/>
-        </div>
+    const divId = Date.now();
+    const popup = new mapboxgl.Popup()
+      .setLngLat([lon, lat])
+      .setHTML(`<div id="${divId}"></div>`)
+      .addTo(theMap);
+    this.setState({thePopup: popup});
+    if (reportHidden) {
+      const visibleLayers = this.availableLayers.map(l => this.isLayerVisible(l) && l).filter(l => l);
+      ReactDOM.render(
+        <InfoPopupContent
+          lat={lat}
+          localeText={home}
+          lon={lon}
+          selectedDates={selectedDates}
+          visibleLayers={visibleLayers}
+        />, document.getElementById(divId)
       );
-    };
+    } else {
+      this.setState({selectedLatLon: [lat, lon]});
+      ReactDOM.render(
+        <ReportPopupContent
+          lat={lat}
+          localeText={localeText}
+          lon={lon}
+        />, document.getElementById(divId)
+      );
+    }
+  };
 
-    renderLanguage = () => (
-      <LanguageSelector
-        selectedLanguage={this.state.selectedLanguage}
-        selectLanguage={this.selectLanguage}
-      />
+  fitMap = (type, arg) => {
+    const {theMap, localeText: {home}} = this.state;
+    if (type === "point") {
+      try {
+        theMap.flyTo({center: arg, essential: true});
+      } catch (err) {
+        console.error(home.errorCoordinates);
+      }
+    } else if (type === "bbox") {
+      try {
+        theMap.fitBounds(arg);
+      } catch (error) {
+        console.error(home.errorBounds);
+      }
+    }
+  };
+
+  isLayerVisible = layer => this.state.theMap.getLayer(layer).visibility === "visible";
+
+  // Adds layers initially with no styling, URL is updated later.
+  addLayerSources = list => {
+    const {theMap} = this.state;
+    list.forEach(name => {
+      theMap.addSource(name, {type: "raster", tiles: [], tileSize: 256, vis: {palette: []}});
+      theMap.addLayer({
+        id: name,
+        type: "raster",
+        source: name,
+        minzoom: 0,
+        maxzoom: 22,
+        layout: {visibility: "none"}
+      });
+    });
+  };
+
+  /// Render Functions ///
+
+  renderUserButton = () => {
+    const {username} = this.props;
+    return (
+      <div
+        onClick={() => window.location.assign("/user-account")}
+        style={{display: "flex", alignItems: "center", cursor: "pointer"}}
+      >
+        <span className="px-2">{username}</span>
+        <SvgIcon icon="user" size="1.2rem"/>
+      </div>
     );
+  };
 
-    // set up actions to render app
-    render() {
-      const {myHeight, localeText: {home}} = this.state;
-      const {isUser} = this.props;
-      return (
-        <MainContext.Provider
-          value={{
-            isAdmin: this.props.isAdmin,
-            isUser: this.props.isUser,
-            selectedDates: this.state.selectedDates,
-            selectedRegion: this.state.selectedRegion,
-            featureNames: this.state.featureNames,
-            subscribedList: this.state.subscribedList,
-            localeText: this.state.localeText,
-            selectedLanguage: this.state.selectedLanguage
+  renderLanguage = () => (
+    <LanguageSelector
+      selectedLanguage={this.state.selectedLanguage}
+      selectLanguage={this.selectLanguage}
+    />
+  );
+
+  // set up actions to render app
+  render() {
+    const {myHeight, localeText: {home}} = this.state;
+    const {isUser} = this.props;
+    return (
+      <MainContext.Provider
+        value={{
+          isAdmin: this.props.isAdmin,
+          isUser: this.props.isUser,
+          selectedDates: this.state.selectedDates,
+          selectedRegion: this.state.selectedRegion,
+          featureNames: this.state.featureNames,
+          subscribedList: this.state.subscribedList,
+          localeText: this.state.localeText,
+          selectedLanguage: this.state.selectedLanguage
+        }}
+      >
+        <div
+          id="root-component"
+          style={{
+            height: myHeight,
+            width: "100%",
+            margin: 0,
+            padding: 0,
+            position: "relative"
           }}
         >
           <div
-            id="root-component"
+            id="mapbox"
             style={{
-              height: myHeight,
+              height: "100%",
               width: "100%",
               margin: 0,
               padding: 0,
               position: "relative"
             }}
+          />
+          <div
+            id="desktop-panel"
+            style={{
+              alignItems: "flex-end",
+              display: "flex",
+              position: "fixed",
+              right: "56px",
+              top: "10px",
+              zIndex: 1000
+            }}
           >
-            <div
-              id="mapbox"
-              style={{
-                height: "100%",
-                width: "100%",
-                margin: 0,
-                padding: 0,
-                position: "relative"
-              }}
-            />
-            <div
-              id="desktop-panel"
-              style={{
-                alignItems: "flex-end",
-                display: "flex",
-                position: "fixed",
-                right: "56px",
-                top: "10px",
-                zIndex: 1000
-              }}
-            >
-              {isUser && (
-                <button
-                  style={{
-                    alignItems: "center",
-                    border: "2px solid",
-                    background: "white",
-                    borderRadius: "8px",
-                    display: "flex",
-                    padding: "2px",
-                    marginRight: ".5rem"
-                  }}
-                  type="button"
-                >
-                  {this.renderUserButton()}
-                </button>
-              )}
+            {isUser && (
+              <button
+                style={{
+                  alignItems: "center",
+                  border: "2px solid",
+                  background: "white",
+                  borderRadius: "8px",
+                  display: "flex",
+                  padding: "2px",
+                  marginRight: ".5rem"
+                }}
+                type="button"
+              >
+                {this.renderUserButton()}
+              </button>
+            )}
+            {this.renderLanguage()}
+          </div>
+          <div id="mobile-title">
+            <h2 style={{width: "50%"}}>CoMiMo</h2>
+            <div style={{display: "flex", justifyContent: "flex-end", paddingRight: "1rem", width: "50%"}}>
+              {isUser && <div>{this.renderUserButton()}</div>}
+              <span className="mx-1"/>
               {this.renderLanguage()}
             </div>
-            <div id="mobile-title">
-              <h2 style={{width: "50%"}}>CoMiMo</h2>
-              <div style={{display: "flex", justifyContent: "flex-end", paddingRight: "1rem", width: "50%"}}>
-                {isUser && <div>{this.renderUserButton()}</div>}
-                <span className="mx-1"/>
-                {this.renderLanguage()}
-              </div>
-            </div>
-            {home && (
-              <>
-                {/* Layers */}
-                <div
-                  className="circle layer-group"
-                  style={{}}
-                >
-                  <LayersPanel
-                    availableLayers={this.availableLayers}
-                    isHidden={this.state.layersHidden}
-                    startVisible={this.startVisible}
-                    theMap={this.state.theMap}
-                  />
-                  <SideIcon
-                    clickHandler={() => this.setState({layersHidden: !this.state.layersHidden})}
-                    icon="layer"
-                    parentClass={"layer-icon circle" + (this.state.layersHidden ? "" : " active-icon")}
-                    tooltip={home.layersTooltip}
-                  />
-                </div>
-
-                <div className="sidebar">
-                  <div className="sidebar-icon gold-drop app-icon"/>
-                  {/* Subscribe */}
-                  <SideIcon
-                    clickHandler={() => this.togglePanel("subscribeHidden")}
-                    icon="envelope"
-                    parentClass={this.state.subscribeHidden ? "" : "active-icon"}
-                    tooltip={home.subscribeTooltip}
-                  />
-                  <SubscribePanel
-                    isHidden={this.state.subscribeHidden}
-                    updateSubList={this.updateSubList}
-                  />
-
-                  {/* Validation */}
-                  <SideIcon
-                    clickHandler={() => this.togglePanel("validateHidden")}
-                    icon="check"
-                    parentClass={this.state.validateHidden ? "" : "active-icon"}
-                    tooltip={home.validateTooltip}
-                  />
-                  <ValidatePanel isHidden={this.state.validateHidden}/>
-
-                  {/* Geo location Search */}
-                  <SideIcon
-                    clickHandler={() => this.togglePanel("searchHidden")}
-                    icon="search"
-                    parentClass={this.state.searchHidden ? "" : "active-icon"}
-                    tooltip={home.searchTooltip}
-                  />
-                  <SearchPanel
-                    fitMap={this.fitMap}
-                    isHidden={this.state.searchHidden}
-                    selectRegion={this.selectRegion}
-                  />
-
-                  {/* Advanced Button */}
-                  {this.props.isUser && (
-                    <SideIcon
-                      clickHandler={() => {
-                        this.setState(
-                          this.state.advancedOptions
-                            ? {advancedOptions: false, ...this.advancedPanelState}
-                            : {advancedOptions: true}
-                        );
-                      }}
-                      icon={this.state.advancedOptions ? "minus" : "plus"}
-                      subtext={home.advancedTooltip}
-                      tooltip={home.advancedTooltip}
-                    />
-                  )}
-                  {this.state.advancedOptions && (
-                    <>
-                      {/* Stats graphs */}
-                      <SideIcon
-                        clickHandler={() => this.togglePanel("statsHidden")}
-                        icon="stats"
-                        parentClass={this.state.statsHidden ? "" : "active-icon"}
-                        tooltip={home.statsTooltip}
-                      />
-                      <StatsPanel
-                        isHidden={this.state.statsHidden}
-                        selectedDate={this.state.selectedDates.cMines}
-                        subscribedList={this.state.subscribedList}
-                      />
-
-                      {/* Date filter */}
-                      <SideIcon
-                        clickHandler={() => this.togglePanel("slidersHidden")}
-                        icon="filter"
-                        parentClass={this.state.slidersHidden ? "" : "active-icon"}
-                        tooltip={home.filterTooltip}
-                      />
-                      <FilterPanel
-                        imageDates={this.state.imageDates}
-                        isHidden={this.state.slidersHidden}
-                        selectDates={this.selectDates}
-                      />
-
-                      {/* Report mines */}
-                      <SideIcon
-                        clickHandler={() => this.togglePanel("reportHidden")}
-                        icon="mine"
-                        parentClass={this.state.reportHidden ? "" : "active-icon"}
-                        tooltip={home.reportTooltip}
-                      />
-                      <ReportMinesPanel
-                        addPopup={this.addPopup}
-                        fitMap={this.fitMap}
-                        isHidden={this.state.reportHidden}
-                        selectedLatLon={this.state.selectedLatLon}
-                        submitMine={this.submitMine}
-                      />
-
-                      {/* Download */}
-                      <SideIcon
-                        clickHandler={() => this.togglePanel("downloadHidden")}
-                        icon="download"
-                        parentClass={this.state.downloadHidden ? "" : "active-icon"}
-                        tooltip={home.downloadTooltip}
-                      />
-                      <DownloadPanel isHidden={this.state.downloadHidden}/>
-                    </>
-                  )}
-                  {/* Info dialogue */}
-                  <SideIcon
-                    clickHandler={() => this.togglePanel("appInfoHidden")}
-                    icon="info"
-                    parentClass="disclaimer"
-                    tooltip={home.appInfoTooltip}
-                  />
-                  <AppInfo
-                    isHidden={this.state.appInfoHidden}
-                    onOuterClick={() => this.togglePanel("appInfoHidden")}
-                  />
-                </div>
-              </>
-            )}
-            <div id="lnglathud-shell">
-              <span id="lnglathud"/>
-            </div>
           </div>
-        </MainContext.Provider>
-      );
-    }
+          {home && (
+            <>
+              {/* Layers */}
+              <div
+                className="circle layer-group"
+                style={{}}
+              >
+                <LayersPanel
+                  availableLayers={this.availableLayers}
+                  isHidden={this.state.layersHidden}
+                  startVisible={this.startVisible}
+                  theMap={this.state.theMap}
+                />
+                <SideIcon
+                  clickHandler={() => this.setState({layersHidden: !this.state.layersHidden})}
+                  icon="layer"
+                  parentClass={"layer-icon circle" + (this.state.layersHidden ? "" : " active-icon")}
+                  tooltip={home.layersTooltip}
+                />
+              </div>
+
+              <div className="sidebar">
+                <div className="sidebar-icon gold-drop app-icon"/>
+                {/* Subscribe */}
+                <SideIcon
+                  clickHandler={() => this.togglePanel("subscribeHidden")}
+                  icon="envelope"
+                  parentClass={this.state.subscribeHidden ? "" : "active-icon"}
+                  tooltip={home.subscribeTooltip}
+                />
+                <SubscribePanel
+                  isHidden={this.state.subscribeHidden}
+                  updateSubList={this.updateSubList}
+                />
+
+                {/* Validation */}
+                <SideIcon
+                  clickHandler={() => this.togglePanel("validateHidden")}
+                  icon="check"
+                  parentClass={this.state.validateHidden ? "" : "active-icon"}
+                  tooltip={home.validateTooltip}
+                />
+                <ValidatePanel isHidden={this.state.validateHidden}/>
+
+                {/* Geo location Search */}
+                <SideIcon
+                  clickHandler={() => this.togglePanel("searchHidden")}
+                  icon="search"
+                  parentClass={this.state.searchHidden ? "" : "active-icon"}
+                  tooltip={home.searchTooltip}
+                />
+                <SearchPanel
+                  fitMap={this.fitMap}
+                  isHidden={this.state.searchHidden}
+                  selectRegion={this.selectRegion}
+                />
+
+                {/* Advanced Button */}
+                {this.props.isUser && (
+                  <SideIcon
+                    clickHandler={() => {
+                      this.setState(
+                        this.state.advancedOptions
+                          ? {advancedOptions: false, ...this.advancedPanelState}
+                          : {advancedOptions: true}
+                      );
+                    }}
+                    icon={this.state.advancedOptions ? "minus" : "plus"}
+                    subtext={home.advancedTooltip}
+                    tooltip={home.advancedTooltip}
+                  />
+                )}
+                {this.state.advancedOptions && (
+                  <>
+                    {/* Stats graphs */}
+                    <SideIcon
+                      clickHandler={() => this.togglePanel("statsHidden")}
+                      icon="stats"
+                      parentClass={this.state.statsHidden ? "" : "active-icon"}
+                      tooltip={home.statsTooltip}
+                    />
+                    <StatsPanel
+                      isHidden={this.state.statsHidden}
+                      selectedDate={this.state.selectedDates.cMines}
+                      subscribedList={this.state.subscribedList}
+                    />
+
+                    {/* Date filter */}
+                    <SideIcon
+                      clickHandler={() => this.togglePanel("slidersHidden")}
+                      icon="filter"
+                      parentClass={this.state.slidersHidden ? "" : "active-icon"}
+                      tooltip={home.filterTooltip}
+                    />
+                    <FilterPanel
+                      imageDates={this.state.imageDates}
+                      isHidden={this.state.slidersHidden}
+                      selectDates={this.selectDates}
+                    />
+
+                    {/* Report mines */}
+                    <SideIcon
+                      clickHandler={() => this.togglePanel("reportHidden")}
+                      icon="mine"
+                      parentClass={this.state.reportHidden ? "" : "active-icon"}
+                      tooltip={home.reportTooltip}
+                    />
+                    <ReportMinesPanel
+                      addPopup={this.addPopup}
+                      fitMap={this.fitMap}
+                      isHidden={this.state.reportHidden}
+                      selectedLatLon={this.state.selectedLatLon}
+                      submitMine={this.submitMine}
+                    />
+
+                    {/* Download */}
+                    <SideIcon
+                      clickHandler={() => this.togglePanel("downloadHidden")}
+                      icon="download"
+                      parentClass={this.state.downloadHidden ? "" : "active-icon"}
+                      tooltip={home.downloadTooltip}
+                    />
+                    <DownloadPanel isHidden={this.state.downloadHidden}/>
+                  </>
+                )}
+                {/* Info dialogue */}
+                <SideIcon
+                  clickHandler={() => this.togglePanel("appInfoHidden")}
+                  icon="info"
+                  parentClass="disclaimer"
+                  tooltip={home.appInfoTooltip}
+                />
+                <AppInfo
+                  isHidden={this.state.appInfoHidden}
+                  onOuterClick={() => this.togglePanel("appInfoHidden")}
+                />
+              </div>
+            </>
+          )}
+          <div id="lnglathud-shell">
+            <span id="lnglathud"/>
+          </div>
+        </div>
+      </MainContext.Provider>
+    );
+  }
 }
 
 class InfoPopupContent extends React.Component {

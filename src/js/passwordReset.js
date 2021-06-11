@@ -30,91 +30,91 @@ class PasswordReset extends React.Component {
     });
   }
 
-    verifyInputs = () => {
-      const {email, password, passwordConfirmation, localeText} = this.state;
-      return [
-        email.length === 0 && localeText.errorEmailReq,
-        !validatePassword(password) && localeText.errorPassword,
-        password !== passwordConfirmation && localeText.errorPassMatch
-      ].filter(e => e);
-    };
+  verifyInputs = () => {
+    const {email, password, passwordConfirmation, localeText} = this.state;
+    return [
+      email.length === 0 && localeText.errorEmailReq,
+      !validatePassword(password) && localeText.errorPassword,
+      password !== passwordConfirmation && localeText.errorPassMatch
+    ].filter(e => e);
+  };
 
-    resetPassword = () => {
-      const errors = this.verifyInputs();
-      if (errors.length > 0) {
-        alert(errors.map(e => " - " + e).join("\n"));
-      } else {
-        fetch("/password-reset/",
-              {
-                method: "POST",
-                headers: {
-                  Accept: "application/json",
-                  "Content-Type": "application/json",
-                  "X-CSRFToken": getCookie("csrftoken")
-                },
-                body: JSON.stringify({
-                  email: this.state.email,
-                  password: this.state.password,
-                  token: this.state.token
-                })
+  resetPassword = () => {
+    const errors = this.verifyInputs();
+    if (errors.length > 0) {
+      alert(errors.map(e => " - " + e).join("\n"));
+    } else {
+      fetch("/password-reset/",
+            {
+              method: "POST",
+              headers: {
+                Accept: "application/json",
+                "Content-Type": "application/json",
+                "X-CSRFToken": getCookie("csrftoken")
+              },
+              body: JSON.stringify({
+                email: this.state.email,
+                password: this.state.password,
+                token: this.state.token
               })
-          .then(response => Promise.all([response.ok, response.text()]))
-          .then(data => {
-            if (data[0] && data[1] === "") {
-              window.location = "/";
-            } else {
-              console.error(data[1]);
-              alert(this.state.localeText[data[1]] || this.state.localeText.errorCreating);
-            }
-          })
-          .catch(err => console.error(err));
-      }
-    };
+            })
+        .then(response => Promise.all([response.ok, response.text()]))
+        .then(data => {
+          if (data[0] && data[1] === "") {
+            window.location = "/";
+          } else {
+            console.error(data[1]);
+            alert(this.state.localeText[data[1]] || this.state.localeText.errorCreating);
+          }
+        })
+        .catch(err => console.error(err));
+    }
+  };
 
-    renderField = (label, type, stateKey) => (
-      <div className="d-flex flex-column">
-        <label htmlFor={stateKey}>{label}</label>
-        <input
-          className="p-2"
-          id={stateKey}
-          onChange={e => this.setState({[stateKey]: e.target.value})}
-          onKeyPress={e => {
-            if (e.key === "Enter") this.resetPassword();
-          }}
-          placeholder={`Enter ${(label || "").toLowerCase()}`}
-          type={type}
-          value={this.state[stateKey]}
-        />
-      </div>
-    );
+  renderField = (label, type, stateKey) => (
+    <div className="d-flex flex-column">
+      <label htmlFor={stateKey}>{label}</label>
+      <input
+        className="p-2"
+        id={stateKey}
+        onChange={e => this.setState({[stateKey]: e.target.value})}
+        onKeyPress={e => {
+          if (e.key === "Enter") this.resetPassword();
+        }}
+        placeholder={`Enter ${(label || "").toLowerCase()}`}
+        type={type}
+        value={this.state[stateKey]}
+      />
+    </div>
+  );
 
-    render() {
-      const {localeText} = this.state;
-      return (
-        <div
-          className="d-flex justify-content-center"
-          style={{paddingTop: "20vh"}}
-        >
-          <div className="card">
-            <div className="card-header">{localeText.resetTitle}</div>
-            <div className="card-body">
-              {this.renderField(localeText.email, "email", "email")}
-              {this.renderField(localeText.password, "password", "password")}
-              {this.renderField(localeText.confirm, "password", "passwordConfirmation")}
-              <div className="d-flex justify-content-end">
-                <button
-                  className="btn orange-btn mt-3"
-                  onClick={this.resetPassword}
-                  type="button"
-                >
-                  {localeText.resetTitle}
-                </button>
-              </div>
+  render() {
+    const {localeText} = this.state;
+    return (
+      <div
+        className="d-flex justify-content-center"
+        style={{paddingTop: "20vh"}}
+      >
+        <div className="card">
+          <div className="card-header">{localeText.resetTitle}</div>
+          <div className="card-body">
+            {this.renderField(localeText.email, "email", "email")}
+            {this.renderField(localeText.password, "password", "password")}
+            {this.renderField(localeText.confirm, "password", "passwordConfirmation")}
+            <div className="d-flex justify-content-end">
+              <button
+                className="btn orange-btn mt-3"
+                onClick={this.resetPassword}
+                type="button"
+              >
+                {localeText.resetTitle}
+              </button>
             </div>
           </div>
         </div>
-      );
-    }
+      </div>
+    );
+  }
 }
 
 export function pageInit(args) {
