@@ -73,56 +73,60 @@ class DownloadData extends React.Component {
 
   render() {
     const {dataType, availableDates: {predictions, userMines}, collectedData} = this.state;
+    const {isAdmin} = this.props;
     predictions.sort();
     userMines.sort();
-    return (
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          padding: "1rem 4rem",
-          alignItems: "center",
-          height: "100%"
-        }}
-      >
-        <div className="d-flex">
-          <span style={{marginTop: ".25rem"}}>
-            <input
-              checked={dataType === "predictions"}
-              name="dataType"
-              onChange={() => this.setState({dataType: "predictions"})}
-              type="radio"
-            />
+    return isAdmin
+      ? (
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            padding: "1rem 4rem",
+            alignItems: "center",
+            height: "100%"
+          }}
+        >
+          <div className="d-flex">
+            <span style={{marginTop: ".25rem"}}>
+              <input
+                checked={dataType === "predictions"}
+                name="dataType"
+                onChange={() => this.setState({dataType: "predictions"})}
+                type="radio"
+              />
               Collected predictions
-          </span>
-          <span style={{marginTop: ".25rem"}}>
-            <input
-              checked={dataType === "userMines"}
-              name="dataType"
-              onChange={() => this.setState({dataType: "userMines"})}
-              type="radio"
-            />
+            </span>
+            <span style={{marginTop: ".25rem"}}>
+              <input
+                checked={dataType === "userMines"}
+                name="dataType"
+                onChange={() => this.setState({dataType: "userMines"})}
+                type="radio"
+              />
               User reported mines
-          </span>
+            </span>
+          </div>
+          {this.state.dataType === "predictions"
+            ? (
+              <Predictions
+                addCollectedData={this.addCollectedData}
+                collectedData={collectedData}
+                predictions={predictions}
+                renderButtons={this.renderButtons}
+              />
+            ) : (
+              <UserMines
+                addCollectedData={this.addCollectedData}
+                collectedData={collectedData}
+                renderButtons={this.renderButtons}
+                userMines={userMines}
+              />
+            )}
         </div>
-        {this.state.dataType === "predictions"
-          ? (
-            <Predictions
-              addCollectedData={this.addCollectedData}
-              collectedData={collectedData}
-              predictions={predictions}
-              renderButtons={this.renderButtons}
-            />
-          ) : (
-            <UserMines
-              addCollectedData={this.addCollectedData}
-              collectedData={collectedData}
-              renderButtons={this.renderButtons}
-              userMines={userMines}
-            />
-          )}
-      </div>
-    );
+      ) : (
+        <div><label>No tienes permiso para ver esta página.</label></div>
+      );
   }
 }
 
@@ -342,5 +346,8 @@ class UserMines extends React.Component {
 }
 
 export function pageInit(args) {
-  ReactDOM.render(<DownloadData/>, document.getElementById("main-container"));
+  ReactDOM.render(
+    <DownloadData isAdmin={args.isAdmin}/>,
+    document.getElementById("main-container")
+  );
 }
