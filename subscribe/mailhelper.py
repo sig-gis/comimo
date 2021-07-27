@@ -71,12 +71,12 @@ def newUserHTMLES(email, token):
 def sendAlertMail(email, projurl, lang):
     if lang == "es":
         sendMail(email,
-                 "CoMiMo minera alerta",
+                 "CoMiMo: alerta minera",
                  alertTextES(projurl),
                  alertHTMLES(projurl))
     else:
         sendMail(email,
-                 "CoMiMo Mine alert",
+                 "CoMiMo: mine alert",
                  alertTextEN(projurl),
                  alertHTMLEN(projurl))
 
