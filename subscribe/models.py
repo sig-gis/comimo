@@ -59,6 +59,8 @@ class ProjectsModel(models.Model):
 class ExtractedData(models.Model):
     id = models.AutoField(primary_key=True, null=False)
     user = models.ForeignKey(Profile, on_delete=models.CASCADE)
+    project = models.ForeignKey(
+        ProjectsModel, on_delete=models.CASCADE, null=True)
     # Latitude
     x = models.FloatField(null=False)
     # Longitude

@@ -185,14 +185,15 @@ def getActiveProjects(user):
         return 'Error'
 
 
-def insertCollectedData(profile, data, dataLayer, projectName):
+def insertCollectedData(profile, data, project):
     try:
         data_instance = ExtractedData()
         data_instance.user = profile
+        data_instance.project = project
         data_instance.y = float(data[1])
         data_instance.x = float(data[2])
-        data_instance.data_layer = dataLayer
-        data_instance.project_name = projectName
+        data_instance.data_layer = project.data_layer
+        data_instance.project_name = project.name
         data_instance.class_num = data[3]
         data_instance.class_name = data[4]
         data_instance.save()
@@ -214,7 +215,8 @@ def archiveProject(user, pid):
         collectedSamples = getCollectedData(pid)
         collectedSamples = collectedSamples[1:]
         for sample in collectedSamples:
-            insertCollectedData(profile, sample, project.data_layer, project.name)
+            insertCollectedData(
+                profile, sample, project)
         status = delProject(pid)
         if (status == 'Archived'):
             project.status = 'archived'
