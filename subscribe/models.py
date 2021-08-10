@@ -66,6 +66,7 @@ class ExtractedData(models.Model):
     data_layer = models.CharField(max_length=25, default='')
     class_num = models.CharField(max_length=2, null=False)
     class_name = models.CharField(max_length=10, null=False)
+    project_name = models.TextField(null=False)
 
     class Meta:
         app_label = "subscribe"
