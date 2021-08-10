@@ -153,6 +153,9 @@ class Predictions extends React.Component {
       columns: [
         // define the table columns
         {title: "user", field: "username", headerFilter: "input"},
+        {title: "email", field: "email", headerFilter: "input"},
+        {title: "organization", field: "institution", headerFilter: "input"},
+        {title: "project name", field: "projectName", headerFilter: "input"},
         {title: "longitude", field: "y", headerFilter: "input"},
         {title: "latitude", field: "x", headerFilter: "input"},
         {title: "dataLayer", field: "dataLayer", headerFilter: "input"},
@@ -262,6 +265,7 @@ class UserMines extends React.Component {
         // define the table columns
         {title: "user", field: "username", headerFilter: "input"},
         {title: "email", field: "email", headerFilter: "input"},
+        {title: "organization", field: "institution", headerFilter: "input"},
         {title: "longitude", field: "y", headerFilter: "input"},
         {title: "latitude", field: "x", headerFilter: "input"},
         {title: "reportedDate", field: "reportedDate", headerFilter: "date"}

@@ -119,10 +119,13 @@ def downloadPredictions(request):
         dataLayer = request.GET.get('dataLayer')
         data = ExtractedData.objects.filter(data_layer=dataLayer) \
             .annotate(username=F('user__user__username'),
+                      institution=F('user__institution'),
+                      email=F('user__email'),
+                      projectName=F('project_name'),
                       dataLayer=F('data_layer'),
                       className=F('class_num'),
                       classNum=F('class_name')) \
-            .values('username', 'x', 'y', 'dataLayer', 'className', 'classNum')
+            .values('username', 'email', 'institution', 'projectName', 'x', 'y', 'dataLayer', 'className', 'classNum')
         return JsonResponse(list(data), safe=False)
 
 
@@ -137,9 +140,10 @@ def downloadUserMines(request):
             .values('month') \
             .filter(month=month) \
             .annotate(username=F('user__user__username'),
+                      institution=F('user__institution'),
                       email=F('user__email'),
                       reportedDate=F('reported_date')) \
-            .values('username', 'email', 'x', 'y', 'reportedDate')
+            .values('username', 'email', 'institution', 'x', 'y', 'reportedDate')
         return JsonResponse(list(data), safe=False)
 
 

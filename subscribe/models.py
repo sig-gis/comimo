@@ -59,6 +59,8 @@ class ProjectsModel(models.Model):
 class ExtractedData(models.Model):
     id = models.AutoField(primary_key=True, null=False)
     user = models.ForeignKey(Profile, on_delete=models.CASCADE)
+    project = models.ForeignKey(
+        ProjectsModel, on_delete=models.CASCADE, null=True)
     # Latitude
     x = models.FloatField(null=False)
     # Longitude
@@ -66,6 +68,7 @@ class ExtractedData(models.Model):
     data_layer = models.CharField(max_length=25, default='')
     class_num = models.CharField(max_length=2, null=False)
     class_name = models.CharField(max_length=10, null=False)
+    project_name = models.TextField(null=False)
 
     class Meta:
         app_label = "subscribe"
