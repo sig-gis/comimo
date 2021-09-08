@@ -23,7 +23,7 @@ export default class SearchPanel extends React.Component {
   searchGeocode = () => {
     const {searchText} = this.state;
     const {featureNames} = this.context;
-    const url = this.URLS.GEOCODE + "?key=" + mapQuestKey + "&county=" + searchText + "&country=columbia";
+    const url = this.URLS.GEOCODE + "?key=" + mapQuestKey + "&county=" + searchText + "&country=colombia";
     fetch(url)
       .then(resp => resp.json())
       .then(result => {
