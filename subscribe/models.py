@@ -91,4 +91,4 @@ class CronJobs(models.Model):
         db_table = "gmw_cron_jobs"
 
     def __str__(self):
-        return self.job_date.strftime("%Y-%m-%d %H:%M") + ' - ' + self.job_type + ' - ' + self.finish_message
+        return self.job_date.strftime("%Y-%m-%d %H:%M") + ' - ' + self.job_type + ' - ' + self.email + ' - ' + self.finish_message

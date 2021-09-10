@@ -11,7 +11,7 @@ export default function SideIcon({parentClass, clickHandler, tooltip, icon, subt
       type="button"
     >
       <div style={{padding: "6px", display: "flex", justifyContent: "center"}}>
-        <SvgIcon icon={icon} size="38px"/>
+        <SvgIcon color="#003333" icon={icon} size="38px"/>
       </div>
       {subtext && <span className="advanced-text mb-3">{subtext}</span>}
     </button>

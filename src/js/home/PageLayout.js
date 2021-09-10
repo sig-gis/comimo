@@ -230,10 +230,6 @@ export default class PageLayout extends React.Component {
         hudShell.style.display = "inherit";
         hud.innerHTML = lat + ", " + lng;
       });
-      theMap.on("mouseout", () => {
-        const hudShell = document.getElementById("lnglathud-shell");
-        hudShell.style.display = "none";
-      });
       theMap.on("click", e => {
         const {lng, lat} = e.lngLat;
         this.addPopup(lat, lng);
@@ -358,56 +354,58 @@ export default class PageLayout extends React.Component {
             width: "100%",
             margin: 0,
             padding: 0,
-            position: "relative"
+            position: "relative",
+            display: "flex",
+            flexDirection: "column"
           }}
         >
           <div
-            id="mapbox"
+            id="title-bar"
             style={{
-              height: "100%",
               width: "100%",
-              margin: 0,
-              padding: 0,
-              position: "relative"
-            }}
-          />
-          <div
-            id="desktop-panel"
-            style={{
-              alignItems: "flex-end",
-              display: "flex",
-              position: "fixed",
-              right: "56px",
-              top: "10px",
-              zIndex: 1000
+              background: "#003333",
+              textAlign: "center",
+              padding: "5px",
+              height: "3.5rem"
             }}
           >
-            {isUser && (
-              <button
-                style={{
-                  alignItems: "center",
-                  border: "2px solid",
-                  background: "white",
-                  borderRadius: "8px",
-                  display: "flex",
-                  padding: "2px",
-                  marginRight: ".5rem"
-                }}
-                type="button"
-              >
-                {this.renderUserButton()}
-              </button>
-            )}
-            {this.renderLanguage()}
-          </div>
-          <div id="mobile-title">
-            <h2 style={{width: "50%"}}>CoMiMo</h2>
-            <div style={{display: "flex", justifyContent: "flex-end", paddingRight: "1rem", width: "50%"}}>
-              {isUser && <div>{this.renderUserButton()}</div>}
-              <span className="mx-1"/>
+            <img
+              alt="app-logo"
+              onClick={() => this.togglePanel("appInfoHidden")}
+              src="/static/images/app-logo.png"
+              style={{height: "100%", cursor: "pointer"}}
+            />
+            <div
+              id="user-panel"
+              style={{
+                alignItems: "flex-end",
+                display: "flex",
+                position: "fixed",
+                right: "56px",
+                top: "10px",
+                zIndex: 1000
+              }}
+            >
+              {isUser && (
+                <button
+                  style={{
+                    alignItems: "center",
+                    border: "2px solid",
+                    background: "white",
+                    borderRadius: "8px",
+                    display: "flex",
+                    padding: "2px",
+                    marginRight: ".5rem"
+                  }}
+                  type="button"
+                >
+                  {this.renderUserButton()}
+                </button>
+              )}
               {this.renderLanguage()}
             </div>
           </div>
+
           {home && (
             <>
               {/* Layers */}
@@ -429,8 +427,7 @@ export default class PageLayout extends React.Component {
                 />
               </div>
 
-              <div className="sidebar">
-                <div className="sidebar-icon gold-drop app-icon"/>
+              <div className="sidebar" style={{top: "3.5rem", height: "calc(100% - 3.5rem)"}}>
                 {/* Subscribe */}
                 <SideIcon
                   clickHandler={() => this.togglePanel("subscribeHidden")}
@@ -547,6 +544,16 @@ export default class PageLayout extends React.Component {
               </div>
             </>
           )}
+          <div
+            id="mapbox"
+            style={{
+              height: "100%",
+              width: "100%",
+              margin: 0,
+              padding: 0,
+              position: "relative"
+            }}
+          />
           <div id="lnglathud-shell">
             <span id="lnglathud"/>
           </div>
