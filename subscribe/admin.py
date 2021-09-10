@@ -114,8 +114,22 @@ class ExtractedAdmin(admin.ModelAdmin):
     )
 
 
-admin.site.register(models.SubscribeModel)
+class SubscribeAdmin(admin.ModelAdmin):
+    search_fields = ('user__user__username', 'level', 'region',
+                     'user__email')
+
+
+class UserMinesAdmin(admin.ModelAdmin):
+    search_fields = ('user__user__username', 'user__email')
+
+
+class CronAdmin(admin.ModelAdmin):
+    search_fields = ('email', 'job_type', 'job_date',
+                     'finish_message', 'regions')
+
+
+admin.site.register(models.SubscribeModel, SubscribeAdmin)
 admin.site.register(models.ProjectsModel, ProjectsAdmin)
 admin.site.register(models.ExtractedData, ExtractedAdmin)
-admin.site.register(models.UserMinesModel)
-admin.site.register(models.CronJobs)
+admin.site.register(models.UserMinesModel, UserMinesAdmin)
+admin.site.register(models.CronJobs, CronAdmin)
