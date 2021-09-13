@@ -405,6 +405,16 @@ export default class PageLayout extends React.Component {
               {this.renderLanguage()}
             </div>
           </div>
+          <div
+            id="mapbox"
+            style={{
+              height: "100%",
+              width: "100%",
+              margin: 0,
+              padding: 0,
+              position: "relative"
+            }}
+          />
 
           {home && (
             <>
@@ -544,16 +554,7 @@ export default class PageLayout extends React.Component {
               </div>
             </>
           )}
-          <div
-            id="mapbox"
-            style={{
-              height: "100%",
-              width: "100%",
-              margin: 0,
-              padding: 0,
-              position: "relative"
-            }}
-          />
+
           <div id="lnglathud-shell">
             <span id="lnglathud"/>
           </div>
