@@ -21,6 +21,17 @@
             USER_ADM = document.currentScript.dataset.admin;
             CSRF_TOKEN = document.currentScript.dataset.csrf
         </script>
+
+        <!-- Global site tag (gtag.js) - Google Analytics -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-745P251KVF"></script>
+        <script>
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+
+            gtag('config', 'G-745P251KVF');
+        </script>
+
         <script type='text/javascript' src='{% static "js/vendor.js" %}'></script>
         {% block pagescripts %}
         {% endblock %}
