@@ -156,7 +156,7 @@ def getDataDates(request):
             .annotate(month=TruncMonth('reported_date')) \
             .values('month') \
             .annotate(count=Count('id')) \
-            .values_list('month', flat=True)[:5]
+            .values_list('month', flat=True)
         formatted = list(map(lambda x: x.strftime("%Y-%m"),
                          list(userCollected)))
         data = ExtractedData.objects.order_by().values_list(
