@@ -218,3 +218,7 @@ Instead of `python manage.py runserver`, use:
 ```shell
 uwsgi --ini gmwuwsgi.ini
 ```
+
+## License and Distribution
+
+Copyright © 2020-2022 Spatial Informatics Group, LLC.
