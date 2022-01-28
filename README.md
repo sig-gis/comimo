@@ -12,7 +12,7 @@ The source of Colombian Mining Monitoring (henceforth referred to as CoMiMo) is
 The first step is to install python (3.7.3+) with pip and git. After installing
 and having the path added as environment variables install virtual environment.
 
-```python
+```shell
 pip install virtualenv
 ```
 
@@ -30,7 +30,8 @@ Now clone this repository into the system. Activate the virtual environment and
 install the required packages using pip
 
 ```shell
-(venv)$ pip install -r requirements.txt
+source venv/bin/activate
+pip install -r requirements.txt
 ```
 
 ### Running django through IIS
@@ -72,34 +73,39 @@ npm install
 Besides the installation and setup for the application there are a few things
 required for the application to run and function properly. There are some files
 that are not included in git repository but are essential to the working of the
-application.
+application. You should create them using the steps below.
+
+1. Create the proper files.
 
 ```shell
 nano src/js/appConfig.js
 nano subscribe/config.py
 ```
 
-1. src/js/appConfig.js
+2. Fill in `src/js/appConfig.js`
 
 This file contains the access details to your Mapbox and MapQuest accounts.
+You should sign up for your own [Mapbox](https://www.mapbox.com/) and
+[MapQuest](https://developer.mapquest.com/) accounts and generate a token for
+each. Those tokens should then be copied to `src/js/appConfig.js` like so:
 
-```text
-mapboxToken = '<your access token>';
-mapQuestKey = '<your key>'
+```javascript
+export const mapboxToken = '<your access token>';
+export const mapQuestKey = '<your key>';
 ```
 
-3. subscribe/config.py
+3. Fill in `subscribe/config.py`
 
-This file contains the configurations for all the email client to be used as
+This file contains the configurations for the email client to be used as
 well as the CEO related configurations. The secret key must be a large random
 value and it must be kept secret.
 
-```text
+```python
 SECRET_KEY = 'gfsdflksjdfg43453kj3h45k3jh45k3h45'
 
 EMAIL_HOST_USER = '<your email address>'
 EMAIL_HOST_PASSWORD = '<your password>'
-APP_URL = '<your app URL>' // This is currently unused
+APP_URL = '<your app URL>'
 
 CEO_GATEWAY_URL = 'http://127.0.0.1:3000/'
 CEO_CREATE = "create-project/"
@@ -114,7 +120,7 @@ PROJ_IMAGERY = 1301 # default imagery selection
 
 ### Google Service Account Key
 
-A major requirement for everything to work is a service account for google
+A major requirement for everything to work is a service account for Google
 services to work with GEE.
 
 #### Development
@@ -134,30 +140,22 @@ earthengine authenticate
 #### Production
 
 A service account key can be created from Google developer console. Make sure to
-activate the address for service account on google earth engine before using it.
-Creating a key generates a json file that should be placed inside the folder
+activate the address for service account on Google Earth Engine before using it.
+Creating a key generates a JSON file that should be placed inside the folder
 **api** with the name **gee-auth-key.json**.
 
-IMPORTANT! remember to have the service account address whitelisted by Google earth engine!
+IMPORTANT! remember to have the service account address whitelisted by Google
+Earth Engine!
 
 ## Install and run CEO gateway
 
 The project connects to CEO through an application package called CEO gateway
 which uses our credentials to make changes to CEO projects such as create,
-delete, get info, etc. The gateway can be cloned from here
-<https://gitlab.com/sig-gis/ceo-gateway>
+delete, get info, etc. To get set up with CEO gateway, please read the
+instructions from [CEO gateway's README](https://gitlab.com/sig-gis/ceo-gateway).
 
-**src/config.js** needs to be configured with CEO details before it can properly
-function.
-
-To activate navigate to the project directory and run `npm run start`
-
-```shell
-git clone git@gitlab.com:sig-gis/ceo-gateway.git
-cd ceo-gateway
-nano src/config.js
-npm run start
-```
+Note that every time you wish to run CoMiMo, you need to first have
+CEO gateway running in a separate terminal.
 
 ## Starting and running the django server
 
@@ -180,13 +178,14 @@ These steps only need to be done once after the server is set up.
 
 ### Run Django
 
-1. Compile js files with webpack `npm run webpack-[prod dev]` In dev mode, run
-   separate terminal, as webpack-dev is a continually running process.
-2. Run `python manage.py collectstatic` to collect the static files. Type yes to
-   replace the existing files on prompt.
+1. Compile js files with webpack `npm run webpack-[prod dev]`. When you are in
+   dev mode make sure to run this command in a separate terminal since webpack-dev
+   is a continually running process.
+2. Run `python manage.py collectstatic` to collect the static files. Type `yes`
+   to replace the existing files on prompt.
 3. Run `python manage.py runserver [ip, default 127.0.0.1]:[port, default 8000]`
    to start the server. To have access to the server outside the local
-   environment start with the ip 0.0.0.0.
+   environment, start with the ip 0.0.0.0.
 
 ## Running https via nginx (optional)
 
