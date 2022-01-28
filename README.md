@@ -12,7 +12,7 @@ The source of Colombian Mining Monitoring (henceforth referred to as CoMiMo) is
 The first step is to install python (3.7.3+) with pip and git. After installing
 and having the path added as environment variables install virtual environment.
 
-```python
+```shell
 pip install virtualenv
 ```
 
@@ -91,7 +91,7 @@ each. Those tokens should then be copied to `src/js/appConfig.js` like so:
 
 ```javascript
 export const mapboxToken = '<your access token>';
-export const mapQuestKey = '<your key>'
+export const mapQuestKey = '<your key>';
 ```
 
 3. Fill in `subscribe/config.py`
@@ -178,13 +178,14 @@ These steps only need to be done once after the server is set up.
 
 ### Run Django
 
-1. Compile js files with webpack `npm run webpack-[prod dev]` In dev mode, run
-   separate terminal, as webpack-dev is a continually running process.
-2. Run `python manage.py collectstatic` to collect the static files. Type yes to
-   replace the existing files on prompt.
+1. Compile js files with webpack `npm run webpack-[prod dev]`. When you are in
+   dev mode make sure to run this command in a separate terminal since webpack-dev
+   is a continually running process.
+2. Run `python manage.py collectstatic` to collect the static files. Type `yes`
+   to replace the existing files on prompt.
 3. Run `python manage.py runserver [ip, default 127.0.0.1]:[port, default 8000]`
    to start the server. To have access to the server outside the local
-   environment start with the ip 0.0.0.0.
+   environment, start with the ip 0.0.0.0.
 
 ## Running https via nginx (optional)
 
