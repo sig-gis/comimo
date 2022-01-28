@@ -105,7 +105,7 @@ SECRET_KEY = 'gfsdflksjdfg43453kj3h45k3jh45k3h45'
 
 EMAIL_HOST_USER = '<your email address>'
 EMAIL_HOST_PASSWORD = '<your password>'
-APP_URL = '<your app URL>' # This is currently unused
+APP_URL = '<your app URL>'
 
 CEO_GATEWAY_URL = 'http://127.0.0.1:3000/'
 CEO_CREATE = "create-project/"
