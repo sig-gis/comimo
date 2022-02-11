@@ -140,8 +140,7 @@ def createNewProject(user, dataLayer, name, regions):
             if proj is not None:
                 projId = proj['projectId']
                 tokenKey = proj['tokenKey']
-                ceoUrl = proj['ceoUrl']
-                projUrl = ceoUrl + "/simple-collection?projectId=" + \
+                projUrl = "/simple-collection?projectId=" + \
                     str(projId) + "&tokenKey=" + tokenKey
                 if (projId and projId > 0):
                     regions = '__'.join(regions)
