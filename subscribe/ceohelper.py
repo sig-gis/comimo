@@ -40,12 +40,6 @@ def createCEOProject(points, title):
         print(e)
 
 
-def getProjectInfo(pid):
-    headers = {'Content-type': 'application/json', 'Accept': 'text/plain'}
-    resp = requests.get(CEO_GATEWAY_URL + CEO_INFO + str(pid), headers=headers)
-    return json.loads(resp.text)
-
-
 def getCollectedData(pid):
     headers = {'Content-type': 'application/json', 'Accept': 'text/plain'}
     resp = requests.get(CEO_GATEWAY_URL + CEO_GETDATA + str(pid),
