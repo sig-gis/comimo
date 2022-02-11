@@ -15,7 +15,7 @@ def update_projurl(apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('subscribe', '0019_extracteddata_project.py'),
+        ('subscribe', '0019_extracteddata_project'),
     ]
 
     operations = [
