@@ -35,7 +35,6 @@ def createCEOProject(points, title):
                              data=json.dumps(reqobj),
                              headers=headers,
                              timeout=300)
-        print(resp)
         return json.loads(resp.text)
     except Exception as e:
         print(e)
