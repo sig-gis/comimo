@@ -36,8 +36,10 @@
         "shortTerms": "Welcome to CoMiMo. All services available through our website are owned and operated by Universidad del Rosario. By accessing and using CoMiMo platform, you agree to comply with our Terms of Use and avoid any misuse of its contents.",
         "viewTerms": "Click here for the Terms of Use",
         "termsUrl": "https://docs.google.com/document/d/1kJrlXUlyDRVeVEb1WcPOWBNnzJ1s-9spLTHCxnk8o5E",
-        "viewInstructions": "Click here for instructions",
-        "instructionsUrl": "https://docs.google.com/document/d/1Kcn9u_umMVleYqVqFkxiSypMPxDUXkodsDbjAB2z-xU"
+        "viewMethod": "Click here for Methodology",
+        "methodUrl": "https://docs.google.com/document/d/1Kcn9u_umMVleYqVqFkxiSypMPxDUXkodsDbjAB2z-xU",
+        "viewManual": "Click here for User Manual",
+        "manualUrl": "https://docs.google.com/document/d/1N2uoVBWwftZbtNRlHbZbDtzvDxoNx-dtm9bLjf0YE10"
     },
     "download": {
         "title": "Download data",
@@ -86,6 +88,7 @@
         "reportMine": "Report Mine",
         "existing": "You have already reported a mine here.",
         "created": "Mine successfully reported.",
+        "outside": "You can only report mines inside Colomdia.",
         "error": "Unknown error."
     },
     "search": {

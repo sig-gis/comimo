@@ -34,10 +34,12 @@
         "title": "Información de la applicación",
         "termsOfUse": "Condiciones de uso",
         "shortTerms": "Bienvenidos a CoMiMo. Todos los servicios disponibles a través de nuestro sitio web son operados por la Universidad del Rosario, y ésta es su única propietaria. Al acceder a CoMiMo y usar sus servicios, acepta cumplir con nuestros Términos de uso y evitar cualquier uso indebido de la plataforma y su contenido",
-        "viewTerms": "Haz clic aquí para ver las condiciones de uso",
+        "viewTerms": "Haz clic aquí para ver las Condiciones de Uso",
         "termsUrl": "https://docs.google.com/document/d/1xrLgL_Ai8lR8E4ZsF0AnzjlZESMVwKuUjOgSBJE3bqo",
-        "viewInstructions": "Haz clic aquí para ver el documento metodológico",
-        "instructionsUrl": "https://docs.google.com/document/d/1XtkDwENUM3JAQbecGgT6myU55Qc5HO5eT_PW0wzEhyI"
+        "viewMethod": "Haz clic aquí para ver el Documento Metodológico",
+        "methodUrl": "https://docs.google.com/document/d/1XtkDwENUM3JAQbecGgT6myU55Qc5HO5eT_PW0wzEhyI",
+        "viewManual": "Haz clic aquí para ver el Manual de Usuario",
+        "manualUrl": "https://docs.google.com/document/d/1OHbs0QzThzUk7lcPyJ6xgAxwdgpKV6Oe3fJsaTACVbg"
     },
     "download": {
         "title": "Descargar datos",
@@ -80,11 +82,12 @@
         "latitude": "Latitud",
         "longitude": "Longitud",
         "submit": "Reportar mina",
-        "reported": "Reportó",
+        "reported": "Reportado",
         "noLocation": "Seleccionar un punto para continuar.",
         "reportMine": "Reportar mina",
         "existing": "Ya ha informado de una mina aquí.",
-        "created": "Mina informado con éxito.",
+        "created": "Mina reportada con éxito.",
+        "outside": "Solo puede reportar sobre minas dentro de Colomdia.",
         "error": "Error desconocido."
     },
     "search": {
@@ -121,7 +124,7 @@
         "title": "Tus suscripciones",
         "noSubs": "No estás suscrito a alertas para ningún municipio.",
         "loadingSubs": "Cargando suscripciones ...",
-        "subscribedTo": "Estás suscrito a alertas para los siguientes municipios:",
+        "subscribedTo": "Estás suscrito a alertas para los siguientes municipios",
         "subscribeTo": "Suscribirse a",
         "loginAction": "Suscripciones"
     },
@@ -150,7 +153,7 @@
         "customRadio": "Municipios personalizados",
         "createButton": "Crear nuevo proyecto para",
         "loginAction": "proyectos",
-        "typeLabel": "Seleccione el tipo de predicción:",
+        "typeLabel": "Seleccione el tipo de predicción",
         "cMines": "Minas confirmadas",
         "nMines": "Nuevas predicciones",
         "pMines": "Predicciones actuales"
@@ -187,7 +190,7 @@
         "modalMessage": "Cargando",
         "userAccountTitle": "Actualizar cuenta",
         "updated": "Tu cuenta ha sido actualizada.",
-        "save": "Archivar",
+        "save": "Guardar",
         "errorEmail": "Ya existe un usuario con este correo electrónico.",
         "errorUsername": "Ya existe un usuario con este nombre.",
         "errorCreating": "Se produjo un error al crear nuevo usuario. Contactar con soporte.",
