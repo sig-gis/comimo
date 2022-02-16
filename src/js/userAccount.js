@@ -4,20 +4,25 @@ import ReactDOM from "react-dom";
 import LoadingModal from "./components/LoadingModal";
 import LanguageSelector from "./components/LanguageSelector";
 
-import {getCookie} from "./utils";
-
 class UserAccount extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      ...this.props,
+      username: "",
+      email: "",
+      fullName: "",
+      institution: "",
+      sector: "academic",
+      password: "",
+      passwordConfirmation: "",
       localeText: {},
+      defaultLang: "",
       showModal: false
     };
   }
 
   componentDidMount() {
-    this.getLocalText(this.state.defaultLang);
+    this.getUserInformation();
   }
 
   /// State Update ///
@@ -54,19 +59,42 @@ class UserAccount extends React.Component {
     ].filter(e => e);
   };
 
+  getUserInformation = () => {
+    this.processModal(() =>
+      fetch("/user-information",
+            {
+              method: "POST",
+              headers: {
+                Accept: "application/json",
+                "Content-Type": "application/json"
+              }
+            })
+        .then(response => (response.ok ? response.json() : Promise.reject(response)))
+        .then(data => {
+          if (data.username) {
+            this.setState({...data});
+            this.getLocalText(data.defaultLang);
+          } else {
+            console.error("userNotFound");
+            // FIXME, "userNotFound" is not in the locale
+            alert(this.state.localeText.userNotFound || this.state.localeText.errorUpdating);
+          }
+        })
+        .catch(err => console.error(err)));
+  };
+
   updateUser = () => {
     const errors = this.verifyInputs();
     if (errors.length > 0) {
       alert(errors.map(e => " - " + e).join("\n"));
     } else {
       this.processModal(() =>
-        fetch("/user-account/",
+        fetch("/user-account",
               {
                 method: "POST",
                 headers: {
                   Accept: "application/json",
-                  "Content-Type": "application/json",
-                  "X-CSRFToken": getCookie("csrftoken")
+                  "Content-Type": "application/json"
                 },
                 body: JSON.stringify({
                   defaultLang: this.state.defaultLang,
@@ -171,5 +199,5 @@ class UserAccount extends React.Component {
 }
 
 export function pageInit(args) {
-  ReactDOM.render(<UserAccount {...args}/>, document.getElementById("main-container"));
+  ReactDOM.render(<UserAccount/>, document.getElementById("main-container"));
 }

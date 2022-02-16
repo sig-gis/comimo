@@ -4,5 +4,12 @@ import ReactDOM from "react-dom";
 import PageLayout from "./PageLayout";
 
 export function pageInit(args) {
-  ReactDOM.render(<PageLayout {...args}/>, document.getElementById("main-container"));
+  ReactDOM.render(
+    <PageLayout
+      role={args.role}
+      userLang={args.userLang}
+      username={args.username}
+    />,
+    document.getElementById("main-container")
+  );
 }

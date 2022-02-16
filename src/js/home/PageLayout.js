@@ -83,8 +83,8 @@ export default class PageLayout extends React.Component {
   /// Lifecycle Functions ///
 
   componentDidMount() {
-    const lang = ["en", "es"].includes(this.props.defaultLang)
-      ? this.props.defaultLang
+    const lang = ["en", "es"].includes(this.props.userLang)
+      ? this.props.userLang
       : getLanguage(["en", "es"]);
     this.setState({selectedLanguage: lang});
 
@@ -333,12 +333,12 @@ export default class PageLayout extends React.Component {
   // set up actions to render app
   render() {
     const {myHeight, localeText: {home}} = this.state;
-    const {isUser} = this.props;
+    const {username} = this.props;
     return (
       <MainContext.Provider
         value={{
-          isAdmin: this.props.isAdmin,
-          isUser: this.props.isUser,
+          isAdmin: this.props.role === "admin",
+          username: this.props.username,
           selectedDates: this.state.selectedDates,
           selectedRegion: this.state.selectedRegion,
           featureNames: this.state.featureNames,
@@ -372,7 +372,7 @@ export default class PageLayout extends React.Component {
             <img
               alt="app-logo"
               onClick={() => this.togglePanel("appInfoHidden")}
-              src="/img/app-logo.jpg"
+              src="/img/app-logo.png"
               style={{height: "100%", cursor: "pointer"}}
             />
             <div
@@ -386,7 +386,7 @@ export default class PageLayout extends React.Component {
                 zIndex: 1000
               }}
             >
-              {isUser && (
+              {username && (
                 <button
                   style={{
                     alignItems: "center",

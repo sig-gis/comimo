@@ -17,8 +17,8 @@ class PasswordForgot extends React.Component {
 
   componentDidMount() {
     fetch(
-            `/locale/${getLanguage(["en", "es"])}.json`,
-            {headers: {"Cache-Control": "no-cache", "Pragma": "no-cache", "Accept": "application/json"}}
+      `/locale/${getLanguage(["en", "es"])}.json`,
+      {headers: {"Cache-Control": "no-cache", "Pragma": "no-cache", "Accept": "application/json"}}
     )
       .then(response => (response.ok ? response.json() : Promise.reject(response)))
       .then(data => this.setState({localeText: data.users}))
@@ -33,7 +33,7 @@ class PasswordForgot extends React.Component {
   ));
 
   requestPassword = () => this.processModal(() =>
-    fetch("/password-forgot/",
+    fetch("/password-request/",
           {
             method: "POST",
             headers: {
@@ -41,9 +41,7 @@ class PasswordForgot extends React.Component {
               "Content-Type": "application/json",
               "X-CSRFToken": getCookie("csrftoken")
             },
-            body: JSON.stringify({
-              email: this.state.email
-            })
+            body: JSON.stringify({email: this.state.email})
           })
       .then(response => Promise.all([response.ok, response.text()]))
       .then(data => {

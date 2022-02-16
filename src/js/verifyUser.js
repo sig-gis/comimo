@@ -12,10 +12,9 @@ class PasswordReset extends React.Component {
   }
 
   componentDidMount() {
-    const urlParams = new URLSearchParams(window.location.search);
     Promise.all([
       this.getLocale(),
-      this.verifyUser(urlParams.get("email") || "", urlParams.get("token") || "")
+      this.verifyUser()
     ])
       .then(data => {
         if (data[0] && data[1] === "") {
@@ -40,7 +39,7 @@ class PasswordReset extends React.Component {
       return true;
     });
 
-  verifyUser = (email, token) => fetch(
+  verifyUser = () => fetch(
     "/verify-user/",
     {
       method: "POST",
@@ -50,8 +49,8 @@ class PasswordReset extends React.Component {
         "X-CSRFToken": getCookie("csrftoken")
       },
       body: JSON.stringify({
-        token,
-        email
+        passwordResetKey: this.props.passwordResetKey,
+        email: this.props.email
       })
     }
   )
@@ -76,5 +75,11 @@ class PasswordReset extends React.Component {
 }
 
 export function pageInit(args) {
-  ReactDOM.render(<PasswordReset/>, document.getElementById("main-container"));
+  ReactDOM.render(
+    <PasswordReset
+      email={args.email || ""}
+      passwordResetKey={args.passwordResetKey || ""}
+    />,
+    document.getElementById("main-container")
+  );
 }

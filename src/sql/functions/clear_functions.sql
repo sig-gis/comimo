@@ -7,7 +7,7 @@ DO $$
     SELECT INTO _sql
         string_agg(format('DROP FUNCTION %s CASCADE;', oid::regprocedure), E'\n')
     FROM pg_proc
-    WHERE (proowner = 'ceo'::regrole)
+    WHERE (proowner = 'comimo'::regrole)
         AND prokind = 'f';
 
     IF _sql IS NOT NULL THEN
