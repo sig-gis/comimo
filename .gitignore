@@ -6,13 +6,19 @@ venv/*
 gmw.sock
 logs
 
-__pycache__/*
 
 db.sqlite3
 
+# Build Directories and Files
+logs
 static
 node_modules
 package-lock.json
+target/
+announcement.txt
+__pycache__
+classes
+
 # Webpack output
 gmw/statics/js/home.js
 gmw/statics/js/login.js

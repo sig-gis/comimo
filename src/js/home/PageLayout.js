@@ -140,7 +140,7 @@ export default class PageLayout extends React.Component {
   /// API Calls ///
 
   getLocalText = lang => fetch(
-      `/static/locale/${lang}.json`,
+      `/locale/${lang}.json`,
       {headers: {"Cache-Control": "no-cache", "Pragma": "no-cache", "Accept": "application/json"}}
   )
     .then(response => (response.ok ? response.json() : Promise.reject(response)))
@@ -372,7 +372,7 @@ export default class PageLayout extends React.Component {
             <img
               alt="app-logo"
               onClick={() => this.togglePanel("appInfoHidden")}
-              src="/static/images/app-logo.png"
+              src="/img/app-logo.jpg"
               style={{height: "100%", cursor: "pointer"}}
             />
             <div

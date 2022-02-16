@@ -31,7 +31,7 @@ class PasswordReset extends React.Component {
   }
 
   getLocale = () => fetch(
-    `/static/locale/${getLanguage(["en", "es"])}.json`,
+    `/locale/${getLanguage(["en", "es"])}.json`,
     {headers: {"Cache-Control": "no-cache", "Pragma": "no-cache", "Accept": "application/json"}}
   )
     .then(response => (response.ok ? response.json() : Promise.reject(response)))

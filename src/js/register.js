@@ -48,7 +48,7 @@ class Register extends React.Component {
 
   getLocalText = lang => {
     fetch(
-    `/static/locale/${lang}.json`,
+    `/locale/${lang}.json`,
     {headers: {"Cache-Control": "no-cache", "Pragma": "no-cache", "Accept": "application/json"}}
     )
       .then(response => (response.ok ? response.json() : Promise.reject(response)))
