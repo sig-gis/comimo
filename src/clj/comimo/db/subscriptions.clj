@@ -3,6 +3,8 @@
             [triangulum.database        :refer [call-sql sql-primitive]]
             [comimo.views               :refer [data-response]]))
 
+;;; Subscription
+
 (defn- return-user-subs [user-id]
   (data-response (->> (call-sql "get_user_subscriptions" user-id)
                       (map (fn [{:keys [boundary_type location]}]
@@ -32,3 +34,15 @@
 (defn get-feature-names [_]
   (data-response (slurp "resources/featureNames.json")
                  {:type "application/json"})) ; the json file is already json
+
+;;; User reported mines
+
+(defn report-mine [{:keys [params]}]
+  (let [user-id (tc/val->int (:userId params))
+        lat     (tc/val->double (:lat params))
+        lon     (tc/val->double (:lon params))]
+    (if (sql-primitive (call-sql "user_mine_reported" user-id lat lon))
+      (data-response "Exists")
+      (do
+        (call-sql "add_reported_mine" user-id lat lon)
+        (data-response "")))))

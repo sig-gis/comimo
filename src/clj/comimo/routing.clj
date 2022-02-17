@@ -47,6 +47,9 @@
    [:post "/user-subscriptions"]             {:handler     subscriptions/user-subscriptions}
    [:post "/remove-subscription"]            {:handler     subscriptions/remove-subscription}
    [:post "/get-feature-names"]              {:handler     subscriptions/get-feature-names}
+   [:post "/report-mine"]                    {:handler     subscriptions/report-mine
+                                              :auth-type   :user
+                                              :auth-action :block}
 
 
    ;; Projects API
