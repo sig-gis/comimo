@@ -481,7 +481,7 @@ export default class PageLayout extends React.Component {
                 />
 
                 {/* Advanced Button */}
-                {this.props.isUser && (
+                {username && (
                   <SideIcon
                     clickHandler={() => {
                       this.setState(

@@ -27,8 +27,8 @@ export default class ValidatePanel extends React.Component {
   }
 
   componentDidMount() {
-    const {isUser} = this.context;
-    if (isUser) {
+    const {username} = this.context;
+    if (username) {
       this.getProjects();
     }
   }
@@ -213,12 +213,12 @@ export default class ValidatePanel extends React.Component {
   render() {
     const {isHidden} = this.props;
     const {projects, projectName, regionType, creatingProject, errorMsg, mineType} = this.state;
-    const {selectedDates, isUser, localeText: {validate}} = this.context;
+    const {selectedDates, username, localeText: {validate}} = this.context;
     return (
       <div className={"popup-container validate-panel " + (isHidden ? "see-through" : "")}>
         <h3>{validate.title.toUpperCase()}</h3>
         <span>{validate.subtitle}</span>
-        {isUser
+        {username
           ? (
             <div style={{display: "flex", flexDirection: "column"}}>
               {projects.length === 0
