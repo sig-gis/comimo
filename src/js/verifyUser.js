@@ -1,7 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom";
 
-import {getCookie, getLanguage} from "./utils";
+import {getLanguage} from "./utils";
 
 class PasswordReset extends React.Component {
   constructor(props) {
@@ -45,8 +45,7 @@ class PasswordReset extends React.Component {
       method: "POST",
       headers: {
         Accept: "application/json",
-        "Content-Type": "application/json",
-        "X-CSRFToken": getCookie("csrftoken")
+        "Content-Type": "application/json"
       },
       body: JSON.stringify({
         passwordResetKey: this.props.passwordResetKey,
