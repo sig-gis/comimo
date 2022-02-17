@@ -1,4 +1,4 @@
--- NAMESPACE: member
+-- NAMESPACE: user
 -- REQUIRES: clear, project
 
 --
