@@ -112,13 +112,13 @@ export default class SearchPanel extends React.Component {
           <select
             className="w_100"
             onChange={e => {
-              const name = e.target.value;
-              const coords = activeMuns[name];
-              this.setState({selectedL2: name});
+              const l2Name = e.target.value;
+              const coords = activeMuns[l2Name];
+              this.setState({selectedL2: l2Name});
               if (Array.isArray(coords)) fitMap("bbox", coords);
               selectRegion(
                 "mun",
-                selectedL1 + "_" + e.target.value
+                selectedL1 + "_" + l2Name
               );
             }}
             value={selectedL2}

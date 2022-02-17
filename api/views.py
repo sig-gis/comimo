@@ -48,14 +48,6 @@ def getImageNames(request):
 # get the names of features (municipality) and their bounding boxes
 
 
-def getFeatureNames(request):
-    module_dir = os.path.dirname(__file__)
-    f = open(os.path.join(module_dir,
-                          'shapes',
-                          'featureNames.json'), 'r').read()
-    return JsonResponse(json.loads(f))
-
-
 def getGEETiles(request):
     name = request.GET.get("name")
     layerList = {

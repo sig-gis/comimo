@@ -27,7 +27,7 @@ export default class PageLayout extends React.Component {
 
     // API URLS
     this.URLS = {
-      FEATURE_NAMES: "api/getfeaturenames",
+      FEATURE_NAMES: "get-feature-names",
       IMG_DATES: "/api/getimagenames",
       SINGLE_IMAGE: "/api/getsingleimage",
       GEE_LAYER: "api/getgeetiles"
@@ -130,7 +130,7 @@ export default class PageLayout extends React.Component {
     this.updateEELayer
   );
 
-  selectRegion = (level, name) => this.setState({selectedRegion: [level, name]});
+  selectRegion = (boundaryType, location) => this.setState({selectedRegion: [boundaryType, location]});
 
   selectLanguage = newLang => {
     this.setState({selectedLanguage: newLang});
@@ -157,10 +157,18 @@ export default class PageLayout extends React.Component {
       });
     });
 
-  getFeatureNames = () => fetch(this.URLS.FEATURE_NAMES)
+  getFeatureNames = () => fetch(
+    this.URLS.FEATURE_NAMES, {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json"
+      }
+    }
+  )
     .then(res => res.json())
-    .then(result => {
-      if (result.action === "FeatureNames") this.setState({featureNames: result.features});
+    .then(features => {
+      this.setState({featureNames: features});
     });
 
   getGEELayers = list => {

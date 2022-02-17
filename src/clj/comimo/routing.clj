@@ -1,12 +1,13 @@
 (ns comimo.routing
-  (:require [comimo.views           :refer [render-page]]
-            [comimo.db.geodash      :as geodash]
-            [comimo.db.imagery      :as imagery]
-            [comimo.db.institutions :as institutions]
-            [comimo.db.plots        :as plots]
-            [comimo.db.projects     :as projects]
-            [comimo.db.users        :as users]
-            [comimo.proxy           :as proxy]))
+  (:require [comimo.views             :refer [render-page]]
+            [comimo.db.geodash        :as geodash]
+            [comimo.db.imagery        :as imagery]
+            [comimo.db.institutions   :as institutions]
+            [comimo.db.plots          :as plots]
+            [comimo.db.projects       :as projects]
+            [comimo.db.subscriptions  :as subscriptions]
+            [comimo.db.users          :as users]
+            [comimo.proxy             :as proxy]))
 
 (def routes
   {;; Page Routes
@@ -40,6 +41,13 @@
    [:post "/password-reset"]                 {:handler     users/password-reset}
    [:post "/verify-email"]                   {:handler     users/verify-email}
    [:post "/register"]                       {:handler     users/register}
+
+   ;; Subscription API
+   [:post "/add-subscription"]               {:handler     subscriptions/add-subscription}
+   [:post "/user-subscriptions"]             {:handler     subscriptions/user-subscriptions}
+   [:post "/remove-subscription"]            {:handler     subscriptions/remove-subscription}
+   [:post "/get-feature-names"]              {:handler     subscriptions/get-feature-names}
+
 
    ;; Projects API
    [:get  "/dump-project-aggregate-data"]    {:handler     projects/dump-project-aggregate-data!
