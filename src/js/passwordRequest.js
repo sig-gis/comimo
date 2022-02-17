@@ -3,7 +3,7 @@ import ReactDOM from "react-dom";
 
 import LoadingModal from "./components/LoadingModal";
 
-import {getCookie, getLanguage} from "./utils";
+import {getLanguage} from "./utils";
 
 class PasswordForgot extends React.Component {
   constructor(props) {
@@ -38,8 +38,7 @@ class PasswordForgot extends React.Component {
             method: "POST",
             headers: {
               Accept: "application/json",
-              "Content-Type": "application/json",
-              "X-CSRFToken": getCookie("csrftoken")
+              "Content-Type": "application/json"
             },
             body: JSON.stringify({email: this.state.email})
           })

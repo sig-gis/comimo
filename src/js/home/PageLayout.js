@@ -16,7 +16,7 @@ import SvgIcon from "../components/SvgIcon";
 import ReportMinesPanel from "./ReportMinesPanel";
 import ValidatePanel from "./ValidatePanel";
 
-import {toPrecision, getCookie, getLanguage} from "../utils";
+import {toPrecision, getLanguage} from "../utils";
 import {MainContext} from "./context";
 import {mapboxToken} from "../appConfig";
 
@@ -589,8 +589,7 @@ class InfoPopupContent extends React.Component {
               method: "POST",
               headers: {
                 Accept: "application/json",
-                "Content-Type": "application/json",
-                "X-CSRFToken": getCookie("csrftoken")
+                "Content-Type": "application/json"
               },
               body: JSON.stringify({
                 lat,
