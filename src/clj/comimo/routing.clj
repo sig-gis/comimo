@@ -22,33 +22,25 @@
                                               :auth-action :redirect}
    [:get  "/home"]                           {:handler     (render-page "/home")}
    [:get  "/login"]                          {:handler     (render-page "/login")}
+   [:get  "/logout"]                         {:handler     users/logout}
    [:get  "/password-request"]               {:handler     (render-page "/password-request")}
    [:get  "/password-reset"]                 {:handler     (render-page "/password-reset")}
    [:get  "/register"]                       {:handler     (render-page "/register")}
    [:get  "/verify-user"]                    {:handler     (render-page "/verify-user")}
 
    ;; Users API
-   [:get  "/get-institution-users"]          {:handler     users/get-institution-users
+   [:post "/update-account"]                 {:handler     users/update-account
                                               :auth-type   :user
                                               :auth-action :block}
-   [:get  "/get-user-stats"]                 {:handler     users/get-user-stats
-                                              :auth-type   :user
-                                              :auth-action :block}
-   [:post "/account"]                        {:handler     users/update-account
+   [:post "/user-information"]               {:handler     users/user-information
                                               :auth-type   :user
                                               :auth-action :block}
    [:post "/login"]                          {:handler     users/login}
-   [:post "/logout"]                         {:handler     users/logout}
-   [:post "/update-user-institution-role"]   {:handler     users/update-institution-role
-                                              :auth-type   :admin
-                                              :auth-action :block}
-   [:post "/request-institution-membership"] {:handler     users/request-institution-membership
-                                              :auth-type   :user
-                                              :auth-action :block}
    [:post "/password-request"]               {:handler     users/password-request}
    [:post "/password-reset"]                 {:handler     users/password-reset}
    [:post "/verify-email"]                   {:handler     users/verify-email}
    [:post "/register"]                       {:handler     users/register}
+
    ;; Projects API
    [:get  "/dump-project-aggregate-data"]    {:handler     projects/dump-project-aggregate-data!
                                               :auth-type   :admin

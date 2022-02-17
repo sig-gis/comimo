@@ -3,11 +3,11 @@
            java.time.format.DateTimeFormatter
            java.time.LocalDateTime
            java.util.UUID)
-  (:require [clojure.string :as str]
-            [triangulum.database :refer [call-sql sql-primitive]]
+  (:require [ring.util.response :refer [redirect]]
             [triangulum.type-conversion :as tc]
-            [comimo.utils.mail :refer [email? send-mail get-base-url]]
-            [comimo.views :refer [data-response]]))
+            [triangulum.database        :refer [call-sql sql-primitive]]
+            [comimo.utils.mail          :refer [send-mail get-base-url]]
+            [comimo.views               :refer [data-response]]))
 
 (defn- get-login-errors [user]
   (cond (nil? user)
@@ -17,36 +17,45 @@
         "You have not verified your email. Please check your email for a link to verify your account, or click the forgot password link below to generate a new email."))
 
 (defn login [{:keys [params]}]
-  (let [{:keys [email password]} params
-        user (first (call-sql "check_login" {:log? false} email password))]
+  (let [{:keys [username password]} params
+        user (first (call-sql "check_login" {:log? false} username password))]
     (if-let [error-msg (get-login-errors user)]
       (data-response error-msg)
       (data-response ""
                      {:session {:userId   (:user_id user)
-                                :userName email
-                                :userRole (if (:administrator user) "admin" "user")}})))) ; TODO user 1 is the only superuser
+                                :username username
+                                :role     (:role user)
+                                :userLang (:default_lang user)}}))))
 
-(defn- get-register-errors [email password password-confirmation]
-  (cond (sql-primitive (call-sql "email_taken" email -1))
-        (str "Account " email " already exists.")
+(defn user-information [{:keys [params]}]
+  (let [user-id (tc/val->int (:userId params))
+        user    (first (call-sql "get_user_information" user-id))]
+    (data-response {:username    (:username user)
+                    :email       (:email user)
+                    :fullName    (:full_name user)
+                    :sector      (:sector user)
+                    :institution (:institution user)
+                    :defaultLang (:default_lang user)})))
 
-        (not (email? email))
-        (str email " is not a valid email address.")
+(defn- get-register-errors [username email]
+  (cond (sql-primitive (call-sql "username_taken" username))
+        "errorEmail"
 
-        (< (count password) 8)
-        "Password must be at least 8 characters."
-
-        (not= password password-confirmation)
-        "Password and Password confirmation do not match."
+        (sql-primitive (call-sql "email_taken" email))
+        "errorUsername"
 
         :else nil))
 
 (defn register [{:keys [params]}]
-  (let [reset-key             (str (UUID/randomUUID))
-        email                 (:email params)
-        password              (:password params)
-        password-confirmation (:passwordConfirmation params)]
-    (if-let [error-msg (get-register-errors email password password-confirmation)]
+  (let [reset-key    (str (UUID/randomUUID))
+        default-lang (:defaultLang params)
+        email        (:email params)
+        full-name    (:fullName params)
+        institution  (:institution params)
+        sector       (:sector params)
+        password     (:password params)
+        username     (:username params)]
+    (if-let [error-msg (get-register-errors username email)]
       (data-response error-msg)
       (let [timestamp (-> (DateTimeFormatter/ofPattern "yyyy/MM/dd HH:mm:ss")
                           (.format (LocalDateTime/now)))
@@ -60,7 +69,16 @@
                                    "Kind Regards,\n"
                                    "  The CEO Team")
                               email email timestamp (get-base-url) (URLEncoder/encode email) reset-key)]
-        (call-sql "add_user" {:log? false} email password reset-key)
+        (call-sql "add_user"
+                  {:log? false}
+                  username
+                  email
+                  password
+                  reset-key
+                  full-name
+                  sector
+                  institution
+                  default-lang)
         (try
           (send-mail email nil nil "Welcome to CEO!" email-msg "text/plain")
           (data-response "")
@@ -68,47 +86,23 @@
             (data-response (str "A new user account was created but there was a server error.  Please contact support@sig-gis.com."))))))))
 
 (defn logout [_]
-  (data-response "" {:session nil}))
-
-(defn- get-update-account-errors [user-id current-email current-password new-email password password-confirmation]
-  (cond (str/blank? current-password)
-        "Current Password required"
-
-        (empty? (call-sql "check_login" {:log? false} current-email current-password))
-        "Invalid current password."
-
-        (not (or (str/blank? new-email) (email? new-email)))
-        (str new-email " is not a valid email address.")
-
-        (and (not (str/blank? new-email))
-             (sql-primitive (call-sql "email_taken" new-email user-id)))
-        (str "An account with the email " new-email " already exists.")
-
-        (and (not (str/blank? password)) (< (count password) 8))
-        "New Password must be at least 8 characters."
-
-        (not= password password-confirmation)
-        "New Password and Password confirmation do not match."
-
-        :else nil))
+  (-> (redirect "/")
+      (assoc :session nil)))
 
 (defn update-account [{:keys [params]}]
-  (let [user-id               (:userId params -1)
-        current-email         (:userName params)
-        current-password      (:currentPassword params)
-        new-email             (:email params)
-        password              (:password params)
-        password-confirmation (:passwordConfirmation params)]
-    (if-let [error-msg (get-update-account-errors user-id current-email current-password
-                                                  new-email password password-confirmation)]
-      (data-response error-msg)
-      ;; TODO: Create a single "update_user_information" sql function, use user_id instead of email
-      (let [updated-email (if (or (str/blank? new-email) (= new-email current-email))
-                            current-email
-                            (sql-primitive (call-sql "set_user_email" current-email new-email)))]
-        (when-not (str/blank? password)
-          (call-sql "update_password" {:log? false} updated-email password))
-        (data-response "" {:session {:userName updated-email}})))))
+  (let [user-id      (tc/val->int (:userId params))
+        full-name    (:fullName params)
+        sector       (:sector params)
+        institution  (:institution params)
+        default-lang (:defaultLang params)]
+    (call-sql "update_user"
+              {:log? false}
+              user-id
+              full-name
+              sector
+              institution
+              default-lang)
+    (data-response "success")))
 
 (defn password-request [{:keys [params]}]
   (let [reset-key (str (UUID/randomUUID))
@@ -125,141 +119,34 @@
           (data-response (str "A user with the email "
                               email
                               " was found, but there was a server error.  Please contact support@sig-gis.com."))))
-      (data-response "There is no user with that email address."))))
+      (data-response "errorNotFound"))))
 
-(defn- get-password-reset-errors [user email reset-key password password-confirmation]
+(defn- get-verify-errors [user reset-key]
   (cond (nil? user)
-        "There is no user with that email address."
+        "errorNotFound"
 
         (not= reset-key (:reset_key user))
-        (str "Invalid reset key for user " email ".")
-
-        (< (count password) 8)
-        "Password must be at least 8 characters."
-
-        (not= password password-confirmation)
-        "Password and Password confirmation do not match."
+        "errorToken"
 
         :else nil))
 
 (defn password-reset [{:keys [params]}]
-  (let [email                 (:email params)
-        reset-key             (:passwordResetKey params)
-        password              (:password params)
-        password-confirmation (:passwordConfirmation params)
-        user                  (first (call-sql "get_user_by_email" email))]
-    (if-let [error-msg (get-password-reset-errors user email reset-key password password-confirmation)]
+  (let [email     (:email params)
+        reset-key (:passwordResetKey params)
+        password  (:password params)
+        user      (first (call-sql "get_user_by_email" email))]
+    (if-let [error-msg (get-verify-errors user reset-key)]
       (data-response error-msg)
       (do
         (call-sql "update_password" {:log? false} email password)
         (data-response "")))))
 
-(defn- get-verify-email-errors [user email reset-key]
-  (cond (nil? user)
-        "There is no user with that email address."
-
-        (not= reset-key (:reset_key user))
-        (str "Invalid reset key for user " email ".")
-
-        :else nil))
-
 (defn verify-email [{:keys [params]}]
   (let [email     (:email params)
         reset-key (:passwordResetKey params)
         user      (first (call-sql "get_user_by_email" email))]
-    (if-let [error-msg (get-verify-email-errors user email reset-key)]
+    (if-let [error-msg (get-verify-errors user reset-key)]
       (data-response error-msg)
       (do
         (call-sql "user_verified" (:user_id user))
         (data-response "")))))
-
-(defn get-institution-users [{:keys [params]}]
-  (let [institution-id (tc/val->int (:institutionId params))
-        all-users      (mapv (fn [{:keys [user_id email institution_role]}]
-                               {:id              user_id
-                                :email           email
-                                :institutionRole institution_role})
-                             (call-sql "get_all_users_by_institution_id" institution-id))]
-    (data-response all-users)))
-
-(defn get-user-stats [{:keys [params]}]
-  (let [account-id (tc/val->int (:accountId params))]
-    (if-let [stats (first (call-sql "get_user_stats" account-id))]
-      (data-response {:totalProjects (:total_projects stats)
-                      :totalPlots    (:total_plots stats)
-                      :averageTime   (:average_time stats)
-                      :perProject    (tc/jsonb->clj (:per_project stats))})
-      (data-response {}))))
-
-(defn update-institution-role [{:keys [params]}]
-  (let [new-user-email   (:newUserEmail params)
-        account-id       (if-let [id (:accountId params)]
-                           (tc/val->int id)
-                           (-> (call-sql "get_user_by_email" new-user-email)
-                               (first)
-                               (:user_id -1)))
-        institution-id   (tc/val->int (:institutionId params))
-        institution-role (:institutionRole params)
-        email            (:email (first (call-sql "get_user_by_id" account-id)))]
-    (cond
-      (nil? email)
-      (data-response (str "User " new-user-email " not found."))
-
-      (= institution-role "not-member")
-      (do
-        (call-sql "remove_institution_user_role" institution-id account-id)
-        (data-response (str "User " email " has been removed.")))
-
-      :else
-      (let [institution-name (:name (first (call-sql "select_institution_by_id" institution-id -1)))
-            timestamp        (-> (DateTimeFormatter/ofPattern "yyyy/MM/dd HH:mm:ss")
-                                 (.format (LocalDateTime/now)))
-            inst-user-id     (sql-primitive (call-sql "update_institution_user_role"
-                                                      institution-id
-                                                      account-id
-                                                      institution-role))
-            email-msg        (format (str "Dear %s,\n\n"
-                                          "You have been assigned the role of %s for %s on %s.\n\n"
-                                          "Kind Regards,\n"
-                                          "  The CEO Team")
-                                     email institution-role institution-name timestamp)]
-        (when-not inst-user-id (call-sql "add_institution_user" institution-id account-id institution-role))
-        (try
-          (send-mail email nil nil "User Role Assignment" email-msg "text/plain")
-          (data-response (str email " has been assigned role " institution-role "."))
-          (catch Exception _
-            (data-response (str email
-                                " has been assigned role "
-                                institution-role
-                                ", but the email notification has failed."))))))))
-
-(defn request-institution-membership [{:keys [params]}]
-  (let [user-id        (:userId params -1)
-        institution-id (tc/val->int (:institutionId params))]
-    (if (pos? user-id)
-      (do
-        (call-sql "add_institution_user" institution-id user-id 3)
-        (let [institution-name (:name (first (call-sql "select_institution_by_id" institution-id -1)))
-              timestamp        (-> (DateTimeFormatter/ofPattern "yyyy/MM/dd HH:mm:ss")
-                                   (.format (LocalDateTime/now)))
-              user-email       (:email (first (call-sql "get_user_by_id" user-id)))
-              admin-emails     (->> (call-sql "get_all_users_by_institution_id" institution-id)
-                                    (filter (fn [{:keys [institution_role]}] (= institution_role "admin")))
-                                    (map :email))
-              email-msg       (format (str "User %s has requested the access to institution \"%s\" on %s.\n\n"
-                                           "To access the institution page, simply click the following link:\n\n"
-                                           "%sreview-institution?institutionId=%s")
-                                      user-email
-                                      institution-name
-                                      timestamp
-                                      (get-base-url)
-                                      institution-id)]
-          (try
-            (send-mail admin-emails nil nil "CEO Membership Request" email-msg "text/plain")
-            (data-response (str "Membership has been requested for user " user-email "."))
-            (catch Exception _
-              (data-response (str user-email
-                                  " has requested the membership to "
-                                  institution-name
-                                  ", but the email notification has failed."))))))
-      (data-response "You must be logged into request membership."))))

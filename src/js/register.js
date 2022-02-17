@@ -5,7 +5,7 @@ import EmailValidator from "email-validator";
 import LoadingModal from "./components/LoadingModal";
 import LanguageSelector from "./components/LanguageSelector";
 
-import {getCookie, getLanguage, validatePassword} from "./utils";
+import {getLanguage, validatePassword} from "./utils";
 
 class Register extends React.Component {
   constructor(props) {
@@ -19,15 +19,13 @@ class Register extends React.Component {
       password: "",
       passwordConfirmation: "",
       localeText: {},
-      defaultLang: "en",
+      defaultLang: getLanguage(["en", "es"]),
       showModal: false
     };
   }
 
   componentDidMount() {
-    const lang = getLanguage(["en", "es"]);
-    this.setState({defaultLang: lang});
-    this.getLocalText(lang);
+    this.getLocalText(this.state.defaultLang);
   }
 
   /// State Update ///
@@ -74,22 +72,21 @@ class Register extends React.Component {
       alert(errors.map(e => " - " + e).join("\n"));
     } else {
       this.processModal(() =>
-        fetch("/register/",
+        fetch("/register",
               {
                 method: "POST",
                 headers: {
                   Accept: "application/json",
-                  "Content-Type": "application/json",
-                  "X-CSRFToken": getCookie("csrftoken")
+                  "Content-Type": "application/json"
                 },
                 body: JSON.stringify({
                   defaultLang: this.state.defaultLang,
-                  username: this.state.username,
                   email: this.state.email,
                   fullName: this.state.fullName,
                   institution: this.state.institution,
                   sector: this.state.sector,
-                  password: this.state.password
+                  password: this.state.password,
+                  username: this.state.username
                 })
               })
           .then(response => Promise.all([response.ok, response.text()]))

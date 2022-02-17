@@ -6,19 +6,18 @@
 
 -- Stores information about users
 CREATE TABLE users (
-    user_uid         SERIAL PRIMARY KEY,
-    email            text NOT NULL UNIQUE,
-    password         varchar(72) NOT NULL,
-    administrator    boolean DEFAULT FALSE,
-    reset_key        text DEFAULT NULL,
-    verified         boolean DEFAULT FALSE,
-    created_date     date DEFAULT NOW()
-);
-
--- Stores text values for roles
-CREATE TABLE roles (
-    role_uid    SERIAL PRIMARY KEY,
-    title       text NOT NULL
+    user_uid        SERIAL PRIMARY KEY,
+    username        text NOT NULL UNIQUE,
+    email           text NOT NULL UNIQUE,
+    password        varchar(72) NOT NULL,
+    reset_key       text DEFAULT NULL,
+    verified        boolean DEFAULT FALSE,
+    created_date    date DEFAULT NOW(),
+    role            text DEFAULT 'user',
+    full_name       text,
+    sector          text,
+    institution     text,
+    default_lang    text
 );
 
 -- Stores imagery data
@@ -31,14 +30,13 @@ CREATE TABLE imagery (
     source_config      jsonb,
     archived           boolean DEFAULT FALSE,
     created_date       date DEFAULT NOW(),
-    archived_date      date,
+    archived_date      date
 );
 
 -- Stores information about projects
 -- Each project must be associated with an institution
 CREATE TABLE projects (
     project_uid            SERIAL PRIMARY KEY,
-    institution_rid        integer NOT NULL REFERENCES institutions (institution_uid) ON DELETE CASCADE ON UPDATE CASCADE,
     availability           text,
     name                   text NOT NULL,
     description            text,
@@ -64,9 +62,8 @@ CREATE TABLE projects (
     design_settings        jsonb NOT NULL DEFAULT '{}'::jsonb,
     plot_file_name         varchar(511),
     sample_file_name       varchar(511),
-    shuffle_plots          boolean,
+    shuffle_plots          boolean
 );
-CREATE INDEX projects_institution_rid ON projects (institution_rid);
 
 -- Stores plot information, including a reference to external plot data if it exists
 CREATE TABLE plots (

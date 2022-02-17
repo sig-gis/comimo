@@ -24,7 +24,7 @@ class Login extends React.Component {
   }
 
   requestLogin = () => {
-    fetch("/login/",
+    fetch("/login",
           {
             method: "POST",
             headers: {
@@ -37,13 +37,13 @@ class Login extends React.Component {
               password: this.state.password
             })
           })
-      .then(response => Promise.all([response.ok, response.text()]))
+      .then(response => Promise.all([response.ok, response.json()]))
       .then(data => {
         if (data[0] && data[1] === "") {
           window.location = "/";
         } else {
           console.error(data[1]);
-          alert(this.state.localeText[data[1]] || this.state.localeText.errorCreating);
+          alert(this.state.localeText[data[1]] || data[1] || this.state.localeText.errorCreating);
         }
       })
       .catch(err => console.error(err));
@@ -95,7 +95,7 @@ class Login extends React.Component {
                   <button
                     className="btn orange-btn"
                     name="register"
-                    onClick={() => window.location = "/register"}
+                    onClick={() => { window.location = "/register"; }}
                     type="button"
                   >
                     {localeText.register}

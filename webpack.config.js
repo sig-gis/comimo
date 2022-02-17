@@ -8,14 +8,14 @@ module.exports = env => ({
   devtool: env.dev ? "eval-cheap-module-source-map" : "",
   watch: env.dev,
   entry: {
-    downloadData: path.resolve(__dirname, "src/js/downloadData.js"),
-    home: path.resolve(__dirname, "src/js/home/home.js"),
-    login: path.resolve(__dirname, "src/js/login.js"),
-    passwordForgot: path.resolve(__dirname, "src/js/passwordForgot.js"),
-    passwordReset: path.resolve(__dirname, "src/js/passwordReset.js"),
-    register: path.resolve(__dirname, "src/js/register.js"),
-    userAccount: path.resolve(__dirname, "src/js/userAccount.js"),
-    verifyUser: path.resolve(__dirname, "src/js/verifyUser.js")
+    downloadData:    path.resolve(__dirname, "src/js/downloadData.js"),
+    home:            path.resolve(__dirname, "src/js/home/home.js"),
+    login:           path.resolve(__dirname, "src/js/login.js"),
+    passwordRequest: path.resolve(__dirname, "src/js/passwordRequest.js"),
+    passwordReset:   path.resolve(__dirname, "src/js/passwordReset.js"),
+    register:        path.resolve(__dirname, "src/js/register.js"),
+    userAccount:     path.resolve(__dirname, "src/js/userAccount.js"),
+    verifyUser:      path.resolve(__dirname, "src/js/verifyUser.js")
   },
   output: {
     path: path.resolve(__dirname, outdir),
