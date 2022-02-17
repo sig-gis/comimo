@@ -68,7 +68,7 @@ export default class PageLayout extends React.Component {
       advancedOptions: false,
       imageDates: {},
       selectedDates: {},
-      selectedRegion: false,
+      selectedRegion: null,
       featureNames: {},
       subscribedList: [],
       theMap: null,
@@ -130,7 +130,7 @@ export default class PageLayout extends React.Component {
     this.updateEELayer
   );
 
-  selectRegion = (boundaryType, location) => this.setState({selectedRegion: [boundaryType, location]});
+  selectRegion = region => this.setState({selectedRegion: region});
 
   selectLanguage = newLang => {
     this.setState({selectedLanguage: newLang});
