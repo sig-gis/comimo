@@ -21,64 +21,6 @@ def getProfile(user):
 # function to add entry to model
 
 
-def saveEmail(user, region, level):
-    try:
-        profile = getProfile(user)
-        subsCount = SubscribeModel.objects.filter(
-            user=profile, region=region, level=level).count()
-        if subsCount > 0:
-            return 'Exists'
-        else:
-            new_subs = SubscribeModel()
-            new_subs.user = profile
-            new_subs.region = region
-            new_subs.level = level
-            new_subs.last_alert_for = datetime.now()
-            new_subs.mail_count = 0
-            new_subs.created_date = datetime.now()
-            new_subs.save()
-        return 'Created'
-    except Exception as e:
-        print(e)
-        return 'Error'
-
-
-def delEmail(user, region, level):
-    try:
-        profile = getProfile(user)
-        subscribe_model_instance = SubscribeModel.objects.get(
-            user=profile, region=region, level=level)
-        subscribe_model_instance.delete()
-        return 'Deleted'
-    except Exception as e:
-        return 'Error'
-
-
-def saveMine(user, lat, lon):
-    try:
-        authGEE()
-        profile = getProfile(user)
-        mineCount = UserMinesModel.objects \
-            .filter(x=lat, y=lon, user=profile) \
-            .count()
-
-        if mineCount > 0:
-            return 'Exists'
-        elif not locationInCountry(lat, lon):
-            return 'Outside'
-        else:
-            new_mine = UserMinesModel()
-            new_mine.user = profile
-            new_mine.x = lat
-            new_mine.y = lon
-            new_mine.reported_date = datetime.now()
-            new_mine.save()
-            return 'Created'
-    except Exception as e:
-        print(e)
-        return 'Error'
-
-
 def projectExists(profile, dataLayer, regions):
     try:
         projects_model_instance = ProjectsModel.objects.get(
@@ -103,21 +45,6 @@ def saveProject(profile, projurl, projid, dataLayer, name, regions):
         new_project.status = 'active'
         new_project.save()
         return 'Created'
-    except Exception as e:
-        print(e)
-        return 'Error'
-
-
-def getSubscribedRegions(user):
-    try:
-        profile = getProfile(user)
-        subscribe_instances = SubscribeModel.objects.all().filter(user=profile)
-        sub_list = []
-        for instance in iter(subscribe_instances):
-            region = instance.region
-            level = instance.level
-            sub_list.append(level + '_' + region)
-        return sub_list
     except Exception as e:
         print(e)
         return 'Error'

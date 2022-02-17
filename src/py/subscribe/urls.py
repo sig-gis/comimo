@@ -6,7 +6,6 @@ from subscribe.views import addSubs, closeProject, createProject, deleteSubs, \
 
 app_name = apps.SubscribeConfig.name
 urlpatterns = [
-    path('report-mine', reportMine, name='report-mine'),
     path('getprojects', getProjects, name='getprojects'),
     path('closeproject', closeProject, name='closeproject'),
     path('createproject', createProject, name='createproject'),
