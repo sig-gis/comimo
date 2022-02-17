@@ -1,12 +1,11 @@
 # accounts/urls.py
 from django.urls import path
 
-from api.views import getAreaPredicted, getAreaPredictedTS, getDownloadURL, getFeatureNames, \
+from api.views import getAreaPredicted, getAreaPredictedTS, getDownloadURL, \
     getGEETiles, getImageNames, getInfo, getSingleImage
 
 
 urlpatterns = [
-    path('getfeaturenames', getFeatureNames, name='getfeaturenames'),
     path('getimagenames', getImageNames, name='getimagenames'),
     path('getsingleimage', getSingleImage, name='getsingleimage'),
     path('getgeetiles', getGEETiles, name='getgeetiles'),

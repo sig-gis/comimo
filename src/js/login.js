@@ -1,7 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom";
 
-import {getCookie, getLanguage} from "./utils";
+import {getLanguage} from "./utils";
 
 class Login extends React.Component {
   constructor(props) {
@@ -15,8 +15,8 @@ class Login extends React.Component {
 
   componentDidMount() {
     fetch(
-            `/locale/${getLanguage(["en", "es"])}.json`,
-            {headers: {"Cache-Control": "no-cache", "Pragma": "no-cache", "Accept": "application/json"}}
+      `/locale/${getLanguage(["en", "es"])}.json`,
+      {headers: {"Cache-Control": "no-cache", "Pragma": "no-cache", "Accept": "application/json"}}
     )
       .then(response => (response.ok ? response.json() : Promise.reject(response)))
       .then(data => this.setState({localeText: data.users}))
@@ -29,8 +29,7 @@ class Login extends React.Component {
             method: "POST",
             headers: {
               Accept: "application/json",
-              "Content-Type": "application/json",
-              "X-CSRFToken": getCookie("csrftoken")
+              "Content-Type": "application/json"
             },
             body: JSON.stringify({
               username: this.state.username,
