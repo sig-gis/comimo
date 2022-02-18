@@ -32,6 +32,18 @@ CREATE TABLE subscriptions (
 );
 CREATE INDEX subscriptions_user_rid ON subscriptions (user_rid);
 
+-- Stores user reported mines.
+CREATE TABLE user_mines (
+    user_mine_uid    SERIAL PRIMARY KEY,
+    user_rid         integer NOT NULL REFERENCES users (user_uid) ON DELETE CASCADE ON UPDATE CASCADE,
+    lat              float, -- x
+    lon              float, -- y
+    reported_date    timestamp DEFAULT now(),
+    CONSTRAINT per_user_mine UNIQUE(user_rid, lat, lon)
+);
+CREATE INDEX user_mines_user_rid ON user_mines (user_rid);
+
+
 -- Stores imagery data
 CREATE TABLE imagery (
     imagery_uid        SERIAL PRIMARY KEY,
