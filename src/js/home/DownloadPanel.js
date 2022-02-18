@@ -23,7 +23,7 @@ export default class DownloadPanel extends React.Component {
     const {clipOption, mineType} = this.state;
     this.setState({fetching: true});
 
-    const [level, region] = clipOption === 1 ? ["", "all"] : selectedRegion;
+    const [level, region] = clipOption === 1 ? ["", "all"] : selectedRegion.split("_", 1);
     fetch(this.URL.GETDL,
           {
             method: "POST",
@@ -32,8 +32,8 @@ export default class DownloadPanel extends React.Component {
               "Content-Type": "application/json"
             },
             body: JSON.stringify({
-              region,
               level,
+              region,
               dataLayer: selectedDates[mineType]
             })
           })
@@ -103,8 +103,8 @@ export default class DownloadPanel extends React.Component {
               <span>
                 <a href={downloadURL[3]}>
                   {`${download.clickHere}`
-                                    + ` ${downloadURL[0] === "all" ? download.completeData : download.munData + downloadURL[0]} `
-                                    + `${download.prep} ${ downloadURL[2]}.`}
+                    + ` ${downloadURL[0] === "all" ? download.completeData : download.munData + downloadURL[0]} `
+                    + `${download.prep} ${ downloadURL[2]}.`}
                 </a>
               </span>
             </p>
