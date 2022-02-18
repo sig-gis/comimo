@@ -1,37 +1,26 @@
 import ee
-import json
 import re
-from config import IMAGE_REPO, LEVELS, FIELDS, POINTS_FOL
+from config import IMAGE_REPO, LEVELS, FIELDS
 from utils import getImageList, subscribedRegionsToFC
 
 
-def blankRoute():
-    return 'hello world'
-
-
-def getSubscribedRegions():
-    return "oops this is missing, where was it?"
-
-
-def JsonResponse():
-    return "this is a place holder"
 # view to get a single image (prediction) of a certain date
 
 
 def getSingleImage(request):
-    layerName = request.GET.get("id")
-    layerType = request.GET.get("type")
+    layerName = request.get("id")
+    layerType = request.get("type")
     palettes = {"nMines": "red", "cMines": "purple", "pMines": "orange"}
     img = ee.Image(IMAGE_REPO + "/" + layerName)
     img = img.select(0).selfMask()
     mapid = ee.data.getTileUrl(img.getMapId(
         {"palette": [palettes.get(layerType, "eee")]}), 0, 0, 0)[:-5]+"{z}/{x}/{y}"
-    return JsonResponse({"url": mapid})
+    return mapid
 
 # get get the list of available images
 
 
-def getImageNames(request):
+def getImageNames():
     layerList = getImageList()
     nMines = list(filter(lambda d:
                          re.fullmatch(r"\d{4}-\d{2}-\d{2}-N", d),
@@ -43,17 +32,17 @@ def getImageNames(request):
                          re.fullmatch(
                              r"\d{4}-\d{2}-\d{2}-\d{4}-\d{2}-\d{2}-C", d),
                          layerList))
-    return JsonResponse({
+    return {
         'cMines': cMines,
         'nMines': nMines,
         'pMines': pMines
-    })
+    }
 
 # get the names of features (municipality) and their bounding boxes
 
 
 def getGEETiles(request):
-    name = request.GET.get("name")
+    name = request.get("name")
     layerList = {
         "municipalBounds": ["users/comimoapp/Shapes/Municipal_Bounds", "#f66", "#0000"],
         "otherAuthorizations": ["users/comimoapp/Shapes/Solicitudes_de_Legalizacion_2010", "#047", "#00447711"],
@@ -68,48 +57,43 @@ def getGEETiles(request):
         layer = table.style(color=color, fillColor=fill, width=1)
         mapid = ee.data.getTileUrl(layer.getMapId(), 0, 0, 0)[
             :-5]+"{z}/{x}/{y}"
-        return JsonResponse({"url": mapid})
+        return mapid
     else:
-        return JsonResponse({"url": None})
+        return None
 
 
 # get the downloadurl for images
 
 
 def getDownloadURL(request):
-    region = request.GET.get('region')
-    level = request.GET.get('level')
-    dataLayer = request.GET.get('dataLayer')
-    if (region and dataLayer and region != 'undefined' and dataLayer != 'undefined'):
-        img = ee.Image(IMAGE_REPO + '/' + dataLayer)
-        if (region == 'all'):
-            regionFC = ee.FeatureCollection(LEVELS['l0'])
-        else:
-            l1, l2 = region.split("_")
-            regionFC = ee.FeatureCollection(LEVELS[level])\
-                .filter(ee.Filter.eq(FIELDS['mun_l1'], l1.upper()))\
-                .filter(ee.Filter.eq(FIELDS['mun'], l2.upper()))
-        img = img.clip(regionFC)
-        img.reduceRegion(ee.Reducer.sum(),
-                         regionFC.first().geometry(),
-                         540,
-                         bestEffort=True).getInfo()
-        url = img.toByte().getDownloadURL(
-            {'region': regionFC.geometry(), 'scale': 540})
-        return JsonResponse({'action': 'success', 'url': url})
+    region = request.get('region')
+    level = request.get('level')
+    dataLayer = request.get('dataLayer')
+    img = ee.Image(IMAGE_REPO + '/' + dataLayer)
+    if (region == 'all'):
+        regionFC = ee.FeatureCollection(LEVELS['l0'])
     else:
-        return JsonResponse({'action': 'error', 'message': 'Insufficient Parameters! Malformed URL!'}, status=500)
+        l1, l2 = region.split("_")
+        regionFC = ee.FeatureCollection(LEVELS[level])\
+            .filter(ee.Filter.eq(FIELDS['mun_l1'], l1.upper()))\
+            .filter(ee.Filter.eq(FIELDS['mun'], l2.upper()))
+    img = img.clip(regionFC)
+    img.reduceRegion(ee.Reducer.sum(),
+                     regionFC.first().geometry(),
+                     540,
+                     bestEffort=True).getInfo()
+    url = img.toByte().getDownloadURL(
+        {'region': regionFC.geometry(), 'scale': 540})
+    return {'action': 'success', 'url': url}
 
 # get area of predicted mineswithin study region
 
 
 def getAreaPredicted(request):
-    user = request.user
-    layerName = request.GET.get('layerName')
+    layerName = request.get('layerName')
+    subscribedRegions = request.get('subscribedRegions')
     try:
-        # user = Profile.objects.get(user=user)
-        regions = getSubscribedRegions(user)
-        fc = subscribedRegionsToFC(regions)
+        fc = subscribedRegionsToFC(subscribedRegions)
         image = ee.Image(IMAGE_REPO + '/' + layerName)
         pa = ee.Image.pixelArea()
         image = image.selfMask().multiply(pa)
@@ -121,21 +105,18 @@ def getAreaPredicted(request):
         names = rr.aggregate_array('MPIO_CNMBR')
         resp = ee.Dictionary({'count': count, 'names': names}).getInfo()
         resp['action'] = 'Success'
-        return JsonResponse(resp)
+        return resp
     except Exception as e:
         print(e)
-        return JsonResponse({'action': 'Error', 'message': 'Something went wrong!'}, status=500)
+        return {'action': 'Error', 'message': 'Something went wrong!'}
 
 
 # get area of predicted mineswithin study region
 
 
-def getAreaPredictedTS(request):
-    user = request.user
+def getAreaPredictedTS(subscribedRegions):
     try:
-        # user = Profile.objects.get(user=user)
-        regions = getSubscribedRegions(user)
-        fc = subscribedRegionsToFC(regions)
+        fc = subscribedRegionsToFC(subscribedRegions)
 
         def asBands(image, passedImage):
             image = ee.Image(image)
@@ -156,19 +137,18 @@ def getAreaPredictedTS(request):
         names = rr.keys()
         resp = ee.Dictionary({'count': count, 'names': names}).getInfo()
         resp['action'] = 'Success'
-        return JsonResponse(resp)
+        return resp
     except Exception as e:
         print(e)
-        return JsonResponse({'action': 'Error', 'message': 'Something went wrong!'}, status=500)
+        return {'action': 'Error', 'message': 'Something went wrong!'}
 
 
 def getInfo(request):
     try:
-        req = json.loads(request.body)
-        dates = req.get('dates')
-        visible = req.get('visibleLayers')
-        lat = float(req.get('lat'))
-        lon = float(req.get('lon'))
+        dates = request.get('dates')
+        visible = request.get('visibleLayers')
+        lat = float(request.get('lat'))
+        lon = float(request.get('lon'))
         point = ee.Geometry.Point(lon, lat)
         pointFeature = ee.Feature(point)
 
@@ -239,7 +219,7 @@ def getInfo(request):
                                                   et2.first().get('NOMBRE'),
                                                   False).getInfo()
 
-        return JsonResponse({'action': 'Success', 'value': vals})
+        return {'action': 'Success', 'value': vals}
     except Exception as e:
         print(e)
-        return JsonResponse({'action': 'Error', 'message': 'Something went wrong!'}, status=500)
+        return {'action': 'Error', 'message': 'Something went wrong!'}

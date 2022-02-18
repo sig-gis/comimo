@@ -28,9 +28,9 @@ export default class PageLayout extends React.Component {
     // API URLS
     this.URLS = {
       FEATURE_NAMES: "get-feature-names",
-      IMG_DATES: "/api/getimagenames",
-      SINGLE_IMAGE: "/api/getsingleimage",
-      GEE_LAYER: "api/getgeetiles"
+      IMG_DATES: "get-image-names",
+      SINGLE_IMAGE: "get-single-image",
+      GEE_LAYER: "get-gee-tiles"
     };
     // Layers available
     this.availableLayers = [
@@ -146,7 +146,7 @@ export default class PageLayout extends React.Component {
     .then(response => (response.ok ? response.json() : Promise.reject(response)))
     .then(data => this.setState({localeText: data}));
 
-  getImageDates = () => fetch(this.URLS.IMG_DATES)
+  getImageDates = () => fetch(this.URLS.IMG_DATES, {method: "POST"})
     .then(res => res.json())
     .then(result => {
       const initialDates = Object.keys(result).reduce((acc, cur) =>
@@ -174,13 +174,20 @@ export default class PageLayout extends React.Component {
   getGEELayers = list => {
     const name = list.shift();
     // TODO make one fetch call for all layer names
-    fetch(this.URLS.GEE_LAYER + "?name=" + name)
+    fetch(this.URLS.GEE_LAYER,
+          {
+            method: "POST",
+            headers: {
+              Accept: "application/json",
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify({name})
+          })
       .then(res => res.json())
-      .then(result => {
-        const {url} = result;
+      .then(url => {
         if (url) {
           const style = this.state.theMap.getStyle();
-          style.sources[name].tiles = [result.url];
+          style.sources[name].tiles = [url];
           this.state.theMap.setStyle(style);
         }
         if (list.length > 0) this.getGEELayers(list);
@@ -192,15 +199,26 @@ export default class PageLayout extends React.Component {
     const eeLayers = ["nMines", "pMines", "cMines"];
     const {theMap, selectedDates} = this.state;
     eeLayers.forEach(eeLayer => {
-      fetch(this.URLS.SINGLE_IMAGE + "?id=" + selectedDates[eeLayer] + "&type=" + eeLayer)
+      fetch(this.URLS.SINGLE_IMAGE,
+            {
+              method: "POST",
+              headers: {
+                Accept: "application/json",
+                "Content-Type": "application/json"
+              },
+              body: JSON.stringify({
+                id: selectedDates[eeLayer],
+                type: eeLayer
+              })
+            })
         .then(res => res.json())
-        .then(result => {
+        .then(url => {
           const style = theMap.getStyle();
           const layers = style.layers;
           const layerIdx = layers.findIndex(l => l.id === eeLayer);
           const thisLayer = layers[layerIdx];
           const {layout: {visibility}} = thisLayer;
-          style.sources[eeLayer].tiles = [result.url];
+          style.sources[eeLayer].tiles = [url];
           style.layers[layerIdx] = {
             ...thisLayer,
             layout: {visibility: firstTime && this.startVisible.includes(eeLayer) ? "visible" : visibility}
@@ -584,7 +602,7 @@ class InfoPopupContent extends React.Component {
   componentDidMount() {
     const {selectedDates, lat, lon, visibleLayers} = this.props;
     if (visibleLayers.length > 0) {
-      fetch("api/getinfo",
+      fetch("get-info",
             {
               method: "POST",
               headers: {

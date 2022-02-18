@@ -7,8 +7,8 @@ export default class StatsPanel extends React.Component {
     super(props);
 
     this.URL = {
-      ARSTATS: "/api/getareapredicted",
-      ARTS: "/api/getareats"
+      ARSTATS: "get-area-predicted",
+      ARTS: "get-area-ts"
     };
 
     this.state = {
@@ -51,7 +51,15 @@ export default class StatsPanel extends React.Component {
     const {selectedDate} = this.props;
     const {localeText: {stats}} = this.context;
     document.getElementById("stats1").innerHTML = `${stats.loading}...`;
-    fetch(this.URL.ARSTATS + "?layerName=" + selectedDate)
+    fetch(this.URL.ARSTATS,
+          {
+            method: "POST",
+            headers: {
+              Accept: "application/json",
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify({layerName: selectedDate})
+          })
       .then(res => res.json())
       .then(result => {
         const data = [];
@@ -94,7 +102,7 @@ export default class StatsPanel extends React.Component {
   getAreaTS() {
     const {localeText: {stats}} = this.context;
     document.getElementById("stats2").innerHTML = `${stats.loading}...`;
-    fetch(this.URL.ARTS)
+    fetch(this.URL.ARTS, {method: "POST"})
       .then(res => res.json())
       .then(result => {
         const data = [];
