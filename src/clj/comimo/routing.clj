@@ -1,6 +1,5 @@
 (ns comimo.routing
   (:require [comimo.views             :refer [render-page]]
-            [comimo.db.geodash        :as geodash]
             [comimo.db.imagery        :as imagery]
             [comimo.db.institutions   :as institutions]
             [comimo.db.plots          :as plots]
@@ -69,7 +68,6 @@
                                               :auth-type   :collect
                                               :auth-action :block}
    [:get  "/get-plot-disagreement"]          {:handler     plots/get-plot-disagreement}
-   [:get  "/get-plot-sample-geom"]           {:handler     plots/get-plot-sample-geom}
    [:get  "/get-plotters"]                   {:handler     plots/get-plotters
                                               :auth-type   :collect
                                               :auth-action :block}

@@ -6,6 +6,7 @@
                                          insert-rows!]]
             [triangulum.type-conversion :as tc]
             [comimo.utils.part-utils    :as pu]
+            [comimo.db.py-interop       :as py]
             [comimo.views               :refer [data-response]]))
 
 ;;;
@@ -68,7 +69,11 @@
                                             data-layer))]
     (try
       ;; Create plots
-      (let [plots [{:project_rid project-id :lat 120 :lon 45}]]
+      (let [plots (->> (py/get-points-within regions data-layer)
+                       (mapv (fn [{:strs [lat lon]}]
+                               {:lat lat
+                                :lon lon
+                                :project_rid project-id})))]
         (insert-rows! "plots" plots))
 
       ;; Boundary is only used for Planet at this point.
