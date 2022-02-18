@@ -6,7 +6,7 @@
                                          insert-rows!]]
             [triangulum.type-conversion :as tc]
             [comimo.utils.part-utils    :as pu]
-            [comimo.db.py-interop       :as py]
+            [comimo.py-interop          :refer [get-points-within]]
             [comimo.views               :refer [data-response]]))
 
 ;;;
@@ -69,7 +69,7 @@
                                             data-layer))]
     (try
       ;; Create plots
-      (let [plots (->> (py/get-points-within regions data-layer)
+      (let [plots (->> (get-points-within regions data-layer)
                        (mapv (fn [{:strs [lat lon]}]
                                {:lat lat
                                 :lon lon

@@ -1,7 +1,8 @@
 (ns comimo.db.subscriptions
   (:require [triangulum.type-conversion :as tc]
             [triangulum.database        :refer [call-sql sql-primitive]]
-            [comimo.views               :refer [data-response]]))
+            [comimo.views               :refer [data-response]]
+            [comimo.py-interop          :refer [location-in-country]]))
 
 ;;; Subscription
 
@@ -34,12 +35,20 @@
 
 ;;; User reported mines
 
+(defn- report-errors [user-id lat lon]
+  (cond
+    (sql-primitive (call-sql "user_mine_reported" user-id lat lon))
+    "Exists"
+
+    (not (location-in-country lat lon))
+    "Outside"))
+
 (defn report-mine [{:keys [params]}]
   (let [user-id (tc/val->int (:userId params))
         lat     (tc/val->double (:lat params))
         lon     (tc/val->double (:lon params))]
-    (if (sql-primitive (call-sql "user_mine_reported" user-id lat lon))
-      (data-response "Exists")
+    (if-let [error (report-errors user-id lat lon)]
+      (data-response error)
       (do
         (call-sql "add_reported_mine" user-id lat lon)
         (data-response "")))))

@@ -1,4 +1,4 @@
-(ns comimo.db.py-interop
+(ns comimo.py-interop
   (:require [clojure.string :as str]
             [libpython-clj2.require :refer [require-python]]
             [libpython-clj2.python  :refer [py. get-attr ->jvm]]
@@ -48,3 +48,6 @@
 
 (defn get-points-within [regions data-layer]
   (py-wrapper utils/getPointsWithin regions data-layer))
+
+(defn location-in-country [lat lon]
+  (py-wrapper utils/locationInCountry lat lon))
