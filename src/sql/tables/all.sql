@@ -24,11 +24,10 @@ CREATE TABLE users (
 CREATE TABLE subscriptions (
     subscription_uid    SERIAL PRIMARY KEY,
     user_rid            integer NOT NULL REFERENCES users (user_uid) ON DELETE CASCADE ON UPDATE CASCADE,
-    boundary_type       text,
-    location            text,
+    region              text,
     last_alert_for      timestamp DEFAULT now(),
     created_date        timestamp DEFAULT now(),
-    CONSTRAINT per_user_subscription UNIQUE(user_rid, boundary_type, location)
+    CONSTRAINT per_user_subscription UNIQUE(user_rid, region)
 );
 CREATE INDEX subscriptions_user_rid ON subscriptions (user_rid);
 
