@@ -3,6 +3,7 @@ import {MainContext} from "./context";
 
 import LoginMessage from "./LoginMessage";
 import SvgIcon from "../components/SvgIcon";
+import {sendRequest} from "../utils";
 
 export default class ValidatePanel extends React.Component {
   constructor(props) {
@@ -33,8 +34,7 @@ export default class ValidatePanel extends React.Component {
   }
 
   getProjects = () => {
-    fetch(this.URLS.PROJS, {method: "POST"})
-      .then(response => (response.ok ? response.json() : Promise.reject(response)))
+    sendRequest(this.URLS.PROJS)
       .then(res => { this.setState({projects: res || []}); })
       .catch(err => console.error(err));
   };
@@ -68,20 +68,7 @@ export default class ValidatePanel extends React.Component {
 
     if (this.checkProjectErrors(dataLayer, selectedArr, projectName, projects, regionType, validate)
           && confirm(question)) {
-      fetch(this.URLS.CRTPROJ,
-            {
-              method: "POST",
-              headers: {
-                Accept: "application/json",
-                "Content-Type": "application/json"
-              },
-              body: JSON.stringify({
-                dataLayer,
-                name: projectName,
-                regions: selectedArr
-              })
-            })
-        .then(response => (response.ok ? response.json() : Promise.reject(response)))
+      sendRequest(this.URLS.CRTPROJ, {dataLayer, name: projectName, regions: selectedArr})
         .then(res => {
           if (res.action !== "Error") {
             this.getProjects();
@@ -108,16 +95,7 @@ export default class ValidatePanel extends React.Component {
   closeProject = projectId => {
     const {localeText: {validate}} = this.context;
     if (confirm(validate.closeConfirm)) {
-      fetch(this.URLS.CLPROJ,
-            {
-              method: "POST",
-              headers: {
-                Accept: "application/json",
-                "Content-Type": "application/json"
-              },
-              body: JSON.stringify({projectId})
-            })
-        .then(response => (response.ok ? response.json() : Promise.reject(response)))
+      sendRequest(this.URLS.CLPROJ, {projectId})
         .then(res => {
           if (res === "") {
             this.getProjects();

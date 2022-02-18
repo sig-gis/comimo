@@ -1,5 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom";
+import {sendRequest} from "./utils";
 
 const buttonStyle = disabled => (disabled
   ? {
@@ -35,8 +36,7 @@ class DownloadData extends React.Component {
 
   /// API Calls ///
 
-  loadDates = () => fetch("/subscribe/get-data-dates")
-    .then(response => response.json())
+  loadDates = () => sendRequest("get-data-dates")
     .then(data => {
       this.setState({availableDates: data});
     })
@@ -189,8 +189,7 @@ class Predictions extends React.Component {
 
   loadDateData = dataLayer => {
     const {addCollectedData} = this.props;
-    fetch(`/subscribe/download-predictions?dataLayer=${dataLayer}`)
-      .then(response => response.json())
+    sendRequest("/download-predictions", {dataLayer})
       .then(data => {
         addCollectedData(dataLayer, data);
       })
@@ -297,8 +296,7 @@ class UserMines extends React.Component {
 
   loadDateData = month => {
     const {addCollectedData} = this.props;
-    fetch(`/subscribe/download-user-mines?month=${month}`)
-      .then(response => response.json())
+    sendRequest("/download-user-mines", {month})
       .then(data => {
         addCollectedData(month, data);
       })

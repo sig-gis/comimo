@@ -1,7 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom";
 
-import {getLanguage} from "./utils";
+import {getLanguage, sendRequest} from "./utils";
 
 class Login extends React.Component {
   constructor(props) {
@@ -14,29 +14,14 @@ class Login extends React.Component {
   }
 
   componentDidMount() {
-    fetch(
-      `/locale/${getLanguage(["en", "es"])}.json`,
-      {headers: {"Cache-Control": "no-cache", "Pragma": "no-cache", "Accept": "application/json"}}
-    )
-      .then(response => (response.ok ? response.json() : Promise.reject(response)))
+    sendRequest(`/locale/${getLanguage(["en", "es"])}.json`, null, "GET")
       .then(data => this.setState({localeText: data.users}))
       .catch(error => console.error(error));
   }
 
   requestLogin = () => {
-    fetch("/login",
-          {
-            method: "POST",
-            headers: {
-              Accept: "application/json",
-              "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-              username: this.state.username,
-              password: this.state.password
-            })
-          })
-      .then(response => Promise.all([response.ok, response.json()]))
+    const {username, password} = this.state;
+    sendRequest("/login", {username, password})
       .then(data => {
         if (data[0] && data[1] === "") {
           window.location = "/";

@@ -3,6 +3,7 @@ import ReactDOM from "react-dom";
 
 import LoadingModal from "./components/LoadingModal";
 import LanguageSelector from "./components/LanguageSelector";
+import {sendRequest} from "./utils";
 
 class UserAccount extends React.Component {
   constructor(props) {
@@ -42,11 +43,7 @@ class UserAccount extends React.Component {
   /// API Calls ///
 
   getLocalText = lang => {
-    fetch(
-    `/locale/${lang}.json`,
-    {headers: {"Cache-Control": "no-cache", "Pragma": "no-cache", "Accept": "application/json"}}
-    )
-      .then(response => (response.ok ? response.json() : Promise.reject(response)))
+    sendRequest(`/locale/${lang}.json`, null, "GET")
       .then(data => this.setState({localeText: data.users}))
       .catch(err => console.error(err));
   };
@@ -61,15 +58,7 @@ class UserAccount extends React.Component {
 
   getUserInformation = () => {
     this.processModal(() =>
-      fetch("/user-information",
-            {
-              method: "POST",
-              headers: {
-                Accept: "application/json",
-                "Content-Type": "application/json"
-              }
-            })
-        .then(response => (response.ok ? response.json() : Promise.reject(response)))
+      sendRequest("/user-information")
         .then(data => {
           if (data.username) {
             this.setState({...data});
@@ -89,28 +78,22 @@ class UserAccount extends React.Component {
       alert(errors.map(e => " - " + e).join("\n"));
     } else {
       this.processModal(() =>
-        fetch("/user-account",
-              {
-                method: "POST",
-                headers: {
-                  Accept: "application/json",
-                  "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                  defaultLang: this.state.defaultLang,
-                  fullName: this.state.fullName,
-                  institution: this.state.institution,
-                  sector: this.state.sector
-                })
-              })
-          .then(response => Promise.all([response.ok, response.text()]))
-          .then(data => {
-            if (data[0] && data[1] === "") {
+        sendRequest(
+          "/update-account",
+          {
+            defaultLang: this.state.defaultLang,
+            fullName: this.state.fullName,
+            institution: this.state.institution,
+            sector: this.state.sector
+          }
+        )
+          .then(resp => {
+            if (resp === "") {
               alert(this.state.localeText.updated);
               window.location = "/";
             } else {
-              console.error(data[1]);
-              alert(this.state.localeText[data[1]] || this.state.localeText.errorUpdating);
+              console.error(resp);
+              alert(this.state.localeText[resp] || this.state.localeText.errorUpdating);
             }
           })
           .catch(err => console.error(err)));

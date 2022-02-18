@@ -2,6 +2,7 @@ import React from "react";
 
 import {MainContext} from "./context";
 import {mapQuestKey} from "../appConfig";
+import {sendRequest} from "../utils";
 
 export default class SearchPanel extends React.Component {
   constructor(props) {
@@ -24,8 +25,7 @@ export default class SearchPanel extends React.Component {
     const {searchText} = this.state;
     const {featureNames} = this.context;
     const url = this.URLS.GEOCODE + "?key=" + mapQuestKey + "&county=" + searchText + "&country=colombia";
-    fetch(url)
-      .then(resp => resp.json())
+    sendRequest(url, null, "GET")
       .then(result => {
         this.setState({
           geoCodedSearch: result.results[0].locations.filter(l => {

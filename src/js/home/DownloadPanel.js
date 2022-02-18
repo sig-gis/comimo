@@ -1,4 +1,5 @@
 import React from "react";
+import {sendRequest} from "../utils";
 
 import {MainContext} from "./context";
 
@@ -24,20 +25,7 @@ export default class DownloadPanel extends React.Component {
     this.setState({fetching: true});
 
     const [level, region] = clipOption === 1 ? ["", "all"] : selectedRegion.split("_", 1);
-    fetch(this.URL.GETDL,
-          {
-            method: "POST",
-            headers: {
-              Accept: "application/json",
-              "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-              level,
-              region,
-              dataLayer: selectedDates[mineType]
-            })
-          })
-      .then(res => res.json())
+    sendRequest(this.URL.GETDL, {level, region, dataLayer: selectedDates[mineType]})
       .then(res => {
         if (res.action === "success") {
           this.setState({downloadURL: [region, level, selectedDates[mineType], res.url]});

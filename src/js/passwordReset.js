@@ -1,7 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom";
 
-import {getLanguage, validatePassword} from "./utils";
+import {getLanguage, sendRequest, validatePassword} from "./utils";
 
 class PasswordReset extends React.Component {
   constructor(props) {
@@ -14,11 +14,7 @@ class PasswordReset extends React.Component {
   }
 
   componentDidMount() {
-    fetch(
-      `/locale/${getLanguage(["en", "es"])}.json`,
-      {headers: {"Cache-Control": "no-cache", "Pragma": "no-cache", "Accept": "application/json"}}
-    )
-      .then(response => (response.ok ? response.json() : Promise.reject(response)))
+    sendRequest(`/locale/${getLanguage(["en", "es"])}.json`, null, "GET")
       .then(data => this.setState({localeText: data.users}))
       .catch(error => console.error(error));
   }
@@ -37,26 +33,15 @@ class PasswordReset extends React.Component {
     if (errors.length > 0) {
       alert(errors.map(e => " - " + e).join("\n"));
     } else {
-      fetch("/password-reset/",
-            {
-              method: "POST",
-              headers: {
-                Accept: "application/json",
-                "Content-Type": "application/json"
-              },
-              body: JSON.stringify({
-                email: this.props.email,
-                password: this.state.password,
-                passwordResetKey: this.props.passwordResetKey
-              })
-            })
-        .then(response => Promise.all([response.ok, response.text()]))
-        .then(data => {
-          if (data[0] && data[1] === "") {
+      const {password} = this.state;
+      const {email, passwordResetKey} = this.props;
+      sendRequest("/password-reset/", {email, passwordResetKey, password})
+        .then(resp => {
+          if (resp === "") {
             window.location = "/";
           } else {
-            console.error(data[1]);
-            alert(this.state.localeText[data[1]] || this.state.localeText.errorCreating);
+            console.error(resp);
+            alert(this.state.localeText[resp] || this.state.localeText.errorCreating);
           }
         })
         .catch(err => console.error(err));
