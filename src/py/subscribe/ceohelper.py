@@ -1,6 +1,6 @@
 import requests
 import json
-from subscribe.config import PROJ_CLASSES, PLOT_SIZE, PROJ_IMAGERY, CEO_GATEWAY_URL, CEO_CREATE, CEO_INFO, CEO_GETDATA, CEO_DELETE
+from subscribe.config import PROJ_CLASSES, PLOT_SIZE, PROJ_IMAGERY, CEO_GATEWAY_URL, CEO_CREATE, CEO_GETDATA
 from datetime import datetime
 
 
@@ -51,10 +51,3 @@ def getCollectedData(pid):
         return csv
     else:
         return list()
-
-
-def deleteProject(pid):
-    headers = {'Content-type': 'application/json', 'Accept': 'text/plain'}
-    resp = requests.get(CEO_GATEWAY_URL + CEO_DELETE + str(pid),
-                        headers=headers)
-    return resp.text

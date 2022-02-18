@@ -53,34 +53,17 @@
 
 
    ;; Projects API
-   [:get  "/dump-project-aggregate-data"]    {:handler     projects/dump-project-aggregate-data!
-                                              :auth-type   :admin
-                                              :auth-action :block}
-   [:get  "/dump-project-raw-data"]          {:handler     projects/dump-project-raw-data!
-                                              :auth-type   :admin
-                                              :auth-action :block}
-   [:get  "/get-home-projects"]              {:handler     projects/get-home-projects}
-   [:get  "/get-institution-projects"]       {:handler     projects/get-institution-projects}
-   [:get  "/get-institution-dash-projects"]  {:handler     projects/get-institution-dash-projects}
-   [:get  "/get-project-by-id"]              {:handler     projects/get-project-by-id}
-   [:get  "/get-template-projects"]          {:handler     projects/get-template-projects}
-   [:get  "/get-template-by-id"]             {:handler     projects/get-template-by-id}
-   [:get  "/get-project-stats"]              {:handler     projects/get-project-stats}
-   [:post "/archive-project"]                {:handler     projects/archive-project!
-                                              :auth-type   :admin
-                                              :auth-action :block}
    [:post "/close-project"]                  {:handler     projects/close-project!
-                                              :auth-type   :admin
+                                              :auth-type   :user
                                               :auth-action :block}
    [:post "/create-project"]                 {:handler     projects/create-project!
-                                              :auth-type   :admin
+                                              :auth-type   :user
                                               :auth-action :block}
-   [:post "/publish-project"]                {:handler     projects/publish-project!
-                                              :auth-type   :admin
+   [:post "/get-project-by-id"]              {:handler     projects/get-project-by-id}
+   [:post "/user-projects"]                  {:handler     projects/user-projects
+                                              :auth-type   :user
                                               :auth-action :block}
-   [:post "/update-project"]                 {:handler     projects/update-project!
-                                              :auth-type   :admin
-                                              :auth-action :block}
+
    ;; Plots API
    [:get  "/get-collection-plot"]            {:handler     plots/get-collection-plot
                                               :auth-type   :collect
@@ -133,13 +116,6 @@
    [:post "/archive-institution-imagery"]    {:handler     imagery/archive-institution-imagery
                                               :auth-type   :admin
                                               :auth-action :block}
-   ;; GeoDash API
-   [:get  "/geo-dash/get-project-widgets"]   {:handler     geodash/get-project-widgets}
-   [:post "/geo-dash/copy-project-widgets"]  {:handler     geodash/copy-project-widgets}
-   [:post "/geo-dash/create-widget"]         {:handler     geodash/create-dashboard-widget-by-id}
-   [:post "/geo-dash/delete-widget"]         {:handler     geodash/delete-dashboard-widget-by-id}
-   [:post "/geo-dash/gateway-request"]       {:handler     geodash/gateway-request}
-   [:post "/geo-dash/update-widget"]         {:handler     geodash/update-dashboard-widget-by-id}
    ;; Proxy Routes
    [:get  "/get-tile"]                       {:handler     proxy/proxy-imagery
                                               :auth-type   :no-cross
