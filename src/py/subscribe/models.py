@@ -3,25 +3,6 @@ from datetime import datetime
 from accounts.models import Profile
 
 
-class ProjectsModel(models.Model):
-    id = models.AutoField(primary_key=True, null=False)
-    user = models.ForeignKey(Profile, on_delete=models.CASCADE)
-    projid = models.IntegerField(null=False)
-    projurl = models.TextField(null=False)
-    name = models.TextField(null=False)
-    regions = models.TextField(null=False)
-    data_layer = models.CharField(max_length=25, default='')
-    created_date = models.DateTimeField(null=False, blank=True)
-    status = models.TextField(null=False, default='active')
-
-    class Meta:
-        app_label = "subscribe"
-        db_table = "gmw_projects"
-
-    def __str__(self):
-        return '(' + self.status + ') ' + self.name + ' : ' + self.user.user.username + ' - ' + self.data_layer
-
-
 class ExtractedData(models.Model):
     id = models.AutoField(primary_key=True, null=False)
     user = models.ForeignKey(Profile, on_delete=models.CASCADE)
