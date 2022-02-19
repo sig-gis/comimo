@@ -6,8 +6,9 @@ venv/*
 gmw.sock
 logs
 
-__pycache__/*
-
+__pycache__
+classes
+target
 db.sqlite3
 
 static
