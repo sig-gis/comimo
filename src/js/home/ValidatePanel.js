@@ -274,7 +274,7 @@ export default class ValidatePanel extends React.Component {
               <button
                 className="map-upd-btn"
                 disabled={creatingProject}
-                onClick={() => this.createProject(selectedDates[mineType] || "demo")}
+                onClick={() => this.createProject(selectedDates[mineType] || "2022-01-01-N")}
                 style={{marginTop: ".25rem"}}
                 type="button"
               >

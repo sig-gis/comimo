@@ -2,16 +2,6 @@ import logging
 import traceback
 import pytz
 from datetime import datetime
-from api.utils import getPointsWithin
-
-
-def createNewProject(user, dataLayer, name, regions):
-    regions = regions.split('__')
-    regions.sort()
-    points = getPointsWithin(regions, dataLayer)
-    number = points.size().getInfo()
-    if (number == 0):
-        return {'action': 'Error', 'message': 'No mines detected within specified region(s). Subscribe to other regions, or use custom regions.'}
 
 
 def insertCollectedData(profile, data, project):
