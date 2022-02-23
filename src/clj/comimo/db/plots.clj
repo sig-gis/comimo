@@ -5,7 +5,6 @@
             [triangulum.type-conversion :as tc]
             [triangulum.database :refer [call-sql sql-primitive]]
             [triangulum.utils    :refer [filterm]]
-            [comimo.db.projects :refer [is-proj-admin?]]
             [comimo.views :refer [data-response]]))
 
 ;;;
@@ -190,8 +189,7 @@
         threshold       (tc/val->int (:threshold params))
         user-id         (:userId params -1)
         current-user-id (tc/val->int (:currentUserId params -1))
-        review-mode?     (and (tc/val->bool (:inReviewMode params))
-                              (is-proj-admin? user-id project-id nil))
+        review-mode?    (tc/val->bool (:inReviewMode params))
         proj-plots      (case navigation-mode
                           "unanalyzed" (call-sql "select_unanalyzed_plots" project-id user-id review-mode?)
                           "analyzed"   (call-sql "select_analyzed_plots"   project-id user-id review-mode?)
@@ -251,8 +249,7 @@
         session-user-id  (:userId params -1)
         current-user-id  (tc/val->int (:currentUserId params -1))
         review-mode?     (and (tc/val->bool (:inReviewMode params))
-                              (pos? current-user-id)
-                              (is-proj-admin? session-user-id project-id nil))
+                              (pos? current-user-id))
         confidence       (tc/val->int (:confidence params))
         collection-start (tc/val->long (:collectionStart params))
         user-samples     (:userSamples params)
@@ -291,8 +288,7 @@
         user-id          (:userId params -1)
         current-user-id  (tc/val->int (:currentUserId params -1))
         review-mode?     (and (tc/val->bool (:inReviewMode params false))
-                              (pos? current-user-id)
-                              (is-proj-admin? user-id project-id nil))
+                              (pos? current-user-id))
         collection-start (tc/val->long (:collectionStart params))
         flagged-reason   (:flaggedReason params)]
     (call-sql "flag_plot"

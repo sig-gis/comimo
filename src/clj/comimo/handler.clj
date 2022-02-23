@@ -26,8 +26,8 @@
             [triangulum.type-conversion         :as tc]
             [comimo.routing                     :refer [routes]]
             [comimo.views                       :refer [not-found-page data-response]]
-            [comimo.db.projects                 :refer [can-collect? is-proj-admin?]]
-            [comimo.db.institutions             :refer [is-inst-admin?]]))
+            [comimo.db.projects                 :refer [can-collect?]]
+            [comimo.db.users                    :refer [is-admin?]]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Routing Handler
@@ -53,28 +53,20 @@
 
 (defn authenticated-routing-handler [{:keys [uri request-method params headers] :as request}]
   (let [{:keys [auth-type auth-action handler] :as route} (get routes [request-method uri])
-        user-id        (:userId params -1)
-        institution-id (tc/val->int (:institutionId params))
-        project-id     (tc/val->int (:projectId params))
-        next-handler   (if route
-                         (if (condp = auth-type
-                               :user     (pos? user-id)
-                               :super    (= 1  user-id)
-                               :collect  (can-collect? user-id project-id (:tokenKey params))
-                               :token    (can-collect? -99 project-id (:tokenKey params))
-                               :admin    (cond
-                                           (pos? project-id)
-                                           (is-proj-admin? user-id project-id (:tokenKey params))
-
-                                           (pos? institution-id)
-                                           (is-inst-admin? user-id institution-id))
-                               :no-cross (no-cross-traffic? headers)
-                               true)
-                           handler
-                           (if (= :redirect auth-action)
-                             (redirect-auth user-id)
-                             forbidden-response))
-                         not-found-page)]
+        user-id      (:userId params -1)
+        project-id   (tc/val->int (:projectId params))
+        next-handler (if route
+                       (if (condp = auth-type
+                             :user     (pos? user-id)
+                             :collect  (can-collect? user-id project-id)
+                             :admin    (is-admin? user-id)
+                             :no-cross (no-cross-traffic? headers)
+                             true)
+                         handler
+                         (if (= :redirect auth-action)
+                           (redirect-auth user-id)
+                           forbidden-response))
+                       not-found-page)]
     (next-handler request)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

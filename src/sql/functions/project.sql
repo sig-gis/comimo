@@ -2,6 +2,21 @@
 -- REQUIRES: clear
 
 --
+-- ROUTE AUTHENTICATION FUNCTIONS
+--
+
+-- Check if user has collection rights (read rights) for the project
+CREATE OR REPLACE FUNCTION can_user_collect_project(_user_id integer, _project_id integer)
+ RETURNS boolean AS $$
+
+    SELECT count(1) > 0
+    FROM projects
+    WHERE user_rid = _user_id
+        AND project_uid = _project_id
+
+$$ LANGUAGE SQL;
+
+--
 --  MODIFY PROJECT FUNCTIONS
 --
 
