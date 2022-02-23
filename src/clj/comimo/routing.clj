@@ -87,6 +87,6 @@
    [:get  "/get-public-imagery"]             {:handler     imagery/get-public-imagery}
 
    ;; Proxy Routes
-   [:get  "/get-tile"]                       {:handler     proxy/proxy-imagery
+   [:get  "/get-nicfi-dates"]                {:handler     proxy/get-nicfi-dates
                                               :auth-type   :no-cross
                                               :auth-action :block}})
