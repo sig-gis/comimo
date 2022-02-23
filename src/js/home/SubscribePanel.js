@@ -3,6 +3,7 @@ import React from "react";
 import LoginMessage from "./LoginMessage";
 
 import {MainContext} from "./context";
+import {sendRequest} from "../utils";
 
 export default class SubscribePanel extends React.Component {
   constructor(props) {
@@ -27,8 +28,7 @@ export default class SubscribePanel extends React.Component {
     const {updateSubList} = this.props;
     const {username, localeText: {subscribe}} = this.context;
     if (username) {
-      fetch(this.URLS.SUBS, {method: "POST"})
-        .then(response => (response.ok ? response.json() : Promise.reject(response)))
+      sendRequest(this.URLS.SUBS)
         .then(result => {
           if (Array.isArray(result)) {
             this.setState({subsLoaded: true});
@@ -45,18 +45,7 @@ export default class SubscribePanel extends React.Component {
     const {updateSubList} = this.props;
     const {localeText: {subscribe}} = this.context;
     if (region !== "") {
-      fetch(
-        this.URLS.ADDSUBS,
-        {
-          method: "POST",
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({region})
-        }
-      )
-        .then(response => (response.ok ? response.json() : Promise.reject(response)))
+      sendRequest(this.URLS.ADDSUBS, {region})
         .then(result => {
           if (Array.isArray(result)) {
             this.setState({subsLoaded: true});
@@ -77,18 +66,7 @@ export default class SubscribePanel extends React.Component {
       `${subscribe.delConfirm1} ${arr.reverse().join(", ")}? ${subscribe.delConfirm2}`
     );
     if (delConfirm) {
-      fetch(
-        this.URLS.DELSUBS,
-        {
-          method: "POST",
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({region})
-        }
-      )
-        .then(response => (response.ok ? response.json() : Promise.reject(response)))
+      sendRequest(this.URLS.DELSUBS, {region})
         .then(result => {
           if (Array.isArray(result)) {
             this.setState({subsLoaded: true});

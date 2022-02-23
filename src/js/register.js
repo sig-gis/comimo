@@ -5,7 +5,7 @@ import EmailValidator from "email-validator";
 import LoadingModal from "./components/LoadingModal";
 import LanguageSelector from "./components/LanguageSelector";
 
-import {getLanguage, validatePassword} from "./utils";
+import {getLanguage, sendRequest, validatePassword} from "./utils";
 
 class Register extends React.Component {
   constructor(props) {
@@ -45,11 +45,7 @@ class Register extends React.Component {
   /// API Calls ///
 
   getLocalText = lang => {
-    fetch(
-    `/locale/${lang}.json`,
-    {headers: {"Cache-Control": "no-cache", "Pragma": "no-cache", "Accept": "application/json"}}
-    )
-      .then(response => (response.ok ? response.json() : Promise.reject(response)))
+    sendRequest(`/locale/${lang}.json`, null, "GET")
       .then(data => this.setState({localeText: data.users}))
       .catch(err => console.error(err));
   };
@@ -72,31 +68,25 @@ class Register extends React.Component {
       alert(errors.map(e => " - " + e).join("\n"));
     } else {
       this.processModal(() =>
-        fetch("/register",
-              {
-                method: "POST",
-                headers: {
-                  Accept: "application/json",
-                  "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                  defaultLang: this.state.defaultLang,
-                  email: this.state.email,
-                  fullName: this.state.fullName,
-                  institution: this.state.institution,
-                  sector: this.state.sector,
-                  password: this.state.password,
-                  username: this.state.username
-                })
-              })
-          .then(response => Promise.all([response.ok, response.text()]))
-          .then(data => {
-            if (data[0] && data[1] === "") {
+        sendRequest(
+          "/register",
+          {
+            defaultLang: this.state.defaultLang,
+            email: this.state.email,
+            fullName: this.state.fullName,
+            institution: this.state.institution,
+            sector: this.state.sector,
+            password: this.state.password,
+            username: this.state.username
+          }
+        )
+          .then(resp => {
+            if (resp === "") {
               alert(this.state.localeText.registered);
               window.location = "/";
             } else {
-              console.error(data[1]);
-              alert(this.state.localeText[data[1]] || this.state.localeText.errorCreating);
+              console.error(resp);
+              alert(this.state.localeText[resp] || this.state.localeText.errorCreating);
             }
           })
           .catch(err => console.error(err)));

@@ -13,3 +13,18 @@ export function validatePassword(password) {
   return /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/.test(password)
         || password.length >= 16;
 }
+
+export function sendRequest(url, jsonBody = {}, method = "POST") {
+  return fetch(url,
+               {
+                 method,
+                 headers: {
+                   "Cache-Control": "no-cache",
+                   "Pragma": "no-cache",
+                   "Accept": "application/json",
+                   "Content-Type": "application/json"
+                 },
+                 ...method === "POST" && {body: JSON.stringify(jsonBody)}
+               })
+    .then(response => (response.ok ? response.json() : Promise.reject(response)));
+}

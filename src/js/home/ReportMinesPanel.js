@@ -1,4 +1,5 @@
 import React from "react";
+import {sendRequest} from "../utils";
 
 import {MainContext} from "./context";
 
@@ -21,16 +22,7 @@ export default class ReportMinesPanel extends React.Component {
     const [lat, lon] = selectedLatLon;
     if (lat && lon) {
       this.setState({reportingMine: true});
-      fetch("report-mine",
-            {
-              method: "POST",
-              headers: {
-                Accept: "application/json",
-                "Content-Type": "application/json"
-              },
-              body: JSON.stringify({lat, lon})
-            })
-        .then(result => result.json())
+      sendRequest("report-mine", {lat, lon})
         .then(result => {
           if (result === "") {
             this.setState({reportedLatLon: selectedLatLon});
