@@ -1,4 +1,5 @@
 import React from "react";
+import {sendRequest} from "../utils";
 
 import {MainContext} from "./context";
 
@@ -21,15 +22,14 @@ export default class ReportMinesPanel extends React.Component {
     const [lat, lon] = selectedLatLon;
     if (lat && lon) {
       this.setState({reportingMine: true});
-      fetch("subscribe/report-mine?lat=" + lat + "&lon=" + lon)
-        .then(result => result.json())
+      sendRequest("report-mine", {lat, lon})
         .then(result => {
-          if (result.action === "Created") {
+          if (result === "") {
             this.setState({reportedLatLon: selectedLatLon});
             alert(report.created);
-          } else if (result.action === "Exists") {
+          } else if (result === "Exists") {
             alert(report.existing);
-          } else if (result.action === "Outside") {
+          } else if (result === "Outside") {
             alert(report.outside);
           } else {
             alert(report.error);

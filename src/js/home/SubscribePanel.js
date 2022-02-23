@@ -3,6 +3,7 @@ import React from "react";
 import LoginMessage from "./LoginMessage";
 
 import {MainContext} from "./context";
+import {sendRequest} from "../utils";
 
 export default class SubscribePanel extends React.Component {
   constructor(props) {
@@ -23,12 +24,11 @@ export default class SubscribePanel extends React.Component {
     this.getSubs();
   }
 
-  getSubs() {
+  getSubs = () => {
     const {updateSubList} = this.props;
     const {username, localeText: {subscribe}} = this.context;
     if (username) {
-      fetch(this.URLS.SUBS, {method: "POST"})
-        .then(response => (response.ok ? response.json() : Promise.reject(response)))
+      sendRequest(this.URLS.SUBS)
         .then(result => {
           if (Array.isArray(result)) {
             this.setState({subsLoaded: true});
@@ -39,27 +39,13 @@ export default class SubscribePanel extends React.Component {
         })
         .catch(err => console.error(err));
     }
-  }
+  };
 
-  addSubs(region) {
+  addSubs = region => {
     const {updateSubList} = this.props;
     const {localeText: {subscribe}} = this.context;
     if (region !== "") {
-      fetch(
-        this.URLS.ADDSUBS,
-        {
-          method: "POST",
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({
-            boundaryType: region[0],
-            location: region[1]
-          })
-        }
-      )
-        .then(response => (response.ok ? response.json() : Promise.reject(response)))
+      sendRequest(this.URLS.ADDSUBS, {region})
         .then(result => {
           if (Array.isArray(result)) {
             this.setState({subsLoaded: true});
@@ -70,9 +56,9 @@ export default class SubscribePanel extends React.Component {
         })
         .catch(err => console.error(err));
     }
-  }
+  };
 
-  delSubs(boundaryType, location) {
+  delSubs = region => {
     const {updateSubList} = this.props;
     const {localeText: {subscribe}} = this.context;
     const arr = location.split("_");
@@ -80,21 +66,7 @@ export default class SubscribePanel extends React.Component {
       `${subscribe.delConfirm1} ${arr.reverse().join(", ")}? ${subscribe.delConfirm2}`
     );
     if (delConfirm) {
-      fetch(
-        this.URLS.DELSUBS,
-        {
-          method: "POST",
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({
-            boundaryType,
-            location
-          })
-        }
-      )
-        .then(response => (response.ok ? response.json() : Promise.reject(response)))
+      sendRequest(this.URLS.DELSUBS, {region})
         .then(result => {
           if (Array.isArray(result)) {
             this.setState({subsLoaded: true});
@@ -105,7 +77,7 @@ export default class SubscribePanel extends React.Component {
         })
         .catch(err => console.error(err));
     }
-  }
+  };
 
   renderSubscribedTable(subscribedList) {
     const {localeText: {subscribe}} = this.context;
@@ -120,7 +92,6 @@ export default class SubscribePanel extends React.Component {
         </thead>
         <tbody>
           {subscribedList.map((region, idx) => {
-            console.log(subscribedList, region);
             const arr = region.split("_");
             return (
               <tr key={region}>
@@ -132,7 +103,7 @@ export default class SubscribePanel extends React.Component {
                 <td style={{width: "30px"}}>
                   <input
                     className="del-btn"
-                    onClick={() => this.delSubs(arr[0], arr[1] + "_" + arr[2])}
+                    onClick={() => this.delSubs(region)}
                     type="submit"
                     value="X"
                   />
@@ -149,7 +120,7 @@ export default class SubscribePanel extends React.Component {
     const {subsLoaded} = this.state;
     const {isHidden} = this.props;
     const {selectedRegion, subscribedList, username, localeText: {subscribe}} = this.context;
-    const parsedRegion = selectedRegion && selectedRegion[1].split("_");
+    const parsedRegion = selectedRegion && selectedRegion.split("_");
     return (
       <div className={"popup-container subs-panel " + (isHidden ? "see-through" : "")}>
         <h3>{subscribe.title.toUpperCase()}</h3>
@@ -163,14 +134,14 @@ export default class SubscribePanel extends React.Component {
                   {this.renderSubscribedTable(subscribedList)}
                 </div>
               )}
-            {parsedRegion && !subscribedList.find(e => e === selectedRegion[0] + "_" + selectedRegion[1]) && (
+            {selectedRegion && !subscribedList.includes(selectedRegion) && (
               <div style={{textAlign: "center", width: "100%"}}>
                 <button
                   className="map-upd-btn"
                   onClick={() => this.addSubs(selectedRegion)}
                   type="button"
                 >
-                  {`${subscribe.subscribeTo} ${parsedRegion[1]}, `}<i>{parsedRegion[0]}</i>
+                  {`${subscribe.subscribeTo} ${parsedRegion[2]}, `}<i>{parsedRegion[1]}</i>
                 </button>
               </div>
             )}

@@ -1,4 +1,5 @@
 import React from "react";
+import {sendRequest} from "../utils";
 
 import {MainContext} from "./context";
 
@@ -7,8 +8,8 @@ export default class StatsPanel extends React.Component {
     super(props);
 
     this.URL = {
-      ARSTATS: "/api/getareapredicted",
-      ARTS: "/api/getareats"
+      ARSTATS: "get-area-predicted",
+      ARTS: "get-area-ts"
     };
 
     this.state = {
@@ -51,8 +52,7 @@ export default class StatsPanel extends React.Component {
     const {selectedDate} = this.props;
     const {localeText: {stats}} = this.context;
     document.getElementById("stats1").innerHTML = `${stats.loading}...`;
-    fetch(this.URL.ARSTATS + "?layerName=" + selectedDate)
-      .then(res => res.json())
+    sendRequest(this.URL.ARSTATS, {layerName: selectedDate})
       .then(result => {
         const data = [];
         for (let i = 0; i < result.names.length; i += 1) {
@@ -94,8 +94,7 @@ export default class StatsPanel extends React.Component {
   getAreaTS() {
     const {localeText: {stats}} = this.context;
     document.getElementById("stats2").innerHTML = `${stats.loading}...`;
-    fetch(this.URL.ARTS)
-      .then(res => res.json())
+    sendRequest(this.URL.ARTS)
       .then(result => {
         const data = [];
         let nonzero = false;

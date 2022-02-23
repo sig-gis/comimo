@@ -1,4 +1,5 @@
 import React from "react";
+import {sendRequest} from "../utils";
 
 import {MainContext} from "./context";
 
@@ -7,7 +8,7 @@ export default class DownloadPanel extends React.Component {
     super(props);
 
     this.URL = {
-      GETDL: "/api/getdownloadurl"
+      GETDL: "get-download-url"
     };
 
     this.state = {
@@ -23,9 +24,8 @@ export default class DownloadPanel extends React.Component {
     const {clipOption, mineType} = this.state;
     this.setState({fetching: true});
 
-    const [level, region] = clipOption === 1 ? ["", "all"] : selectedRegion;
-    fetch(this.URL.GETDL + "?region=" + region + "&level=" + level + "&dataLayer=" + selectedDates[mineType])
-      .then(res => res.json())
+    const [level, region] = clipOption === 1 ? ["", "all"] : selectedRegion.split("_", 1);
+    sendRequest(this.URL.GETDL, {level, region, dataLayer: selectedDates[mineType]})
       .then(res => {
         if (res.action === "success") {
           this.setState({downloadURL: [region, level, selectedDates[mineType], res.url]});
@@ -91,8 +91,8 @@ export default class DownloadPanel extends React.Component {
               <span>
                 <a href={downloadURL[3]}>
                   {`${download.clickHere}`
-                                    + ` ${downloadURL[0] === "all" ? download.completeData : download.munData + downloadURL[0]} `
-                                    + `${download.prep} ${ downloadURL[2]}.`}
+                    + ` ${downloadURL[0] === "all" ? download.completeData : download.munData + downloadURL[0]} `
+                    + `${download.prep} ${ downloadURL[2]}.`}
                 </a>
               </span>
             </p>

@@ -3,20 +3,20 @@ import {MainContext} from "./context";
 
 import LoginMessage from "./LoginMessage";
 import SvgIcon from "../components/SvgIcon";
+import {sendRequest} from "../utils";
 
 export default class ValidatePanel extends React.Component {
   constructor(props) {
     super(props);
 
     this.URLS = {
-      PROJS: "subscribe/getprojects",
-      CLPROJ: "subscribe/closeproject",
-      CRTPROJ: "subscribe/createproject"
+      PROJS: "user-projects",
+      CLPROJ: "close-project",
+      CRTPROJ: "create-project"
     };
 
     this.state = {
       projects: [],
-      deleting: [],
       projectName: "",
       creatingProject: false,
       errorMsg: false,
@@ -27,22 +27,15 @@ export default class ValidatePanel extends React.Component {
   }
 
   componentDidMount() {
-    const {isUser} = this.context;
-    if (isUser) {
+    const {username} = this.context;
+    if (username) {
       this.getProjects();
     }
   }
 
   getProjects = () => {
-    fetch(this.URLS.PROJS)
-      .then(res => res.json())
-      .then(res => {
-        if (res.action === "Success") {
-          this.setState({
-            projects: res.projects
-          });
-        }
-      })
+    sendRequest(this.URLS.PROJS)
+      .then(res => { this.setState({projects: res || []}); })
       .catch(err => console.error(err));
   };
 
@@ -75,15 +68,7 @@ export default class ValidatePanel extends React.Component {
 
     if (this.checkProjectErrors(dataLayer, selectedArr, projectName, projects, regionType, validate)
           && confirm(question)) {
-      const url = this.URLS.CRTPROJ
-                  + "?dataLayer="
-                  + dataLayer
-                  + "&name="
-                  + projectName
-                  + "&regions="
-                  + selectedArr.join("__");
-      fetch(url)
-        .then(res => res.json())
+      sendRequest(this.URLS.CRTPROJ, {dataLayer, name: projectName, regions: selectedArr})
         .then(res => {
           if (res.action !== "Error") {
             this.getProjects();
@@ -107,55 +92,46 @@ export default class ValidatePanel extends React.Component {
     }
   };
 
-  closeProject = pid => {
+  closeProject = projectId => {
     const {localeText: {validate}} = this.context;
     if (confirm(validate.closeConfirm)) {
-      const {deleting} = this.state;
-      this.setState({deleting: [...deleting, pid], errorMsg: false});
-      fetch(this.URLS.CLPROJ + "?pid=" + pid)
-        .then(res => res.json())
+      sendRequest(this.URLS.CLPROJ, {projectId})
         .then(res => {
-          if (res.action === "Archived") {
+          if (res === "") {
             this.getProjects();
           } else {
             // TODO pass back meaningful errors
             this.setState({errorMsg: validate.errorClose});
           }
         })
-        .catch(err => {
-          console.error(err);
-        })
-        .finally(() =>
-          this.setState(prevState => ({deleting: prevState.deleting.filter(p => p !== pid)})));
+        .catch(err => { console.error(err); });
     }
   };
 
-  renderProject = (predDate, createdDate, pid, url, projectName, regions) => {
-    const {selectedLanguage, localeText: {validate}} = this.context;
+  renderProject = ({dataLayer, createdDate, id, name, regions}) => {
+    const {localeText: {validate}} = this.context;
     return (
-      <tr key={pid}>
+      <tr key={id}>
         <td style={{width: "calc(100% - 30px)"}}>
           <div style={{display: "flex", flexDirection: "column"}}>
-            <a href={`${url}&locale=${selectedLanguage}`} rel="noreferrer" target="_blank">
-              {projectName}
-            </a>
-            <small>{`${validate.predictionLabel}: ${predDate}`}</small>
+            <label>{name}</label>
+            <small>{`${validate.predictionLabel}: ${dataLayer}`}</small>
             <small>{`${validate.createdLabel}: ${createdDate}`}</small>
-            <small>{`${validate.regionsLabel}: ${regions
-              .split("__")
-              .map(x => x.split("_"))
-              .map(x => x[2] + ", " + x[1])
-              .join(";")}`}
+            <small>{`${validate.regionsLabel}:`}
+              <ul>
+                {regions
+                  .map(x => x.split("_"))
+                  .map(x => <li>{`${x[2]}, ${x[1]}`}</li>)}
+              </ul>
             </small>
           </div>
         </td>
         <td style={{verticalAlign: "top"}}>
           <button
             className="del-btn green-btn p-0"
-            disabled={this.state.deleting.includes(pid)}
-            onClick={() => this.closeProject(pid)}
+            onClick={() => this.closeProject(id)}
             style={{height: "1.75rem", width: "1.75rem"}}
-            title={"Close " + projectName}
+            title={"Close " + name}
             type="button"
           >
             <SvgIcon extraStyle={{margin: "0px .3rem .1rem"}} icon="check" size="1.25rem"/>
@@ -213,12 +189,12 @@ export default class ValidatePanel extends React.Component {
   render() {
     const {isHidden} = this.props;
     const {projects, projectName, regionType, creatingProject, errorMsg, mineType} = this.state;
-    const {selectedDates, isUser, localeText: {validate}} = this.context;
+    const {selectedDates, username, localeText: {validate}} = this.context;
     return (
       <div className={"popup-container validate-panel " + (isHidden ? "see-through" : "")}>
         <h3>{validate.title.toUpperCase()}</h3>
         <span>{validate.subtitle}</span>
-        {isUser
+        {username
           ? (
             <div style={{display: "flex", flexDirection: "column"}}>
               {projects.length === 0
@@ -231,7 +207,7 @@ export default class ValidatePanel extends React.Component {
                         <th>{}</th>
                       </tr>
                     </thead>
-                    <tbody>{projects.map(p => this.renderProject(...p))}</tbody>
+                    <tbody>{projects.map(p => this.renderProject(p))}</tbody>
                   </table>
                 )}
               <h3 style={{marginBottom: 0}}>{`${validate.createProject}:`}</h3>
@@ -276,7 +252,7 @@ export default class ValidatePanel extends React.Component {
               <button
                 className="map-upd-btn"
                 disabled={creatingProject}
-                onClick={() => this.createProject(selectedDates[mineType])}
+                onClick={() => this.createProject(selectedDates[mineType] || "2022-01-01-N")}
                 style={{marginTop: ".25rem"}}
                 type="button"
               >

@@ -3,7 +3,7 @@ import ReactDOM from "react-dom";
 
 import LoadingModal from "./components/LoadingModal";
 
-import {getCookie, getLanguage} from "./utils";
+import {getLanguage, sendRequest} from "./utils";
 
 class PasswordForgot extends React.Component {
   constructor(props) {
@@ -16,11 +16,7 @@ class PasswordForgot extends React.Component {
   }
 
   componentDidMount() {
-    fetch(
-      `/locale/${getLanguage(["en", "es"])}.json`,
-      {headers: {"Cache-Control": "no-cache", "Pragma": "no-cache", "Accept": "application/json"}}
-    )
-      .then(response => (response.ok ? response.json() : Promise.reject(response)))
+    sendRequest(`/locale/${getLanguage(["en", "es"])}.json`, null, "GET")
       .then(data => this.setState({localeText: data.users}))
       .catch(error => console.error(error));
   }
@@ -33,17 +29,7 @@ class PasswordForgot extends React.Component {
   ));
 
   requestPassword = () => this.processModal(() =>
-    fetch("/password-request/",
-          {
-            method: "POST",
-            headers: {
-              Accept: "application/json",
-              "Content-Type": "application/json",
-              "X-CSRFToken": getCookie("csrftoken")
-            },
-            body: JSON.stringify({email: this.state.email})
-          })
-      .then(response => Promise.all([response.ok, response.text()]))
+    sendRequest("/password-request/", {email: this.state.email})
       .then(data => {
         if (data[0] && data[1] === "") {
           alert(this.state.localeText.tokenSent);

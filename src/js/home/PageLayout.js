@@ -16,7 +16,7 @@ import SvgIcon from "../components/SvgIcon";
 import ReportMinesPanel from "./ReportMinesPanel";
 import ValidatePanel from "./ValidatePanel";
 
-import {toPrecision, getCookie, getLanguage} from "../utils";
+import {toPrecision, getLanguage, sendRequest} from "../utils";
 import {MainContext} from "./context";
 import {mapboxToken} from "../appConfig";
 
@@ -28,9 +28,9 @@ export default class PageLayout extends React.Component {
     // API URLS
     this.URLS = {
       FEATURE_NAMES: "get-feature-names",
-      IMG_DATES: "/api/getimagenames",
-      SINGLE_IMAGE: "/api/getsingleimage",
-      GEE_LAYER: "api/getgeetiles"
+      IMG_DATES: "get-image-names",
+      SINGLE_IMAGE: "get-single-image",
+      GEE_LAYER: "get-gee-tiles"
     };
     // Layers available
     this.availableLayers = [
@@ -68,7 +68,7 @@ export default class PageLayout extends React.Component {
       advancedOptions: false,
       imageDates: {},
       selectedDates: {},
-      selectedRegion: false,
+      selectedRegion: null,
       featureNames: {},
       subscribedList: [],
       theMap: null,
@@ -89,9 +89,6 @@ export default class PageLayout extends React.Component {
     this.setState({selectedLanguage: lang});
 
     Promise.all([this.getLocalText(lang), this.getFeatureNames(), this.getImageDates()])
-      .then(() => {
-        this.updateEELayer(true);
-      })
       .catch(error => console.error(error));
     this.updateWindow();
     this.initMap();
@@ -130,7 +127,7 @@ export default class PageLayout extends React.Component {
     this.updateEELayer
   );
 
-  selectRegion = (boundaryType, location) => this.setState({selectedRegion: [boundaryType, location]});
+  selectRegion = region => this.setState({selectedRegion: region});
 
   selectLanguage = newLang => {
     this.setState({selectedLanguage: newLang});
@@ -139,15 +136,10 @@ export default class PageLayout extends React.Component {
 
   /// API Calls ///
 
-  getLocalText = lang => fetch(
-      `/locale/${lang}.json`,
-      {headers: {"Cache-Control": "no-cache", "Pragma": "no-cache", "Accept": "application/json"}}
-  )
-    .then(response => (response.ok ? response.json() : Promise.reject(response)))
+  getLocalText = lang => sendRequest(`/locale/${lang}.json`, {}, "GET")
     .then(data => this.setState({localeText: data}));
 
-  getImageDates = () => fetch(this.URLS.IMG_DATES)
-    .then(res => res.json())
+  getImageDates = () => sendRequest(this.URLS.IMG_DATES)
     .then(result => {
       const initialDates = Object.keys(result).reduce((acc, cur) =>
         ({...acc, [cur]: result[cur][0]}), {});
@@ -157,56 +149,41 @@ export default class PageLayout extends React.Component {
       });
     });
 
-  getFeatureNames = () => fetch(
-    this.URLS.FEATURE_NAMES, {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json"
-      }
-    }
-  )
-    .then(res => res.json())
-    .then(features => {
-      this.setState({featureNames: features});
-    });
+  getFeatureNames = () => sendRequest(this.URLS.FEATURE_NAMES)
+    .then(features => { this.setState({featureNames: features}); });
 
-  getGEELayers = list => {
-    const name = list.shift();
-    // TODO make one fetch call for all layer names
-    fetch(this.URLS.GEE_LAYER + "?name=" + name)
-      .then(res => res.json())
-      .then(result => {
-        const {url} = result;
-        if (url) {
-          const style = this.state.theMap.getStyle();
-          style.sources[name].tiles = [result.url];
-          this.state.theMap.setStyle(style);
-        }
-        if (list.length > 0) this.getGEELayers(list);
-      })
-      .catch(error => console.error(error));
+  setLayerUrl = (layer, url, firstTime = false) => {
+    if (layer && url) {
+      const {theMap} = this.state;
+      const style = theMap.getStyle();
+      const layers = style.layers;
+      const layerIdx = layers.findIndex(l => l.id === layer);
+      const thisLayer = layers[layerIdx];
+      const {layout: {visibility}} = thisLayer;
+      style.sources[layer].tiles = [url];
+      style.layers[layerIdx] = {
+        ...thisLayer,
+        layout: {visibility: firstTime && this.startVisible.includes(layer) ? "visible" : visibility}
+      };
+      theMap.setStyle(style);
+    } else {
+      console.error("Error loading layer: ", layer, url);
+    }
   };
 
-  updateEELayer = (firstTime = false) => {
+  getGEELayers = list => {
+    list.forEach(layer =>
+      sendRequest(this.URLS.GEE_LAYER, {name: layer})
+        .then(url => this.setLayerUrl(layer, url, true))
+        .catch(error => console.error(error)));
+  };
+
+  updateEELayers = (firstTime = false) => {
     const eeLayers = ["nMines", "pMines", "cMines"];
-    const {theMap, selectedDates} = this.state;
+    const {selectedDates} = this.state;
     eeLayers.forEach(eeLayer => {
-      fetch(this.URLS.SINGLE_IMAGE + "?id=" + selectedDates[eeLayer] + "&type=" + eeLayer)
-        .then(res => res.json())
-        .then(result => {
-          const style = theMap.getStyle();
-          const layers = style.layers;
-          const layerIdx = layers.findIndex(l => l.id === eeLayer);
-          const thisLayer = layers[layerIdx];
-          const {layout: {visibility}} = thisLayer;
-          style.sources[eeLayer].tiles = [result.url];
-          style.layers[layerIdx] = {
-            ...thisLayer,
-            layout: {visibility: firstTime && this.startVisible.includes(eeLayer) ? "visible" : visibility}
-          };
-          theMap.setStyle(style);
-        })
+      sendRequest(this.URLS.SINGLE_IMAGE, {id: selectedDates[eeLayer], type: eeLayer})
+        .then(url => this.setLayerUrl(eeLayer, url, firstTime))
         .catch(error => console.error(error));
     });
   };
@@ -226,9 +203,10 @@ export default class PageLayout extends React.Component {
     theMap.on("load", () => {
       theMap.addControl(new mapboxgl.NavigationControl({showCompass: false}));
 
-      // these are launched async it only works because the fetch command takes longer than creating a layer
+      // This is not safe, updateEELayer could be called before the options are returned
       this.addLayerSources([...this.availableLayers].reverse());
       this.getGEELayers(this.availableLayers.slice(3));
+      this.updateEELayers(true);
 
       theMap.on("mousemove", e => {
         const lat = toPrecision(e.lngLat.lat, 4);
@@ -300,7 +278,7 @@ export default class PageLayout extends React.Component {
 
   isLayerVisible = layer => this.state.theMap.getLayer(layer).visibility === "visible";
 
-  // Adds layers initially with no styling, URL is updated later.
+  // Adds layers initially with no styling, URL is updated later.  This is to guarantee z order in mapbox
   addLayerSources = list => {
     const {theMap} = this.state;
     list.forEach(name => {
@@ -481,7 +459,7 @@ export default class PageLayout extends React.Component {
                 />
 
                 {/* Advanced Button */}
-                {this.props.isUser && (
+                {username && (
                   <SideIcon
                     clickHandler={() => {
                       this.setState(
@@ -584,22 +562,7 @@ class InfoPopupContent extends React.Component {
   componentDidMount() {
     const {selectedDates, lat, lon, visibleLayers} = this.props;
     if (visibleLayers.length > 0) {
-      fetch("api/getinfo",
-            {
-              method: "POST",
-              headers: {
-                Accept: "application/json",
-                "Content-Type": "application/json",
-                "X-CSRFToken": getCookie("csrftoken")
-              },
-              body: JSON.stringify({
-                lat,
-                lon,
-                dates: selectedDates,
-                visibleLayers
-              })
-            })
-        .then(resp => resp.json())
+      sendRequest("get-info", {lat, lon, dates: selectedDates, visibleLayers})
         .then(resp => {
           this.setState({layerInfo: resp.value});
         })

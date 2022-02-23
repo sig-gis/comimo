@@ -2,41 +2,6 @@ from django.db import models
 from datetime import datetime
 from accounts.models import Profile
 
-class UserMinesModel(models.Model):
-    id = models.AutoField(primary_key=True, null=False)
-    user = models.ForeignKey(Profile, on_delete=models.CASCADE)
-    # Latitude
-    x = models.FloatField(null=False)
-    # Longitude
-    y = models.FloatField(null=False)
-    reported_date = models.DateTimeField(null=False, blank=True)
-
-    class Meta:
-        app_label = "subscribe"
-        db_table = "gmw_usermines"
-
-    def __str__(self):
-        return str(self.user.user.id) + ' ' + self.user.user.username + ' : ' + str(self.y) + ', ' + str(self.x)
-
-
-class ProjectsModel(models.Model):
-    id = models.AutoField(primary_key=True, null=False)
-    user = models.ForeignKey(Profile, on_delete=models.CASCADE)
-    projid = models.IntegerField(null=False)
-    projurl = models.TextField(null=False)
-    name = models.TextField(null=False)
-    regions = models.TextField(null=False)
-    data_layer = models.CharField(max_length=25, default='')
-    created_date = models.DateTimeField(null=False, blank=True)
-    status = models.TextField(null=False, default='active')
-
-    class Meta:
-        app_label = "subscribe"
-        db_table = "gmw_projects"
-
-    def __str__(self):
-        return '(' + self.status + ') ' + self.name + ' : ' + self.user.user.username + ' - ' + self.data_layer
-
 
 class ExtractedData(models.Model):
     id = models.AutoField(primary_key=True, null=False)

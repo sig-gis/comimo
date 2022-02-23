@@ -2,6 +2,7 @@ import React from "react";
 
 import {MainContext} from "./context";
 import {mapQuestKey} from "../appConfig";
+import {sendRequest} from "../utils";
 
 export default class SearchPanel extends React.Component {
   constructor(props) {
@@ -24,8 +25,7 @@ export default class SearchPanel extends React.Component {
     const {searchText} = this.state;
     const {featureNames} = this.context;
     const url = this.URLS.GEOCODE + "?key=" + mapQuestKey + "&county=" + searchText + "&country=colombia";
-    fetch(url)
-      .then(resp => resp.json())
+    sendRequest(url, null, "GET")
       .then(result => {
         this.setState({
           geoCodedSearch: result.results[0].locations.filter(l => {
@@ -70,10 +70,7 @@ export default class SearchPanel extends React.Component {
               const mun = item.adminArea4.toUpperCase();
               this.setState({selectedL1: state, selectedL2: mun});
               fitMap("bbox", featureNames[state][mun]);
-              selectRegion(
-                "mun",
-                item.adminArea3.toUpperCase() + "_" + item.adminArea4.toUpperCase()
-              );
+              selectRegion("mun_" + item.adminArea3.toUpperCase() + "_" + item.adminArea4.toUpperCase());
             }}
             style={{display: "flex", flexDirection: "column"}}
           >
@@ -116,10 +113,7 @@ export default class SearchPanel extends React.Component {
               const coords = activeMuns[l2Name];
               this.setState({selectedL2: l2Name});
               if (Array.isArray(coords)) fitMap("bbox", coords);
-              selectRegion(
-                "mun",
-                selectedL1 + "_" + l2Name
-              );
+              selectRegion("mun_" + selectedL1 + "_" + l2Name);
             }}
             value={selectedL2}
           >

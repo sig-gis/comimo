@@ -1,7 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom";
 
-import {getCookie, getLanguage} from "./utils";
+import {getLanguage, sendRequest} from "./utils";
 
 class PasswordReset extends React.Component {
   constructor(props) {
@@ -29,32 +29,19 @@ class PasswordReset extends React.Component {
       .catch(error => console.error(error));
   }
 
-  getLocale = () => fetch(
-    `/locale/${getLanguage(["en", "es"])}.json`,
-    {headers: {"Cache-Control": "no-cache", "Pragma": "no-cache", "Accept": "application/json"}}
-  )
-    .then(response => (response.ok ? response.json() : Promise.reject(response)))
+  getLocale = () => fetch(`/locale/${getLanguage(["en", "es"])}.json`, null, "GET")
     .then(data => {
       this.setState({localeText: data.users});
       return true;
     });
 
-  verifyUser = () => fetch(
+  verifyUser = () => sendRequest(
     "/verify-user/",
     {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-        "X-CSRFToken": getCookie("csrftoken")
-      },
-      body: JSON.stringify({
-        passwordResetKey: this.props.passwordResetKey,
-        email: this.props.email
-      })
+      passwordResetKey: this.props.passwordResetKey,
+      email: this.props.email
     }
-  )
-    .then(response => (response.ok ? response.text() : Promise.reject(response)));
+  );
 
   render() {
     const {localeText} = this.state;

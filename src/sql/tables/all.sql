@@ -24,13 +24,23 @@ CREATE TABLE users (
 CREATE TABLE subscriptions (
     subscription_uid    SERIAL PRIMARY KEY,
     user_rid            integer NOT NULL REFERENCES users (user_uid) ON DELETE CASCADE ON UPDATE CASCADE,
-    boundary_type       text,
-    location            text,
+    region              text,
     last_alert_for      timestamp DEFAULT now(),
     created_date        timestamp DEFAULT now(),
-    CONSTRAINT per_user_subscription UNIQUE(user_rid, boundary_type, location)
+    CONSTRAINT per_user_subscription UNIQUE(user_rid, region)
 );
 CREATE INDEX subscriptions_user_rid ON subscriptions (user_rid);
+
+-- Stores user reported mines.
+CREATE TABLE user_mines (
+    user_mine_uid    SERIAL PRIMARY KEY,
+    user_rid         integer NOT NULL REFERENCES users (user_uid) ON DELETE CASCADE ON UPDATE CASCADE,
+    lat              float, -- x
+    lon              float, -- y
+    reported_date    timestamp DEFAULT now(),
+    CONSTRAINT per_user_mine UNIQUE(user_rid, lat, lon)
+);
+CREATE INDEX user_mines_user_rid ON user_mines (user_rid);
 
 -- Stores imagery data
 CREATE TABLE imagery (
@@ -46,44 +56,26 @@ CREATE TABLE imagery (
 );
 
 -- Stores information about projects
--- Each project must be associated with an institution
 CREATE TABLE projects (
-    project_uid            SERIAL PRIMARY KEY,
-    availability           text,
-    name                   text NOT NULL,
-    description            text,
-    privacy_level          text,
-    boundary               geometry(geometry,4326),
-    plot_distribution      text,
-    num_plots              integer,
-    plot_spacing           real,
-    plot_shape             text,
-    plot_size              real,
-    sample_distribution    text,
-    samples_per_plot       integer,
-    sample_resolution      real,
-    survey_questions       jsonb,
-    survey_rules           jsonb,
-    created_date           date,
-    published_date         date,
-    closed_date            date,
-    archived_date          date,
-    token_key              text DEFAULT NULL,
-    options                jsonb NOT NULL DEFAULT '{}'::jsonb,
-    allow_drawn_samples    boolean,
-    design_settings        jsonb NOT NULL DEFAULT '{}'::jsonb,
-    plot_file_name         varchar(511),
-    sample_file_name       varchar(511),
-    shuffle_plots          boolean
+    project_uid     SERIAL PRIMARY KEY,
+    user_rid        integer NOT NULL REFERENCES users (user_uid) ON DELETE CASCADE ON UPDATE CASCADE,
+    name            text NOT NULL,
+    regions         text,
+    data_layer      text,
+    boundary        geometry(geometry,4326),
+    status          text DEFAULT 'active',
+    created_date    date  DEFAULT now(),
+    closed_date     date,
+    CONSTRAINT per_user_per_name UNIQUE(user_rid, name, status)
 );
+CREATE INDEX projects_user_rid ON projects (user_rid);
 
--- Stores plot information, including a reference to external plot data if it exists
+-- Stores plot center location
 CREATE TABLE plots (
-    plot_uid           SERIAL PRIMARY KEY,
-    project_rid        integer NOT NULL REFERENCES projects (project_uid) ON DELETE CASCADE ON UPDATE CASCADE,
-    plot_geom          geometry(geometry,4326),
-    visible_id         integer,
-    extra_plot_info    jsonb
+    plot_uid       SERIAL PRIMARY KEY,
+    project_rid    integer NOT NULL REFERENCES projects (project_uid) ON DELETE CASCADE ON UPDATE CASCADE,
+    lat            float,
+    lon            float
 );
 CREATE INDEX plots_projects_rid ON plots (project_rid);
 
