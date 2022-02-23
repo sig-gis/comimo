@@ -56,6 +56,9 @@
 (defn location-in-country [lat lon]
   (py-wrapper utils/locationInCountry lat lon))
 
+(defn get-image-list []
+  (py-wrapper utils/getImageList))
+
 ;;; Routes
 
 (defn get-image-names [_]

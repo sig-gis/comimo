@@ -25,8 +25,8 @@ CREATE TABLE subscriptions (
     subscription_uid    SERIAL PRIMARY KEY,
     user_rid            integer NOT NULL REFERENCES users (user_uid) ON DELETE CASCADE ON UPDATE CASCADE,
     region              text,
-    last_alert_for      timestamp DEFAULT now(),
-    created_date        timestamp DEFAULT now(),
+    last_alert_for      date DEFAULT now(),
+    created_date        date DEFAULT now(),
     CONSTRAINT per_user_subscription UNIQUE(user_rid, region)
 );
 CREATE INDEX subscriptions_user_rid ON subscriptions (user_rid);
@@ -55,6 +55,7 @@ CREATE TABLE imagery (
     archived_date      date
 );
 
+
 -- Stores information about projects
 CREATE TABLE projects (
     project_uid     SERIAL PRIMARY KEY,
@@ -64,9 +65,8 @@ CREATE TABLE projects (
     data_layer      text,
     boundary        geometry(geometry,4326),
     status          text DEFAULT 'active',
-    created_date    date  DEFAULT now(),
-    closed_date     date,
-    CONSTRAINT per_user_per_name UNIQUE(user_rid, name, status)
+    created_date    date DEFAULT now(),
+    closed_date     date
 );
 CREATE INDEX projects_user_rid ON projects (user_rid);
 
@@ -93,3 +93,12 @@ CREATE TABLE user_plots (
 );
 CREATE INDEX user_plots_plot_rid ON user_plots (plot_rid);
 CREATE INDEX user_plots_user_rid ON user_plots (user_rid);
+
+CREATE TABLE auto_email_logs (
+    job_time          timestamp DEFAULT now(),
+    user_rid          integer NOT NULL REFERENCES users (user_uid) ON DELETE CASCADE ON UPDATE CASCADE,
+    finish_status     text,
+    finish_message    text,
+    regions           text
+);
+CREATE INDEX email_log_user_rid ON auto_email_logs (user_rid);

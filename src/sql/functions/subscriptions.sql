@@ -53,6 +53,52 @@ CREATE OR REPLACE FUNCTION user_subscribed(
 $$ LANGUAGE SQL;
 
 --
+--  EMAIL ALERTS
+--
+
+CREATE OR REPLACE FUNCTION get_unsent_subscriptions(_date text)
+ RETURNS table (
+    user_id         integer,
+    email           text,
+    default_lang    text,
+    regions         text[]
+ ) AS $$
+
+    SELECT user_uid,
+        email,
+        default_lang,
+        array_agg(region)
+    FROM subscriptions, users
+    WHERE user_uid = user_rid
+        AND last_alert_for < _date::date
+    GROUP BY user_uid
+
+$$ LANGUAGE SQL;
+
+CREATE OR REPLACE FUNCTION set_last_alert_for(_user_id integer, _date text)
+ RETURNS void AS $$
+
+    UPDATE subscriptions
+    SET last_alert_for = _date::date
+    WHERE user_rid = _user_id
+
+$$ LANGUAGE SQL;
+
+CREATE OR REPLACE FUNCTION log_email_alert(
+    _user_id           integer,
+    _finish_status     text,
+    _finish_message    text,
+    _regions           text
+ ) RETURNS void AS $$
+
+    INSERT INTO auto_email_logs
+        (user_rid, finish_status, finish_message, regions)
+    VALUES
+        (_user_id, _finish_status, _finish_message, _regions)
+
+$$ LANGUAGE SQL;
+
+--
 --  REPORTED MINES
 --
 

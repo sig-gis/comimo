@@ -1,14 +1,15 @@
 (ns comimo.server
-  (:require [clojure.java.io     :as io]
-            [clojure.core.server :refer [start-server]]
-            [ring.adapter.jetty  :refer [run-jetty]]
-            [triangulum.cli      :refer [get-cli-options]]
-            [triangulum.config   :refer [get-config]]
-            [triangulum.notify   :as notify]
-            [triangulum.logging  :refer [log-str set-log-path!]]
-            [triangulum.sockets  :refer [send-to-server! socket-open?]]
-            [triangulum.database :refer [call-sql]]
-            [comimo.handler      :refer [create-handler-stack]]))
+  (:require [clojure.java.io         :as io]
+            [clojure.core.server     :refer [start-server]]
+            [ring.adapter.jetty      :refer [run-jetty]]
+            [triangulum.cli          :refer [get-cli-options]]
+            [triangulum.config       :refer [get-config]]
+            [triangulum.notify       :refer [available? ready!]]
+            [triangulum.logging      :refer [log-str set-log-path!]]
+            [triangulum.sockets      :refer [send-to-server! socket-open?]]
+            [triangulum.database     :refer [call-sql]]
+            [comimo.handler          :refer [create-handler-stack]]
+            [comimo.db.subscriptions :refer [send-email-alerts]]))
 
 (defonce ^:private server             (atom nil))
 (defonce ^:private repl-server        (atom nil))
@@ -19,7 +20,9 @@
 
 (defn- scheduled-jobs []
   (log-str "Closing old projects")
-  (call-sql "close_old_projects" 30))
+  (call-sql "close_old_projects" 30)
+  (log-str "Checking for alerts")
+  (send-email-alerts))
 
 (defn- start-scheduling-service! []
   (log-str "Starting scheduling service.")
@@ -73,8 +76,7 @@
         (reset! server (run-jetty handler config))
         (reset! scheduling-service (start-scheduling-service!))
         (set-log-path! log-dir)
-        (when (notify/available?)
-          (notify/ready!))))))
+        (when (available?) (ready!))))))
 
 (defn stop-server! []
   (set-log-path! "")

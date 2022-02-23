@@ -1,5 +1,4 @@
 from django.db import models
-from datetime import datetime
 from accounts.models import Profile
 
 
@@ -23,19 +22,3 @@ class ExtractedData(models.Model):
 
     def __str__(self):
         return str(self.id) + ' - ' + self.data_layer + ' - ' + self.class_name + ' by ' + self.user.user.username
-
-
-class CronJobs(models.Model):
-    id = models.AutoField(primary_key=True, null=False)
-    job_date = models.DateTimeField(null=False)
-    job_type = models.CharField(max_length=20, null=False)
-    finish_message = models.CharField(max_length=500, null=False)
-    regions = models.TextField(null=False, default="")
-    email = models.EmailField(max_length=150, default="")
-
-    class Meta:
-        app_label = "subscribe"
-        db_table = "gmw_cron_jobs"
-
-    def __str__(self):
-        return self.job_date.strftime("%Y-%m-%d %H:%M") + ' - ' + self.job_type + ' - ' + self.email + ' - ' + self.finish_message

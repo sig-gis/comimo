@@ -34,8 +34,7 @@
    :regions     (str/split (:regions project) #"__")
    :dataLayer   (:data_layer project)
    :boundary    (:boundary project)
-   :createdDate (str (:created_date project))
-   :closedDate  (str (:closed_date project))})
+   :createdDate (:created_date project)})
 
 (defn- single-project-by-id [project-id]
   (build-project (first (call-sql "select_project_by_id" project-id))))
@@ -45,8 +44,7 @@
        (map build-project)))
 
 (defn get-project-by-id [{:keys [params]}]
-  (let [user-id    (:userId params -1)
-        project-id (tc/val->int (:projectId params))]
+  (let [project-id (tc/val->int (:projectId params))]
     (data-response (single-project-by-id project-id))))
 
 (defn user-projects [{:keys [params]}]
@@ -57,14 +55,10 @@
 ;;; Create project
 ;;;
 
-(defn create-project! [{:keys [params]}]
-  (let [user-id    (:userId params -1)
-        name       (:name params)
-        regions    (:regions params)
-        data-layer (:dataLayer params)
-        project-id (sql-primitive (call-sql "create_project"
+(defn create-project! [user-id proj-name regions data-layer]
+  (let [project-id (sql-primitive (call-sql "create_project"
                                             user-id
-                                            name
+                                            proj-name
                                             (str/join "__" regions)
                                             data-layer))]
     (try
@@ -83,7 +77,8 @@
                           "SQL Error: cannot create a project AOI.")
 
       ;; Return new ID and token
-      (data-response {:projectId project-id})
+      {:action "Created"}
+
       (catch Exception e
         ;; Delete new project on error
         (try
@@ -93,9 +88,17 @@
           ;; Log unknown errors
           (when-not causes (log (ex-message e)))
           ;; Return error stack to user
-          (data-response (if causes
-                           (str "-" (str/join "\n-" causes))
-                           "Unknown server error.")))))))
+          {:action "Error"
+           :message (if causes
+                      (str "-" (str/join "\n-" causes))
+                      "Unknown server error.")})))))
+
+(defn create-project [{:keys [params]}]
+  (let [user-id    (:userId params -1)
+        proj-name  (:name params)
+        regions    (:regions params)
+        data-layer (:dataLayer params)]
+    (data-response (create-project! user-id proj-name regions data-layer))))
 
 ;;;
 ;;; Update project
