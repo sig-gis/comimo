@@ -1,42 +1,35 @@
 (ns comimo.server
-  (:require [clojure.java.io     :as io]
-            [clojure.string      :as str]
-            [clojure.core.server :refer [start-server]]
-            [ring.adapter.jetty :refer [run-jetty]]
-            [triangulum.cli     :refer [get-cli-options]]
-            [triangulum.config  :refer [get-config]]
-            [triangulum.notify  :as notify]
-            [triangulum.logging :refer [log-str set-log-path!]]
-            [triangulum.sockets :refer [send-to-server! socket-open?]]
-            [comimo.handler :refer [create-handler-stack]]))
+  (:require [clojure.java.io         :as io]
+            [clojure.core.server     :refer [start-server]]
+            [ring.adapter.jetty      :refer [run-jetty]]
+            [triangulum.cli          :refer [get-cli-options]]
+            [triangulum.config       :refer [get-config]]
+            [triangulum.notify       :refer [available? ready!]]
+            [triangulum.logging      :refer [log-str set-log-path!]]
+            [triangulum.sockets      :refer [send-to-server! socket-open?]]
+            [triangulum.database     :refer [call-sql]]
+            [comimo.handler          :refer [create-handler-stack]]
+            [comimo.db.subscriptions :refer [send-email-alerts]]))
 
-(defonce ^:private server           (atom nil))
-(defonce ^:private repl-server      (atom nil))
-(defonce ^:private clean-up-service (atom nil))
+(defonce ^:private server             (atom nil))
+(defonce ^:private repl-server        (atom nil))
+(defonce ^:private scheduling-service (atom nil))
 
-(def ^:private expires-in "1 hour in msecs" (* 1000 60 60))
-(def ^:private keystore-scan-interval 60) ; seconds
+(def ^:private expires-in "1 day in msecs" (* 1000 60 60 24))
+(def ^:private ks-scan-interval 60) ; seconds
 
-(defn- expired? [last-mod-time]
-  (> (- (System/currentTimeMillis) last-mod-time) expires-in))
+(defn- scheduled-jobs []
+  (log-str "Closing old projects")
+  (call-sql "close_old_projects" 30)
+  (log-str "Checking for alerts")
+  (send-email-alerts))
 
-(defn- delete-tmp []
-  (log-str "Removing temp files.")
-  (let [tmp-dir (System/getProperty "java.io.tmpdir")
-        dirs    (filter #(and (.isDirectory %)
-                              (str/includes? % "ceo-tmp")
-                              (expired? (.lastModified %)))
-                        (.listFiles (io/file tmp-dir)))]
-    (doseq [d    dirs
-            file (reverse (file-seq d))]
-      (io/delete-file file))))
-
-(defn- start-clean-up-service! []
-  (log-str "Starting temp file removal service.")
+(defn- start-scheduling-service! []
+  (log-str "Starting scheduling service.")
   (future
     (while true
       (Thread/sleep expires-in)
-      (try (delete-tmp)
+      (try (scheduled-jobs)
            (catch Exception _)))))
 
 (def ^:private cli-options
@@ -66,12 +59,12 @@
                     {:port  http-port
                      :join? false}
                     (when ssl?
-                      {:ssl?                   true
-                       :ssl-port               https-port
-                       :keystore               "./.key/keystore.pkcs12"
-                       :keystore-type          "pkcs12"
-                       :keystore-scan-interval keystore-scan-interval
-                       :key-password           "foobar"}))]
+                      {:ssl?             true
+                       :ssl-port         https-port
+                       :keystore         "./.key/keystore.pkcs12"
+                       :keystore-type    "pkcs12"
+                       :ks-scan-interval ks-scan-interval
+                       :key-password     "foobar"}))]
     (if (and (not has-key?) https-port)
       (println "ERROR:\n"
                "  An SSL key is required if an HTTPS port is specified.\n"
@@ -81,16 +74,15 @@
           (println "Starting REPL server on port 5555")
           (reset! repl-server (start-server {:name :ceo-repl :port 5555 :accept 'clojure.core.server/repl})))
         (reset! server (run-jetty handler config))
-        (reset! clean-up-service (start-clean-up-service!))
+        (reset! scheduling-service (start-scheduling-service!))
         (set-log-path! log-dir)
-        (when (notify/available?)
-          (notify/ready!))))))
+        (when (available?) (ready!))))))
 
 (defn stop-server! []
   (set-log-path! "")
-  (when @clean-up-service
-    (future-cancel @clean-up-service)
-    (reset! clean-up-service nil))
+  (when @scheduling-service
+    (future-cancel @scheduling-service)
+    (reset! scheduling-service nil))
   (when @server
     (.stop @server)
     (reset! server nil)

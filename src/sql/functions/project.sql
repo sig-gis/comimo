@@ -136,3 +136,17 @@ CREATE OR REPLACE FUNCTION dump_project_plot_data(_project_id integer)
         ON project_uid = pl.project_rid
 
 $$ LANGUAGE SQL;
+
+--
+--  MAINTENANCE FUNCTIONS
+--
+
+CREATE OR REPLACE FUNCTION close_old_projects(_days integer = 30)
+ RETURNS void AS $$
+
+    UPDATE projects
+    SET status = 'closed',
+        closed_date = now()
+    WHERE EXTRACT(days FROM now() - created_date) > _days
+
+$$ LANGUAGE SQL;

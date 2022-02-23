@@ -21,19 +21,3 @@ def insertCollectedData(profile, data, project):
         print(e)
         logging.getLogger("error").error(traceback.format_exc())
         return 'Error'
-
-
-def saveCron(jobType, message, regions='', email=''):
-    try:
-        cron_jobs_instance = CronJobs()
-        cron_jobs_instance.job_date = datetime.now().replace(tzinfo=pytz.UTC)
-        cron_jobs_instance.job_type = jobType
-        cron_jobs_instance.finish_message = message
-        cron_jobs_instance.regions = regions
-        cron_jobs_instance.email = email
-        cron_jobs_instance.save()
-        return 'Created'
-    except Exception as e:
-        print(e)
-        logging.getLogger("error").error(traceback.format_exc())
-        return 'Error'

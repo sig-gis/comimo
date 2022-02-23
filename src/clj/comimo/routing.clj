@@ -64,7 +64,7 @@
    [:post "/close-project"]                  {:handler     projects/close-project!
                                               :auth-type   :user
                                               :auth-action :block}
-   [:post "/create-project"]                 {:handler     projects/create-project!
+   [:post "/create-project"]                 {:handler     projects/create-project
                                               :auth-type   :user
                                               :auth-action :block}
    [:post "/get-project-by-id"]              {:handler     projects/get-project-by-id}
