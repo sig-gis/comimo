@@ -1,6 +1,5 @@
 import os
 import ee
-from ee.ee_exception import EEException
 from config import IMAGE_REPO, LEVELS, FIELDS, POINTS_FOL
 
 

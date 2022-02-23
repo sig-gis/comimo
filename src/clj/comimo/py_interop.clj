@@ -4,9 +4,10 @@
             [libpython-clj2.python  :refer [py. get-attr ->jvm]]
             [libpython-clj2.python.copy :refer [*item-tuple-cutoff*]]
             [triangulum.type-conversion :as tc]
-            [triangulum.logging :refer [log]]
+            [triangulum.logging :refer [log-str]]
             [triangulum.config :refer [get-config]]
-            [comimo.views :refer [data-response]]))
+            [comimo.views :refer [data-response]]
+            [triangulum.database :refer [call-sql]]))
 
 ;;; Constants
 
@@ -16,7 +17,7 @@
 
 (require-python '[sys :bind-ns])
 (py. (get-attr sys "path") "append" "src/py")
-(require-python '[gee.routes :as gee]
+(require-python '[gee.routes :as routes]
                 '[gee.utils :as utils])
 
 (defonce last-initialized (atom 0))
@@ -42,7 +43,10 @@
   (check-initialized)
   (binding [*item-tuple-cutoff* 0]
     (try (->jvm (apply py-fn params))
-         (catch Exception e (log (parse-py-errors e))))))
+         (catch Exception e
+           (let [parsed (parse-py-errors e)]
+             (log-str parsed)
+             parsed)))))
 
 ;;; Utils
 
@@ -51,3 +55,35 @@
 
 (defn location-in-country [lat lon]
   (py-wrapper utils/locationInCountry lat lon))
+
+;;; Routes
+
+(defn get-image-names [_]
+  (data-response (py-wrapper routes/getImageNames)))
+
+(defn get-single-image [{:keys [json-params]}]
+  (data-response (py-wrapper routes/getSingleImage json-params)))
+
+(defn get-gee-tiles [{:keys [json-params]}]
+  (data-response (py-wrapper routes/getGEETiles json-params)))
+
+(defn get-download-url [{:keys [json-params]}]
+  (data-response (py-wrapper routes/getDownloadURL json-params)))
+
+(defn- get-subscribed-regions [user-id]
+  (->> (call-sql "get_user_subscriptions" user-id)
+       (map :region)))
+
+(defn get-area-predicted [{:keys [params json-params]}]
+  (let [user-id (tc/val->int (:userId params))]
+    (data-response (py-wrapper routes/getAreaPredicted
+                               (assoc json-params
+                                      "subscribedRegions" (get-subscribed-regions user-id))))))
+
+(defn get-area-ts [{:keys [params json-params]}]
+  (let [user-id (tc/val->int (:userId params))]
+    (data-response (py-wrapper routes/getAreaPredictedTS
+                               (get-subscribed-regions user-id)))))
+
+(defn get-info [{:keys [json-params]}]
+  (data-response (py-wrapper routes/getInfo json-params)))

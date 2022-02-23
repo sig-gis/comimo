@@ -7,7 +7,7 @@ export default class DownloadPanel extends React.Component {
     super(props);
 
     this.URL = {
-      GETDL: "/api/getdownloadurl"
+      GETDL: "get-download-url"
     };
 
     this.state = {
@@ -23,8 +23,20 @@ export default class DownloadPanel extends React.Component {
     const {clipOption, mineType} = this.state;
     this.setState({fetching: true});
 
-    const [level, region] = clipOption === 1 ? ["", "all"] : selectedRegion;
-    fetch(this.URL.GETDL + "?region=" + region + "&level=" + level + "&dataLayer=" + selectedDates[mineType])
+    const [level, region] = clipOption === 1 ? ["", "all"] : selectedRegion.split("_", 1);
+    fetch(this.URL.GETDL,
+          {
+            method: "POST",
+            headers: {
+              Accept: "application/json",
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+              level,
+              region,
+              dataLayer: selectedDates[mineType]
+            })
+          })
       .then(res => res.json())
       .then(res => {
         if (res.action === "success") {
@@ -91,8 +103,8 @@ export default class DownloadPanel extends React.Component {
               <span>
                 <a href={downloadURL[3]}>
                   {`${download.clickHere}`
-                                    + ` ${downloadURL[0] === "all" ? download.completeData : download.munData + downloadURL[0]} `
-                                    + `${download.prep} ${ downloadURL[2]}.`}
+                    + ` ${downloadURL[0] === "all" ? download.completeData : download.munData + downloadURL[0]} `
+                    + `${download.prep} ${ downloadURL[2]}.`}
                 </a>
               </span>
             </p>
