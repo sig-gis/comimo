@@ -95,6 +95,8 @@ class HomeContents extends React.Component {
 
   setMap = theMap => this.setState({theMap});
 
+  setLatLon = latLon => this.setState({selectedLatLon: latLon});
+
   /// API Calls ///
 
   getImageDates = () => sendRequest(this.URLS.IMG_DATES)
@@ -121,6 +123,7 @@ class HomeContents extends React.Component {
           reportPopup={this.state.visiblePanel === "report"}
           selectDates={this.selectDates}
           selectedDates={this.state.selectedDates}
+          setLatLon={this.setLatLon}
           setMap={this.setMap}
           theMap={this.state.theMap}
         />

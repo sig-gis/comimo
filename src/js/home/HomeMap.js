@@ -135,7 +135,7 @@ export default class HomeMap extends React.Component {
 
   addPopup = (lat, lon) => {
     const {thePopup} = this.state;
-    const {theMap, selectedDates, reportPopup} = this.props;
+    const {theMap, selectedDates, reportPopup, setLatLon} = this.props;
     const {localeText: {home}, localeText} = this.context;
 
     // Remove old popup
@@ -148,8 +148,7 @@ export default class HomeMap extends React.Component {
       .addTo(theMap);
     this.setState({thePopup: popup});
     if (reportPopup) {
-      // FIXME use props
-      this.setState({selectedLatLon: [lat, lon]});
+      setLatLon([lat, lon]);
       ReactDOM.render(
         <ReportPopupContent
           lat={lat}
