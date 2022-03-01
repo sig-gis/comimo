@@ -60,12 +60,12 @@ export default class ReportMinesPanel extends React.Component {
 
   render() {
     const {latLonText, reportingMine, reportedLatLon} = this.state;
-    const {isHidden, selectedLatLon} = this.props;
+    const {isVisible, selectedLatLon} = this.props;
     const {localeText: {report}} = this.context;
 
     const reported = reportedLatLon === selectedLatLon;
     return (
-      <div className={"popup-container search-panel " + (isHidden ? "see-through" : "")}>
+      <div className={"popup-container search-panel " + (isVisible ? "" : "see-through")}>
         <h3>{report.title}</h3>
         {report.subTitle}
         <label>{report.coordLabel}</label>

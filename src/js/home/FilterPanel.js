@@ -13,7 +13,7 @@ export default class FilterPanel extends React.Component {
   componentDidUpdate(prevProps, prevState) {
     if ((prevProps.isHidden && !this.props.isHidden)
         || (!prevProps.imageDates.pMines && this.props.imageDates.pMines)) {
-      this.setState({newSelectedDates: this.context.selectedDates});
+      this.setState({newSelectedDates: this.props.selectedDates});
     }
   }
 
@@ -22,11 +22,11 @@ export default class FilterPanel extends React.Component {
   };
 
   render() {
-    const {isHidden, selectDates, imageDates: {nMines, pMines, cMines}} = this.props;
+    const {isVisible, selectDates, imageDates: {nMines, pMines, cMines}} = this.props;
     const {newSelectedDates} = this.state;
     const {localeText: {filter, layers}} = this.context;
     return (
-      <div className={"popup-container filter-panel " + (isHidden ? "see-through" : "")}>
+      <div className={"popup-container filter-panel " + (isVisible ? "" : "see-through")}>
         <h3>{filter.title.toUpperCase()}</h3>
         <span htmlFor="select-image-date">{filter.selectLabel}:</span>
         <div style={{display: "flex", flexDirection: "column"}}>

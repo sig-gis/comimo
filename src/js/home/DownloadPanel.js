@@ -20,7 +20,7 @@ export default class DownloadPanel extends React.Component {
   }
 
   getDownloadUrl = () => {
-    const {selectedRegion, selectedDates} = this.context;
+    const {selectedRegion, selectedDates} = this.props;
     const {clipOption, mineType} = this.state;
     this.setState({fetching: true});
 
@@ -38,11 +38,12 @@ export default class DownloadPanel extends React.Component {
   };
 
   render() {
-    const {isHidden} = this.props;
+    const {isVisible} = this.props;
     const {clipOption, fetching, downloadURL, mineType} = this.state;
-    const {selectedRegion, selectedDates, localeText: {download, validate}} = this.context;
+    const {selectedRegion, selectedDates} = this.props;
+    const {localeText: {download, validate}} = this.context;
     return (
-      <div className={"popup-container download-panel " + (isHidden ? "see-through" : "")}>
+      <div className={"popup-container download-panel " + (isVisible ? "" : "see-through")}>
         <h3>{download.title.toUpperCase()}</h3>
         <label>{`${validate.typeLabel}:`}</label>
         <select

@@ -16,8 +16,8 @@
    [:get  "/user-account"]        {:handler     (render-page "/user-account")
                                    :auth-type   :user
                                    :auth-action :redirect}
-   [:get  "/collection"]          {:handler     (render-page "/collection")
-                                   :auth-type   :collect
+   [:get  "/collect"]             {:handler     (render-page "/collect")
+                                   :auth-type   :none
                                    :auth-action :redirect}
    [:get  "/home"]                {:handler     (render-page "/home")}
    [:get  "/login"]               {:handler     (render-page "/login")}

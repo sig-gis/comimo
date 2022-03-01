@@ -5,11 +5,11 @@ import SvgIcon from "../components/SvgIcon";
 
 export default class AppInfo extends React.Component {
   render() {
-    const {isHidden, onOuterClick} = this.props;
+    const {onOuterClick} = this.props;
     const {isAdmin, localeText: {appInfo}} = this.context;
     return (
       <div
-        className={"info-modal " + (isHidden ? "see-through" : "")}
+        className="info-modal"
         onClick={onOuterClick}
       >
         <div

@@ -51,7 +51,8 @@ export default class ValidatePanel extends React.Component {
 
   createProject = dataLayer => {
     const {customRegions, projectName, projects, regionType} = this.state;
-    const {subscribedList, localeText: {validate}} = this.context;
+    const {subscribedList} = this.props;
+    const {localeText: {validate}} = this.context;
 
     this.setState({creatingProject: true, errorMsg: false});
     const selectedArr = regionType === 1 ? subscribedList : customRegions.map(x => "mun_" + x);
@@ -121,7 +122,7 @@ export default class ValidatePanel extends React.Component {
               <ul>
                 {regions
                   .map(x => x.split("_"))
-                  .map(x => <li>{`${x[2]}, ${x[1]}`}</li>)}
+                  .map(x => <li key={x}>{`${x[2]}, ${x[1]}`}</li>)}
               </ul>
             </small>
           </div>
@@ -153,7 +154,8 @@ export default class ValidatePanel extends React.Component {
 
   renderCustomRegions = () => {
     const {customRegions} = this.state;
-    const {featureNames, localeText: {validate}} = this.context;
+    const {featureNames} = this.props;
+    const {localeText: {validate}} = this.context;
     const states = Object.keys(featureNames).sort();
     return states.length === 0
       ? <option key="0" disabled>{`${validate.loading}...`}</option>
@@ -187,11 +189,11 @@ export default class ValidatePanel extends React.Component {
   };
 
   render() {
-    const {isHidden} = this.props;
     const {projects, projectName, regionType, creatingProject, errorMsg, mineType} = this.state;
-    const {selectedDates, username, localeText: {validate}} = this.context;
+    const {selectedDates, isVisible} = this.props;
+    const {username, localeText: {validate}} = this.context;
     return (
-      <div className={"popup-container validate-panel " + (isHidden ? "see-through" : "")}>
+      <div className={"popup-container validate-panel " + (isVisible ? "" : "see-through")}>
         <h3>{validate.title.toUpperCase()}</h3>
         <span>{validate.subtitle}</span>
         {username

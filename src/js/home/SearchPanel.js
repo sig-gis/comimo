@@ -23,7 +23,7 @@ export default class SearchPanel extends React.Component {
 
   searchGeocode = () => {
     const {searchText} = this.state;
-    const {featureNames} = this.context;
+    const {featureNames} = this.props;
     const url = this.URLS.GEOCODE + "?key=" + mapQuestKey + "&county=" + searchText + "&country=colombia";
     sendRequest(url, null, "GET")
       .then(result => {
@@ -55,8 +55,8 @@ export default class SearchPanel extends React.Component {
 
   render() {
     const {geoCodedSearch, selectedL1, selectedL2, searchText, latLngText} = this.state;
-    const {fitMap, selectRegion, isHidden} = this.props;
-    const {featureNames, localeText: {search}} = this.context;
+    const {featureNames, fitMap, selectRegion, isVisible} = this.props;
+    const {localeText: {search}} = this.context;
 
     const geoSearchResults = geoCodedSearch && geoCodedSearch.length === 0
       ? <label>{search.noResults}</label>
@@ -126,7 +126,7 @@ export default class SearchPanel extends React.Component {
       ) : "";
 
     return (
-      <div className={"popup-container search-panel " + (isHidden ? "see-through" : "")}>
+      <div className={"popup-container search-panel " + (isVisible ? "" : "see-through")}>
         <h3>{search.title}</h3>
         <label>{search.internetLabel}</label>
         <div className="d-flex">

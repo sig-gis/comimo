@@ -136,11 +136,11 @@ export default class StatsPanel extends React.Component {
 
   render() {
     const {chartsLoaded} = this.state;
-    const {isHidden} = this.props;
+    const {isVisible} = this.props;
     const {localeText: {stats}} = this.context;
     return (
       <div
-        className={"popup-container stat-panel " + (isHidden ? "see-through" : "")}
+        className={"popup-container stat-panel " + (isVisible ? "" : "see-through")}
       >
         <div>
           <h3>{stats.regionTitle}</h3>

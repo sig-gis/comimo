@@ -118,11 +118,11 @@ export default class SubscribePanel extends React.Component {
 
   render() {
     const {subsLoaded} = this.state;
-    const {isHidden} = this.props;
-    const {selectedRegion, subscribedList, username, localeText: {subscribe}} = this.context;
+    const {selectedRegion, subscribedList, isVisible} = this.props;
+    const {username, localeText: {subscribe}} = this.context;
     const parsedRegion = selectedRegion && selectedRegion.split("_");
     return (
-      <div className={"popup-container subs-panel " + (isHidden ? "see-through" : "")}>
+      <div className={"popup-container subs-panel " + (isVisible ? "" : "see-through")}>
         <h3>{subscribe.title.toUpperCase()}</h3>
         {username ? (
           <div>
