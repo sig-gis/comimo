@@ -4,20 +4,13 @@
 --
 -- ROUTE AUTHENTICATION FUNCTIONS
 --
-
--- Check if user has collection rights (read rights) for the project
-CREATE OR REPLACE FUNCTION can_user_collect_project(_user_id integer, _project_id integer)
+CREATE OR REPLACE FUNCTION is_user_admin(_user_id integer)
  RETURNS boolean AS $$
 
-    SELECT true
-
-$$ LANGUAGE SQL;
-
--- Check if user has modify rights for the project
-CREATE OR REPLACE FUNCTION can_user_edit_project(_user_id integer, _project_id integer)
- RETURNS boolean AS $$
-
-    SELECT true
+    SELECT count(1) > 1
+    FROM users
+    WHERE user_uid = _user_id
+        AND role = 'admin'
 
 $$ LANGUAGE SQL;
 

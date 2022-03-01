@@ -9,6 +9,9 @@
             [comimo.utils.mail          :refer [send-mail get-base-url]]
             [comimo.views               :refer [data-response]]))
 
+(defn is-admin? [user-id]
+  (sql-primitive (call-sql "is_user_admin" {:log? false} user-id)))
+
 (defn- get-login-errors [user]
   (cond (nil? user)
         "Invalid email/password combination."

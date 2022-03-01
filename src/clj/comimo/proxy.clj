@@ -2,7 +2,8 @@
   (:require [clojure.string  :as str]
             [clj-http.client :as client]
             [triangulum.type-conversion :as tc]
-            [triangulum.utils           :as u]
-            [comimo.db.imagery :refer [get-imagery-source-config]]))
+            [triangulum.utils           :as u]))
 
-(defn get-nicfi-dates [_])
+(defn get-nicfi-dates [{:keys [params]}])
+
+(defn get-nicfi-tiles [{:keys [params]}])
