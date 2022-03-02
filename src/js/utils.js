@@ -14,7 +14,7 @@ export function validatePassword(password) {
         || password.length >= 16;
 }
 
-export function sendRequest(url, jsonBody = {}, method = "POST") {
+export function jsonRequest(url, jsonBody = {}, method = "POST") {
   return fetch(url,
                {
                  method,

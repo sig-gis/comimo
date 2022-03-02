@@ -1,6 +1,6 @@
 import React from "react";
-import {MainContext} from "../../home/context";
-import {getLanguage, sendRequest} from "../../utils";
+import {MainContext} from "../../home/constants";
+import {getLanguage, jsonRequest} from "../../utils";
 import {Header} from "./Header";
 
 export default class PageLayout extends React.Component {
@@ -37,7 +37,7 @@ export default class PageLayout extends React.Component {
 
   /// API Calls ///
 
-  getLocalText = lang => sendRequest(`/locale/${lang}.json`, {}, "GET")
+  getLocalText = lang => jsonRequest(`/locale/${lang}.json`, {}, "GET")
     .then(data => this.setState({localeText: data}));
 
   render() {

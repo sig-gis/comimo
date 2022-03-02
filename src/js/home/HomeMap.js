@@ -3,40 +3,17 @@ import ReactDOM from "react-dom";
 import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 
-import {toPrecision, sendRequest} from "../utils";
+import {toPrecision, jsonRequest} from "../utils";
 import {mapboxToken} from "../appConfig";
 import InfoPopupContent from "./InfoPopupContent";
 import ReportPopupContent from "./ReportPopupContent";
-import {MainContext} from "./context";
+import {MainContext, URLS, availableLayers, startVisible} from "./constants";
 
 export default class HomeMap extends React.Component {
   // set up class flags so each component update doesn't do redundant JS tasks
   constructor(props) {
     super(props);
 
-    // API URLS
-    this.URLS = {
-      FEATURE_NAMES: "get-feature-names",
-      IMG_DATES: "get-image-names",
-      SINGLE_IMAGE: "get-single-image",
-      GEE_LAYER: "get-gee-tiles"
-    };
-    // Layers available
-    this.availableLayers = [
-      "cMines",
-      "nMines",
-      "pMines",
-      "municipalBounds",
-      "legalMines",
-      "otherAuthorizations",
-      "tierrasDeCom",
-      "resguardos",
-      "protectedAreas"
-    ];
-    this.startVisible = [
-      "cMines"
-    ];
-    // combining everything to app state
     this.state = {
       thePopup: null
     };
@@ -54,8 +31,7 @@ export default class HomeMap extends React.Component {
     }
 
     if (this.state.thePopup && prevProps.reportHidden !== this.props.reportHidden) {
-      // FIXME Use props
-      this.setState({selectedLatLon: null});
+      this.props.setLatLon(null);
       this.state.thePopup.remove();
     }
   }
@@ -73,7 +49,7 @@ export default class HomeMap extends React.Component {
       style.sources[layer].tiles = [url];
       style.layers[layerIdx] = {
         ...thisLayer,
-        layout: {visibility: firstTime && this.startVisible.includes(layer) ? "visible" : visibility}
+        layout: {visibility: firstTime && startVisible.includes(layer) ? "visible" : visibility}
       };
       theMap.setStyle(style);
     } else {
@@ -83,7 +59,7 @@ export default class HomeMap extends React.Component {
 
   getGEELayers = list => {
     list.forEach(layer =>
-      sendRequest(this.URLS.GEE_LAYER, {name: layer})
+      jsonRequest(URLS.GEE_LAYER, {name: layer})
         .then(url => this.setLayerUrl(layer, url, true))
         .catch(error => console.error(error)));
   };
@@ -92,7 +68,7 @@ export default class HomeMap extends React.Component {
     const eeLayers = ["nMines", "pMines", "cMines"];
     const {selectedDates} = this.props;
     eeLayers.forEach(eeLayer => {
-      sendRequest(this.URLS.SINGLE_IMAGE, {id: selectedDates[eeLayer], type: eeLayer})
+      jsonRequest(URLS.SINGLE_IMAGE, {id: selectedDates[eeLayer], type: eeLayer})
         .then(url => this.setLayerUrl(eeLayer, url, firstTime))
         .catch(error => console.error(error));
     });
@@ -114,8 +90,8 @@ export default class HomeMap extends React.Component {
       theMap.addControl(new mapboxgl.NavigationControl({showCompass: false}));
 
       // This is not safe, updateEELayer could be called before the options are returned
-      this.addLayerSources([...this.availableLayers].reverse());
-      this.getGEELayers(this.availableLayers.slice(3));
+      this.addLayerSources([...availableLayers].reverse());
+      this.getGEELayers(availableLayers.slice(3));
       this.updateEELayers(true);
 
       theMap.on("mousemove", e => {
@@ -157,7 +133,7 @@ export default class HomeMap extends React.Component {
         />, document.getElementById(divId)
       );
     } else {
-      const visibleLayers = this.availableLayers.map(l => this.isLayerVisible(l) && l).filter(l => l);
+      const visibleLayers = availableLayers.map(l => this.isLayerVisible(l) && l).filter(l => l);
       ReactDOM.render(
         <InfoPopupContent
           lat={lat}

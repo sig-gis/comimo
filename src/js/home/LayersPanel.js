@@ -1,5 +1,5 @@
 import React from "react";
-import {MainContext} from "./context";
+import {MainContext, startVisible, availableLayers} from "./constants";
 
 export default class LayersPanel extends React.Component {
   constructor(props) {
@@ -12,7 +12,6 @@ export default class LayersPanel extends React.Component {
   }
 
   componentDidMount() {
-    const {startVisible, availableLayers} = this.props;
     this.setState({
       visible: availableLayers.reduce((acc, cur) => ({...acc, [cur]: startVisible.includes(cur) || false}), {}),
       opacity: availableLayers.reduce((acc, cur) => ({...acc, [cur]: 100}), {})
@@ -65,11 +64,11 @@ export default class LayersPanel extends React.Component {
 
   render() {
     const {opacity, visible} = this.state;
-    const {availableLayers, isVisible} = this.props;
+    const {isVisible} = this.props;
     const {localeText: {layers}} = this.context;
     return (
       <div
-        className={"layer-container overflow-scroll " + (isVisible ? "" : "see-through")}
+        className={"popup-container layer-panel overflow-scroll " + (isVisible ? "" : "see-through")}
         style={{overflow: "auto"}}
       >
         <h3>{layers.title.toUpperCase()}</h3>

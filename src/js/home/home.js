@@ -11,38 +11,16 @@ import SubscribePanel from "./SubscribePanel";
 import ReportMinesPanel from "./ReportMinesPanel";
 import ValidatePanel from "./ValidatePanel";
 
-import {sendRequest} from "../utils";
+import {jsonRequest} from "../utils";
 import PageLayout from "../components/pageLayout/PageLayout";
 import HomeMap from "./HomeMap";
-import {MainContext} from "./context";
+import {MainContext, URLS} from "./constants";
 
 class HomeContents extends React.Component {
   // set up class flags so each component update doesn't do redundant JS tasks
   constructor(props) {
     super(props);
 
-    // API URLS
-    this.URLS = {
-      FEATURE_NAMES: "get-feature-names",
-      IMG_DATES: "get-image-names",
-      SINGLE_IMAGE: "get-single-image",
-      GEE_LAYER: "get-gee-tiles"
-    };
-    // Layers available
-    this.availableLayers = [
-      "cMines",
-      "nMines",
-      "pMines",
-      "municipalBounds",
-      "legalMines",
-      "otherAuthorizations",
-      "tierrasDeCom",
-      "resguardos",
-      "protectedAreas"
-    ];
-    this.startVisible = [
-      "cMines"
-    ];
     // combining everything to app state
     this.state = {
       visiblePanel: null,
@@ -99,7 +77,7 @@ class HomeContents extends React.Component {
 
   /// API Calls ///
 
-  getImageDates = () => sendRequest(this.URLS.IMG_DATES)
+  getImageDates = () => jsonRequest(URLS.IMG_DATES)
     .then(result => {
       const initialDates = Object.keys(result).reduce((acc, cur) =>
         ({...acc, [cur]: result[cur][0]}), {});
@@ -109,7 +87,7 @@ class HomeContents extends React.Component {
       });
     });
 
-  getFeatureNames = () => sendRequest(this.URLS.FEATURE_NAMES)
+  getFeatureNames = () => jsonRequest(URLS.FEATURE_NAMES)
     .then(features => { this.setState({featureNames: features}); });
 
   render() {
@@ -128,150 +106,142 @@ class HomeContents extends React.Component {
           theMap={this.state.theMap}
         />
         {home && (
-          <>
+          <div className="sidebar" style={{top: "3.5rem", height: "calc(100% - 3.5rem)"}}>
             {/* Layers */}
-            {this.state.theMap && (
-              <div className="circle layer-group">
-                <LayersPanel
-                  availableLayers={this.availableLayers}
-                  isVisible={this.state.visiblePanel === "layers"}
-                  startVisible={this.startVisible}
-                  theMap={this.state.theMap}
-                />
-                <SideIcon
-                  active={this.state.visiblePanel === "layers"}
-                  clickHandler={() => this.togglePanel("layers")}
-                  icon="layer"
-                  tooltip={home.layersTooltip}
-                />
-              </div>
+            <LayersPanel
+              isVisible={this.state.visiblePanel === "layers"}
+              theMap={this.state.theMap}
+            />
+            <SideIcon
+              active={this.state.visiblePanel === "layers"}
+              clickHandler={() => this.togglePanel("layers")}
+              icon="layer"
+              tooltip={home.layersTooltip}
+            />
+
+            {/* Subscribe */}
+            <SideIcon
+              active={this.state.visiblePanel === "subscribe"}
+              clickHandler={() => this.togglePanel("subscribe")}
+              icon="envelope"
+              tooltip={home.subscribeTooltip}
+            />
+            <SubscribePanel
+              isVisible={this.state.visiblePanel === "subscribe"}
+              selectedRegion={this.state.selectedRegion}
+              subscribedList={this.state.subscribedList}
+              updateSubList={this.updateSubList}
+            />
+
+            {/* Validation */}
+            <SideIcon
+              active={this.state.visiblePanel === "validate"}
+              clickHandler={() => this.togglePanel("validate")}
+              icon="check"
+              tooltip={home.validateTooltip}
+            />
+            <ValidatePanel
+              featureNames={this.state.featureNames}
+              isVisible={this.state.visiblePanel === "validate"}
+              selectedDates={this.state.selectedDates}
+              subscribedList={this.state.subscribedList}
+            />
+
+            {/* Geo location Search */}
+            <SideIcon
+              active={this.state.visiblePanel === "search"}
+              clickHandler={() => this.togglePanel("search")}
+              icon="search"
+              tooltip={home.searchTooltip}
+            />
+            <SearchPanel
+              featureNames={this.state.featureNames}
+              fitMap={this.fitMap}
+              isVisible={this.state.visiblePanel === "search"}
+              selectedDates={this.state.selectedDates}
+              selectRegion={this.selectRegion}
+            />
+
+            {/* Advanced Button */}
+            {username && (
+              <SideIcon
+                clickHandler={() => {
+                  this.setState(
+                    this.state.advancedOptions
+                      ? {advancedOptions: false, ...this.advancedPanelState}
+                      : {advancedOptions: true}
+                  );
+                }}
+                icon={this.state.advancedOptions ? "minus" : "plus"}
+                subtext={home.advancedTooltip}
+                tooltip={home.advancedTooltip}
+              />
             )}
-
-            <div className="sidebar" style={{top: "3.5rem", height: "calc(100% - 3.5rem)"}}>
-              {/* Subscribe */}
-              <SideIcon
-                active={this.state.visiblePanel === "subscribe"}
-                clickHandler={() => this.togglePanel("subscribe")}
-                icon="envelope"
-                tooltip={home.subscribeTooltip}
-              />
-              <SubscribePanel
-                isVisible={this.state.visiblePanel === "subscribe"}
-                selectedRegion={this.state.selectedRegion}
-                subscribedList={this.state.subscribedList}
-                updateSubList={this.updateSubList}
-              />
-
-              {/* Validation */}
-              <SideIcon
-                active={this.state.visiblePanel === "validate"}
-                clickHandler={() => this.togglePanel("validate")}
-                icon="check"
-                tooltip={home.validateTooltip}
-              />
-              <ValidatePanel
-                featureNames={this.state.featureNames}
-                isVisible={this.state.visiblePanel === "validate"}
-                selectedDates={this.state.selectedDates}
-                subscribedList={this.state.subscribedList}
-              />
-
-              {/* Geo location Search */}
-              <SideIcon
-                active={this.state.visiblePanel === "search"}
-                clickHandler={() => this.togglePanel("search")}
-                icon="search"
-                tooltip={home.searchTooltip}
-              />
-              <SearchPanel
-                featureNames={this.state.featureNames}
-                fitMap={this.fitMap}
-                isVisible={this.state.visiblePanel === "search"}
-                selectedDates={this.state.selectedDates}
-                selectRegion={this.selectRegion}
-              />
-
-              {/* Advanced Button */}
-              {username && (
+            {this.state.advancedOptions && (
+              <>
+                {/* Stats graphs */}
                 <SideIcon
-                  clickHandler={() => {
-                    this.setState(
-                      this.state.advancedOptions
-                        ? {advancedOptions: false, ...this.advancedPanelState}
-                        : {advancedOptions: true}
-                    );
-                  }}
-                  icon={this.state.advancedOptions ? "minus" : "plus"}
-                  subtext={home.advancedTooltip}
-                  tooltip={home.advancedTooltip}
+                  active={this.state.visiblePanel === "stats"}
+                  clickHandler={() => this.togglePanel("stats")}
+                  icon="stats"
+                  tooltip={home.statsTooltip}
                 />
-              )}
-              {this.state.advancedOptions && (
-                <>
-                  {/* Stats graphs */}
-                  <SideIcon
-                    active={this.state.visiblePanel === "stats"}
-                    clickHandler={() => this.togglePanel("stats")}
-                    icon="stats"
-                    tooltip={home.statsTooltip}
-                  />
-                  <StatsPanel
-                    isVisible={this.state.visiblePanel === "stats"}
-                    selectedDate={this.state.selectedDates.cMines}
-                    subscribedList={this.state.subscribedList}
-                  />
+                <StatsPanel
+                  isVisible={this.state.visiblePanel === "stats"}
+                  selectedDate={this.state.selectedDates.cMines}
+                  subscribedList={this.state.subscribedList}
+                />
 
-                  {/* Date filter */}
-                  <SideIcon
-                    active={this.state.visiblePanel === "filter"}
-                    clickHandler={() => this.togglePanel("filter")}
-                    icon="filter"
-                    tooltip={home.filterTooltip}
-                  />
-                  <FilterPanel
-                    imageDates={this.state.imageDates}
-                    isVisible={this.state.visiblePanel === "filter"}
-                    selectDates={this.selectDates}
-                    selectedDates={this.state.selectedDates}
-                  />
+                {/* Date filter */}
+                <SideIcon
+                  active={this.state.visiblePanel === "filter"}
+                  clickHandler={() => this.togglePanel("filter")}
+                  icon="filter"
+                  tooltip={home.filterTooltip}
+                />
+                <FilterPanel
+                  imageDates={this.state.imageDates}
+                  isVisible={this.state.visiblePanel === "filter"}
+                  selectDates={this.selectDates}
+                  selectedDates={this.state.selectedDates}
+                />
 
-                  {/* Report mines */}
-                  <SideIcon
-                    active={this.state.visiblePanel === "report"}
-                    clickHandler={() => this.togglePanel("report")}
-                    icon="mine"
-                    tooltip={home.reportTooltip}
-                  />
-                  <ReportMinesPanel
-                    addPopup={this.addPopup}
-                    fitMap={this.fitMap}
-                    isVisible={this.state.visiblePanel === "report"}
-                    selectedLatLon={this.state.selectedLatLon}
-                    submitMine={this.submitMine}
-                  />
+                {/* Report mines */}
+                <SideIcon
+                  active={this.state.visiblePanel === "report"}
+                  clickHandler={() => this.togglePanel("report")}
+                  icon="mine"
+                  tooltip={home.reportTooltip}
+                />
+                <ReportMinesPanel
+                  addPopup={this.addPopup}
+                  fitMap={this.fitMap}
+                  isVisible={this.state.visiblePanel === "report"}
+                  selectedLatLon={this.state.selectedLatLon}
+                  submitMine={this.submitMine}
+                />
 
-                  {/* Download */}
-                  <SideIcon
-                    active={this.state.visiblePanel === "download"}
-                    clickHandler={() => this.togglePanel("download")}
-                    icon="download"
-                    tooltip={home.downloadTooltip}
-                  />
-                  <DownloadPanel
-                    isVisible={this.state.visiblePanel === "download"}
-                    selectedDates={this.state.selectedDates}
-                    selectedRegion={this.state.selectedRegion}
-                  />
-                </>
-              )}
-              <SideIcon
-                clickHandler={() => setShowInfo(true)}
-                icon="info"
-                parentClass="disclaimer"
-                tooltip={home.appInfoTooltip}
-              />
-            </div>
-          </>
+                {/* Download */}
+                <SideIcon
+                  active={this.state.visiblePanel === "download"}
+                  clickHandler={() => this.togglePanel("download")}
+                  icon="download"
+                  tooltip={home.downloadTooltip}
+                />
+                <DownloadPanel
+                  isVisible={this.state.visiblePanel === "download"}
+                  selectedDates={this.state.selectedDates}
+                  selectedRegion={this.state.selectedRegion}
+                />
+              </>
+            )}
+            <SideIcon
+              clickHandler={() => setShowInfo(true)}
+              icon="info"
+              parentClass="disclaimer"
+              tooltip={home.appInfoTooltip}
+            />
+          </div>
         )}
 
       </>

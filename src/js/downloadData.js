@@ -1,6 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import {sendRequest} from "./utils";
+import {URLS} from "./home/constants";
+import {jsonRequest} from "./utils";
 
 const buttonStyle = disabled => (disabled
   ? {
@@ -36,7 +37,7 @@ class DownloadData extends React.Component {
 
   /// API Calls ///
 
-  loadDates = () => sendRequest("get-data-dates")
+  loadDates = () => jsonRequest(URLS.DATA_DATES)
     .then(data => {
       this.setState({availableDates: data});
     })
@@ -189,7 +190,7 @@ class Predictions extends React.Component {
 
   loadDateData = dataLayer => {
     const {addCollectedData} = this.props;
-    sendRequest("/download-predictions", {dataLayer})
+    jsonRequest(URLS.PREDICTIONS, {dataLayer})
       .then(data => {
         addCollectedData(dataLayer, data);
       })
@@ -296,7 +297,7 @@ class UserMines extends React.Component {
 
   loadDateData = month => {
     const {addCollectedData} = this.props;
-    sendRequest("/download-user-mines", {month})
+    jsonRequest(URLS.USER_MINES, {month})
       .then(data => {
         addCollectedData(month, data);
       })

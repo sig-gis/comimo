@@ -1,6 +1,6 @@
 import React from "react";
 
-import {MainContext} from "./context";
+import {MainContext} from "./constants";
 
 export default function LoginMessage({actionText}) {
   return (

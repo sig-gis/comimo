@@ -1,6 +1,6 @@
 import React from "react";
 
-import {MainContext} from "./context";
+import {MainContext} from "./constants";
 
 export default class FilterPanel extends React.Component {
   constructor(props) {

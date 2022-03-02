@@ -1,19 +1,14 @@
 import React from "react";
-import {MainContext} from "./context";
 
 import LoginMessage from "./LoginMessage";
 import SvgIcon from "../components/SvgIcon";
-import {sendRequest} from "../utils";
+
+import {jsonRequest} from "../utils";
+import {MainContext, URLS} from "./constants";
 
 export default class ValidatePanel extends React.Component {
   constructor(props) {
     super(props);
-
-    this.URLS = {
-      PROJS: "user-projects",
-      CLPROJ: "close-project",
-      CRTPROJ: "create-project"
-    };
 
     this.state = {
       projects: [],
@@ -34,7 +29,7 @@ export default class ValidatePanel extends React.Component {
   }
 
   getProjects = () => {
-    sendRequest(this.URLS.PROJS)
+    jsonRequest(URLS.USER_PROJ)
       .then(res => { this.setState({projects: res || []}); })
       .catch(err => console.error(err));
   };
@@ -69,7 +64,7 @@ export default class ValidatePanel extends React.Component {
 
     if (this.checkProjectErrors(dataLayer, selectedArr, projectName, projects, regionType, validate)
           && confirm(question)) {
-      sendRequest(this.URLS.CRTPROJ, {dataLayer, name: projectName, regions: selectedArr})
+      jsonRequest(URLS.CREATE_PROJ, {dataLayer, name: projectName, regions: selectedArr})
         .then(res => {
           if (res.action !== "Error") {
             this.getProjects();
@@ -96,7 +91,7 @@ export default class ValidatePanel extends React.Component {
   closeProject = projectId => {
     const {localeText: {validate}} = this.context;
     if (confirm(validate.closeConfirm)) {
-      sendRequest(this.URLS.CLPROJ, {projectId})
+      jsonRequest(URLS.CLOSE_PROJ, {projectId})
         .then(res => {
           if (res === "") {
             this.getProjects();

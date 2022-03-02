@@ -1,6 +1,6 @@
 import React, {useContext, useState} from "react";
 import AppInfo from "../../home/AppInfo";
-import {MainContext} from "../../home/context";
+import {MainContext} from "../../home/constants";
 import LanguageSelector from "../LanguageSelector";
 import SvgIcon from "../SvgIcon";
 
