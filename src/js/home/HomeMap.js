@@ -30,8 +30,7 @@ export default class HomeMap extends React.Component {
       setTimeout(() => this.props.theMap.resize(), 50);
     }
 
-    if (this.state.thePopup && prevProps.reportHidden !== this.props.reportHidden) {
-      this.props.setLatLon(null);
+    if (this.state.thePopup && this.props.visiblePanel !== "report") {
       this.state.thePopup.remove();
     }
   }
@@ -89,8 +88,8 @@ export default class HomeMap extends React.Component {
     theMap.on("load", () => {
       theMap.addControl(new mapboxgl.NavigationControl({showCompass: false}));
 
-      // This is not safe, updateEELayer could be called before the options are returned
       this.addLayerSources([...availableLayers].reverse());
+      // This is not safe, the updates could be called before the options are returned
       this.getGEELayers(availableLayers.slice(3));
       this.updateEELayers(true);
 

@@ -46,11 +46,6 @@ class HomeContents extends React.Component {
     if (prevProps.myHeight !== this.props.myHeight) {
       setTimeout(() => this.state.theMap.resize(), 50);
     }
-
-    if (this.state.thePopup && prevState.reportHidden !== this.state.reportHidden) {
-      this.setState({selectedLatLon: null});
-      this.state.thePopup.remove();
-    }
   }
 
   /// State Update ///
