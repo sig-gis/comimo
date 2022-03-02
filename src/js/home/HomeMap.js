@@ -30,7 +30,7 @@ export default class HomeMap extends React.Component {
       setTimeout(() => this.props.theMap.resize(), 50);
     }
 
-    if (this.state.thePopup && this.props.visiblePanel !== "report") {
+    if (this.state.thePopup && prevProps.reportPopup && !this.props.reportPopup) {
       this.state.thePopup.remove();
     }
   }
@@ -122,8 +122,10 @@ export default class HomeMap extends React.Component {
       .setHTML(`<div id="${divId}"></div>`)
       .addTo(theMap);
     this.setState({thePopup: popup});
+
+    setLatLon([lat, lon]);
+
     if (reportPopup) {
-      setLatLon([lat, lon]);
       ReactDOM.render(
         <ReportPopupContent
           lat={lat}
