@@ -2,10 +2,10 @@ import React from "react";
 
 import SvgIcon from "../components/SvgIcon";
 
-export default function SideIcon({parentClass, clickHandler, tooltip, icon, subtext}) {
+export default function SideIcon({parentClass, clickHandler, tooltip, icon, subtext, active}) {
   return (
     <button
-      className={`sidebar-icon ${(parentClass || "")}`}
+      className={`sidebar-icon ${(parentClass || "")} ${active ? "active-icon" : ""}`}
       onClick={clickHandler}
       title={tooltip}
       type="button"

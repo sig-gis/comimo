@@ -19,11 +19,11 @@ export default class LayersPanel extends React.Component {
     });
   }
 
-  setVisible = (name, isVisible) => {
+  setVisible = (name, layerVisible) => {
     const {visible} = this.state;
     const {theMap} = this.props;
-    theMap.setLayoutProperty(name, "visibility", isVisible ? "visible" : "none");
-    this.setState({visible: {...visible, [name]: isVisible}});
+    theMap.setLayoutProperty(name, "visibility", layerVisible ? "visible" : "none");
+    this.setState({visible: {...visible, [name]: layerVisible}});
   };
 
   setOpacity = (name, newOpacity) => {
@@ -38,14 +38,14 @@ export default class LayersPanel extends React.Component {
   renderControl = name => {
     const {opacity, visible} = this.state;
     const {localeText: {layers}} = this.context;
-    const isVisible = visible[name];
+    const layerVisible = visible[name];
     return (
       <div key={name} className="d-flex justify-content-between align-items-center mb-2">
         <div>
           <input
-            checked={isVisible}
+            checked={layerVisible}
             id={"label-" + name}
-            onChange={() => this.setVisible(name, !isVisible)}
+            onChange={() => this.setVisible(name, !layerVisible)}
             type="checkbox"
           />
           <label htmlFor={"label-" + name} style={{margin: "0 0 3px 0"}}>{layers[name]}</label>
@@ -65,11 +65,11 @@ export default class LayersPanel extends React.Component {
 
   render() {
     const {opacity, visible} = this.state;
-    const {availableLayers, isHidden} = this.props;
+    const {availableLayers, isVisible} = this.props;
     const {localeText: {layers}} = this.context;
     return (
       <div
-        className={"layer-container overflow-scroll " + (isHidden ? " see-through" : "")}
+        className={"layer-container overflow-scroll " + (isVisible ? "" : "see-through")}
         style={{overflow: "auto"}}
       >
         <h3>{layers.title.toUpperCase()}</h3>
