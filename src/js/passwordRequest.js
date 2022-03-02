@@ -3,7 +3,7 @@ import ReactDOM from "react-dom";
 
 import LoadingModal from "./components/LoadingModal";
 
-import {getLanguage, sendRequest} from "./utils";
+import {getLanguage, jsonRequest} from "./utils";
 
 class PasswordForgot extends React.Component {
   constructor(props) {
@@ -16,7 +16,7 @@ class PasswordForgot extends React.Component {
   }
 
   componentDidMount() {
-    sendRequest(`/locale/${getLanguage(["en", "es"])}.json`, null, "GET")
+    jsonRequest(`/locale/${getLanguage(["en", "es"])}.json`, null, "GET")
       .then(data => this.setState({localeText: data.users}))
       .catch(error => console.error(error));
   }
@@ -29,7 +29,7 @@ class PasswordForgot extends React.Component {
   ));
 
   requestPassword = () => this.processModal(() =>
-    sendRequest("/password-request/", {email: this.state.email})
+    jsonRequest("/password-request/", {email: this.state.email})
       .then(data => {
         if (data[0] && data[1] === "") {
           alert(this.state.localeText.tokenSent);

@@ -1,16 +1,11 @@
 import React from "react";
-import {sendRequest} from "../utils";
+import {jsonRequest} from "../utils";
 
-import {MainContext} from "./context";
+import {MainContext, URLS} from "./constants";
 
 export default class StatsPanel extends React.Component {
   constructor(props) {
     super(props);
-
-    this.URL = {
-      ARSTATS: "get-area-predicted",
-      ARTS: "get-area-ts"
-    };
 
     this.state = {
       subsListChanged: false,
@@ -52,7 +47,7 @@ export default class StatsPanel extends React.Component {
     const {selectedDate} = this.props;
     const {localeText: {stats}} = this.context;
     document.getElementById("stats1").innerHTML = `${stats.loading}...`;
-    sendRequest(this.URL.ARSTATS, {layerName: selectedDate})
+    jsonRequest(URLS.AREA_STATS, {layerName: selectedDate})
       .then(result => {
         const data = [];
         for (let i = 0; i < result.names.length; i += 1) {
@@ -94,7 +89,7 @@ export default class StatsPanel extends React.Component {
   getAreaTS() {
     const {localeText: {stats}} = this.context;
     document.getElementById("stats2").innerHTML = `${stats.loading}...`;
-    sendRequest(this.URL.ARTS)
+    jsonRequest(URLS.AREA_TOTAL_STATS)
       .then(result => {
         const data = [];
         let nonzero = false;

@@ -1,6 +1,7 @@
 import React from "react";
 
-import {sendRequest, toPrecision} from "../utils";
+import {jsonRequest, toPrecision} from "../utils";
+import {URLS} from "./constants";
 
 export default class InfoPopupContent extends React.Component {
   constructor(props) {
@@ -14,7 +15,7 @@ export default class InfoPopupContent extends React.Component {
   componentDidMount() {
     const {selectedDates, lat, lon, visibleLayers} = this.props;
     if (visibleLayers.length > 0) {
-      sendRequest("get-info", {lat, lon, dates: selectedDates, visibleLayers})
+      jsonRequest(URLS.GET_INFO, {lat, lon, dates: selectedDates, visibleLayers})
         .then(resp => {
           this.setState({layerInfo: resp.value});
         })

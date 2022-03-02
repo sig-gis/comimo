@@ -1,16 +1,12 @@
 import React from "react";
 
-import {MainContext} from "./context";
+import {MainContext, URLS} from "./constants";
 import {mapQuestKey} from "../appConfig";
-import {sendRequest} from "../utils";
+import {jsonRequest} from "../utils";
 
 export default class SearchPanel extends React.Component {
   constructor(props) {
     super(props);
-
-    this.URLS = {
-      GEOCODE: "https://open.mapquestapi.com/geocoding/v1/address"
-    };
 
     this.state = {
       geoCodedSearch: null,
@@ -24,8 +20,8 @@ export default class SearchPanel extends React.Component {
   searchGeocode = () => {
     const {searchText} = this.state;
     const {featureNames} = this.props;
-    const url = this.URLS.GEOCODE + "?key=" + mapQuestKey + "&county=" + searchText + "&country=colombia";
-    sendRequest(url, null, "GET")
+    const url = URLS.MAPQUEST + "?key=" + mapQuestKey + "&county=" + searchText + "&country=colombia";
+    jsonRequest(url, null, "GET")
       .then(result => {
         this.setState({
           geoCodedSearch: result.results[0].locations.filter(l => {

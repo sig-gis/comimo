@@ -2,18 +2,12 @@ import React from "react";
 
 import LoginMessage from "./LoginMessage";
 
-import {MainContext} from "./context";
-import {sendRequest} from "../utils";
+import {MainContext, URLS} from "./constants";
+import {jsonRequest} from "../utils";
 
 export default class SubscribePanel extends React.Component {
   constructor(props) {
     super(props);
-
-    this.URLS = {
-      SUBS: "user-subscriptions",
-      DELSUBS: "remove-subscription",
-      ADDSUBS: "add-subscription"
-    };
 
     this.state = {
       subsLoaded: false
@@ -24,57 +18,40 @@ export default class SubscribePanel extends React.Component {
     this.getSubs();
   }
 
-  getSubs = () => {
+  subsResult = result => {
     const {updateSubList} = this.props;
-    const {username, localeText: {subscribe}} = this.context;
-    if (username) {
-      sendRequest(this.URLS.SUBS)
-        .then(result => {
-          if (Array.isArray(result)) {
-            this.setState({subsLoaded: true});
-            updateSubList(result.sort());
-          } else {
-            alert(subscribe[result]);
-          }
-        })
-        .catch(err => console.error(err));
+    const {localeText: {subscribe}} = this.context;
+    if (Array.isArray(result)) {
+      this.setState({subsLoaded: true});
+      updateSubList(result.sort());
+    } else {
+      alert(subscribe[result]);
     }
   };
 
+  getSubs = () => {
+    jsonRequest(URLS.USER_SUBS)
+      .then(result => { this.subsResult(result); })
+      .catch(err => console.error(err));
+  };
+
   addSubs = region => {
-    const {updateSubList} = this.props;
-    const {localeText: {subscribe}} = this.context;
     if (region !== "") {
-      sendRequest(this.URLS.ADDSUBS, {region})
-        .then(result => {
-          if (Array.isArray(result)) {
-            this.setState({subsLoaded: true});
-            updateSubList(result.sort());
-          } else {
-            alert(subscribe[result]);
-          }
-        })
+      jsonRequest(URLS.ADD_SUBS, {region})
+        .then(result => { this.subsResult(result); })
         .catch(err => console.error(err));
     }
   };
 
   delSubs = region => {
-    const {updateSubList} = this.props;
     const {localeText: {subscribe}} = this.context;
     const arr = location.split("_");
     const delConfirm = confirm(
       `${subscribe.delConfirm1} ${arr.reverse().join(", ")}? ${subscribe.delConfirm2}`
     );
     if (delConfirm) {
-      sendRequest(this.URLS.DELSUBS, {region})
-        .then(result => {
-          if (Array.isArray(result)) {
-            this.setState({subsLoaded: true});
-            updateSubList(result.sort());
-          } else {
-            alert(subscribe[result]);
-          }
-        })
+      jsonRequest(URLS.DEL_SUBS, {region})
+        .then(result => { this.subsResult(result); })
         .catch(err => console.error(err));
     }
   };

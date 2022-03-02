@@ -1,7 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom";
 
-import {getLanguage, sendRequest} from "./utils";
+import {getLanguage, jsonRequest} from "./utils";
 
 class Login extends React.Component {
   constructor(props) {
@@ -14,14 +14,14 @@ class Login extends React.Component {
   }
 
   componentDidMount() {
-    sendRequest(`/locale/${getLanguage(["en", "es"])}.json`, null, "GET")
+    jsonRequest(`/locale/${getLanguage(["en", "es"])}.json`, null, "GET")
       .then(data => this.setState({localeText: data.users}))
       .catch(error => console.error(error));
   }
 
   requestLogin = () => {
     const {username, password} = this.state;
-    sendRequest("/login", {username, password})
+    jsonRequest("/login", {username, password})
       .then(data => {
         if (data[0] && data[1] === "") {
           window.location = "/";

@@ -67,25 +67,11 @@
   z-index: 99;
 }
 
-.layer-container {
-  right: 52px;
-  bottom: 0;
-  transition-duration: 0.3s;
-  background: #fffff8;
-  width: 300px;
-  margin: 0px;
-  padding: 15px 10px 15px 10px;
-  position: absolute;
-  box-shadow: 0px 0px 0px 1px rgba(0,0,0,.1);
-  z-index: 99;
+.layer-panel {
+  display: flex;
+  flex-direction: column;
+  top: 0px;
 }
-.layer-group {
-  position: fixed;
-  bottom: 38px;
-  right: 38px;
-  background: white;
-}
-
 
 .map-upd-btn {
   color: #fff;
@@ -177,7 +163,6 @@
   background: #ddd;
   color: #aaa;
 }
-
 
 .del-btn.green-btn {
   background: #0e96429e;
@@ -330,17 +315,10 @@ select[multiple] optgroup option:checked::before {
     max-height: calc(100% - 100px);
     white-space: pre-wrap;
   }
-  .layer-group {
-    right: 8px;
-    bottom: calc(75px + 8px);
-  }
-  .layer-container {
-    position: fixed;
-    right: 0;
-    top: 0;
-    width: 100%;
-    bottom: 161px;
-    padding: 10px 20px 10px 20px;
+  .layer-panel {
+    top: unset;
+    left: 0;
+    bottom: 75px;
   }
   .subs-panel {
     left: 0;

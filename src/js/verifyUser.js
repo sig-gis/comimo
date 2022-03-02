@@ -1,7 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom";
 
-import {getLanguage, sendRequest} from "./utils";
+import {getLanguage, jsonRequest} from "./utils";
 
 class PasswordReset extends React.Component {
   constructor(props) {
@@ -35,7 +35,7 @@ class PasswordReset extends React.Component {
       return true;
     });
 
-  verifyUser = () => sendRequest(
+  verifyUser = () => jsonRequest(
     "/verify-user/",
     {
       passwordResetKey: this.props.passwordResetKey,

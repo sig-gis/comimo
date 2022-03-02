@@ -1,7 +1,7 @@
 import React from "react";
-import {sendRequest} from "../utils";
+import {jsonRequest} from "../utils";
 
-import {MainContext} from "./context";
+import {MainContext, URLS} from "./constants";
 
 export default class ReportMinesPanel extends React.Component {
   constructor(props) {
@@ -22,7 +22,7 @@ export default class ReportMinesPanel extends React.Component {
     const [lat, lon] = selectedLatLon;
     if (lat && lon) {
       this.setState({reportingMine: true});
-      sendRequest("report-mine", {lat, lon})
+      jsonRequest(URLS.REPORT_MINE, {lat, lon})
         .then(result => {
           if (result === "") {
             this.setState({reportedLatLon: selectedLatLon});

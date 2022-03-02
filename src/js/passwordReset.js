@@ -1,7 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom";
 
-import {getLanguage, sendRequest, validatePassword} from "./utils";
+import {getLanguage, jsonRequest, validatePassword} from "./utils";
 
 class PasswordReset extends React.Component {
   constructor(props) {
@@ -14,7 +14,7 @@ class PasswordReset extends React.Component {
   }
 
   componentDidMount() {
-    sendRequest(`/locale/${getLanguage(["en", "es"])}.json`, null, "GET")
+    jsonRequest(`/locale/${getLanguage(["en", "es"])}.json`, null, "GET")
       .then(data => this.setState({localeText: data.users}))
       .catch(error => console.error(error));
   }
@@ -35,7 +35,7 @@ class PasswordReset extends React.Component {
     } else {
       const {password} = this.state;
       const {email, passwordResetKey} = this.props;
-      sendRequest("/password-reset/", {email, passwordResetKey, password})
+      jsonRequest("/password-reset/", {email, passwordResetKey, password})
         .then(resp => {
           if (resp === "") {
             window.location = "/";

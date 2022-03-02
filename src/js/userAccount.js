@@ -3,7 +3,7 @@ import ReactDOM from "react-dom";
 
 import LoadingModal from "./components/LoadingModal";
 import LanguageSelector from "./components/LanguageSelector";
-import {sendRequest} from "./utils";
+import {jsonRequest} from "./utils";
 
 class UserAccount extends React.Component {
   constructor(props) {
@@ -43,7 +43,7 @@ class UserAccount extends React.Component {
   /// API Calls ///
 
   getLocalText = lang => {
-    sendRequest(`/locale/${lang}.json`, null, "GET")
+    jsonRequest(`/locale/${lang}.json`, null, "GET")
       .then(data => this.setState({localeText: data.users}))
       .catch(err => console.error(err));
   };
@@ -58,7 +58,7 @@ class UserAccount extends React.Component {
 
   getUserInformation = () => {
     this.processModal(() =>
-      sendRequest("/user-information")
+      jsonRequest("/user-information")
         .then(data => {
           if (data.username) {
             this.setState({...data});
@@ -78,7 +78,7 @@ class UserAccount extends React.Component {
       alert(errors.map(e => " - " + e).join("\n"));
     } else {
       this.processModal(() =>
-        sendRequest(
+        jsonRequest(
           "/update-account",
           {
             defaultLang: this.state.defaultLang,

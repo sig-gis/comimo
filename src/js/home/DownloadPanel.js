@@ -1,15 +1,11 @@
 import React from "react";
-import {sendRequest} from "../utils";
+import {jsonRequest} from "../utils";
 
-import {MainContext} from "./context";
+import {MainContext, URLS} from "./constants";
 
 export default class DownloadPanel extends React.Component {
   constructor(props) {
     super(props);
-
-    this.URL = {
-      GETDL: "get-download-url"
-    };
 
     this.state = {
       clipOption: 1,
@@ -25,7 +21,7 @@ export default class DownloadPanel extends React.Component {
     this.setState({fetching: true});
 
     const [level, region] = clipOption === 1 ? ["", "all"] : selectedRegion.split("_", 1);
-    sendRequest(this.URL.GETDL, {level, region, dataLayer: selectedDates[mineType]})
+    jsonRequest(URLS.MAPQUEST, {level, region, dataLayer: selectedDates[mineType]})
       .then(res => {
         if (res.action === "success") {
           this.setState({downloadURL: [region, level, selectedDates[mineType], res.url]});

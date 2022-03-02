@@ -5,7 +5,7 @@ import EmailValidator from "email-validator";
 import LoadingModal from "./components/LoadingModal";
 import LanguageSelector from "./components/LanguageSelector";
 
-import {getLanguage, sendRequest, validatePassword} from "./utils";
+import {getLanguage, jsonRequest, validatePassword} from "./utils";
 
 class Register extends React.Component {
   constructor(props) {
@@ -45,7 +45,7 @@ class Register extends React.Component {
   /// API Calls ///
 
   getLocalText = lang => {
-    sendRequest(`/locale/${lang}.json`, null, "GET")
+    jsonRequest(`/locale/${lang}.json`, null, "GET")
       .then(data => this.setState({localeText: data.users}))
       .catch(err => console.error(err));
   };
@@ -68,7 +68,7 @@ class Register extends React.Component {
       alert(errors.map(e => " - " + e).join("\n"));
     } else {
       this.processModal(() =>
-        sendRequest(
+        jsonRequest(
           "/register",
           {
             defaultLang: this.state.defaultLang,
