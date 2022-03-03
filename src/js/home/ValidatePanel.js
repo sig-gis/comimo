@@ -2,6 +2,7 @@ import React from "react";
 
 import LoginMessage from "./LoginMessage";
 import SvgIcon from "../components/SvgIcon";
+import ToolPanel from "../components/ToolPanel";
 
 import {jsonRequest} from "../utils";
 import {MainContext, URLS} from "./constants";
@@ -185,11 +186,10 @@ export default class ValidatePanel extends React.Component {
 
   render() {
     const {projects, projectName, regionType, creatingProject, errorMsg, mineType} = this.state;
-    const {selectedDates, isVisible} = this.props;
+    const {selectedDates} = this.props;
     const {username, localeText: {validate}} = this.context;
     return (
-      <div className={"popup-container validate-panel " + (isVisible ? "" : "see-through")}>
-        <h3>{validate.title.toUpperCase()}</h3>
+      <ToolPanel title={validate.title}>
         <span>{validate.subtitle}</span>
         {username
           ? (
@@ -260,7 +260,7 @@ export default class ValidatePanel extends React.Component {
           ) : (
             <LoginMessage actionText={validate.loginAction}/>
           )}
-      </div>
+      </ToolPanel>
     );
   }
 }

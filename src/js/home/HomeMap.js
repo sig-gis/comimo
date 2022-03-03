@@ -2,12 +2,45 @@ import React from "react";
 import ReactDOM from "react-dom";
 import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
+import styled from "styled-components";
 
 import {toPrecision, jsonRequest} from "../utils";
 import {mapboxToken} from "../appConfig";
 import InfoPopupContent from "./InfoPopupContent";
 import ReportPopupContent from "./ReportPopupContent";
 import {MainContext, URLS, availableLayers, startVisible} from "./constants";
+
+const MapBoxWrapper = styled.div`
+  .mapboxgl-popup-close-button {
+    font-size: 1.25rem;
+    padding: 0 3px 8px 8px;
+    line-height: 1.25rem;
+  }
+  .mapboxgl-popup-content {
+    padding-top: 14px;
+  }
+  .mapboxgl-ctrl-logo {
+    margin: 0px 54px !important
+  }
+  @media only screen and (orientation: portrait) {
+    .mapboxgl-ctrl-bottom-right {
+      height: 100%;
+      width: 100%;
+    }
+    .mapboxgl-ctrl-top-right {
+      top: 50px;
+    }
+    .mapboxgl-popup-content {
+      font-size: .75rem;
+    }
+    .mapboxgl-ctrl-attrib {
+      display: none;
+    }
+    .mapboxgl-ctrl-logo {
+      margin: 0 0 78px 4px !important;
+    }
+  }
+`;
 
 export default class HomeMap extends React.Component {
   // set up class flags so each component update doesn't do redundant JS tasks
@@ -147,24 +180,6 @@ export default class HomeMap extends React.Component {
     }
   };
 
-  fitMap = (type, arg) => {
-    const {localeText: {home}} = this.state;
-    const {theMap} = this.props;
-    if (type === "point") {
-      try {
-        theMap.flyTo({center: arg, essential: true});
-      } catch (err) {
-        console.error(home.errorCoordinates);
-      }
-    } else if (type === "bbox") {
-      try {
-        theMap.fitBounds(arg);
-      } catch (error) {
-        console.error(home.errorBounds);
-      }
-    }
-  };
-
   isLayerVisible = layer => this.props.theMap.getLayer(layer).visibility === "visible";
 
   // Adds layers initially with no styling, URL is updated later.  This is to guarantee z order in mapbox
@@ -186,7 +201,7 @@ export default class HomeMap extends React.Component {
   render() {
     return (
       <>
-        <div
+        <MapBoxWrapper
           id="mapbox"
           style={{
             height: "100%",

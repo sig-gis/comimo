@@ -1,5 +1,7 @@
 import React from "react";
 
+import ToolPanel from "../components/ToolPanel";
+
 import {MainContext} from "./constants";
 
 export default class FilterPanel extends React.Component {
@@ -22,12 +24,11 @@ export default class FilterPanel extends React.Component {
   };
 
   render() {
-    const {isVisible, selectDates, imageDates: {nMines, pMines, cMines}} = this.props;
+    const {selectDates, imageDates: {nMines, pMines, cMines}} = this.props;
     const {newSelectedDates} = this.state;
     const {localeText: {filter, layers}} = this.context;
     return (
-      <div className={"popup-container filter-panel " + (isVisible ? "" : "see-through")}>
-        <h3>{filter.title.toUpperCase()}</h3>
+      <ToolPanel title={filter.title}>
         <span htmlFor="select-image-date">{filter.selectLabel}:</span>
         <div style={{display: "flex", flexDirection: "column"}}>
           <label htmlFor="select-image-date">{layers.cMines}</label>
@@ -71,7 +72,7 @@ export default class FilterPanel extends React.Component {
             {filter.updateMap}
           </button>
         </div>
-      </div>
+      </ToolPanel>
     );
   }
 }

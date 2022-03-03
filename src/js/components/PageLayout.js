@@ -1,7 +1,8 @@
 import React from "react";
-import {MainContext} from "../../home/constants";
-import {getLanguage, jsonRequest} from "../../utils";
-import {Header} from "./Header";
+import AppInfo from "../home/AppInfo";
+import {MainContext} from "../home/constants";
+import {getLanguage, jsonRequest} from "../utils";
+import Header from "./Header";
 
 export default class PageLayout extends React.Component {
   constructor(props) {
@@ -12,7 +13,8 @@ export default class PageLayout extends React.Component {
       selectedLanguage: ["en", "es"].includes(this.props.userLang)
         ? this.props.userLang
         : getLanguage(["en", "es"]),
-      myHeight: 0
+      myHeight: 0,
+      showInfo: false
     };
   }
 
@@ -35,22 +37,26 @@ export default class PageLayout extends React.Component {
     this.setState({myHeight: window.innerHeight});
   };
 
+  setShowInfo = showInfo => this.setState({showInfo});
+
   /// API Calls ///
 
   getLocalText = lang => jsonRequest(`/locale/${lang}.json`, {}, "GET")
     .then(data => this.setState({localeText: data}));
 
   render() {
-    const {myHeight} = this.state;
+    const {myHeight, showInfo} = this.state;
     return (
       <MainContext.Provider
         value={{
           isAdmin: this.props.role === "admin",
           username: this.props.username,
           localeText: this.state.localeText,
-          myHeight
+          myHeight,
+          setShowInfo: this.setShowInfo
         }}
       >
+        {showInfo && <AppInfo onOuterClick={() => this.setShowInfo(false)}/>}
         <div
           id="root-component"
           style={{

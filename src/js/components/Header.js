@@ -1,12 +1,12 @@
-import React, {useContext, useState} from "react";
-import AppInfo from "../../home/AppInfo";
-import {MainContext} from "../../home/constants";
-import LanguageSelector from "../LanguageSelector";
-import SvgIcon from "../SvgIcon";
+import React, {useContext} from "react";
 
-export function Header({selectLanguage, selectedLanguage}) {
-  const [showInfo, setShowInfo] = useState(false);
-  const {username} = useContext(MainContext);
+import LanguageSelector from "./LanguageSelector";
+import SvgIcon from "./SvgIcon";
+
+import {MainContext} from "../home/constants";
+
+export default function Header({selectLanguage, selectedLanguage}) {
+  const {username, setShowInfo} = useContext(MainContext);
   return (
     <div
       id="title-bar"
@@ -35,7 +35,6 @@ export function Header({selectLanguage, selectedLanguage}) {
           zIndex: 1000
         }}
       >
-        {showInfo && <AppInfo onOuterClick={() => setShowInfo(false)}/>}
         {username && (
           <button
             style={{

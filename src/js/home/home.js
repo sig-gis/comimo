@@ -4,16 +4,18 @@ import ReactDOM from "react-dom";
 import DownloadPanel from "./DownloadPanel";
 import LayersPanel from "./LayersPanel";
 import FilterPanel from "./FilterPanel";
+import HomeMap from "./HomeMap";
 import SearchPanel from "./SearchPanel";
-import SideIcon from "./SideIcon";
 import StatsPanel from "./StatsPanel";
 import SubscribePanel from "./SubscribePanel";
 import ReportMinesPanel from "./ReportMinesPanel";
 import ValidatePanel from "./ValidatePanel";
+import SideIcon from "../components/SideIcon";
+import MenuItem from "../components/MenuItem";
+import PageLayout from "../components/PageLayout";
+import SideBar from "../components/SideBar";
 
 import {jsonRequest} from "../utils";
-import PageLayout from "../components/pageLayout/PageLayout";
-import HomeMap from "./HomeMap";
 import {MainContext, URLS} from "./constants";
 
 class HomeContents extends React.Component {
@@ -70,6 +72,26 @@ class HomeContents extends React.Component {
 
   setLatLon = latLon => this.setState({selectedLatLon: latLon});
 
+  /// Global Map Functions ///
+
+  fitMap = (type, arg) => {
+    const {localeText: {home}} = this.context;
+    const {theMap} = this.state;
+    if (type === "point") {
+      try {
+        theMap.flyTo({center: arg, essential: true});
+      } catch (err) {
+        console.error(home.errorCoordinates);
+      }
+    } else if (type === "bbox") {
+      try {
+        theMap.fitBounds(arg);
+      } catch (error) {
+        console.error(home.errorBounds);
+      }
+    }
+  };
+
   /// API Calls ///
 
   getImageDates = () => jsonRequest(URLS.IMG_DATES)
@@ -86,8 +108,7 @@ class HomeContents extends React.Component {
     .then(features => { this.setState({featureNames: features}); });
 
   render() {
-    const {myHeight, username, localeText: {home}} = this.context;
-    const {setShowInfo} = this.props;
+    const {setShowInfo, myHeight, username, localeText: {home}} = this.context;
     return (
       <>
         <HomeMap
@@ -101,61 +122,61 @@ class HomeContents extends React.Component {
           theMap={this.state.theMap}
         />
         {home && (
-          <div className="sidebar" style={{top: "3.5rem", height: "calc(100% - 3.5rem)"}}>
+          <SideBar>
             {/* Layers */}
-            <LayersPanel
-              isVisible={this.state.visiblePanel === "layers"}
-              theMap={this.state.theMap}
-            />
-            <SideIcon
-              active={this.state.visiblePanel === "layers"}
-              clickHandler={() => this.togglePanel("layers")}
-              icon="layer"
+            <MenuItem
+              itemName="layer"
+              onClick={this.togglePanel}
+              selectedItem={this.state.visiblePanel}
               tooltip={home.layersTooltip}
-            />
+            >
+              <LayersPanel theMap={this.state.theMap}/>
+            </MenuItem>
 
             {/* Subscribe */}
-            <SideIcon
-              active={this.state.visiblePanel === "subscribe"}
-              clickHandler={() => this.togglePanel("subscribe")}
+            <MenuItem
               icon="envelope"
+              itemName="subscribe"
+              onClick={this.togglePanel}
+              selectedItem={this.state.visiblePanel}
               tooltip={home.subscribeTooltip}
-            />
-            <SubscribePanel
-              isVisible={this.state.visiblePanel === "subscribe"}
-              selectedRegion={this.state.selectedRegion}
-              subscribedList={this.state.subscribedList}
-              updateSubList={this.updateSubList}
-            />
+            >
+              <SubscribePanel
+                selectedRegion={this.state.selectedRegion}
+                subscribedList={this.state.subscribedList}
+                updateSubList={this.updateSubList}
+              />
+            </MenuItem>
 
             {/* Validation */}
-            <SideIcon
-              active={this.state.visiblePanel === "validate"}
-              clickHandler={() => this.togglePanel("validate")}
+            <MenuItem
               icon="check"
+              itemName="validate"
+              onClick={this.togglePanel}
+              selectedItem={this.state.visiblePanel}
               tooltip={home.validateTooltip}
-            />
-            <ValidatePanel
-              featureNames={this.state.featureNames}
-              isVisible={this.state.visiblePanel === "validate"}
-              selectedDates={this.state.selectedDates}
-              subscribedList={this.state.subscribedList}
-            />
+            >
+              <ValidatePanel
+                featureNames={this.state.featureNames}
+                selectedDates={this.state.selectedDates}
+                subscribedList={this.state.subscribedList}
+              />
+            </MenuItem>
 
             {/* Geo location Search */}
-            <SideIcon
-              active={this.state.visiblePanel === "search"}
-              clickHandler={() => this.togglePanel("search")}
-              icon="search"
+            <MenuItem
+              itemName="search"
+              onClick={this.togglePanel}
+              selectedItem={this.state.visiblePanel}
               tooltip={home.searchTooltip}
-            />
-            <SearchPanel
-              featureNames={this.state.featureNames}
-              fitMap={this.fitMap}
-              isVisible={this.state.visiblePanel === "search"}
-              selectedDates={this.state.selectedDates}
-              selectRegion={this.selectRegion}
-            />
+            >
+              <SearchPanel
+                featureNames={this.state.featureNames}
+                fitMap={this.fitMap}
+                selectedDates={this.state.selectedDates}
+                selectRegion={this.selectRegion}
+              />
+            </MenuItem>
 
             {/* Advanced Button */}
             {username && (
@@ -175,59 +196,59 @@ class HomeContents extends React.Component {
             {this.state.advancedOptions && (
               <>
                 {/* Stats graphs */}
-                <SideIcon
-                  active={this.state.visiblePanel === "stats"}
-                  clickHandler={() => this.togglePanel("stats")}
-                  icon="stats"
+                <MenuItem
+                  itemName="stats"
+                  onClick={this.togglePanel}
+                  selectedItem={this.state.visiblePanel}
                   tooltip={home.statsTooltip}
-                />
-                <StatsPanel
-                  isVisible={this.state.visiblePanel === "stats"}
-                  selectedDate={this.state.selectedDates.cMines}
-                  subscribedList={this.state.subscribedList}
-                />
+                >
+                  <StatsPanel
+                    selectedDate={this.state.selectedDates.cMines}
+                    subscribedList={this.state.subscribedList}
+                  />
+                </MenuItem>
 
                 {/* Date filter */}
-                <SideIcon
-                  active={this.state.visiblePanel === "filter"}
-                  clickHandler={() => this.togglePanel("filter")}
-                  icon="filter"
+                <MenuItem
+                  itemName="filter"
+                  onClick={this.togglePanel}
+                  selectedItem={this.state.visiblePanel}
                   tooltip={home.filterTooltip}
-                />
-                <FilterPanel
-                  imageDates={this.state.imageDates}
-                  isVisible={this.state.visiblePanel === "filter"}
-                  selectDates={this.selectDates}
-                  selectedDates={this.state.selectedDates}
-                />
+                >
+                  <FilterPanel
+                    imageDates={this.state.imageDates}
+                    selectDates={this.selectDates}
+                    selectedDates={this.state.selectedDates}
+                  />
+                </MenuItem>
 
                 {/* Report mines */}
-                <SideIcon
-                  active={this.state.visiblePanel === "report"}
-                  clickHandler={() => this.togglePanel("report")}
-                  icon="mine"
+                <MenuItem
+                  itemName="report"
+                  onClick={this.togglePanel}
+                  selectedItem={this.state.visiblePanel}
                   tooltip={home.reportTooltip}
-                />
-                <ReportMinesPanel
-                  addPopup={this.addPopup}
-                  fitMap={this.fitMap}
-                  isVisible={this.state.visiblePanel === "report"}
-                  selectedLatLon={this.state.selectedLatLon}
-                  submitMine={this.submitMine}
-                />
+                >
+                  <ReportMinesPanel
+                    addPopup={this.addPopup}
+                    fitMap={this.fitMap}
+                    selectedLatLon={this.state.selectedLatLon}
+                    submitMine={this.submitMine}
+                  />
+                </MenuItem>
 
                 {/* Download */}
-                <SideIcon
-                  active={this.state.visiblePanel === "download"}
-                  clickHandler={() => this.togglePanel("download")}
-                  icon="download"
+                <MenuItem
+                  itemName="download"
+                  onClick={this.togglePanel}
+                  selectedItem={this.state.visiblePanel}
                   tooltip={home.downloadTooltip}
-                />
-                <DownloadPanel
-                  isVisible={this.state.visiblePanel === "download"}
-                  selectedDates={this.state.selectedDates}
-                  selectedRegion={this.state.selectedRegion}
-                />
+                >
+                  <DownloadPanel
+                    selectedDates={this.state.selectedDates}
+                    selectedRegion={this.state.selectedRegion}
+                  />
+                </MenuItem>
               </>
             )}
             <SideIcon
@@ -236,9 +257,8 @@ class HomeContents extends React.Component {
               parentClass="disclaimer"
               tooltip={home.appInfoTooltip}
             />
-          </div>
+          </SideBar>
         )}
-
       </>
     );
   }

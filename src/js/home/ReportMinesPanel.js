@@ -1,6 +1,8 @@
 import React from "react";
-import {jsonRequest} from "../utils";
 
+import ToolPanel from "../components/ToolPanel";
+
+import {jsonRequest} from "../utils";
 import {MainContext, URLS} from "./constants";
 
 export default class ReportMinesPanel extends React.Component {
@@ -65,8 +67,7 @@ export default class ReportMinesPanel extends React.Component {
 
     const reported = reportedLatLon === selectedLatLon;
     return (
-      <div className={"popup-container search-panel " + (isVisible ? "" : "see-through")}>
-        <h3>{report.title}</h3>
+      <ToolPanel title={report.title}>
         {report.subTitle}
         <label>{report.coordLabel}</label>
         <div className="d-flex">
@@ -100,7 +101,7 @@ export default class ReportMinesPanel extends React.Component {
           ) : (
             <span style={{fontStyle: "italic"}}>{report.noLocation}</span>
           )}
-      </div>
+      </ToolPanel>
     );
   }
 }

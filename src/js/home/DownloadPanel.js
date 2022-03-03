@@ -1,6 +1,8 @@
 import React from "react";
-import {jsonRequest} from "../utils";
 
+import ToolPanel from "../components/ToolPanel";
+
+import {jsonRequest} from "../utils";
 import {MainContext, URLS} from "./constants";
 
 export default class DownloadPanel extends React.Component {
@@ -34,13 +36,11 @@ export default class DownloadPanel extends React.Component {
   };
 
   render() {
-    const {isVisible} = this.props;
     const {clipOption, fetching, downloadURL, mineType} = this.state;
     const {selectedRegion, selectedDates} = this.props;
     const {localeText: {download, validate}} = this.context;
     return (
-      <div className={"popup-container download-panel " + (isVisible ? "" : "see-through")}>
-        <h3>{download.title.toUpperCase()}</h3>
+      <ToolPanel title={download.title}>
         <label>{`${validate.typeLabel}:`}</label>
         <select
           onChange={e => this.setState({mineType: e.target.value})}
@@ -94,7 +94,7 @@ export default class DownloadPanel extends React.Component {
               </span>
             </p>
           )}
-      </div>
+      </ToolPanel>
     );
   }
 }

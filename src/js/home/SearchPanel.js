@@ -1,5 +1,7 @@
 import React from "react";
 
+import ToolPanel from "../components/ToolPanel";
+
 import {MainContext, URLS} from "./constants";
 import {mapQuestKey} from "../appConfig";
 import {jsonRequest} from "../utils";
@@ -51,7 +53,7 @@ export default class SearchPanel extends React.Component {
 
   render() {
     const {geoCodedSearch, selectedL1, selectedL2, searchText, latLngText} = this.state;
-    const {featureNames, fitMap, selectRegion, isVisible} = this.props;
+    const {featureNames, fitMap, selectRegion} = this.props;
     const {localeText: {search}} = this.context;
 
     const geoSearchResults = geoCodedSearch && geoCodedSearch.length === 0
@@ -122,8 +124,7 @@ export default class SearchPanel extends React.Component {
       ) : "";
 
     return (
-      <div className={"popup-container search-panel " + (isVisible ? "" : "see-through")}>
-        <h3>{search.title}</h3>
+      <ToolPanel title={search.title}>
         <label>{search.internetLabel}</label>
         <div className="d-flex">
           <input
@@ -152,7 +153,7 @@ export default class SearchPanel extends React.Component {
         <label>{search.selectLabel}</label>
         {selectL1}
         {selectL2}
-      </div>
+      </ToolPanel>
     );
   }
 }
