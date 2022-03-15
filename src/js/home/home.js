@@ -44,7 +44,7 @@ class HomeContents extends React.Component {
       .catch(error => console.error(error));
   }
 
-  componentDidUpdate(prevProps, prevState) {
+  componentDidUpdate(prevProps, _prevState) {
     if (prevProps.myHeight !== this.props.myHeight) {
       setTimeout(() => this.state.theMap.resize(), 50);
     }

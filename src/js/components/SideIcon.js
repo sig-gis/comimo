@@ -4,7 +4,7 @@ import styled from "styled-components";
 import SvgIcon from "./SvgIcon";
 
 const StyledButton = styled.button`
-  background: ${({$active}) => ($active ? "#80808088" : "inherit") };
+  background: ${({$active}) => ($active ? "#80808088" : "inherit")};
   border: 0;
   height: fit-content;
   width: 50px;
