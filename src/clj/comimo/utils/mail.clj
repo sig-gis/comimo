@@ -33,51 +33,51 @@
 (defn send-new-user-mail [email token lang]
   (let [title {:en "Welcome to CoMiMo"
                :es "Bienvenida a CoMiMo"}
-        text {:en (format (str "Welcome to CoMiMo\n\n"
-                               "Please verify your email by clicking the following link: \n\n"
-                               "%s/verify-user?token=%s&email=%s")
-                          (get-base-url)
-                          token
-                          email)
-              :es (format (str "Bienvenida a CoMiMo\n\n"
-                               "Verifique su correo electrónico haciendo clic en el siguiente enlace: \n\n"
-                               "%s/verify-user?token=%s&email=%s")
-                          (get-base-url)
-                          token
-                          email)}]
+        text  {:en (format (str "Welcome to CoMiMo\n\n"
+                                "Please verify your email by clicking the following link: \n\n"
+                                "%s/verify-user?token=%s&email=%s")
+                           (get-base-url)
+                           token
+                           email)
+               :es (format (str "Bienvenida a CoMiMo\n\n"
+                                "Verifique su correo electrónico haciendo clic en el siguiente enlace: \n\n"
+                                "%s/verify-user?token=%s&email=%s")
+                           (get-base-url)
+                           token
+                           email)}]
     (send-mail email nil nil (lang title) (lang text) "text/plain")))
 
 (defn send-alert-mail [email project-url lang]
   (let [title {:en "CoMiMo: mine alert"
                :es "CoMiMo: alerta minera"}
-        text {:en (format (str "Mine Alert\n\n"
-                               "We have detected possible mining sites in the areas to which it is subscribed.\n\n"
-                               "You can see the new validations listed in CoMiMo here: %s\n\n"
-                               "To validate this information, go to the validation panel in the application or go directly to CEO: %s&locale=en")
-                          (get-base-url)
-                          project-url)
-              :es (format (str "¡Alerta!\n\n"
-                               "Hemos detectado posibles sitios de explotación minera en las áreas a las cuales se encuentra suscrito.\n\n"
-                               "Puede visualizar estas áreas aquí: %s\n\n"
-                               "Para validar esta información, diríjase al panel de validación en la aplicación o acceda directamente a CEO: %s&locale=es")
-                          (get-base-url)
-                          project-url)}]
+        text  {:en (format (str "Mine Alert\n\n"
+                                "We have detected possible mining sites in the areas to which it is subscribed.\n\n"
+                                "You can see the new validations listed in CoMiMo here: %s\n\n"
+                                "To validate this information, go to the validation panel in the application or go directly to CEO: %s&locale=en")
+                           (get-base-url)
+                           project-url)
+               :es (format (str "¡Alerta!\n\n"
+                                "Hemos detectado posibles sitios de explotación minera en las áreas a las cuales se encuentra suscrito.\n\n"
+                                "Puede visualizar estas áreas aquí: %s\n\n"
+                                "Para validar esta información, diríjase al panel de validación en la aplicación o acceda directamente a CEO: %s&locale=es")
+                           (get-base-url)
+                           project-url)}]
     (send-mail email nil nil (lang title) (lang text) "text/plain")))
 
 (defn send-reset-mail [email token lang]
   (let [title {:en "CoMiMo password reset"
                :es "CoMiMo restablecimiento de contraseña"}
-        msg {:en (format (str "Mine Alert\n\n"
-                              "We have detected possible mining sites in the areas to which it is subscribed.\n\n"
-                              "You can see the new validations listed in CoMiMo here: %s\n\n"
-                              "To validate this information, go to the validation panel in the application or go directly to CEO: %s&locale=en")
-                         (get-base-url)
-                         token
-                         email)
-             :es (format (str "Password Reset\n\n"
-                              "To reset your password, click the link below and enter your new password:\n\n"
-                              "%s/password-reset?token=%s&email=%s"
-                              (get-base-url)
-                              token
-                              email))}]
+        msg   {:en (format (str "Mine Alert\n\n"
+                                "We have detected possible mining sites in the areas to which it is subscribed.\n\n"
+                                "You can see the new validations listed in CoMiMo here: %s\n\n"
+                                "To validate this information, go to the validation panel in the application or go directly to CEO: %s&locale=en")
+                           (get-base-url)
+                           token
+                           email)
+               :es (format (str "Password Reset\n\n"
+                                "To reset your password, click the link below and enter your new password:\n\n"
+                                "%s/password-reset?token=%s&email=%s"
+                                (get-base-url)
+                                token
+                                email))}]
     (send-mail email nil nil (lang title) (lang msg) "text/plain")))
