@@ -85,8 +85,8 @@
                   institution
                   default-lang)
         (if auto-validate?
-          (call-sql "user_verified" (:user_id user))
-          (data-response "")
+          (do (call-sql "user_verified" (:user_id user))
+              (data-response ""))
           (try
             (send-mail email nil nil "Welcome to CEO!" email-msg "text/plain")
             (catch Exception _
