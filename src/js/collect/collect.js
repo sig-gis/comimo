@@ -1,6 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import PageLayout from "../components/pageLayout/PageLayout";
+import PageLayout from "../components/PageLayout";
 
 class CollectContent extends React.Component {
   render() {

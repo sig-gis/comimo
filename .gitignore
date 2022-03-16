@@ -13,8 +13,8 @@ db.sqlite3
 logs
 static
 node_modules
-package-lock.json
 target/
+package-lock.json
 announcement.txt
 __pycache__
 classes

@@ -4,6 +4,7 @@ import LoginMessage from "./LoginMessage";
 
 import {MainContext, URLS} from "./constants";
 import {jsonRequest} from "../utils";
+import ToolPanel from "../components/ToolPanel";
 
 export default class SubscribePanel extends React.Component {
   constructor(props) {
@@ -95,12 +96,11 @@ export default class SubscribePanel extends React.Component {
 
   render() {
     const {subsLoaded} = this.state;
-    const {selectedRegion, subscribedList, isVisible} = this.props;
+    const {selectedRegion, subscribedList} = this.props;
     const {username, localeText: {subscribe}} = this.context;
     const parsedRegion = selectedRegion && selectedRegion.split("_");
     return (
-      <div className={"popup-container subs-panel " + (isVisible ? "" : "see-through")}>
-        <h3>{subscribe.title.toUpperCase()}</h3>
+      <ToolPanel title={subscribe.title}>
         {username ? (
           <div>
             {subscribedList.length === 0
@@ -126,7 +126,7 @@ export default class SubscribePanel extends React.Component {
         ) : (
           <LoginMessage actionText={subscribe.loginAction}/>
         )}
-      </div>
+      </ToolPanel>
     );
   }
 }

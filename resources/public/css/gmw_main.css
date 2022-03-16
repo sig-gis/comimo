@@ -1,78 +1,6 @@
-.mapboxgl-popup-close-button {
-  font-size: 1.25rem;
-  padding: 0 3px 8px 8px;
-  line-height: 1.25rem;
-}
-.mapboxgl-popup-content {
-  padding-top: 14px;
-}
-.mapboxgl-ctrl-logo {
-  margin: 0px 54px !important
-}
-
-.app-bar {
-  position: absolute;
-  top: 0;
-  height: 110px;
-  width: 100%;
-  padding: 5px;
-  padding-left: 15px;
-  margin: 0;
-  background: #fed700;
-  display: none;
-}
-
-.sidebar {
-  width: 50px;
-  background: #ffffee;
-  margin: 0;
-  padding: 0;
-  box-shadow: 0px 0px 0px 1px rgba(0,0,0,.1);
-  position: absolute;
-  z-index: 1000;
-}
-
-.sidebar-icon {
-  background: inherit;
-  border: 0;
-  height: fit-content;
-  width: 50px;
-  margin: 0;
-  padding: 0;
-}
-
-.sidebar-icon.app-icon {
-  height: 50px;
-}
-
-.active-icon {
-  background: #80808088;
-}
-
 #mobile-title {
   display: none;
 }
-
-.popup-container {
-  /* height: 100%; */
-  margin-left: 10px;
-  transition-duration: 0.3s;
-  background: #fffff8;
-  width: 300px;
-  margin: 0px;
-  padding: 15px 10px 15px 10px;
-  left: 50px;
-  position: absolute;
-  box-shadow: 0px 0px 0px 1px rgba(0,0,0,.1);
-  z-index: 99;
-}
-
-.layer-panel {
-  display: flex;
-  flex-direction: column;
-  top: 0px;
-}
-
 .map-upd-btn {
   color: #fff;
   background-color: #f0ad4e;
@@ -128,7 +56,6 @@
   white-space: pre-wrap;
 }
 
-
 .search-results:hover {
   background: #eee;
   cursor: pointer;
@@ -139,6 +66,7 @@
   cursor: pointer;
 }
 
+/* These are the little round action buttons */
 .del-btn {
   border-radius: 50%;
   height: 1.75rem;
@@ -163,7 +91,6 @@
   background: #ddd;
   color: #aaa;
 }
-
 .del-btn.green-btn {
   background: #0e96429e;
   color: black;
@@ -180,24 +107,13 @@
   color: #aaa;
 }
 
-.sub-list {
-  margin-left: 10px;
-  padding-left: 10px;
-  list-style: disc;
-}
-span.advanced-text {
+.advanced-text {
   font-size: 10px;
   padding: 0;
   text-decoration: underline;
   display: block;
   line-height: 10px;
   height: auto;
-}
-#opacity-control {
-  width: 200px;
-}
-#opacity-control input[type="range"] {
-  width: calc(100% - 5px);
 }
 select[multiple] optgroup option:checked::before {
   content: '\2713\0020';
@@ -227,35 +143,6 @@ select[multiple] optgroup option:checked::before {
   margin-right: auto;
 }
 
-.subs-panel {
-  top: 50px;
-  max-height: 500px;
-  overflow-y: auto
-}
-.validate-panel {
-  top: 100px;
-  max-height: calc(100% - 110px);
-  overflow-y: auto
-}
-.search-panel {
-  display: flex;
-  flex-direction: column;
-  top: 150px;
-}
-.stat-panel {
-  top: 150px;
-  max-height: calc(100% - 150px);
-  overflow-y: auto
-}
-.filter-panel {
-  top: 300px;
-  overflow-y: hidden;
-}
-.download-panel {
-  top: 350px;
-}
-
-
 @media only screen and (orientation: portrait) {
   html {
     font-size: 24px;
@@ -266,109 +153,18 @@ select[multiple] optgroup option:checked::before {
   #title-bar {
     text-align: left !important;
   }
-  .app-bar {
-    display: block;
-  }
-  .sidebar {
-    white-space: nowrap;
-    position: absolute;
-    height: 75px !important;
-    width: 100%;
-    bottom: 0;
-    left: 0;
-    top: inherit !important;
-    overflow-x: auto;
-    overflow-y: hidden;
-  }
-  .sidebar-icon {
-    display: inline-block;
-    text-align: center;
-    height: 75px;
-    width: 75px;
-    white-space: normal;
-  }
-  .sidebar-icon.layer-icon {
-    height: 75px;
-    width: 75px;
-  }
-  .sidebar-icon.layer-icon > div > div {
-    height: 50px !important;
-    width: 50px !important;
-    max-height: 50px !important;
-    max-width: 50px !important;
-  }
   .info-modal .inner-container {
     padding: 1.5rem;
     line-height: 1rem;
   }
-  .sidebar .app-icon {
-    display: none;
-  }
   .disclaimer {
     position: relative;
-  }
-  .popup-container {
-    position: fixed;
-    width: 100%;
-    max-width: 100%;
-    padding: 20px 40px 20px 40px;
-    max-height: calc(100% - 100px);
-    white-space: pre-wrap;
-  }
-  .layer-panel {
-    top: unset;
-    left: 0;
-    bottom: 75px;
-  }
-  .subs-panel {
-    left: 0;
-    top: unset;
-    bottom: 75px;
-  }
-  .validate-panel {
-    top: unset;
-    left: 0;
-    bottom: 75px;
-  }
-  .search-panel {
-    top: unset;
-    left: 0;
-    bottom: 75px;
-  }
-  .stat-panel {
-    top: unset;
-    left: 0;
-    bottom: 75px;
-  }
-  .filter-panel {
-    top: unset;
-    left: 0;
-    bottom: 75px;
-  }
-  .download-panel {
-    top: unset;
-    left: 0;
-    bottom: 75px;
-  }
-  .mapboxgl-ctrl-bottom-right {
-    height: 100%;
-    width: 100%;
-  }
-  .mapboxgl-ctrl-top-right {
-    top: 50px;
-  }
-  .mapboxgl-popup-content {
-    font-size: .75rem;
-  }
-  .mapboxgl-ctrl-attrib {
-    display: none;
-  }
-  .mapboxgl-ctrl-logo {
-    margin: 0 0 78px 4px !important;
   }
   #lnglathud-shell {
     display: none;
   }
+
+  /* Input styling */
   input[type=range] {
     width: 100%;
     margin: 8.5px 0;
@@ -449,14 +245,5 @@ select[multiple] optgroup option:checked::before {
   }
   input[type=range]:focus ::-ms-fill-upper {
     background: #dcdcdc;
-  }
-  /*TODO: Use one of the selectors from https: //stackoverflow.com/a/20541859/7077589 and figure out
-  how to remove the virtical space around the range input in IE*/
-  @supports (-ms-ime-align: auto) {
-    /* Pre-Chromium Edge only styles, selector taken from hhttps: //stackoverflow.com/a/32202953/7077589 */
-    input[type=range] {
-      margin: 0;
-      /*Edge starts the margin from the thumb, not the track as other browsers do*/
-    }
   }
 }

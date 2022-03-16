@@ -104,7 +104,7 @@ module.exports = {
     "no-prototype-builtins": 0,
     "no-use-before-define": [2, "nofunc"],
     "no-useless-return": 1,
-    "no-unused-vars": 1,
+    "no-unused-vars": [1, {"argsIgnorePattern": "^_"}],
     "no-var": 2,
     "object-curly-newline": [1, {multiline: true, consistent: true}],
     "object-curly-spacing": [1, "never"],

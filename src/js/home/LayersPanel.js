@@ -1,4 +1,7 @@
 import React from "react";
+
+import ToolPanel from "../components/ToolPanel";
+
 import {MainContext, startVisible, availableLayers} from "./constants";
 
 export default class LayersPanel extends React.Component {
@@ -64,14 +67,9 @@ export default class LayersPanel extends React.Component {
 
   render() {
     const {opacity, visible} = this.state;
-    const {isVisible} = this.props;
     const {localeText: {layers}} = this.context;
     return (
-      <div
-        className={"popup-container layer-panel overflow-scroll " + (isVisible ? "" : "see-through")}
-        style={{overflow: "auto"}}
-      >
-        <h3>{layers.title.toUpperCase()}</h3>
+      <ToolPanel title={layers.title}>
         <div className="d-flex justify-content-between mb-2">
           <label style={{margin: "0 .25rem"}}>{layers.nameLabel}</label>
           <div style={{width: "40%"}}>
@@ -79,7 +77,7 @@ export default class LayersPanel extends React.Component {
           </div>
         </div>
         {opacity && visible && availableLayers.map(l => this.renderControl(l))}
-      </div>
+      </ToolPanel>
     );
   }
 }

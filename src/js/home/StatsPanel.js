@@ -1,4 +1,5 @@
 import React from "react";
+import ToolPanel from "../components/ToolPanel";
 import {jsonRequest} from "../utils";
 
 import {MainContext, URLS} from "./constants";
@@ -131,14 +132,10 @@ export default class StatsPanel extends React.Component {
 
   render() {
     const {chartsLoaded} = this.state;
-    const {isVisible} = this.props;
     const {localeText: {stats}} = this.context;
     return (
-      <div
-        className={"popup-container stat-panel " + (isVisible ? "" : "see-through")}
-      >
+      <ToolPanel title={stats.regionTitle}>
         <div>
-          <h3>{stats.regionTitle}</h3>
           <p style={{lineHeight: "1rem", fontSize: ".75rem"}}>
             {stats.regionSubTitle}
           </p>
@@ -151,7 +148,7 @@ export default class StatsPanel extends React.Component {
             {stats.areaWarning}
           </p>
         </div>
-      </div>
+      </ToolPanel>
     );
   }
 }
