@@ -73,19 +73,19 @@
                                         "Kind Regards,\n"
                                         "  The CEO Team")
                                    email email timestamp (get-base-url) (URLEncoder/encode email) reset-key)
-            auto-validate? (get-config :mail :auto-validate?)]
-        (call-sql "add_user"
-                  {:log? false}
-                  username
-                  email
-                  password
-                  reset-key
-                  full-name
-                  sector
-                  institution
-                  default-lang)
+            auto-validate? (get-config :mail :auto-validate?)
+            user-id        (call-sql "add_user"
+                                     {:log? false}
+                                     username
+                                     email
+                                     password
+                                     reset-key
+                                     full-name
+                                     sector
+                                     institution
+                                     default-lang)]
         (if auto-validate?
-          (do (call-sql "user_verified" (:user_id user))
+          (do (call-sql "user_verified" user-id)
               (data-response ""))
           (try
             (send-mail email nil nil "Welcome to CEO!" email-msg "text/plain")
