@@ -6,6 +6,7 @@
   (:require [ring.util.response :refer [redirect]]
             [triangulum.type-conversion :as tc]
             [triangulum.database        :refer [call-sql sql-primitive]]
+            [triangulum.config          :refer [get-config]]
             [comimo.utils.mail          :refer [send-mail get-base-url]]
             [comimo.views               :refer [data-response]]))
 
@@ -60,18 +61,19 @@
         username     (:username params)]
     (if-let [error-msg (get-register-errors username email)]
       (data-response error-msg)
-      (let [timestamp (-> (DateTimeFormatter/ofPattern "yyyy/MM/dd HH:mm:ss")
-                          (.format (LocalDateTime/now)))
-            email-msg (format (str "Dear %s,\n\n"
-                                   "Thank you for signing up for CEO!\n\n"
-                                   "Your Account Summary Details:\n\n"
-                                   "  Email: %s\n"
-                                   "  Created on: %s\n\n"
-                                   "  Click the following link to verify your email:\n"
-                                   "  %sverify-email?email=%s&passwordResetKey=%s\n\n"
-                                   "Kind Regards,\n"
-                                   "  The CEO Team")
-                              email email timestamp (get-base-url) (URLEncoder/encode email) reset-key)]
+      (let [timestamp      (-> (DateTimeFormatter/ofPattern "yyyy/MM/dd HH:mm:ss")
+                               (.format (LocalDateTime/now)))
+            email-msg      (format (str "Dear %s,\n\n"
+                                        "Thank you for signing up for CEO!\n\n"
+                                        "Your Account Summary Details:\n\n"
+                                        "  Email: %s\n"
+                                        "  Created on: %s\n\n"
+                                        "  Click the following link to verify your email:\n"
+                                        "  %sverify-email?email=%s&passwordResetKey=%s\n\n"
+                                        "Kind Regards,\n"
+                                        "  The CEO Team")
+                                   email email timestamp (get-base-url) (URLEncoder/encode email) reset-key)
+            auto-validate? (get-config :mail :auto-validate?)]
         (call-sql "add_user"
                   {:log? false}
                   username
@@ -82,11 +84,13 @@
                   sector
                   institution
                   default-lang)
-        (try
-          (send-mail email nil nil "Welcome to CEO!" email-msg "text/plain")
+        (if auto-validate?
+          (call-sql "user_verified" (:user_id user))
           (data-response "")
-          (catch Exception _
-            (data-response (str "A new user account was created but there was a server error.  Please contact support@sig-gis.com."))))))))
+          (try
+            (send-mail email nil nil "Welcome to CEO!" email-msg "text/plain")
+            (catch Exception _
+              (data-response (str "A new user account was created but there was a server error.  Please contact support@sig-gis.com.")))))))))
 
 (defn logout [_]
   (-> (redirect "/")
