@@ -62,7 +62,7 @@ export default class ReportMinesPanel extends React.Component {
 
   render() {
     const {latLonText, reportingMine, reportedLatLon} = this.state;
-    const {isVisible, selectedLatLon} = this.props;
+    const {selectedLatLon} = this.props;
     const {localeText: {report}} = this.context;
 
     const reported = reportedLatLon === selectedLatLon;

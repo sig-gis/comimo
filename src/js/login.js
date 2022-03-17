@@ -23,11 +23,11 @@ class Login extends React.Component {
     const {username, password} = this.state;
     jsonRequest("/login", {username, password})
       .then(data => {
-        if (data[0] && data[1] === "") {
+        if (data === "") {
           window.location = "/";
         } else {
-          console.error(data[1]);
-          alert(this.state.localeText[data[1]] || data[1] || this.state.localeText.errorCreating);
+          console.error(data);
+          alert(this.state.localeText[data] || data || this.state.localeText.errorCreating);
         }
       })
       .catch(err => console.error(err));
