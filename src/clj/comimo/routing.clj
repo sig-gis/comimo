@@ -1,11 +1,11 @@
 (ns comimo.routing
-  (:require [comimo.views             :refer [render-page]]
-            [comimo.db.plots          :as plots]
-            [comimo.db.projects       :as projects]
-            [comimo.db.subscriptions  :as subscriptions]
-            [comimo.db.users          :as users]
-            [comimo.py-interop        :as py]
-            [comimo.proxy             :as proxy]))
+  (:require [comimo.views            :refer [render-page]]
+            [comimo.db.plots         :as plots]
+            [comimo.db.projects      :as projects]
+            [comimo.db.subscriptions :as subscriptions]
+            [comimo.db.users         :as users]
+            [comimo.py-interop       :as py]
+            [comimo.proxy            :as proxy]))
 
 (def routes
   {;; Page Routes

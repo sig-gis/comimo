@@ -55,7 +55,6 @@ CREATE TABLE imagery (
     archived_date      date
 );
 
-
 -- Stores information about projects
 CREATE TABLE projects (
     project_uid     SERIAL PRIMARY KEY,
