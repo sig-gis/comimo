@@ -1,6 +1,7 @@
 import React from "react";
 
 import LoginMessage from "./LoginMessage";
+import Button, {ActionButton} from "../components/Button";
 import SvgIcon from "../components/SvgIcon";
 import ToolPanel from "../components/ToolPanel";
 
@@ -64,7 +65,7 @@ export default class ValidatePanel extends React.Component {
       .replace("{%region}", regions);
 
     if (this.checkProjectErrors(dataLayer, selectedArr, projectName, projects, regionType, validate)
-          && confirm(question)) {
+      && confirm(question)) {
       jsonRequest(URLS.CREATE_PROJ, {dataLayer, name: projectName, regions: selectedArr})
         .then(res => {
           if (res.action !== "Error") {
@@ -124,15 +125,13 @@ export default class ValidatePanel extends React.Component {
           </div>
         </td>
         <td style={{verticalAlign: "top"}}>
-          <button
-            className="del-btn green-btn p-0"
+          <ActionButton
+            green
             onClick={() => this.closeProject(id)}
-            style={{height: "1.75rem", width: "1.75rem"}}
             title={"Close " + name}
-            type="button"
           >
             <SvgIcon extraStyle={{margin: "0px .3rem .1rem"}} icon="check" size="1.25rem"/>
-          </button>
+          </ActionButton>
         </td>
       </tr>
     );
@@ -246,15 +245,12 @@ export default class ValidatePanel extends React.Component {
                 {validate.customRadio}
               </span>
               {regionType === 2 && this.renderCustomRegions()}
-              <button
-                className="map-upd-btn"
-                disabled={creatingProject}
+              <Button
                 onClick={() => this.createProject(selectedDates[mineType] || "2022-01-01-N")}
                 style={{marginTop: ".25rem"}}
-                type="button"
               >
                 {`${validate.createButton} ${selectedDates[mineType]}`}
-              </button>
+              </Button>
               <p>{errorMsg}</p>
             </div>
           ) : (

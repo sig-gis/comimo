@@ -3,6 +3,8 @@ import ReactDOM from "react-dom";
 
 import {getLanguage, jsonRequest, validatePassword} from "./utils";
 
+import {AccountsButton} from "./components/Button";
+
 class PasswordReset extends React.Component {
   constructor(props) {
     super(props);
@@ -80,13 +82,12 @@ class PasswordReset extends React.Component {
             {this.renderField(localeText.password, "password", "password")}
             {this.renderField(localeText.confirm, "password", "passwordConfirmation")}
             <div className="d-flex justify-content-end">
-              <button
-                className="btn orange-btn mt-3"
+              <AccountsButton
+                className="mt-3"
                 onClick={this.resetPassword}
-                type="button"
               >
                 {localeText.resetTitle}
-              </button>
+              </AccountsButton>
             </div>
           </div>
         </div>

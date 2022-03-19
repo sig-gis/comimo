@@ -3,6 +3,8 @@ import ReactDOM from "react-dom";
 
 import LoadingModal from "./components/LoadingModal";
 import LanguageSelector from "./components/LanguageSelector";
+import {AccountsButton} from "./components/Button";
+
 import {jsonRequest} from "./utils";
 
 class UserAccount extends React.Component {
@@ -166,13 +168,12 @@ class UserAccount extends React.Component {
             )}
             <div className="d-flex justify-content-between align-items-center">
               <span style={{color: "red"}}>{localeText.allRequired}</span>
-              <button
-                className="btn orange-btn mt-3"
+              <AccountsButton
+                className="mt-3"
                 onClick={this.updateUser}
-                type="button"
               >
                 {localeText.save}
-              </button>
+              </AccountsButton>
             </div>
           </div>
         </div>

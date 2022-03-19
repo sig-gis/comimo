@@ -2,6 +2,8 @@ import React from "react";
 
 import LoginMessage from "./LoginMessage";
 
+import Button, {ActionButton} from "../components/Button";
+
 import {MainContext, URLS} from "./constants";
 import {jsonRequest} from "../utils";
 import ToolPanel from "../components/ToolPanel";
@@ -78,13 +80,12 @@ export default class SubscribePanel extends React.Component {
                   {arr[2] + ", "}
                   <i>{arr[1]}</i>
                 </td>
-                <td style={{width: "30px"}}>
-                  <input
-                    className="del-btn"
+                <td>
+                  <ActionButton
                     onClick={() => this.delSubs(region)}
-                    type="submit"
-                    value="X"
-                  />
+                  >
+                 X
+                  </ActionButton>
                 </td>
               </tr>
             );
@@ -113,13 +114,12 @@ export default class SubscribePanel extends React.Component {
               )}
             {selectedRegion && !subscribedList.includes(selectedRegion) && (
               <div style={{textAlign: "center", width: "100%"}}>
-                <button
-                  className="map-upd-btn"
+                <Button
                   onClick={() => this.addSubs(selectedRegion)}
-                  type="button"
+                  style={{height: "1.75rem", width: "1.75rem"}}
                 >
                   {`${subscribe.subscribeTo} ${parsedRegion[2]}, `}<i>{parsedRegion[1]}</i>
-                </button>
+                </Button>
               </div>
             )}
           </div>
