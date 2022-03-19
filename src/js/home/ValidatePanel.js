@@ -1,7 +1,7 @@
 import React from "react";
 
 import LoginMessage from "./LoginMessage";
-import Button, {ActionButton} from "../components/Button";
+import Button from "../components/Button";
 import SvgIcon from "../components/SvgIcon";
 import ToolPanel from "../components/ToolPanel";
 
@@ -125,13 +125,15 @@ export default class ValidatePanel extends React.Component {
           </div>
         </td>
         <td style={{verticalAlign: "top"}}>
-          <ActionButton
-            green
+          <button
+            className="del-btn green-btn p-0"
             onClick={() => this.closeProject(id)}
+            style={{height: "1.75rem", width: "1.75rem"}}
             title={"Close " + name}
+            type="button"
           >
             <SvgIcon extraStyle={{margin: "0px .3rem .1rem"}} icon="check" size="1.25rem"/>
-          </ActionButton>
+          </button>
         </td>
       </tr>
     );

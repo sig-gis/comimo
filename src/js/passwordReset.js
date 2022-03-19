@@ -1,9 +1,9 @@
 import React from "react";
 import ReactDOM from "react-dom";
 
-import {getLanguage, jsonRequest, validatePassword} from "./utils";
-
 import {AccountsButton} from "./components/Button";
+
+import {getLanguage, jsonRequest, validatePassword} from "./utils";
 
 class PasswordReset extends React.Component {
   constructor(props) {

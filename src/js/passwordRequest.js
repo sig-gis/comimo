@@ -2,7 +2,6 @@ import React from "react";
 import ReactDOM from "react-dom";
 
 import LoadingModal from "./components/LoadingModal";
-
 import {AccountsButton} from "./components/Button";
 
 import {getLanguage, jsonRequest} from "./utils";

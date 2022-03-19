@@ -1,7 +1,6 @@
 import React from "react";
 
 import ToolPanel from "../components/ToolPanel";
-
 import Button from "../components/Button";
 
 import {MainContext, URLS} from "./constants";

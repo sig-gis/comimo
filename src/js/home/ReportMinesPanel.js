@@ -1,8 +1,7 @@
 import React from "react";
 
-import ToolPanel from "../components/ToolPanel";
-
 import Button from "../components/Button";
+import ToolPanel from "../components/ToolPanel";
 
 import {jsonRequest} from "../utils";
 import {MainContext, URLS} from "./constants";

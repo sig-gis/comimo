@@ -1,12 +1,11 @@
 import React from "react";
 
 import LoginMessage from "./LoginMessage";
-
-import Button, {ActionButton} from "../components/Button";
+import Button from "../components/Button";
+import ToolPanel from "../components/ToolPanel";
 
 import {MainContext, URLS} from "./constants";
 import {jsonRequest} from "../utils";
-import ToolPanel from "../components/ToolPanel";
 
 export default class SubscribePanel extends React.Component {
   constructor(props) {
@@ -80,12 +79,13 @@ export default class SubscribePanel extends React.Component {
                   {arr[2] + ", "}
                   <i>{arr[1]}</i>
                 </td>
-                <td>
-                  <ActionButton
+                <td style={{width: "30px"}}>
+                  <input
+                    className="del-btn"
                     onClick={() => this.delSubs(region)}
-                  >
-                 X
-                  </ActionButton>
+                    type="submit"
+                    value="X"
+                  />
                 </td>
               </tr>
             );
