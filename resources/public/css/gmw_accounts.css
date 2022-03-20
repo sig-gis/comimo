@@ -16,3 +16,18 @@
 .card-body {
   padding: 1rem;
 }
+
+
+.orange-btn {
+  color: #fff;
+  background-color: #f0ad4e;
+  border-color: #462f0f;
+  border-radius: 3px;
+}
+
+.orange-btn:hover {
+  color: #fff;
+  background-color: #c57a12;
+  border-color: #462f0f;
+  border-radius: 3px;
+}
