@@ -56,8 +56,12 @@ class Login extends React.Component {
   render() {
     const {localeText} = this.state;
     return (
-      <div
+      <form
         className="d-flex justify-content-center"
+        onSubmit={e => {
+          e.preventDefault();
+          this.requestLogin();
+        }}
         style={{paddingTop: "20vh"}}
       >
         <Card header={localeText.loginTitle}>
@@ -86,7 +90,7 @@ class Login extends React.Component {
             </div>
           </div>
         </Card>
-      </div>
+      </form>
     );
   }
 }
