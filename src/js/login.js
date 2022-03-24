@@ -1,6 +1,8 @@
 import React from "react";
 import ReactDOM from "react-dom";
 
+import LoginButton from "./components/LoginButton";
+
 import {getLanguage, jsonRequest} from "./utils";
 
 class Login extends React.Component {
@@ -64,26 +66,23 @@ class Login extends React.Component {
             {this.renderField(localeText.password, "password", "password")}
             <div className="d-flex justify-content-between align-items-center">
               <a href="/password-forgot">{localeText.forgot}</a>
-              <button
-                className="btn orange-btn mt-3"
+              <LoginButton
+                className="mt-3"
                 onClick={this.requestLogin}
-                type="button"
               >
                 {localeText.login}
-              </button>
+              </LoginButton>
             </div>
             <div className="d-flex flex-column align-items-center">
               <h3 className="">{localeText.newUser}</h3>
               <div className="">
                 <div >
-                  <button
-                    className="btn orange-btn"
+                  <LoginButton
                     name="register"
                     onClick={() => { window.location = "/register"; }}
-                    type="button"
                   >
                     {localeText.register}
-                  </button>
+                  </LoginButton>
                 </div>
               </div>
             </div>
