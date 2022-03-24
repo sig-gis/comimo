@@ -1,6 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom";
 
+import Card from "./components/Card";
 import LoginButton from "./components/LoginButton";
 
 import {getLanguage, jsonRequest} from "./utils";
@@ -59,35 +60,32 @@ class Login extends React.Component {
         className="d-flex justify-content-center"
         style={{paddingTop: "20vh"}}
       >
-        <div className="card">
-          <div className="card-header">{localeText.loginTitle}</div>
-          <div className="card-body">
-            {this.renderField(localeText.username, "text", "username")}
-            {this.renderField(localeText.password, "password", "password")}
-            <div className="d-flex justify-content-between align-items-center">
-              <a href="/password-forgot">{localeText.forgot}</a>
-              <LoginButton
-                className="mt-3"
-                onClick={this.requestLogin}
-              >
-                {localeText.login}
-              </LoginButton>
-            </div>
-            <div className="d-flex flex-column align-items-center">
-              <h3 className="">{localeText.newUser}</h3>
-              <div className="">
-                <div >
-                  <LoginButton
-                    name="register"
-                    onClick={() => { window.location = "/register"; }}
-                  >
-                    {localeText.register}
-                  </LoginButton>
-                </div>
+        <Card header={localeText.loginTitle}>
+          {this.renderField(localeText.username, "text", "username")}
+          {this.renderField(localeText.password, "password", "password")}
+          <div className="d-flex justify-content-between align-items-center">
+            <a href="/password-forgot">{localeText.forgot}</a>
+            <LoginButton
+              className="mt-3"
+              onClick={this.requestLogin}
+            >
+              {localeText.login}
+            </LoginButton>
+          </div>
+          <div className="d-flex flex-column align-items-center">
+            <h3 className="">{localeText.newUser}</h3>
+            <div className="">
+              <div >
+                <LoginButton
+                  name="register"
+                  onClick={() => { window.location = "/register"; }}
+                >
+                  {localeText.register}
+                </LoginButton>
               </div>
             </div>
           </div>
-        </div>
+        </Card>
       </div>
     );
   }

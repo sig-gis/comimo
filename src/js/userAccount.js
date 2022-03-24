@@ -1,8 +1,9 @@
 import React from "react";
 import ReactDOM from "react-dom";
 
-import LoadingModal from "./components/LoadingModal";
+import Card from "./components/Card";
 import LanguageSelector from "./components/LanguageSelector";
+import LoadingModal from "./components/LoadingModal";
 
 import {jsonRequest} from "./utils";
 
@@ -142,41 +143,38 @@ class UserAccount extends React.Component {
         style={{paddingTop: "2rem"}}
       >
         {this.state.showModal && <LoadingModal message={localeText.modalMessage}/>}
-        <div className="card">
-          <div className="card-header">{localeText.userAccountTitle}</div>
-          <div className="card-body">
-            <div className="d-flex">
-              <label className="mr-3">{localeText.language}</label>
-              <LanguageSelector
-                selectedLanguage={defaultLang}
-                selectLanguage={this.selectLanguage}
-              />
-            </div>
-            {this.renderField(localeText.username, "text", "username", true)}
-            {this.renderField(localeText.email, "email", "email", true)}
-            {this.renderField(localeText.fullName, "text", "fullName")}
-            {this.renderField(localeText.institution, "text", "institution")}
-            {this.renderSelect(
-              localeText.sector,
-              [
-                {key: "academic", optLabel: localeText.academic},
-                {key: "government", optLabel: localeText.government},
-                {key: "ngo", optLabel: localeText.ngo}
-              ],
-              "sector"
-            )}
-            <div className="d-flex justify-content-between align-items-center">
-              <span style={{color: "red"}}>{localeText.allRequired}</span>
-              <button
-                className="btn orange-btn mt-3"
-                onClick={this.updateUser}
-                type="button"
-              >
-                {localeText.save}
-              </button>
-            </div>
+        <Card header={localeText.userAccountTitle}>
+          <div className="d-flex">
+            <label className="mr-3">{localeText.language}</label>
+            <LanguageSelector
+              selectedLanguage={defaultLang}
+              selectLanguage={this.selectLanguage}
+            />
           </div>
-        </div>
+          {this.renderField(localeText.username, "text", "username", true)}
+          {this.renderField(localeText.email, "email", "email", true)}
+          {this.renderField(localeText.fullName, "text", "fullName")}
+          {this.renderField(localeText.institution, "text", "institution")}
+          {this.renderSelect(
+            localeText.sector,
+            [
+              {key: "academic", optLabel: localeText.academic},
+              {key: "government", optLabel: localeText.government},
+              {key: "ngo", optLabel: localeText.ngo}
+            ],
+            "sector"
+          )}
+          <div className="d-flex justify-content-between align-items-center">
+            <span style={{color: "red"}}>{localeText.allRequired}</span>
+            <button
+              className="btn orange-btn mt-3"
+              onClick={this.updateUser}
+              type="button"
+            >
+              {localeText.save}
+            </button>
+          </div>
+        </Card>
       </div>
     );
   }
