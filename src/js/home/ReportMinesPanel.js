@@ -1,5 +1,6 @@
 import React from "react";
 
+import Button from "../components/Button";
 import ToolPanel from "../components/ToolPanel";
 
 import {jsonRequest} from "../utils";
@@ -77,9 +78,9 @@ export default class ReportMinesPanel extends React.Component {
             onKeyUp={e => { if (e.key === "Enter") this.processLatLng(); }}
             value={latLonText}
           />
-          <button className="map-upd-btn" onClick={this.processLatLng} type="button">
+          <Button onClick={this.processLatLng}>
             {report.goButton}
-          </button>
+          </Button>
         </div>
         <h3 className="mt-3">{report.selectedLocation}</h3>
         {selectedLatLon

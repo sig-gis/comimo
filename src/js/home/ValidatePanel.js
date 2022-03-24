@@ -1,6 +1,7 @@
 import React from "react";
 
 import LoginMessage from "./LoginMessage";
+import Button from "../components/Button";
 import SvgIcon from "../components/SvgIcon";
 import ToolPanel from "../components/ToolPanel";
 
@@ -64,7 +65,7 @@ export default class ValidatePanel extends React.Component {
       .replace("{%region}", regions);
 
     if (this.checkProjectErrors(dataLayer, selectedArr, projectName, projects, regionType, validate)
-          && confirm(question)) {
+      && confirm(question)) {
       jsonRequest(URLS.CREATE_PROJ, {dataLayer, name: projectName, regions: selectedArr})
         .then(res => {
           if (res.action !== "Error") {
@@ -246,15 +247,12 @@ export default class ValidatePanel extends React.Component {
                 {validate.customRadio}
               </span>
               {regionType === 2 && this.renderCustomRegions()}
-              <button
-                className="map-upd-btn"
-                disabled={creatingProject}
+              <Button
+                className="mt-2"
                 onClick={() => this.createProject(selectedDates[mineType] || "2022-01-01-N")}
-                style={{marginTop: ".25rem"}}
-                type="button"
               >
                 {`${validate.createButton} ${selectedDates[mineType]}`}
-              </button>
+              </Button>
               <p>{errorMsg}</p>
             </div>
           ) : (

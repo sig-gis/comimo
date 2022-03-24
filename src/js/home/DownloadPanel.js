@@ -1,6 +1,7 @@
 import React from "react";
 
 import ToolPanel from "../components/ToolPanel";
+import Button from "../components/Button";
 
 import {jsonRequest} from "../utils";
 import {MainContext, URLS} from "./constants";
@@ -71,14 +72,12 @@ export default class DownloadPanel extends React.Component {
         </div>
         {selectedDates && (
           <div style={{textAlign: "center", width: "100%", marginTop: ".5rem"}}>
-            <button
-              className="map-upd-btn"
+            <Button
               disabled={fetching}
               onClick={this.getDownloadUrl}
-              type="button"
             >
               {download.getUrl} {selectedDates[mineType]}
-            </button>
+            </Button>
           </div>
         )}
         {fetching

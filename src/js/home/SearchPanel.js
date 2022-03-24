@@ -1,6 +1,7 @@
 import React from "react";
 
 import ToolPanel from "../components/ToolPanel";
+import Button from "../components/Button";
 
 import {MainContext, URLS} from "./constants";
 import {mapQuestKey} from "../appConfig";
@@ -133,9 +134,9 @@ export default class SearchPanel extends React.Component {
             onKeyUp={e => { if (e.key === "Enter") this.searchGeocode(); }}
             value={searchText}
           />
-          <button className="map-upd-btn" onClick={this.searchGeocode} type="button">
+          <Button onClick={this.searchGeocode}>
             {search.goButton}
-          </button>
+          </Button>
         </div>
         {geoSearchResults}
         <label>{search.coordLabel}</label>
@@ -146,9 +147,9 @@ export default class SearchPanel extends React.Component {
             onKeyUp={e => { if (e.key === "Enter") this.processLatLng(); }}
             value={latLngText}
           />
-          <button className="map-upd-btn" onClick={this.processLatLng} type="button">
+          <Button onClick={this.processLatLng}>
             {search.goButton}
-          </button>
+          </Button>
         </div>
         <label>{search.selectLabel}</label>
         {selectL1}

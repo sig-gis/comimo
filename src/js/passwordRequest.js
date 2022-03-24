@@ -2,6 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom";
 
 import LoadingModal from "./components/LoadingModal";
+import {AccountsButton} from "./components/Button";
 
 import {getLanguage, jsonRequest} from "./utils";
 
@@ -71,13 +72,12 @@ class PasswordForgot extends React.Component {
           <div className="card-body">
             {this.renderField(localeText.email, "email", "email")}
             <div className="d-flex justify-content-end">
-              <button
-                className="btn orange-btn mt-3"
+              <AccountsButton
+                className="mt-3"
                 onClick={this.requestPassword}
-                type="button"
               >
                 {localeText.request}
-              </button>
+              </AccountsButton>
             </div>
           </div>
         </div>

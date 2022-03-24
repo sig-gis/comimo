@@ -1,23 +1,6 @@
 #mobile-title {
   display: none;
 }
-.map-upd-btn {
-  color: #fff;
-  background-color: #f0ad4e;
-  border-color: #eea236;
-  border-radius: 3px;
-}
-.map-upd-btn:hover {
-  color: #fff;
-  background-color: #ff9f17;
-  border-color: #eea236;
-  border-radius: 3px;
-}
-.map-upd-btn:disabled {
-  background: #ddd;
-  color: #aaa;
-  border: none;
-}
 
 .disclaimer {
   position: absolute;

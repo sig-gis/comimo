@@ -1,10 +1,11 @@
 import React from "react";
 
 import LoginMessage from "./LoginMessage";
+import Button from "../components/Button";
+import ToolPanel from "../components/ToolPanel";
 
 import {MainContext, URLS} from "./constants";
 import {jsonRequest} from "../utils";
-import ToolPanel from "../components/ToolPanel";
 
 export default class SubscribePanel extends React.Component {
   constructor(props) {
@@ -113,13 +114,11 @@ export default class SubscribePanel extends React.Component {
               )}
             {selectedRegion && !subscribedList.includes(selectedRegion) && (
               <div style={{textAlign: "center", width: "100%"}}>
-                <button
-                  className="map-upd-btn"
+                <Button
                   onClick={() => this.addSubs(selectedRegion)}
-                  type="button"
                 >
                   {`${subscribe.subscribeTo} ${parsedRegion[2]}, `}<i>{parsedRegion[1]}</i>
-                </button>
+                </Button>
               </div>
             )}
           </div>

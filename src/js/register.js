@@ -4,6 +4,7 @@ import EmailValidator from "email-validator";
 
 import LoadingModal from "./components/LoadingModal";
 import LanguageSelector from "./components/LanguageSelector";
+import Button from "./components/Button";
 
 import {getLanguage, jsonRequest, validatePassword} from "./utils";
 
@@ -163,13 +164,11 @@ class Register extends React.Component {
             {this.renderField(localeText.confirm, "password", "passwordConfirmation")}
             <div className="d-flex justify-content-between align-items-center">
               <span style={{color: "red"}}>{localeText.allRequired}</span>
-              <button
-                className="btn orange-btn mt-3"
+              <Button
                 onClick={this.registerUser}
-                type="button"
               >
                 {localeText.register}
-              </button>
+              </Button>
             </div>
           </div>
         </div>

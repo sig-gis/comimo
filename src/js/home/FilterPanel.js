@@ -1,6 +1,7 @@
 import React from "react";
 
 import ToolPanel from "../components/ToolPanel";
+import Button from "../components/Button";
 
 import {MainContext} from "./constants";
 
@@ -63,14 +64,12 @@ export default class FilterPanel extends React.Component {
           </select>
         </div>
         <div style={{textAlign: "center", width: "100%"}}>
-          <button
-            className="map-upd-btn"
+          <Button
+            className="mt-2"
             onClick={() => selectDates(newSelectedDates)}
-            style={{marginTop: ".5rem"}}
-            type="button"
           >
             {filter.updateMap}
-          </button>
+          </Button>
         </div>
       </ToolPanel>
     );
