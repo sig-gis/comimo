@@ -65,8 +65,8 @@ export default class FilterPanel extends React.Component {
         </div>
         <div style={{textAlign: "center", width: "100%"}}>
           <Button
+            className="mt-2"
             onClick={() => selectDates(newSelectedDates)}
-            style={{marginTop: ".5rem"}}
           >
             {filter.updateMap}
           </Button>

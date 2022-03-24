@@ -116,7 +116,6 @@ export default class SubscribePanel extends React.Component {
               <div style={{textAlign: "center", width: "100%"}}>
                 <Button
                   onClick={() => this.addSubs(selectedRegion)}
-                  style={{height: "1.75rem", width: "1.75rem"}}
                 >
                   {`${subscribe.subscribeTo} ${parsedRegion[2]}, `}<i>{parsedRegion[1]}</i>
                 </Button>
