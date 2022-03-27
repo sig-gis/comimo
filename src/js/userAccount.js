@@ -1,7 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom";
 
-import Card from "./components/Card";
+import AccountCard from "./components/AccountCard";
 import LanguageSelector from "./components/LanguageSelector";
 import LoadingModal from "./components/LoadingModal";
 
@@ -143,7 +143,7 @@ class UserAccount extends React.Component {
         style={{paddingTop: "2rem"}}
       >
         {this.state.showModal && <LoadingModal message={localeText.modalMessage}/>}
-        <Card header={localeText.userAccountTitle}>
+        <AccountCard header={localeText.userAccountTitle}>
           <div className="d-flex">
             <label className="mr-3">{localeText.language}</label>
             <LanguageSelector
@@ -174,7 +174,7 @@ class UserAccount extends React.Component {
               {localeText.save}
             </button>
           </div>
-        </Card>
+        </AccountCard>
       </div>
     );
   }

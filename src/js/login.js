@@ -1,7 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom";
 
-import Card from "./components/Card";
+import AccountCard from "./components/AccountCard";
 import LoginButton from "./components/LoginButton";
 
 import {getLanguage, jsonRequest} from "./utils";
@@ -64,7 +64,7 @@ class Login extends React.Component {
         }}
         style={{paddingTop: "20vh"}}
       >
-        <Card header={localeText.loginTitle}>
+        <AccountCard header={localeText.loginTitle}>
           {this.renderField(localeText.username, "text", "username")}
           {this.renderField(localeText.password, "password", "password")}
           <div className="d-flex justify-content-between align-items-center">
@@ -89,7 +89,7 @@ class Login extends React.Component {
               </div>
             </div>
           </div>
-        </Card>
+        </AccountCard>
       </form>
     );
   }
