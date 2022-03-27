@@ -156,3 +156,44 @@ small {
 @-o-keyframes      sweep { to { -o-transform: rotate(360deg); } }
 @-moz-keyframes    sweep { to { -moz-transform: rotate(360deg); } }
 @-webkit-keyframes sweep { to { -webkit-transform: rotate(360deg); } }
+
+/*****************/
+/* Flash Message */
+/*****************/
+.alert {
+    position: absolute;
+    top: 2.5rem;
+    left: 3.5rem;
+    width: 35rem;
+    border: 1px solid #009;
+    padding: 1rem;
+    z-index: 1000;
+    font-size: 1rem;
+    font-style: italic;
+    background: white;
+    opacity: 0;
+    animation: fade-out 6s;
+    -webkit-animation: fade-out 6s;
+    -moz-animation: fade-out 6s;
+    -o-animation: fade-out 6s;
+}
+@-webkit-keyframes fade-out {
+    0%   { opacity: 0; }
+    50%  { opacity: 1; }
+    100% { opacity: 0; }
+}
+@-moz-keyframes fade-out {
+    0%   { opacity: 0; }
+    50%  { opacity: 1; }
+    100% { opacity: 0; }
+}
+@-o-keyframes fade-out {
+    0%   { opacity: 0; }
+    50%  { opacity: 1; }
+    100% { opacity: 0; }
+}
+@keyframes fade-out {
+    0%   { opacity: 0; }
+    50%  { opacity: 1; }
+    100% { opacity: 0; }
+}
