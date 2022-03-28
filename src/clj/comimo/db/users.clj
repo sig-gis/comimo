@@ -7,7 +7,7 @@
             [triangulum.type-conversion :as tc]
             [triangulum.database        :refer [call-sql sql-primitive]]
             [triangulum.config          :refer [get-config]]
-            [comimo.utils.mail          :refer [send-mail get-base-url]]
+            [comimo.utils.mail          :refer [send-mail get-base-url send-new-user-mail]]
             [comimo.views               :refer [data-response]]))
 
 (defn is-admin? [user-id]
@@ -58,7 +58,8 @@
         institution  (:institution params)
         sector       (:sector params)
         password     (:password params)
-        username     (:username params)]
+        username     (:username params)
+        default-lang (:defaultLang params)]
     (if-let [error-msg (get-register-errors username email)]
       (data-response error-msg)
       (let [timestamp      (-> (DateTimeFormatter/ofPattern "yyyy/MM/dd HH:mm:ss")
@@ -88,7 +89,7 @@
           (do (call-sql "user_verified" user-id)
               (data-response ""))
           (try
-            (send-mail email nil nil "Welcome to CEO!" email-msg "text/plain")
+            (send-new-user-mail email reset-key default-lang)
             (data-response "")
             (catch Exception _
               (data-response (str "A new user account was created but there was a server error.  Please contact support@sig-gis.com.")))))))))
