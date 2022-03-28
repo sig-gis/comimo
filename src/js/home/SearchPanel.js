@@ -58,7 +58,7 @@ export default class SearchPanel extends React.Component {
     const {localeText: {search}} = this.context;
 
     const geoSearchResults = geoCodedSearch && geoCodedSearch.length === 0
-      ? <label>{search.noResults}</label>
+      ? <div className="ml-1">{search.noResults}</div>
       : geoCodedSearch && (
         <div>{geoCodedSearch.slice(0, 3).map(item => (
           <div
