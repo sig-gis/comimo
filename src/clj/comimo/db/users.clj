@@ -15,10 +15,10 @@
 
 (defn- get-login-errors [user]
   (cond (nil? user)
-        "Invalid email/password combination."
+        "errorLogin"
 
         (not (:verified user))
-        "You have not verified your email. Please check your email for a link to verify your account, or click the forgot password link below to generate a new email."))
+        "registered"))
 
 (defn login [{:keys [params]}]
   (let [{:keys [username password]} params
