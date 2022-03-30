@@ -4,11 +4,13 @@ import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 import styled from "styled-components";
 
-import {toPrecision, jsonRequest} from "../utils";
-import {mapboxToken} from "../appConfig";
+import LngLatHud from "../components/LngLatHud";
 import InfoPopupContent from "./InfoPopupContent";
 import ReportPopupContent from "./ReportPopupContent";
+
+import {mapboxToken} from "../appConfig";
 import {MainContext, URLS, availableLayers, startVisible} from "./constants";
+import {toPrecision, jsonRequest} from "../utils";
 
 const MapBoxWrapper = styled.div`
   .mapboxgl-popup-close-button {
@@ -129,10 +131,7 @@ export default class HomeMap extends React.Component {
       theMap.on("mousemove", e => {
         const lat = toPrecision(e.lngLat.lat, 4);
         const lng = toPrecision(e.lngLat.lng, 4);
-        const hudShell = document.getElementById("lnglathud-shell");
-        const hud = document.getElementById("lnglathud");
-        hudShell.style.display = "inherit";
-        hud.innerHTML = lat + ", " + lng;
+        this.setState({coords: {lat, lng}});
       });
       theMap.on("click", e => {
         const {lng, lat} = e.lngLat;
@@ -185,6 +184,7 @@ export default class HomeMap extends React.Component {
   // Adds layers initially with no styling, URL is updated later.  This is to guarantee z order in mapbox
   addLayerSources = list => {
     const {theMap} = this.props;
+
     list.forEach(name => {
       theMap.addSource(name, {type: "raster", tiles: [], tileSize: 256, vis: {palette: []}});
       theMap.addLayer({
@@ -199,6 +199,7 @@ export default class HomeMap extends React.Component {
   };
 
   render() {
+    const {coords} = this.state;
     return (
       <>
         <MapBoxWrapper
@@ -211,9 +212,7 @@ export default class HomeMap extends React.Component {
             position: "relative"
           }}
         />
-        <div id="lnglathud-shell">
-          <span id="lnglathud"/>
-        </div>
+        {coords && <LngLatHud coords={coords}/>}
       </>
     );
   }
