@@ -56,7 +56,7 @@ export default class PageLayout extends React.Component {
           setShowInfo: this.setShowInfo
         }}
       >
-        {showInfo && <AppInfo onOuterClick={() => this.setShowInfo(false)}/>}
+        {showInfo && <AppInfo onClose={() => this.setShowInfo(false)}/>}
         <div
           id="root-component"
           style={{
