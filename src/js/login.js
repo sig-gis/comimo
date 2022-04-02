@@ -1,6 +1,9 @@
 import React from "react";
 import ReactDOM from "react-dom";
 
+import AccountForm from "./components/AccountForm";
+import Button from "./components/Button";
+
 import {getLanguage, jsonRequest} from "./utils";
 
 class Login extends React.Component {
@@ -53,43 +56,38 @@ class Login extends React.Component {
   render() {
     const {localeText} = this.state;
     return (
-      <div
-        className="d-flex justify-content-center"
-        style={{paddingTop: "20vh"}}
+      <AccountForm
+        header={localeText.loginTitle}
+        onSubmit={e => {
+          e.preventDefault();
+          this.requestLogin();
+        }}
       >
-        <div className="card">
-          <div className="card-header">{localeText.loginTitle}</div>
-          <div className="card-body">
-            {this.renderField(localeText.username, "text", "username")}
-            {this.renderField(localeText.password, "password", "password")}
-            <div className="d-flex justify-content-between align-items-center">
-              <a href="/password-forgot">{localeText.forgot}</a>
-              <button
-                className="btn orange-btn mt-3"
-                onClick={this.requestLogin}
-                type="button"
+        {this.renderField(localeText.username, "text", "username")}
+        {this.renderField(localeText.password, "password", "password")}
+        <div className="d-flex justify-content-between align-items-center">
+          <a href="/password-forgot">{localeText.forgot}</a>
+          <Button
+            className="mt-3"
+            onClick={this.requestLogin}
+          >
+            {localeText.login}
+          </Button>
+        </div>
+        <div className="d-flex flex-column align-items-center">
+          <h3 className="">{localeText.newUser}</h3>
+          <div className="">
+            <div >
+              <Button
+                name="register"
+                onClick={() => { window.location = "/register"; }}
               >
-                {localeText.login}
-              </button>
-            </div>
-            <div className="d-flex flex-column align-items-center">
-              <h3 className="">{localeText.newUser}</h3>
-              <div className="">
-                <div >
-                  <button
-                    className="btn orange-btn"
-                    name="register"
-                    onClick={() => { window.location = "/register"; }}
-                    type="button"
-                  >
-                    {localeText.register}
-                  </button>
-                </div>
-              </div>
+                {localeText.register}
+              </Button>
             </div>
           </div>
         </div>
-      </div>
+      </AccountForm>
     );
   }
 }
