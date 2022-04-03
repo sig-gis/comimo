@@ -1,8 +1,5 @@
 (ns comimo.db.users
-  (:import java.net.URLEncoder
-           java.time.format.DateTimeFormatter
-           java.time.LocalDateTime
-           java.util.UUID)
+  (:import java.util.UUID)
   (:require [ring.util.response :refer [redirect]]
             [triangulum.type-conversion :as tc]
             [triangulum.database        :refer [call-sql sql-primitive]]
@@ -22,7 +19,7 @@
 
 (defn login [{:keys [params]}]
   (let [{:keys [username password]} params
-        user (first (call-sql "check_login" {:log? false} username password))]
+        user                        (first (call-sql "check_login" {:log? false} username password))]
     (if-let [error-msg (get-login-errors user)]
       (data-response error-msg)
       (data-response ""
@@ -52,7 +49,6 @@
 
 (defn register [{:keys [params]}]
   (let [reset-key    (str (UUID/randomUUID))
-        default-lang (:defaultLang params)
         email        (:email params)
         full-name    (:fullName params)
         institution  (:institution params)
@@ -62,9 +58,7 @@
         default-lang (:defaultLang params)]
     (if-let [error-msg (get-register-errors username email)]
       (data-response error-msg)
-      (let [timestamp      (-> (DateTimeFormatter/ofPattern "yyyy/MM/dd HH:mm:ss")
-                               (.format (LocalDateTime/now)))
-            auto-validate? (get-config :mail :auto-validate?)
+      (let [auto-validate? (get-config :mail :auto-validate?)
             user-id        (sql-primitive (call-sql "add_user"
                                                     {:log? false}
                                                     username
