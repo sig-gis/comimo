@@ -14,7 +14,7 @@ class PasswordReset extends React.Component {
   componentDidMount() {
     Promise.all([
       this.getLocale(),
-      this.verifyUser()
+      this.verifyEmail()
     ])
       .then(data => {
         if (data[0] && data[1] === "") {
@@ -35,8 +35,8 @@ class PasswordReset extends React.Component {
       return true;
     });
 
-  verifyUser = () => jsonRequest(
-    "/verify-user/",
+  verifyEmail = () => jsonRequest(
+    "/verify-email/",
     {
       passwordResetKey: this.props.passwordResetKey,
       email: this.props.email
