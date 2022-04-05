@@ -44,11 +44,44 @@ export default class CollectMap extends React.Component {
     this.initMap();
   }
 
+  mapChange = (prevProps, key) => this.props.theMap && this.props[key]
+      && (prevProps.theMap !== this.props.theMap
+        || prevProps[key] !== this.props[key]);
+
   componentDidUpdate(prevProps, _prevState) {
-    if (this.props.theMap && prevProps.myHeight !== this.props.myHeight) {
+    if (this.mapChange(prevProps, "myHeight")) {
       setTimeout(() => this.props.theMap.resize(), 50);
     }
+
+    if (this.mapChange(prevProps, "boundary")) {
+      this.updateBound();
+    }
   }
+
+  updateBound = () => {
+    const {theMap, boundary} = this.props;
+    theMap.addSource("boundary", {
+      "type": "geojson",
+      "data": {
+        "type": "Feature",
+        "properties": {},
+        "geometry": boundary
+      }
+    });
+    theMap.addLayer({
+      "id": "route",
+      "type": "line",
+      "source": "boundary",
+      "layout": {
+        "line-join": "round",
+        "line-cap": "round"
+      },
+      "paint": {
+        "line-color": "yellow",
+        "line-width": 4
+      }
+    });
+  };
 
   /// API Calls ///
 
@@ -62,19 +95,15 @@ export default class CollectMap extends React.Component {
       center: [-73.5609339, 4.6371205],
       zoom: 5
     });
-    this.props.setMap(theMap);
 
     theMap.on("load", () => {
+      this.props.setMap(theMap);
       theMap.addControl(new mapboxgl.NavigationControl({showCompass: false}));
 
       theMap.on("mousemove", e => {
         const lat = toPrecision(e.lngLat.lat, 4);
         const lng = toPrecision(e.lngLat.lng, 4);
         this.setState({coords: {lat, lng}});
-      });
-      theMap.on("click", e => {
-        const {lng, lat} = e.lngLat;
-        this.addPopup(lat, lng);
       });
     });
   };

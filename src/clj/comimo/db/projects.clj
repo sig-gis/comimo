@@ -27,7 +27,7 @@
    :name        (:name project)
    :regions     (str/split (:regions project) #"__")
    :dataLayer   (:data_layer project)
-   :boundary    (:boundary project)
+   :boundary    (tc/json->clj (:boundary project))
    :createdDate (:created_date project)})
 
 (defn- single-project-by-id [project-id]
@@ -42,7 +42,7 @@
     (data-response (single-project-by-id project-id))))
 
 (defn user-projects [{:keys [params]}]
-  (let [user-id    (:userId params -1)]
+  (let [user-id (:userId params -1)]
     (data-response (build-user-projects user-id))))
 
 ;;;
