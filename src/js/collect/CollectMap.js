@@ -1,5 +1,6 @@
 import React from "react";
 import mapboxgl from "mapbox-gl";
+import extent from "turf-extent";
 import styled from "styled-components";
 import "mapbox-gl/dist/mapbox-gl.css";
 
@@ -58,31 +59,6 @@ export default class CollectMap extends React.Component {
     }
   }
 
-  updateBound = () => {
-    const {theMap, boundary} = this.props;
-    theMap.addSource("boundary", {
-      "type": "geojson",
-      "data": {
-        "type": "Feature",
-        "properties": {},
-        "geometry": boundary
-      }
-    });
-    theMap.addLayer({
-      "id": "route",
-      "type": "line",
-      "source": "boundary",
-      "layout": {
-        "line-join": "round",
-        "line-cap": "round"
-      },
-      "paint": {
-        "line-color": "yellow",
-        "line-width": 4
-      }
-    });
-  };
-
   /// API Calls ///
 
   /// Mapbox TODO move to separate component
@@ -95,6 +71,7 @@ export default class CollectMap extends React.Component {
       center: [-73.5609339, 4.6371205],
       zoom: 5
     });
+    setTimeout(() => theMap.resize(), 1);
 
     theMap.on("load", () => {
       this.props.setMap(theMap);
@@ -109,6 +86,50 @@ export default class CollectMap extends React.Component {
   };
 
   isLayerVisible = layer => this.props.theMap.getLayer(layer).visibility === "visible";
+
+  fitMap = (type, arg) => {
+    const {theMap} = this.props;
+    if (type === "point") {
+      try {
+        theMap.flyTo({center: arg, essential: true});
+      } catch (err) {
+        console.error(err);
+      }
+    } else if (type === "bbox") {
+      try {
+        theMap.fitBounds(arg, {padding: {top: 16, bottom:32, left: 16, right: 16}});
+      } catch (error) {
+        console.error(error);
+      }
+    }
+  };
+
+  updateBound = () => {
+    const {theMap, boundary} = this.props;
+    const geoJSON = {
+      "type": "Feature",
+      "properties": {},
+      "geometry": boundary
+    };
+    theMap.addSource("boundary", {
+      "type": "geojson",
+      "data": geoJSON
+    });
+    theMap.addLayer({
+      "id": "route",
+      "type": "line",
+      "source": "boundary",
+      "layout": {
+        "line-join": "round",
+        "line-cap": "round"
+      },
+      "paint": {
+        "line-color": "yellow",
+        "line-width": 4
+      }
+    });
+    this.fitMap("bbox", extent(geoJSON));
+  };
 
   render() {
     const {coords} = this.state;

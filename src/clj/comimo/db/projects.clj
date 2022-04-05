@@ -16,8 +16,6 @@
 (defn can-collect? [user-id project-id]
   (sql-primitive (call-sql "can_user_collect_project" {:log? false} user-id project-id)))
 
-
-
 ;;;
 ;;; Get data functions
 ;;;
