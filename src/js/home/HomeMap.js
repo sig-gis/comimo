@@ -45,12 +45,12 @@ const MapBoxWrapper = styled.div`
 `;
 
 export default class HomeMap extends React.Component {
-  // set up class flags so each component update doesn't do redundant JS tasks
   constructor(props) {
     super(props);
 
     this.state = {
-      thePopup: null
+      thePopup: null,
+      coords: null
     };
   }
 

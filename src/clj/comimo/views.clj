@@ -26,7 +26,6 @@
                 "css/gmw_global.css"
                 "css/tabulator_bootstrap4-4.5.3.min.css" ; only download
                 "css/gmw_main.css" ; only home
-                "css/gmw_accounts.css" ; only account pages
                 )
    (apply include-js
           "/js/google-charts.js"
