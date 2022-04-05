@@ -63,12 +63,25 @@ CREATE OR REPLACE FUNCTION delete_project(_project_id integer)
 $$ LANGUAGE PLPGSQL;
 
 -- Calculates boundary from for point data
+CREATE OR REPLACE FUNCTION add_buffer(_geom geometry, _m_buffer real)
+ RETURNS geometry AS $$
+
+    SELECT ST_Envelope(
+        ST_Buffer(
+            _geom::geography,
+            _m_buffer
+        )::geometry
+    )
+
+$$ LANGUAGE SQL;
+
+-- Calculates boundary from for point data
 CREATE OR REPLACE FUNCTION set_boundary(_project_id integer, _m_buffer real)
  RETURNS void AS $$
 
     UPDATE projects SET boundary = b
     FROM (
-        SELECT ST_Envelope(ST_Buffer(ST_SetSRID(ST_Extent(ST_MakePoint(lat, lon)), 4326)::geography , _m_buffer)::geometry) AS b
+        SELECT add_buffer(ST_SetSRID(ST_Extent(ST_MakePoint(lat, lon)), 4326), _m_buffer) AS b
         FROM plots
         WHERE project_rid = _project_id
     ) bb

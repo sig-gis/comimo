@@ -18,7 +18,8 @@ class CollectContent extends React.Component {
       visiblePanel: null,
       theMap: null,
       selectedLatLon: null,
-      projectDetails: {}
+      projectDetails: {},
+      projectPlots: []
     };
   }
 
@@ -26,11 +27,18 @@ class CollectContent extends React.Component {
 
   componentDidMount() {
     this.getProjectData();
+    this.getProjectPlots();
   }
 
   getProjectData = () => jsonRequest(URLS.PROJ_DATA, {projectId: this.props.projectId})
     .then(result => {
       this.setState({projectDetails: result});
+    });
+
+  // TODO, this can probably be combined into get projectData
+  getProjectPlots = () => jsonRequest(URLS.PROJ_PLOTS, {projectId: this.props.projectId})
+    .then(result => {
+      this.setState({projectPlots: result});
     });
 
   /// State Update ///
@@ -54,6 +62,7 @@ class CollectContent extends React.Component {
           boundary={this.state.projectDetails.boundary}
           localeText={this.context.localeText}
           myHeight={myHeight}
+          projectPlots={this.state.projectPlots}
           setLatLon={this.setLatLon}
           setMap={this.setMap}
           theMap={this.state.theMap}

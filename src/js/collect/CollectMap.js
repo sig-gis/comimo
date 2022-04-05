@@ -57,6 +57,10 @@ export default class CollectMap extends React.Component {
     if (this.mapChange(prevProps, "boundary")) {
       this.updateBound();
     }
+
+    if (this.mapChange(prevProps, "projectPlots")) {
+      this.updatePlots();
+    }
   }
 
   /// API Calls ///
@@ -107,28 +111,55 @@ export default class CollectMap extends React.Component {
   updateBound = () => {
     const {theMap, boundary} = this.props;
     const geoJSON = {
-      "type": "Feature",
-      "properties": {},
-      "geometry": boundary
+      type: "Feature",
+      geometry: boundary
     };
     theMap.addSource("boundary", {
-      "type": "geojson",
-      "data": geoJSON
+      type: "geojson",
+      data: geoJSON
     });
     theMap.addLayer({
-      "id": "route",
-      "type": "line",
-      "source": "boundary",
-      "layout": {
+      id: "boundary",
+      type: "line",
+      source: "boundary",
+      layout: {
         "line-join": "round",
         "line-cap": "round"
       },
-      "paint": {
+      paint: {
         "line-color": "yellow",
         "line-width": 4
       }
     });
     this.fitMap("bbox", extent(geoJSON));
+  };
+
+  updatePlots = () => {
+    const {theMap, projectPlots} = this.props;
+    const geoJSON = {
+      type: "FeatureCollection",
+      features: projectPlots.map(p => ({
+        type: "Feature",
+        geometry: p.geom
+      }))
+    };
+    theMap.addSource("plots", {
+      type: "geojson",
+      data: geoJSON
+    });
+    theMap.addLayer({
+      id: "plots",
+      type: "line",
+      source: "plots",
+      layout: {
+        "line-join": "round",
+        "line-cap": "round"
+      },
+      paint: {
+        "line-color": "blue",
+        "line-width": 4
+      }
+    });
   };
 
   render() {
