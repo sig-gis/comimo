@@ -76,10 +76,10 @@
                                    :auth-action :block}
 
    ;; Plots API
-   [:get  "/get-collection-plot"] {:handler     plots/get-collection-plot
+   [:post "/get-collection-plot"] {:handler     plots/get-collection-plot
                                    :auth-type   :collect
                                    :auth-action :block}
-   [:get  "/get-project-plots"]   {:handler     plots/get-project-plots}
+   [:post "/get-project-plots"]   {:handler     plots/get-project-plots}
    [:post "/add-user-samples"]    {:handler     plots/add-user-samples
                                    :auth-type   :collect
                                    :auth-action :block}

@@ -17,6 +17,7 @@ export const URLS = {
   IMG_DATES: "get-image-names",
   MAPQUEST: "https://open.mapquestapi.com/geocoding/v1/address",
   PROJ_DATA: "get-project-by-id",
+  PROJ_PLOTS: "get-project-plots",
   PREDICTIONS: "download-predictions",
   REPORT_MINE: "report-mine",
   SINGLE_IMAGE: "get-single-image",

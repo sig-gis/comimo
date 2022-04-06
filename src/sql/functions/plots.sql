@@ -6,17 +6,18 @@
 --
 
 -- Select plots but only return a maximum number
--- TODO, CEO-32 update to only show users available plots
-CREATE OR REPLACE FUNCTION select_limited_project_plots(_project_id integer, _maximum integer)
+CREATE OR REPLACE FUNCTION select_limited_project_plots(_project_id integer, _m_buffer real, _maximum integer)
  RETURNS table (
     plot_id    integer,
     lat        float,
-    lon        float
+    lon        float,
+    geom       text
  ) AS $$
 
     SELECT plot_uid,
         lat,
-        lon
+        lon,
+        ST_AsGeoJSON(add_buffer(ST_MakePoint(lat, lon), _m_buffer))
     FROM plots
     WHERE project_rid = _project_id
     LIMIT _maximum

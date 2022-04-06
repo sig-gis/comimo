@@ -28,12 +28,13 @@
 ;;; Project Level
 ;;;
 
-;; TODO, CEO-32 update to only show users available plots
 (defn get-project-plots [{:keys [params]}]
   (let [project-id (tc/val->int (:projectId params))
         max-plots  (tc/val->int (:max params) 100000)] ; 100000 loads in ~1.5 seconds.
-    (data-response (mapv #(set/rename-keys % {:plot_id :id})
-                         (call-sql "select_limited_project_plots" project-id max-plots)))))
+    (data-response (mapv #(-> %
+                              (set/rename-keys {:plotId :id})
+                              (update :geom tc/json->clj))
+                         (call-sql "select_limited_project_plots" project-id (/ 540 2) max-plots)))))
 
 (defn get-plotters
   "Gets all users that have collected plots on a project.  If optional plotId
