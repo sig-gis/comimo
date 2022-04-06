@@ -14,6 +14,12 @@ import {toPrecision, jsonRequest} from "../utils";
 import {MainContext} from "../components/PageLayout";
 
 const MapBoxWrapper = styled.div`
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  position: "relative";
+  width: 100%;
+
   .mapboxgl-popup-close-button {
     font-size: 1.25rem;
     padding: 0 3px 8px 8px;
@@ -204,16 +210,7 @@ export default class HomeMap extends React.Component {
     const {coords} = this.state;
     return (
       <>
-        <MapBoxWrapper
-          id="mapbox"
-          style={{
-            height: "100%",
-            width: "100%",
-            margin: 0,
-            padding: 0,
-            position: "relative"
-          }}
-        />
+        <MapBoxWrapper id="mapbox"/>
         {coords && <LngLatHud coords={coords}/>}
       </>
     );

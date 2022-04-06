@@ -10,6 +10,12 @@ import {mapboxToken} from "../appConfig";
 import {toPrecision} from "../utils";
 
 const MapBoxWrapper = styled.div`
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  position: "relative";
+  width: 100%;
+
   .mapboxgl-ctrl-logo {
     margin: 0px 54px !important
   }
@@ -191,16 +197,7 @@ export default class CollectMap extends React.Component {
     const {coords} = this.state;
     return (
       <>
-        <MapBoxWrapper
-          id="mapbox"
-          style={{
-            height: "100%",
-            width: "100%",
-            margin: 0,
-            padding: 0,
-            position: "relative"
-          }}
-        />
+        <MapBoxWrapper id="mapbox"/>
         {coords && <LngLatHud coords={coords}/>}
       </>
     );
