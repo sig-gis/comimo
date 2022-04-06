@@ -69,7 +69,7 @@ export default class CollectMap extends React.Component {
       this.addPlots();
     }
 
-    if (this.props.projectPlots && this.mapChange(prevProps, "currentPlotId")) {
+    if (this.props.projectPlots && this.mapChange(prevProps, "currentPlot")) {
       this.updateVisiblePlot();
     }
   }
@@ -176,20 +176,19 @@ export default class CollectMap extends React.Component {
   };
 
   updateVisiblePlot = () => {
-    const {theMap, projectPlots, currentPlotId} = this.props;
-    const plot = projectPlots.find(p => p.id === currentPlotId);
-    if (plot?.geom) {
+    const {theMap, projectPlots, currentPlot} = this.props;
+    if (currentPlot.geom) {
       projectPlots.forEach(({id}) => {
         const lName = id + "";
         if (theMap.getLayer(lName)) {
           theMap.setLayoutProperty(
             lName,
             "visibility",
-            currentPlotId === id ? "visible" : "none"
+            currentPlot.id === id ? "visible" : "none"
           );
         }
       });
-      this.fitMap("bbox", extent(plot.geom));
+      this.fitMap("bbox", extent(currentPlot.geom));
     }
   };
 

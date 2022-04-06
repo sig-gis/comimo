@@ -72,18 +72,20 @@ class CollectContent extends React.Component {
   setLatLon = latLon => this.setState({selectedLatLon: latLon});
 
   render() {
-    const {setShowInfo, myHeight, localeText: {home}} = this.context;
+    const {projectDetails, currentPlotId, projectPlots, theMap} = this.state;
+    const {setShowInfo, myHeight, localeText, localeText: {home}} = this.context;
+    const currentPlot = projectPlots.find(p => p.id === currentPlotId);
     return (
       <>
         <CollectMap
-          boundary={this.state.projectDetails.boundary}
-          currentPlotId={this.state.currentPlotId}
-          localeText={this.context.localeText}
+          boundary={projectDetails.boundary}
+          currentPlot={currentPlot}
+          localeText={localeText}
           myHeight={myHeight}
-          projectPlots={this.state.projectPlots}
+          projectPlots={projectPlots}
           setLatLon={this.setLatLon}
           setMap={this.setMap}
-          theMap={this.state.theMap}
+          theMap={theMap}
         />
         {home && (
           <SideBar>
