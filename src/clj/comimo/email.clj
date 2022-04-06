@@ -1,4 +1,4 @@
-(ns comimo.utils.mail
+(ns comimo.email
   (:require [postal.core :refer [send-message]]
             [triangulum.config  :refer [get-config]]
             [triangulum.logging :refer [log-str]]))

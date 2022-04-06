@@ -4,6 +4,10 @@
             [triangulum.database :refer [call-sql]]
             [triangulum.type-conversion :as tc]))
 
+;;;
+;;; Collection
+;;;
+
 (defn get-project-plots [{:keys [params]}]
   (let [project-id (tc/val->int (:projectId params))]
     (data-response (mapv #(-> %
@@ -16,6 +20,10 @@
         answer  (:answer params)]
     (call-sql "save_user_answer" plot-id answer)
     (data-response "")))
+
+;;;
+;;; Download
+;;;
 
 (defn get-data-dates [_]
   (data-response {:predictions (->> (call-sql "get_prediction_options") (map :data_layer))

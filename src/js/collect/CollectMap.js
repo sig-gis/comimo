@@ -43,7 +43,8 @@ export default class CollectMap extends React.Component {
     super(props);
 
     this.state = {
-      coords: null
+      mouseCoords: null,
+      theMap: null
     };
   }
 
@@ -53,27 +54,27 @@ export default class CollectMap extends React.Component {
     this.initMap();
   }
 
-  mapChange = (prevProps, key) => {
+  mapChange = (prevProps, prevState, key) => {
     const keys = isString(key) ? [key] : key;
-    return this.props.theMap && get(this.props, keys)
-      && (prevProps.theMap !== this.props.theMap
+    return this.state.theMap && get(this.props, keys)
+      && (prevState.theMap !== this.state.theMap
         || get(prevProps, keys) !== get(this.props, keys));
   };
 
-  componentDidUpdate(prevProps, _prevState) {
-    if (this.mapChange(prevProps, "myHeight")) {
-      setTimeout(() => this.props.theMap.resize(), 50);
+  componentDidUpdate(prevProps, prevState) {
+    if (this.mapChange(prevProps, prevState, "myHeight")) {
+      setTimeout(() => this.state.theMap.resize(), 50);
     }
 
-    if (this.mapChange(prevProps, "boundary")) {
+    if (this.mapChange(prevProps, prevState, "boundary")) {
       this.addBoundary();
     }
 
-    if (this.mapChange(prevProps, ["projectPlots", "length"])) {
+    if (this.mapChange(prevProps, prevState, ["projectPlots", "length"])) {
       this.addPlots();
     }
 
-    if (this.props.projectPlots && this.mapChange(prevProps, "currentPlot")) {
+    if (this.props.projectPlots && this.mapChange(prevProps, prevState, "currentPlot")) {
       this.updateVisiblePlot();
     }
   }
@@ -97,12 +98,12 @@ export default class CollectMap extends React.Component {
       theMap.on("mousemove", e => {
         const lat = toPrecision(e.lngLat.lat, 4);
         const lng = toPrecision(e.lngLat.lng, 4);
-        this.setState({coords: {lat, lng}});
+        this.setState({mouseCoords: {lat, lng}});
       });
     });
   };
 
-  isLayerVisible = layer => this.props.theMap.getLayer(layer).visibility === "visible";
+  isLayerVisible = layer => this.state.theMap.getLayer(layer).visibility === "visible";
 
   fitMap = (type, arg) => {
     const {theMap} = this.props;
@@ -210,11 +211,11 @@ export default class CollectMap extends React.Component {
   };
 
   render() {
-    const {coords} = this.state;
+    const {mouseCoords} = this.state;
     return (
       <>
         <MapBoxWrapper id="mapbox"/>
-        {coords && <LngLatHud coords={coords}/>}
+        {mouseCoords && <LngLatHud mouseCoords={mouseCoords}/>}
       </>
     );
   }

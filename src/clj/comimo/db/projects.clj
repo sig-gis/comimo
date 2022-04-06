@@ -1,32 +1,33 @@
 (ns comimo.db.projects
   (:require [clojure.string :as str]
+            [clojure.set    :as set]
             [triangulum.logging  :refer [log]]
             [triangulum.database :refer [call-sql
                                          sql-primitive
                                          insert-rows!]]
             [triangulum.type-conversion :as tc]
-            [comimo.utils.part-utils    :as pu]
+            [comimo.errors              :refer [try-catch-throw]]
             [comimo.py-interop          :refer [get-points-within]]
             [comimo.views               :refer [data-response]]))
 
 ;;;
-;;; Auth functions
+;;; Auth Functions
 ;;;
 
 (defn can-collect? [user-id project-id]
   (sql-primitive (call-sql "can_user_collect_project" {:log? false} user-id project-id)))
 
 ;;;
-;;; Get data functions
+;;; Get Project Data
 ;;;
 
 (defn- build-project [project]
-  {:id          (:project_id project)
-   :name        (:name project)
-   :regions     (str/split (:regions project) #"__")
-   :dataLayer   (:data_layer project)
-   :boundary    (tc/json->clj (:boundary project))
-   :createdDate (:created_date project)})
+  (-> project
+      (set/rename-keys {:project_id   :id
+                        :data_layer   :dataLayer
+                        :created_date :createdDate})
+      (update :regions #(str/split % #"__"))
+      (update :boundary tc/json->clj)))
 
 (defn- single-project-by-id [project-id]
   (build-project (first (call-sql "select_project_by_id" project-id))))
@@ -44,7 +45,7 @@
     (data-response (build-user-projects user-id))))
 
 ;;;
-;;; Create project
+;;; Create Project
 ;;;
 
 (defn create-project! [user-id proj-name regions data-layer]
@@ -62,13 +63,13 @@
                                 :project_rid project-id})))]
         (insert-rows! "plots" plots))
 
-      ;; Boundary is only used for Planet at this point.
-      (pu/try-catch-throw #(call-sql "set_boundary"
-                                     project-id
-                                     540)
-                          "SQL Error: cannot create a project AOI.")
+      ;; Boundary must be created after plots are added
+      (try-catch-throw #(call-sql "set_boundary"
+                                  project-id
+                                  540)
+                       "SQL Error: cannot create a project AOI.")
 
-      ;; Return new ID and token
+      ;; Return success message
       {:action "Created"}
 
       (catch Exception e
@@ -77,8 +78,10 @@
           (call-sql "delete_project" project-id)
           (catch Exception _))
         (let [causes (:causes (ex-data e))]
-          ;; Log unknown errors
-          (when-not causes (log (ex-message e)))
+          ;; Log errors
+          (if causes
+            (log (str "-" (str/join "\n-" causes)))
+            (log (ex-message e)))
           ;; Return error stack to user
           {:action "Error"
            :message (if causes
@@ -93,7 +96,7 @@
     (data-response (create-project! user-id proj-name regions data-layer))))
 
 ;;;
-;;; Update project
+;;; Update Project
 ;;;
 
 (defn close-project! [{:keys [params]}]
