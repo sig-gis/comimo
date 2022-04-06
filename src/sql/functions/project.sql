@@ -2,7 +2,7 @@
 -- REQUIRES: clear
 
 --
--- ROUTE AUTHENTICATION FUNCTIONS
+-- HELPER FUNCTIONS
 --
 
 -- Check if user has collection rights (read rights) for the project
@@ -13,6 +13,19 @@ CREATE OR REPLACE FUNCTION can_user_collect_project(_user_id integer, _project_i
     FROM projects
     WHERE user_rid = _user_id
         AND project_uid = _project_id
+
+$$ LANGUAGE SQL;
+
+-- Calculates boundary from for point data
+CREATE OR REPLACE FUNCTION add_buffer(_geom geometry, _m_buffer real)
+ RETURNS geometry AS $$
+
+    SELECT ST_Envelope(
+        ST_Buffer(
+            _geom::geography,
+            _m_buffer
+        )::geometry
+    )
 
 $$ LANGUAGE SQL;
 
@@ -63,19 +76,6 @@ CREATE OR REPLACE FUNCTION delete_project(_project_id integer)
 $$ LANGUAGE PLPGSQL;
 
 -- Calculates boundary from for point data
-CREATE OR REPLACE FUNCTION add_buffer(_geom geometry, _m_buffer real)
- RETURNS geometry AS $$
-
-    SELECT ST_Envelope(
-        ST_Buffer(
-            _geom::geography,
-            _m_buffer
-        )::geometry
-    )
-
-$$ LANGUAGE SQL;
-
--- Calculates boundary from for point data
 CREATE OR REPLACE FUNCTION set_boundary(_project_id integer, _m_buffer real)
  RETURNS void AS $$
 
@@ -92,15 +92,6 @@ $$ LANGUAGE SQL;
 --
 -- USING PROJECT FUNCTIONS
 --
-
-CREATE OR REPLACE FUNCTION select_project_boundary(_project_id integer)
- RETURNS geometry  AS $$
-
-    -- FIXME, need geojson
-    SELECT boundary
-    FROM projects
-
-$$ LANGUAGE SQL;
 
 -- Returns a row in projects by id
 CREATE OR REPLACE FUNCTION select_project_by_id(_project_id integer)
@@ -142,27 +133,6 @@ CREATE OR REPLACE FUNCTION select_user_projects(_user_id integer)
     FROM projects
     WHERE user_rid = _user_id
         AND status = 'active'
-
-$$ LANGUAGE SQL;
-
---
---  AGGREGATE FUNCTIONS
---
-
--- Returns project aggregate data
-CREATE OR REPLACE FUNCTION dump_project_plot_data(_project_id integer)
- RETURNS table (
-    plotid    integer,
-    lon       float,
-    lat       float
- ) AS $$
-
-    SELECT plot_uid,
-        lon,
-        lat
-    FROM projects
-    INNER JOIN plots pl
-        ON project_uid = pl.project_rid
 
 $$ LANGUAGE SQL;
 
