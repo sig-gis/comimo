@@ -7,7 +7,6 @@ import "mapbox-gl/dist/mapbox-gl.css";
 import {get, isString} from "lodash";
 import LngLatHud from "../components/LngLatHud";
 
-import {mapboxToken} from "../appConfig";
 import {toPrecision} from "../utils";
 
 const MapBoxWrapper = styled.div`
@@ -82,7 +81,7 @@ export default class CollectMap extends React.Component {
   /// Mapbox ///
 
   initMap = () => {
-    mapboxgl.accessToken = mapboxToken;
+    mapboxgl.accessToken = this.props.mapboxToken;
     const theMap = new mapboxgl.Map({
       container: "mapbox",
       style: "mapbox://styles/mapbox/satellite-streets-v9",

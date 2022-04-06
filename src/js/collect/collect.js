@@ -85,6 +85,7 @@ class CollectContent extends React.Component {
         <CollectMap
           boundary={projectDetails.boundary}
           currentPlot={currentPlot}
+          mapboxToken={this.props.mapboxToken}
           myHeight={myHeight}
           projectPlots={projectPlots}
         />
@@ -126,7 +127,10 @@ export function pageInit(args) {
       userLang={args.userLang}
       username={args.username}
     >
-      <CollectContent projectId={parseInt(args.projectId || 0)}/>
+      <CollectContent
+        mapboxToken={args.mapboxToken}
+        projectId={parseInt(args.projectId || 0)}
+      />
     </PageLayout>,
     document.getElementById("main-container")
   );

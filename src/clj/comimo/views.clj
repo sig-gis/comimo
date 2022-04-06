@@ -40,7 +40,11 @@
        (kebab->camel)))
 
 (defn js-init [page params]
-  (let [js-params (json/write-str params)]
+  (let [js-params (-> params
+                      (assoc
+                       :mapboxToken (get-config :mapbox-token)
+                       :mapquestKey (get-config :mapquest-key))
+                      (json/write-str))]
     [:script {:type "text/javascript"}
      (str "window.onload = function () {" page ".pageInit(" js-params "); };")]))
 
