@@ -1,12 +1,9 @@
-import React, {useContext} from "react";
+import React from "react";
 
 import LanguageSelector from "./LanguageSelector";
 import SvgIcon from "./SvgIcon";
 
-import {MainContext} from "../home/constants";
-
-export default function Header({selectLanguage, selectedLanguage}) {
-  const {username, setShowInfo} = useContext(MainContext);
+export default function Header({selectLanguage, selectedLanguage, username, setShowInfo}) {
   return (
     <div
       id="title-bar"

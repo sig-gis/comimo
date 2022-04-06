@@ -12,11 +12,11 @@ import ReportMinesPanel from "./ReportMinesPanel";
 import ValidatePanel from "./ValidatePanel";
 import SideIcon from "../components/SideIcon";
 import MenuItem from "../components/MenuItem";
-import PageLayout from "../components/PageLayout";
+import {PageLayout, MainContext} from "../components/PageLayout";
 import SideBar from "../components/SideBar";
 
 import {jsonRequest} from "../utils";
-import {MainContext, URLS} from "./constants";
+import {URLS} from "../constants";
 
 class HomeContents extends React.Component {
   // set up class flags so each component update doesn't do redundant JS tasks

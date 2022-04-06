@@ -1,8 +1,9 @@
 import React from "react";
-import ToolPanel from "../components/ToolPanel";
-import {jsonRequest} from "../utils";
 
-import {MainContext, URLS} from "./constants";
+import ToolPanel from "../components/ToolPanel";
+
+import {jsonRequest} from "../utils";
+import {MainContext} from "../components/PageLayout";
 
 export default class StatsPanel extends React.Component {
   constructor(props) {

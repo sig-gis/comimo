@@ -3,9 +3,10 @@ import React from "react";
 import ToolPanel from "../components/ToolPanel";
 import Button from "../components/Button";
 
-import {MainContext, URLS} from "./constants";
 import {mapQuestKey} from "../appConfig";
 import {jsonRequest} from "../utils";
+import {MainContext} from "../components/PageLayout";
+import {URLS} from "../constants";
 
 export default class SearchPanel extends React.Component {
   constructor(props) {

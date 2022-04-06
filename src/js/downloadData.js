@@ -1,6 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import {URLS} from "./home/constants";
+import {URLS} from "./constants";
 import {jsonRequest} from "./utils";
 
 const buttonStyle = disabled => (disabled
