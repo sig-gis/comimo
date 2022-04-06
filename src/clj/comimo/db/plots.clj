@@ -32,7 +32,7 @@
   (let [project-id (tc/val->int (:projectId params))
         max-plots  (tc/val->int (:max params) 100000)] ; 100000 loads in ~1.5 seconds.
     (data-response (mapv #(-> %
-                              (set/rename-keys {:plotId :id})
+                              (set/rename-keys {:plot_id :id})
                               (update :geom tc/json->clj))
                          (call-sql "select_limited_project_plots" project-id (/ 540 2) max-plots)))))
 

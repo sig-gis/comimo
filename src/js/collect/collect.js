@@ -10,6 +10,7 @@ import ToolPanel from "../components/ToolPanel";
 import {URLS} from "../constants";
 import {jsonRequest} from "../utils";
 import CollectMap from "./CollectMap";
+import NavBar from "./NavBar";
 
 class CollectContent extends React.Component {
   constructor(props) {
@@ -21,7 +22,8 @@ class CollectContent extends React.Component {
       theMap: null,
       selectedLatLon: null,
       projectDetails: {},
-      projectPlots: []
+      projectPlots: [],
+      currentPlotId: -1
     };
   }
 
@@ -52,6 +54,19 @@ class CollectContent extends React.Component {
     });
   };
 
+  nextPlot = () => {
+    const {currentPlotId, projectPlots} = this.state;
+    const nextPlot = projectPlots.find(p => p.id > currentPlotId) || projectPlots[0];
+    this.setState({currentPlotId: nextPlot.id});
+  };
+
+  prevPlot = () => {
+    const {currentPlotId, projectPlots} = this.state;
+    const plotsCopy = [...projectPlots].reverse();
+    const prevPlot = plotsCopy.find(p => p.id < currentPlotId) || plotsCopy[0];
+    this.setState({currentPlotId: prevPlot.id});
+  };
+
   setMap = theMap => this.setState({theMap});
 
   setLatLon = latLon => this.setState({selectedLatLon: latLon});
@@ -62,6 +77,7 @@ class CollectContent extends React.Component {
       <>
         <CollectMap
           boundary={this.state.projectDetails.boundary}
+          currentPlotId={this.state.currentPlotId}
           localeText={this.context.localeText}
           myHeight={myHeight}
           projectPlots={this.state.projectPlots}
@@ -88,6 +104,11 @@ class CollectContent extends React.Component {
             />
           </SideBar>
         )}
+        <NavBar
+          currentPlotId={this.state.currentPlotId}
+          nextPlot={this.nextPlot}
+          prevPlot={this.prevPlot}
+        />
       </>
     );
   }

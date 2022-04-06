@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-export default styled.button`
+const Button = styled.button`
   background: ${props => (props.disabled ? "#ddd" : "#f0ad4e")};
   border-color: #462f0f;
   border-radius: 3px;
@@ -13,3 +13,5 @@ export default styled.button`
     border-color: #462f0f;
   }
 `;
+
+export default Button;

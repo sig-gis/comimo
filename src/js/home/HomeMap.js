@@ -25,6 +25,7 @@ const MapBoxWrapper = styled.div`
   .mapboxgl-ctrl-logo {
     margin: 0px 54px !important
   }
+
   @media only screen and (orientation: portrait) {
     .mapboxgl-ctrl-bottom-right {
       height: 100%;
@@ -109,7 +110,7 @@ export default class HomeMap extends React.Component {
     });
   };
 
-  /// Mapbox TODO move to separate component
+  /// Mapbox ///
 
   initMap = () => {
     mapboxgl.accessToken = mapboxToken;

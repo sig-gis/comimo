@@ -20,6 +20,7 @@ CREATE OR REPLACE FUNCTION select_limited_project_plots(_project_id integer, _m_
         ST_AsGeoJSON(add_buffer(ST_MakePoint(lat, lon), _m_buffer))
     FROM plots
     WHERE project_rid = _project_id
+    ORDER BY plot_uid
     LIMIT _maximum
 
 $$ LANGUAGE SQL;
