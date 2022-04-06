@@ -35,8 +35,8 @@ CREATE INDEX subscriptions_user_rid ON subscriptions (user_rid);
 CREATE TABLE user_mines (
     user_mine_uid    SERIAL PRIMARY KEY,
     user_rid         integer NOT NULL REFERENCES users (user_uid) ON DELETE CASCADE ON UPDATE CASCADE,
-    lat              float, -- x
-    lon              float, -- y
+    lat              float,
+    lon              float,
     reported_date    timestamp DEFAULT now(),
     CONSTRAINT per_user_mine UNIQUE(user_rid, lat, lon)
 );
@@ -74,24 +74,10 @@ CREATE TABLE plots (
     plot_uid       SERIAL PRIMARY KEY,
     project_rid    integer NOT NULL REFERENCES projects (project_uid) ON DELETE CASCADE ON UPDATE CASCADE,
     lat            float,
-    lon            float
+    lon            float,
+    answer         integer NOT NULL
 );
 CREATE INDEX plots_projects_rid ON plots (project_rid);
-
--- Stores information about a plot as data is collected, including the user who collected it
-CREATE TABLE user_plots (
-    user_plot_uid       SERIAL PRIMARY KEY,
-    user_rid            integer NOT NULL REFERENCES users (user_uid) ON DELETE CASCADE ON UPDATE CASCADE,
-    plot_rid            integer NOT NULL REFERENCES plots (plot_uid) ON DELETE CASCADE ON UPDATE CASCADE,
-    flagged             boolean DEFAULT FALSE,
-    confidence          integer CHECK (confidence >= 0 AND confidence <= 100),
-    collection_start    timestamp,
-    collection_time     timestamp,
-    flagged_reason      text,
-    CONSTRAINT per_user_per_plot UNIQUE(user_rid, plot_rid)
-);
-CREATE INDEX user_plots_plot_rid ON user_plots (plot_rid);
-CREATE INDEX user_plots_user_rid ON user_plots (user_rid);
 
 CREATE TABLE auto_email_logs (
     job_time          timestamp DEFAULT now(),
