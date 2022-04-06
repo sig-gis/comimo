@@ -13,6 +13,7 @@ const MapBoxWrapper = styled.div`
   .mapboxgl-ctrl-logo {
     margin: 0px 54px !important
   }
+
   @media only screen and (orientation: portrait) {
     .mapboxgl-ctrl-bottom-right {
       height: 100%;
@@ -55,17 +56,19 @@ export default class CollectMap extends React.Component {
     }
 
     if (this.mapChange(prevProps, "boundary")) {
-      this.updateBound();
+      this.addBoundary();
     }
 
     if (this.mapChange(prevProps, "projectPlots")) {
-      this.updatePlots();
+      this.addPlots();
+    }
+
+    if (this.props.projectPlots && this.mapChange(prevProps, "currentPlotId")) {
+      this.updateVisiblePlot();
     }
   }
 
-  /// API Calls ///
-
-  /// Mapbox TODO move to separate component
+  /// Mapbox ///
 
   initMap = () => {
     mapboxgl.accessToken = mapboxToken;
@@ -101,14 +104,14 @@ export default class CollectMap extends React.Component {
       }
     } else if (type === "bbox") {
       try {
-        theMap.fitBounds(arg, {padding: {top: 16, bottom: 128, left: 16, right: 16}});
+        theMap.fitBounds(arg, {padding: {top: 16, bottom: 94, left: 16, right: 16}});
       } catch (error) {
         console.error(error);
       }
     }
   };
 
-  updateBound = () => {
+  addBoundary = () => {
     const {theMap, boundary} = this.props;
     const geoJSON = {
       type: "Feature",
@@ -134,12 +137,13 @@ export default class CollectMap extends React.Component {
     this.fitMap("bbox", extent(geoJSON));
   };
 
-  updatePlots = () => {
+  addPlots = () => {
     const {theMap, projectPlots} = this.props;
     const geoJSON = {
       type: "FeatureCollection",
       features: projectPlots.map(p => ({
         type: "Feature",
+        properties: {id: p.id},
         geometry: p.geom
       }))
     };
@@ -147,19 +151,40 @@ export default class CollectMap extends React.Component {
       type: "geojson",
       data: geoJSON
     });
-    theMap.addLayer({
-      id: "plots",
-      type: "line",
-      source: "plots",
-      layout: {
-        "line-join": "round",
-        "line-cap": "round"
-      },
-      paint: {
-        "line-color": "blue",
-        "line-width": 4
-      }
+    projectPlots.forEach(p => {
+      theMap.addLayer({
+        id: p.id + "", // mapbox needs a string
+        type: "line",
+        source: "plots",
+        filter: ["==", ["get", "id"], p.id],
+        layout: {
+          "line-join": "round",
+          "line-cap": "round"
+        },
+        paint: {
+          "line-color": "blue",
+          "line-width": 4
+        }
+      });
     });
+  };
+
+  updateVisiblePlot = () => {
+    const {theMap, projectPlots, currentPlotId} = this.props;
+    const plot = projectPlots.find(p => p.id === currentPlotId);
+    if (plot?.geom) {
+      projectPlots.forEach(({id}) => {
+        const lName = id + "";
+        if (theMap.getLayer(lName)) {
+          theMap.setLayoutProperty(
+            lName,
+            "visibility",
+            currentPlotId === id ? "visible" : "none"
+          );
+        }
+      });
+      this.fitMap("bbox", extent(plot.geom));
+    }
   };
 
   render() {
