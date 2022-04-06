@@ -10,6 +10,7 @@ import ToolPanel from "../components/ToolPanel";
 import {URLS} from "../constants";
 import {jsonRequest} from "../utils";
 import CollectMap from "./CollectMap";
+import NavBar from "./NavBar";
 
 class CollectContent extends React.Component {
   constructor(props) {
@@ -21,7 +22,8 @@ class CollectContent extends React.Component {
       theMap: null,
       selectedLatLon: null,
       projectDetails: {},
-      projectPlots: []
+      projectPlots: [],
+      currentPlotId: -1
     };
   }
 
@@ -51,6 +53,10 @@ class CollectContent extends React.Component {
       visiblePanel: panelKey === visiblePanel ? null : panelKey
     });
   };
+
+  nextPlot = () => this.setState({currentPlotId: this.state.currentPlotId + 1});
+
+  prevPlot = () => this.setState({currentPlotId: this.state.currentPlotId - 1});
 
   setMap = theMap => this.setState({theMap});
 
@@ -88,6 +94,11 @@ class CollectContent extends React.Component {
             />
           </SideBar>
         )}
+        <NavBar
+          currentPlotId={this.state.currentPlotId}
+          nextPlot={this.nextPlot}
+          prevPlot={this.prevPlot}
+        />
       </>
     );
   }

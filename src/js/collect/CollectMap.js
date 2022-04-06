@@ -101,7 +101,7 @@ export default class CollectMap extends React.Component {
       }
     } else if (type === "bbox") {
       try {
-        theMap.fitBounds(arg, {padding: {top: 16, bottom:32, left: 16, right: 16}});
+        theMap.fitBounds(arg, {padding: {top: 16, bottom: 128, left: 16, right: 16}});
       } catch (error) {
         console.error(error);
       }
