@@ -1,11 +1,13 @@
 import React from "react";
 import ReactDOM from "react-dom";
+
 import MenuItem from "../components/MenuItem";
-import PageLayout from "../components/PageLayout";
+import {PageLayout, MainContext} from "../components/PageLayout";
 import SideBar from "../components/SideBar";
 import SideIcon from "../components/SideIcon";
 import ToolPanel from "../components/ToolPanel";
-import {MainContext, URLS} from "../home/constants";
+
+import {URLS} from "../constants";
 import {jsonRequest} from "../utils";
 import CollectMap from "./CollectMap";
 

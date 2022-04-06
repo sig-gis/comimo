@@ -9,8 +9,9 @@ import InfoPopupContent from "./InfoPopupContent";
 import ReportPopupContent from "./ReportPopupContent";
 
 import {mapboxToken} from "../appConfig";
-import {MainContext, URLS, availableLayers, startVisible} from "./constants";
+import {URLS, availableLayers, startVisible} from "../constants";
 import {toPrecision, jsonRequest} from "../utils";
+import {MainContext} from "../components/PageLayout";
 
 const MapBoxWrapper = styled.div`
   .mapboxgl-popup-close-button {

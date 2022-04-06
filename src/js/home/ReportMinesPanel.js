@@ -3,8 +3,9 @@ import React from "react";
 import Button from "../components/Button";
 import ToolPanel from "../components/ToolPanel";
 
+import {MainContext} from "../components/PageLayout";
+import {URLS} from "../constants";
 import {jsonRequest} from "../utils";
-import {MainContext, URLS} from "./constants";
 
 export default class ReportMinesPanel extends React.Component {
   constructor(props) {

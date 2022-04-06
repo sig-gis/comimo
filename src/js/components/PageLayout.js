@@ -1,10 +1,12 @@
 import React from "react";
+
 import AppInfo from "../home/AppInfo";
-import {MainContext} from "../home/constants";
-import {getLanguage, jsonRequest} from "../utils";
 import Header from "./Header";
 
-export default class PageLayout extends React.Component {
+import {getLanguage, jsonRequest} from "../utils";
+
+export const MainContext = React.createContext();
+export class PageLayout extends React.Component {
   constructor(props) {
     super(props);
 
@@ -56,7 +58,13 @@ export default class PageLayout extends React.Component {
           setShowInfo: this.setShowInfo
         }}
       >
-        {showInfo && <AppInfo onClose={() => this.setShowInfo(false)}/>}
+        {showInfo && (
+          <AppInfo
+            isAdmin={this.props.role === "admin"}
+            localeText={this.state.localeText}
+            onClose={() => this.setShowInfo(false)}
+          />
+        )}
         <div
           id="root-component"
           style={{
@@ -72,6 +80,8 @@ export default class PageLayout extends React.Component {
           <Header
             selectedLanguage={this.state.selectedLanguage}
             selectLanguage={this.selectLanguage}
+            setShowInfo={this.setShowInfo}
+            username={this.props.username}
           />
           <div
             id="page-body"

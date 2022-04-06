@@ -3,7 +3,7 @@ import React from "react";
 import ToolPanel from "../components/ToolPanel";
 import Button from "../components/Button";
 
-import {MainContext} from "./constants";
+import {MainContext} from "../components/PageLayout";
 
 export default class FilterPanel extends React.Component {
   constructor(props) {

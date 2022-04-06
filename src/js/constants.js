@@ -1,7 +1,3 @@
-import React from "react";
-
-export const MainContext = React.createContext();
-
 export const URLS = {
   ADD_SUBS: "add-subscription",
   AREA_STATS: "get-area-predicted",

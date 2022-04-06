@@ -1,7 +1,7 @@
 import React from "react";
 
 import {jsonRequest, toPrecision} from "../utils";
-import {URLS} from "./constants";
+import {URLS} from "../constants";
 
 export default class InfoPopupContent extends React.Component {
   constructor(props) {

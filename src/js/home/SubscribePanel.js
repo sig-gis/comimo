@@ -4,8 +4,9 @@ import LoginMessage from "./LoginMessage";
 import Button from "../components/Button";
 import ToolPanel from "../components/ToolPanel";
 
-import {MainContext, URLS} from "./constants";
+import {URLS} from "../constants";
 import {jsonRequest} from "../utils";
+import {MainContext} from "../components/PageLayout";
 
 export default class SubscribePanel extends React.Component {
   constructor(props) {

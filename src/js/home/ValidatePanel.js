@@ -6,7 +6,8 @@ import SvgIcon from "../components/SvgIcon";
 import ToolPanel from "../components/ToolPanel";
 
 import {jsonRequest} from "../utils";
-import {MainContext, URLS} from "./constants";
+import {URLS} from "../constants";
+import {MainContext} from "../components/PageLayout";
 
 export default class ValidatePanel extends React.Component {
   constructor(props) {

@@ -1,8 +1,9 @@
 import React from "react";
+import {MainContext} from "../components/PageLayout";
 
 import ToolPanel from "../components/ToolPanel";
 
-import {MainContext, startVisible, availableLayers} from "./constants";
+import {startVisible, availableLayers} from "../constants";
 
 export default class LayersPanel extends React.Component {
   constructor(props) {

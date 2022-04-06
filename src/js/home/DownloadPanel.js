@@ -4,7 +4,8 @@ import ToolPanel from "../components/ToolPanel";
 import Button from "../components/Button";
 
 import {jsonRequest} from "../utils";
-import {MainContext, URLS} from "./constants";
+import {URLS} from "../constants";
+import {MainContext} from "../components/PageLayout";
 
 export default class DownloadPanel extends React.Component {
   constructor(props) {

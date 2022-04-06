@@ -1,12 +1,8 @@
-import React, {useContext} from "react";
+import React from "react";
 
 import InfoModal from "../components/InfoModal";
 
-import {MainContext} from "./constants";
-
-export default function AppInfo({onClose}) {
-  const {isAdmin, localeText: {appInfo}} = useContext(MainContext);
-
+export default function AppInfo({onClose, isAdmin, localeText: {appInfo}}) {
   const downloadLink = () => (
     <>
       {isAdmin && (
