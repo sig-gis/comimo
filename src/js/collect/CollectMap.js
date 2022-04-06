@@ -1,5 +1,6 @@
 import React from "react";
 import mapboxgl from "mapbox-gl";
+import extent from "turf-extent";
 import styled from "styled-components";
 import "mapbox-gl/dist/mapbox-gl.css";
 
@@ -44,9 +45,17 @@ export default class CollectMap extends React.Component {
     this.initMap();
   }
 
+  mapChange = (prevProps, key) => this.props.theMap && this.props[key]
+      && (prevProps.theMap !== this.props.theMap
+        || prevProps[key] !== this.props[key]);
+
   componentDidUpdate(prevProps, _prevState) {
-    if (this.props.theMap && prevProps.myHeight !== this.props.myHeight) {
+    if (this.mapChange(prevProps, "myHeight")) {
       setTimeout(() => this.props.theMap.resize(), 50);
+    }
+
+    if (this.mapChange(prevProps, "boundary")) {
+      this.updateBound();
     }
   }
 
@@ -62,9 +71,10 @@ export default class CollectMap extends React.Component {
       center: [-73.5609339, 4.6371205],
       zoom: 5
     });
-    this.props.setMap(theMap);
+    setTimeout(() => theMap.resize(), 1);
 
     theMap.on("load", () => {
+      this.props.setMap(theMap);
       theMap.addControl(new mapboxgl.NavigationControl({showCompass: false}));
 
       theMap.on("mousemove", e => {
@@ -72,14 +82,54 @@ export default class CollectMap extends React.Component {
         const lng = toPrecision(e.lngLat.lng, 4);
         this.setState({coords: {lat, lng}});
       });
-      theMap.on("click", e => {
-        const {lng, lat} = e.lngLat;
-        this.addPopup(lat, lng);
-      });
     });
   };
 
   isLayerVisible = layer => this.props.theMap.getLayer(layer).visibility === "visible";
+
+  fitMap = (type, arg) => {
+    const {theMap} = this.props;
+    if (type === "point") {
+      try {
+        theMap.flyTo({center: arg, essential: true});
+      } catch (err) {
+        console.error(err);
+      }
+    } else if (type === "bbox") {
+      try {
+        theMap.fitBounds(arg, {padding: {top: 16, bottom:32, left: 16, right: 16}});
+      } catch (error) {
+        console.error(error);
+      }
+    }
+  };
+
+  updateBound = () => {
+    const {theMap, boundary} = this.props;
+    const geoJSON = {
+      "type": "Feature",
+      "properties": {},
+      "geometry": boundary
+    };
+    theMap.addSource("boundary", {
+      "type": "geojson",
+      "data": geoJSON
+    });
+    theMap.addLayer({
+      "id": "route",
+      "type": "line",
+      "source": "boundary",
+      "layout": {
+        "line-join": "round",
+        "line-cap": "round"
+      },
+      "paint": {
+        "line-color": "yellow",
+        "line-width": 4
+      }
+    });
+    this.fitMap("bbox", extent(geoJSON));
+  };
 
   render() {
     const {coords} = this.state;

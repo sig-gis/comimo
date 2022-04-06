@@ -5,7 +5,8 @@ import PageLayout from "../components/PageLayout";
 import SideBar from "../components/SideBar";
 import SideIcon from "../components/SideIcon";
 import ToolPanel from "../components/ToolPanel";
-import {MainContext} from "../home/constants";
+import {MainContext, URLS} from "../home/constants";
+import {jsonRequest} from "../utils";
 import CollectMap from "./CollectMap";
 
 class CollectContent extends React.Component {
@@ -16,15 +17,21 @@ class CollectContent extends React.Component {
     this.state = {
       visiblePanel: null,
       theMap: null,
-      selectedLatLon: null
+      selectedLatLon: null,
+      projectDetails: {}
     };
   }
 
   /// Lifecycle Functions ///
 
   componentDidMount() {
-
+    this.getProjectData();
   }
+
+  getProjectData = () => jsonRequest(URLS.PROJ_DATA, {projectId: this.props.projectId})
+    .then(result => {
+      this.setState({projectDetails: result});
+    });
 
   /// State Update ///
 
@@ -44,6 +51,7 @@ class CollectContent extends React.Component {
     return (
       <>
         <CollectMap
+          boundary={this.state.projectDetails.boundary}
           localeText={this.context.localeText}
           myHeight={myHeight}
           setLatLon={this.setLatLon}
