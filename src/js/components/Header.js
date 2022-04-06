@@ -1,9 +1,10 @@
 import React from "react";
+import Button from "./Button";
 
 import LanguageSelector from "./LanguageSelector";
 import SvgIcon from "./SvgIcon";
 
-export default function Header({selectLanguage, selectedLanguage, username, setShowInfo}) {
+export default function Header({selectLanguage, selectedLanguage, username, setShowInfo, localeText}) {
   return (
     <div
       id="title-bar"
@@ -24,7 +25,7 @@ export default function Header({selectLanguage, selectedLanguage, username, setS
       <div
         id="user-panel"
         style={{
-          alignItems: "flex-end",
+          alignItems: "center",
           display: "flex",
           position: "fixed",
           right: "56px",
@@ -32,28 +33,39 @@ export default function Header({selectLanguage, selectedLanguage, username, setS
           zIndex: 1000
         }}
       >
-        {username && (
-          <button
-            style={{
-              alignItems: "center",
-              border: "2px solid",
-              background: "white",
-              borderRadius: "8px",
-              display: "flex",
-              padding: "2px",
-              marginRight: ".5rem"
-            }}
-            type="button"
-          >
-            <div
-              onClick={() => window.location.assign("/user-account")}
-              style={{display: "flex", alignItems: "center", cursor: "pointer"}}
+        {username
+          ? (
+            <button
+              style={{
+                alignItems: "center",
+                border: "2px solid",
+                background: "white",
+                borderRadius: "8px",
+                display: "flex",
+                padding: "2px",
+                marginRight: ".5rem"
+              }}
+              type="button"
             >
-              <span className="px-2">{username}</span>
-              <SvgIcon icon="user" size="1.2rem"/>
-            </div>
-          </button>
-        )}
+              <div
+                onClick={() => window.location.assign("/user-account")}
+                style={{display: "flex", alignItems: "center", cursor: "pointer"}}
+              >
+                <span className="px-2">{username}</span>
+                <SvgIcon icon="user" size="1.2rem"/>
+              </div>
+            </button>
+          )
+          : (
+            <Button
+              className="mr-1"
+              onClick={() => {
+                window.location.assign("/login");
+              }}
+            >
+              {localeText.users?.login}
+            </Button>
+          )}
         <LanguageSelector
           selectedLanguage={selectedLanguage}
           selectLanguage={selectLanguage}

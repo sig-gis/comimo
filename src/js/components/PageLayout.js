@@ -78,6 +78,7 @@ export class PageLayout extends React.Component {
           }}
         >
           <Header
+            localeText={this.state.localeText}
             selectedLanguage={this.state.selectedLanguage}
             selectLanguage={this.selectLanguage}
             setShowInfo={this.setShowInfo}
