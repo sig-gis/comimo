@@ -76,17 +76,15 @@
                                    :auth-action :block}
 
    ;; Plots API
-   [:post "/get-collection-plot"] {:handler     plots/get-collection-plot
-                                   :auth-type   :collect
-                                   :auth-action :block}
    [:post "/get-project-plots"]   {:handler     plots/get-project-plots}
-   [:post "/add-user-samples"]    {:handler     plots/add-user-samples
+   [:post "/save-user-answer"]    {:handler     plots/save-user-answer
                                    :auth-type   :collect
                                    :auth-action :block}
    ;; Proxy Routes
-   [:get  "/get-nicfi-dates"]     {:handler     proxy/get-nicfi-dates
+   [:post "/get-nicfi-dates"]     {:handler     proxy/get-nicfi-dates
                                    :auth-type   :no-cross
                                    :auth-action :block}
+   ;; Must be GET for mapbox to use
    [:get  "/get-nicfi-tiles"]     {:handler     proxy/get-nicfi-tiles
                                    :auth-type   :no-cross
                                    :auth-action :block}})
