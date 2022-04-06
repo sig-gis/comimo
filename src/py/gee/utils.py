@@ -53,8 +53,8 @@ def getPlots(points):
     for feature in features:
         try:
             coords = feature['geometry']['coordinates']
-            lon = coords[0]
-            lat = coords[1]
+            lat = coords[0]
+            lon = coords[1]
             plots.append({'lat': lat, 'lon': lon})
         except Exception as e:
             print("issue with feature:", feature)

@@ -95,13 +95,15 @@ CREATE OR REPLACE FUNCTION select_project_by_id(_project_id integer)
     user_id       integer,
     name          text,
     regions       text,
-    data_layer    text
+    data_layer    text,
+    boundary      text
  ) AS $$
 
     SELECT user_rid,
         name,
         regions,
-        data_layer
+        data_layer,
+        ST_AsGeoJSON(boundary)
     FROM projects
     WHERE project_uid = _project_id
 
@@ -129,7 +131,6 @@ CREATE OR REPLACE FUNCTION select_user_projects(_user_id integer)
         AND status = 'active'
 
 $$ LANGUAGE SQL;
-
 
 --
 --  AGGREGATE FUNCTIONS
