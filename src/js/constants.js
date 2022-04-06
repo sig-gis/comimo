@@ -16,6 +16,7 @@ export const URLS = {
   PROJ_PLOTS: "get-project-plots",
   PREDICTIONS: "download-predictions",
   REPORT_MINE: "report-mine",
+  SAVE_ANSWER: "save-user-answer",
   SINGLE_IMAGE: "get-single-image",
   USER_MINES: "download-user-mines",
   USER_SUBS: "user-subscriptions",

@@ -72,6 +72,21 @@ class HomeContents extends React.Component {
 
   setLatLon = latLon => this.setState({selectedLatLon: latLon});
 
+  /// API Calls ///
+
+  getImageDates = () => jsonRequest(URLS.IMG_DATES)
+    .then(result => {
+      const initialDates = Object.keys(result).reduce((acc, cur) =>
+        ({...acc, [cur]: result[cur][0]}), {});
+      this.setState({
+        imageDates: result,
+        selectedDates: initialDates
+      });
+    });
+
+  getFeatureNames = () => jsonRequest(URLS.FEATURE_NAMES)
+    .then(features => { this.setState({featureNames: features}); });
+
   /// Global Map Functions ///
 
   fitMap = (type, arg) => {
@@ -91,21 +106,6 @@ class HomeContents extends React.Component {
       }
     }
   };
-
-  /// API Calls ///
-
-  getImageDates = () => jsonRequest(URLS.IMG_DATES)
-    .then(result => {
-      const initialDates = Object.keys(result).reduce((acc, cur) =>
-        ({...acc, [cur]: result[cur][0]}), {});
-      this.setState({
-        imageDates: result,
-        selectedDates: initialDates
-      });
-    });
-
-  getFeatureNames = () => jsonRequest(URLS.FEATURE_NAMES)
-    .then(features => { this.setState({featureNames: features}); });
 
   render() {
     const {setShowInfo, myHeight, username, localeText: {home}} = this.context;

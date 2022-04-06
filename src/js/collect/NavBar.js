@@ -24,7 +24,7 @@ const ButtonRowInner = styled.div`
   }
 `;
 
-export default function NavBar({currentPlotId, nextPlot, prevPlot}) {
+export default function NavBar({currentPlotId, nextPlot, prevPlot, setPlotAnswer}) {
   return (
     <ButtonRowOuter>
       <ButtonRowInner>
@@ -33,9 +33,8 @@ export default function NavBar({currentPlotId, nextPlot, prevPlot}) {
           : (
             <>
               <Button onClick={prevPlot}>Prev</Button>
-              <Button>Mina</Button>
-              <Button>No Mina</Button>
-              <Button>Save</Button>
+              <Button onClick={() => setPlotAnswer("Mina")}>Mina</Button>
+              <Button onClick={() => setPlotAnswer("No Mina")}>No Mina</Button>
               <Button onClick={nextPlot}>Next</Button>
             </>
           )}

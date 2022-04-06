@@ -78,8 +78,9 @@
    ;; Plots API
    [:post "/get-project-plots"]   {:handler     plots/get-project-plots}
    [:post "/save-user-answer"]    {:handler     plots/save-user-answer
-                                   :auth-type   :collect
-                                   :auth-action :block}
+                                  ;;  :auth-type   :collect
+                                  ;;  :auth-action :block
+                                   }
    ;; Proxy Routes
    [:post "/get-nicfi-dates"]     {:handler     proxy/get-nicfi-dates
                                    :auth-type   :no-cross

@@ -67,9 +67,20 @@ class CollectContent extends React.Component {
     this.setState({currentPlotId: prevPlot.id});
   };
 
+  setPlotAnswer = answer => {
+    const {currentPlotId, projectPlots} = this.state;
+    this.savePlotAnswer(answer);
+    const newProjectPlots = projectPlots.map(p => (p.id === currentPlotId ? {...p, answer} : p));
+    this.setState({projectPlots: newProjectPlots});
+  };
+
   setMap = theMap => this.setState({theMap});
 
   setLatLon = latLon => this.setState({selectedLatLon: latLon});
+
+  /// API Calls ///
+
+  savePlotAnswer = answer => jsonRequest(URLS.SAVE_ANSWER, {plotId: this.state.currentPlotId, answer});
 
   render() {
     const {projectDetails, currentPlotId, projectPlots, theMap} = this.state;
@@ -110,6 +121,7 @@ class CollectContent extends React.Component {
           currentPlotId={this.state.currentPlotId}
           nextPlot={this.nextPlot}
           prevPlot={this.prevPlot}
+          setPlotAnswer={this.setPlotAnswer}
         />
       </>
     );

@@ -4,6 +4,7 @@ import extent from "turf-extent";
 import styled from "styled-components";
 import "mapbox-gl/dist/mapbox-gl.css";
 
+import {get, isString} from "lodash";
 import LngLatHud from "../components/LngLatHud";
 
 import {mapboxToken} from "../appConfig";
@@ -52,9 +53,12 @@ export default class CollectMap extends React.Component {
     this.initMap();
   }
 
-  mapChange = (prevProps, key) => this.props.theMap && this.props[key]
+  mapChange = (prevProps, key) => {
+    const keys = isString(key) ? [key] : key;
+    return this.props.theMap && get(this.props, keys)
       && (prevProps.theMap !== this.props.theMap
-        || prevProps[key] !== this.props[key]);
+        || get(prevProps, keys) !== get(this.props, keys));
+  };
 
   componentDidUpdate(prevProps, _prevState) {
     if (this.mapChange(prevProps, "myHeight")) {
@@ -65,7 +69,7 @@ export default class CollectMap extends React.Component {
       this.addBoundary();
     }
 
-    if (this.mapChange(prevProps, "projectPlots")) {
+    if (this.mapChange(prevProps, ["projectPlots", "length"])) {
       this.addPlots();
     }
 
@@ -143,6 +147,12 @@ export default class CollectMap extends React.Component {
     this.fitMap("bbox", extent(geoJSON));
   };
 
+  plotColor = answer => (answer === "Mina"
+    ? "red"
+    : answer === "No Mina"
+      ? "green"
+      : "blue");
+
   addPlots = () => {
     const {theMap, projectPlots} = this.props;
     const geoJSON = {
@@ -168,7 +178,7 @@ export default class CollectMap extends React.Component {
           "line-cap": "round"
         },
         paint: {
-          "line-color": "blue",
+          "line-color": this.plotColor(p.answer),
           "line-width": 4
         }
       });
@@ -176,19 +186,26 @@ export default class CollectMap extends React.Component {
   };
 
   updateVisiblePlot = () => {
-    const {theMap, projectPlots, currentPlot} = this.props;
-    if (currentPlot.geom) {
-      projectPlots.forEach(({id}) => {
-        const lName = id + "";
+    const {theMap, projectPlots, currentPlot: {geom, id, answer}} = this.props;
+    if (geom) {
+      // Set new color
+      theMap.setPaintProperty(
+        id + "",
+        "line-color",
+        this.plotColor(answer)
+      );
+      // Update visibility
+      projectPlots.forEach(p => {
+        const lName = p.id + "";
         if (theMap.getLayer(lName)) {
           theMap.setLayoutProperty(
             lName,
             "visibility",
-            currentPlot.id === id ? "visible" : "none"
+            id === p.id ? "visible" : "none"
           );
         }
       });
-      this.fitMap("bbox", extent(currentPlot.geom));
+      this.fitMap("bbox", extent(geom));
     }
   };
 
