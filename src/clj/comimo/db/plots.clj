@@ -16,3 +16,20 @@
         answer  (:answer params)]
     (call-sql "save_user_answer" plot-id answer)
     (data-response "")))
+
+(defn get-data-dates [_]
+  (data-response {:predictions (->> (call-sql "get_prediction_options") (map :data_layer))
+                  :userMines   (->> (call-sql "get_user_mine_options")  (map :year_month))}))
+
+(defn download-predictions [{:keys [params]}]
+  (let [data-layer (:dataLayer params)]
+    (->> (call-sql "get_predictions" data-layer)
+         (mapv #(set/rename-keys % {:project_name :projectName
+                                    :data_layer   :dataLayer}))
+         (data-response))))
+
+(defn download-user-mines [{:keys [params]}]
+  (let [year-month (:yearMonth params)]
+    (->> (call-sql "get_user_mines" year-month)
+         (mapv #(set/rename-keys % {:reported_date :reportedDate}))
+         (data-response))))

@@ -11,7 +11,7 @@
   {;; Page Routes
    [:get  "/"]                    {:handler     (render-page "/home")}
    [:get  "/download-data"]       {:handler     (render-page "/download-data")
-                                   :auth-type   :admin
+                                   :auth-type   :none ; :admin
                                    :auth-action :redirect}
    [:get  "/user-account"]        {:handler     (render-page "/user-account")
                                    :auth-type   :user
@@ -81,6 +81,10 @@
                                   ;;  :auth-type   :collect
                                   ;;  :auth-action :block
                                    }
+   [:post "/get-data-dates"]       {:handler     plots/get-data-dates}
+   [:post "/download-predictions"] {:handler     plots/download-predictions}
+   [:post "/download-user-mines"]  {:handler     plots/download-user-mines}
+
    ;; Proxy Routes
    [:post "/get-nicfi-dates"]     {:handler     proxy/get-nicfi-dates
                                    :auth-type   :no-cross
