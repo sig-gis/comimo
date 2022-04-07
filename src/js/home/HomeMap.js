@@ -58,7 +58,7 @@ export default class HomeMap extends React.Component {
 
     this.state = {
       thePopup: null,
-      coords: null
+      mouseCoords: null
     };
   }
 
@@ -139,7 +139,7 @@ export default class HomeMap extends React.Component {
       theMap.on("mousemove", e => {
         const lat = toPrecision(e.lngLat.lat, 4);
         const lng = toPrecision(e.lngLat.lng, 4);
-        this.setState({coords: {lat, lng}});
+        this.setState({mouseCoords: {lat, lng}});
       });
       theMap.on("click", e => {
         const {lng, lat} = e.lngLat;
@@ -207,11 +207,11 @@ export default class HomeMap extends React.Component {
   };
 
   render() {
-    const {coords} = this.state;
+    const {mouseCoords} = this.state;
     return (
       <>
         <MapBoxWrapper id="mapbox"/>
-        {coords && <LngLatHud coords={coords}/>}
+        {mouseCoords && <LngLatHud mouseCoords={mouseCoords}/>}
       </>
     );
   }

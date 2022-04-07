@@ -6,7 +6,7 @@ export default function AppInfo({onClose, isAdmin, localeText: {appInfo}}) {
   const downloadLink = () => (
     <>
       {isAdmin && (
-        <a className="ml-2" href="/download-data">
+        <a className="mr-2" href="/download-data">
           {appInfo.download}
         </a>
       )}

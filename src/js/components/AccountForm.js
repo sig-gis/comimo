@@ -2,9 +2,9 @@ import React from "react";
 import styled from "styled-components";
 
 const OuterForm = styled.form`
- padding-top: 2rem;
- display: flex;
- justify-content: center;
+  display: flex;
+  padding-top: 2rem;
+  justify-content: center;
 `;
 
 const OuterCard = styled.div`
@@ -26,10 +26,9 @@ const CardHeader = styled.h2`
   padding: 1rem;
 `;
 
-export default function AccountForm({render, header, children}) {
+export default function AccountForm({header, children}) {
   return (
     <OuterForm>
-      {render && render()}
       <OuterCard>
         {header && (
           <CardHeader>

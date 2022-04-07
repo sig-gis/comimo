@@ -4,7 +4,7 @@
             [triangulum.type-conversion :as tc]
             [triangulum.database        :refer [call-sql sql-primitive]]
             [triangulum.config          :refer [get-config]]
-            [comimo.utils.mail          :refer [send-mail get-base-url send-new-user-mail]]
+            [comimo.email               :refer [send-new-user-mail send-reset-mail]]
             [comimo.views               :refer [data-response]]))
 
 (defn is-admin? [user-id]
@@ -15,7 +15,7 @@
         "errorLogin"
 
         (not (:verified user))
-        "registered"))
+        "errorRegistered"))
 
 (defn login [{:keys [params]}]
   (let [{:keys [username password]} params
@@ -70,7 +70,7 @@
                                                     institution
                                                     default-lang))]
         (if auto-validate?
-          (do (call-sql "user_verified" user-id)
+          (do (call-sql "set_user_verified" user-id)
               (data-response ""))
           (try
             (send-new-user-mail email reset-key default-lang)
@@ -98,15 +98,12 @@
     (data-response "success")))
 
 (defn password-request [{:keys [params]}]
-  (let [reset-key (str (UUID/randomUUID))
-        email     (sql-primitive (call-sql "set_password_reset_key" {:log? false} (:email params) reset-key))
-        email-msg (format (str "Hi %s,\n\n"
-                               "  To reset your password, simply click the following link:\n\n"
-                               "  %spassword-reset?email=%s&passwordResetKey=%s")
-                          email (get-base-url) email reset-key)]
+  (let [default-lang (:defaultLang params)
+        reset-key    (str (UUID/randomUUID))
+        email        (sql-primitive (call-sql "set_password_reset_key" {:log? false} (:email params) reset-key))]
     (if email
       (try
-        (send-mail email nil nil "Password reset on CEO" email-msg "text/plain")
+        (send-reset-mail email reset-key default-lang)
         (data-response "")
         (catch Exception _
           (data-response (str "A user with the email "

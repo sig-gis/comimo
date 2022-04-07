@@ -19,8 +19,6 @@ class CollectContent extends React.Component {
     // combining everything to app state
     this.state = {
       visiblePanel: null,
-      theMap: null,
-      selectedLatLon: null,
       projectDetails: {},
       projectPlots: [],
       currentPlotId: -1
@@ -74,29 +72,21 @@ class CollectContent extends React.Component {
     this.setState({projectPlots: newProjectPlots});
   };
 
-  setMap = theMap => this.setState({theMap});
-
-  setLatLon = latLon => this.setState({selectedLatLon: latLon});
-
   /// API Calls ///
 
   savePlotAnswer = answer => jsonRequest(URLS.SAVE_ANSWER, {plotId: this.state.currentPlotId, answer});
 
   render() {
-    const {projectDetails, currentPlotId, projectPlots, theMap} = this.state;
-    const {setShowInfo, myHeight, localeText, localeText: {home}} = this.context;
+    const {projectDetails, currentPlotId, projectPlots} = this.state;
+    const {setShowInfo, myHeight, localeText: {home}} = this.context;
     const currentPlot = projectPlots.find(p => p.id === currentPlotId);
     return (
       <>
         <CollectMap
           boundary={projectDetails.boundary}
           currentPlot={currentPlot}
-          localeText={localeText}
           myHeight={myHeight}
           projectPlots={projectPlots}
-          setLatLon={this.setLatLon}
-          setMap={this.setMap}
-          theMap={theMap}
         />
         {home && (
           <SideBar>

@@ -42,19 +42,6 @@ CREATE TABLE user_mines (
 );
 CREATE INDEX user_mines_user_rid ON user_mines (user_rid);
 
--- Stores imagery data
-CREATE TABLE imagery (
-    imagery_uid        SERIAL PRIMARY KEY,
-    visibility         text NOT NULL,
-    title              text NOT NULL,
-    attribution        text NOT NULL,
-    extent             jsonb,
-    source_config      jsonb,
-    archived           boolean DEFAULT FALSE,
-    created_date       date DEFAULT NOW(),
-    archived_date      date
-);
-
 -- Stores information about projects
 CREATE TABLE projects (
     project_uid     SERIAL PRIMARY KEY,
@@ -69,7 +56,7 @@ CREATE TABLE projects (
 );
 CREATE INDEX projects_user_rid ON projects (user_rid);
 
--- Stores plot center location
+-- Stores plot center location and user answer
 CREATE TABLE plots (
     plot_uid       SERIAL PRIMARY KEY,
     project_rid    integer NOT NULL REFERENCES projects (project_uid) ON DELETE CASCADE ON UPDATE CASCADE,
@@ -79,6 +66,7 @@ CREATE TABLE plots (
 );
 CREATE INDEX plots_projects_rid ON plots (project_rid);
 
+-- Logs for automatic emails
 CREATE TABLE auto_email_logs (
     job_time          timestamp DEFAULT now(),
     user_rid          integer NOT NULL REFERENCES users (user_uid) ON DELETE CASCADE ON UPDATE CASCADE,

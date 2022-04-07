@@ -82,12 +82,7 @@
 (defn wrap-request-logging [handler]
   (fn [request]
     (let [{:keys [uri request-method params]} request
-          param-str (pr-str (dissoc params
-                                    :password
-                                    :passwordConfirmation
-                                    :base64Image
-                                    :plotFileBase64
-                                    :sampleFileBase64))]
+          param-str (pr-str (dissoc params :password :passwordConfirmation))]
       (log-str "Request(" (name request-method) "): \"" uri "\" " param-str)
       (handler request))))
 
@@ -110,17 +105,7 @@
                  (str content-type " response")))
       response)))
 
-(defn parse-query-string [query-string]
-  (let [keyvals (-> (url-decode query-string)
-                    (str/split #"&"))]
-    (reduce (fn [params keyval]
-              (->> (str/split keyval #"=")
-                   (map edn/read-string)
-                   (apply assoc params)))
-            {}
-            keyvals)))
-
-(def updatable-session-keys [:tokenKey])
+(def updatable-session-keys [])
 
 (defn wrap-persistent-session [handler]
   (fn [request]

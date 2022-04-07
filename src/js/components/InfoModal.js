@@ -4,40 +4,40 @@ import styled from "styled-components";
 import SvgIcon from "./SvgIcon";
 
 const OuterContainer = styled.div`
-  position: fixed;
-  height: 100%;
-  width: 100%;
-  padding: 0;
-  margin: 0;
-  top: 0;
-  left: 0;
-  z-index: 99;
   background: #0000009e;
+  height: 100%;
+  left: 0;
+  margin: 0;
+  padding: 0;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 99;
 
   &.p {
-   white-space: pre-wrap;
+    white-space: pre-wrap;
   }
 `;
 
 const InnerContainer = styled.div`
-  border-radius: 5px;
-  margin: 50px auto;
-  left: 0;
-  right: 0;
-  max-width: 40rem;
-  width: 90%;
-  height: 80%;
-  padding: 1.5rem;
   background: white;
+  border-radius: 5px;
   display: flex;
   flex-direction: column;
+  height: 80%;
+  left: 0;
+  margin: 50px auto;
+  max-width: 40rem;
+  padding: 1.5rem;
   position: relative;
+  right: 0;
+  width: 90%;
 `;
 
 const CloseRow = styled.div`
+  align-items: center;
   display: flex;
   justify-content: flex-end;
-  align-items: center;
 `;
 
 export default function InfoModal({onClose, nextToClose, children}) {

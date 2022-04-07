@@ -1,12 +1,14 @@
 (ns comimo.db.subscriptions
-  (:require [triangulum.type-conversion :as tc]
+  (:require [clojure.string :as str]
+            [triangulum.type-conversion :as tc]
             [triangulum.database        :refer [call-sql sql-primitive]]
             [comimo.views               :refer [data-response]]
             [comimo.db.projects         :refer [create-project!]]
-            [comimo.py-interop          :refer [location-in-country get-image-list]]
-            [clojure.string :as str]))
+            [comimo.py-interop          :refer [location-in-country get-image-list]]))
 
-;;; Subscription
+;;;
+;;; Subscription Management
+;;;
 
 (defn- return-user-subs [user-id]
   (data-response (->> (call-sql "get_user_subscriptions" user-id)
@@ -56,7 +58,9 @@
           (catch Exception e
             (call-sql "log_email_alert" user_id "Error" (ex-message e) "")))))))
 
-;;; User reported mines
+;;;
+;;; User Reported Mines
+;;;
 
 (defn- report-errors [user-id lat lon]
   (cond

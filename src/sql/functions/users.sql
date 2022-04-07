@@ -4,6 +4,7 @@
 --
 -- ROUTE AUTHENTICATION FUNCTIONS
 --
+
 CREATE OR REPLACE FUNCTION is_user_admin(_user_id integer)
  RETURNS boolean AS $$
 
@@ -165,7 +166,7 @@ CREATE OR REPLACE FUNCTION update_password(_email text, _password text)
 
 $$ LANGUAGE SQL;
 
-CREATE OR REPLACE FUNCTION user_verified(_user_id integer)
+CREATE OR REPLACE FUNCTION set_user_verified(_user_id integer)
  RETURNS void AS $$
 
     UPDATE users
