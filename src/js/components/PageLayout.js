@@ -47,21 +47,23 @@ export class PageLayout extends React.Component {
     .then(data => this.setState({localeText: data}));
 
   render() {
-    const {myHeight, showInfo} = this.state;
+    const {myHeight, showInfo, localeText, selectedLanguage} = this.state;
+    const {role, username, children} = this.props;
+    const isAdmin = role === "admin";
     return (
       <MainContext.Provider
         value={{
-          isAdmin: this.props.role === "admin",
-          username: this.props.username,
-          localeText: this.state.localeText,
+          isAdmin,
+          username,
+          localeText,
           myHeight,
           setShowInfo: this.setShowInfo
         }}
       >
         {showInfo && (
           <AppInfo
-            isAdmin={this.props.role === "admin"}
-            localeText={this.state.localeText}
+            isAdmin={isAdmin}
+            localeText={localeText}
             onClose={() => this.setShowInfo(false)}
           />
         )}
@@ -78,11 +80,11 @@ export class PageLayout extends React.Component {
           }}
         >
           <Header
-            localeText={this.state.localeText}
-            selectedLanguage={this.state.selectedLanguage}
+            localeText={localeText}
+            selectedLanguage={selectedLanguage}
             selectLanguage={this.selectLanguage}
             setShowInfo={this.setShowInfo}
-            username={this.props.username}
+            username={username}
           />
           <div
             id="page-body"
@@ -93,7 +95,7 @@ export class PageLayout extends React.Component {
               flex: "1"
             }}
           />
-          {this.props.children}
+          {children}
         </div>
       </MainContext.Provider>
     );

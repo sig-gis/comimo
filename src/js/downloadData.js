@@ -74,60 +74,54 @@ class DownloadData extends React.Component {
 
   render() {
     const {dataType, availableDates: {predictions, userMines}, collectedData} = this.state;
-    const {isAdmin} = this.props;
-    predictions.sort();
-    userMines.sort();
-    return isAdmin
-      ? (
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            padding: "1rem 4rem",
-            alignItems: "center",
-            height: "100%"
-          }}
-        >
-          <div className="d-flex">
-            <span style={{marginTop: ".25rem"}}>
-              <input
-                checked={dataType === "predictions"}
-                name="dataType"
-                onChange={() => this.setState({dataType: "predictions"})}
-                type="radio"
-              />
+    return (
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          padding: "1rem 4rem",
+          alignItems: "center",
+          height: "100%"
+        }}
+      >
+        <div className="d-flex">
+          <span style={{marginTop: ".25rem"}}>
+            <input
+              checked={dataType === "predictions"}
+              name="dataType"
+              onChange={() => this.setState({dataType: "predictions"})}
+              type="radio"
+            />
               Collected predictions
-            </span>
-            <span style={{marginTop: ".25rem"}}>
-              <input
-                checked={dataType === "userMines"}
-                name="dataType"
-                onChange={() => this.setState({dataType: "userMines"})}
-                type="radio"
-              />
+          </span>
+          <span style={{marginTop: ".25rem"}}>
+            <input
+              checked={dataType === "userMines"}
+              name="dataType"
+              onChange={() => this.setState({dataType: "userMines"})}
+              type="radio"
+            />
               User reported mines
-            </span>
-          </div>
-          {this.state.dataType === "predictions"
-            ? (
-              <Predictions
-                addCollectedData={this.addCollectedData}
-                collectedData={collectedData}
-                predictions={predictions}
-                renderButtons={this.renderButtons}
-              />
-            ) : (
-              <UserMines
-                addCollectedData={this.addCollectedData}
-                collectedData={collectedData}
-                renderButtons={this.renderButtons}
-                userMines={userMines}
-              />
-            )}
+          </span>
         </div>
-      ) : (
-        <div><label>No tienes permiso para ver esta página.</label></div>
-      );
+        {this.state.dataType === "predictions"
+          ? (
+            <Predictions
+              addCollectedData={this.addCollectedData}
+              collectedData={collectedData}
+              predictions={predictions}
+              renderButtons={this.renderButtons}
+            />
+          ) : (
+            <UserMines
+              addCollectedData={this.addCollectedData}
+              collectedData={collectedData}
+              renderButtons={this.renderButtons}
+              userMines={userMines}
+            />
+          )}
+      </div>
+    );
   }
 }
 
@@ -157,11 +151,10 @@ class Predictions extends React.Component {
         {title: "email", field: "email", headerFilter: "input"},
         {title: "organization", field: "institution", headerFilter: "input"},
         {title: "project name", field: "projectName", headerFilter: "input"},
-        {title: "longitude", field: "y", headerFilter: "input"},
-        {title: "latitude", field: "x", headerFilter: "input"},
+        {title: "latitude", field: "lat", headerFilter: "input"},
+        {title: "longitude", field: "lon", headerFilter: "input"},
         {title: "dataLayer", field: "dataLayer", headerFilter: "input"},
-        {title: "mine", field: "classNum", headerFilter: "number"},
-        {title: "label", field: "className", headerFilter: "input"}
+        {title: "mine", field: "answer", headerFilter: "input"}
       ]
     });
     this.setState({table});
@@ -207,7 +200,6 @@ class Predictions extends React.Component {
   render() {
     const {selectedDate} = this.state;
     const {predictions, collectedData, renderButtons} = this.props;
-    predictions.sort().reverse();
     return (
       <>
         <div>
@@ -266,9 +258,9 @@ class UserMines extends React.Component {
         {title: "user", field: "username", headerFilter: "input"},
         {title: "email", field: "email", headerFilter: "input"},
         {title: "organization", field: "institution", headerFilter: "input"},
-        {title: "longitude", field: "y", headerFilter: "input"},
-        {title: "latitude", field: "x", headerFilter: "input"},
-        {title: "reportedDate", field: "reportedDate", headerFilter: "date"}
+        {title: "longitude", field: "lat", headerFilter: "input"},
+        {title: "latitude", field: "lon", headerFilter: "input"},
+        {title: "reportedDate", field: "reportedDate", headerFilter: "input"}
       ]
     });
     this.setState({table});
@@ -295,11 +287,11 @@ class UserMines extends React.Component {
 
   /// API Calls ///
 
-  loadDateData = month => {
+  loadDateData = yearMonth => {
     const {addCollectedData} = this.props;
-    jsonRequest(URLS.USER_MINES, {month})
+    jsonRequest(URLS.USER_MINES, {yearMonth})
       .then(data => {
-        addCollectedData(month, data);
+        addCollectedData(yearMonth, data);
       })
       .catch(err => console.error(err));
   };
@@ -314,7 +306,6 @@ class UserMines extends React.Component {
   render() {
     const {selectedDate} = this.state;
     const {userMines, collectedData, renderButtons} = this.props;
-    userMines.sort().reverse();
     return (
       <>
         <div>
@@ -350,7 +341,7 @@ class UserMines extends React.Component {
 
 export function pageInit(args) {
   ReactDOM.render(
-    <DownloadData isAdmin={args.isAdmin}/>,
+    <DownloadData/>,
     document.getElementById("main-container")
   );
 }

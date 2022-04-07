@@ -30,18 +30,73 @@ CREATE OR REPLACE FUNCTION save_user_answer(_plot_id integer, _answer text)
 
 $$ LANGUAGE SQL;
 
-CREATE OR REPLACE FUNCTION dump_project_plot_data(_project_id integer)
+CREATE OR REPLACE FUNCTION get_prediction_options()
+ RETURNS table (data_layer text) AS $$
+
+    SELECT DISTINCT(data_layer)
+    FROM projects
+    ORDER BY data_layer DESC
+    LIMIT 12
+
+$$ LANGUAGE SQL;
+
+CREATE OR REPLACE FUNCTION get_user_mine_options()
+ RETURNS table (year_month text) AS $$
+
+    SELECT DISTINCT(to_char(reported_date, 'YYYY-MM'))
+    FROM user_mines
+    ORDER BY to_char(reported_date, 'YYYY-MM') DESC
+    LIMIT 12
+
+$$ LANGUAGE SQL;
+
+CREATE OR REPLACE FUNCTION get_predictions(_data_layer text)
  RETURNS table (
-    plotid    integer,
-    lon       float,
-    lat       float
+    username        text,
+    email           text,
+    organization    text,
+    project_name    text,
+    data_layer      text,
+    lat             float,
+    lon             float,
+    answer          text
  ) AS $$
 
-    SELECT plot_uid,
+    SELECT username,
+        email,
+        institution,
+        name,
+        data_layer,
         lon,
-        lat
-    FROM projects
-    INNER JOIN plots pl
-        ON project_uid = pl.project_rid
+        lat,
+        answer
+    FROM projects, users, plots
+    WHERE user_uid = user_rid
+        AND project_uid = project_rid
+        AND data_layer = _data_layer
+        AND answer IS NOT NULL
+
+$$ LANGUAGE SQL;
+
+CREATE OR REPLACE FUNCTION get_user_mines(_year_month text)
+ RETURNS table (
+    username         text,
+    email            text,
+    organization     text,
+    lat              float,
+    lon              float,
+    reported_date    text
+ ) AS $$
+
+    SELECT username,
+        email,
+        institution,
+        lon,
+        lat,
+        to_char(reported_date, 'YYYY-MM-DD')
+    FROM user_mines, users
+    WHERE user_uid = user_rid
+        AND to_char(reported_date, 'YYYY-MM') = _year_month
+    ORDER BY reported_date
 
 $$ LANGUAGE SQL;
