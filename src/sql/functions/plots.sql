@@ -6,20 +6,29 @@ CREATE OR REPLACE FUNCTION select_project_plots(_project_id integer, _m_buffer r
     plot_id    integer,
     lat        float,
     lon        float,
-    geom       text
+    geom       text,
+    answer     text
  ) AS $$
 
     SELECT plot_uid,
         lat,
         lon,
-        ST_AsGeoJSON(add_buffer(ST_MakePoint(lat, lon), _m_buffer))
+        ST_AsGeoJSON(add_buffer(ST_MakePoint(lat, lon), _m_buffer)),
+        answer
     FROM plots
     WHERE project_rid = _project_id
     ORDER BY plot_uid
 
 $$ LANGUAGE SQL;
 
--- TODO save plot information
+CREATE OR REPLACE FUNCTION save_user_answer(_plot_id integer, _answer text)
+ RETURNS void AS $$
+
+    UPDATE plots
+    SET answer = _answer
+    WHERE plot_uid = _plot_id
+
+$$ LANGUAGE SQL;
 
 CREATE OR REPLACE FUNCTION dump_project_plot_data(_project_id integer)
  RETURNS table (

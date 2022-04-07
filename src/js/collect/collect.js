@@ -67,23 +67,36 @@ class CollectContent extends React.Component {
     this.setState({currentPlotId: prevPlot.id});
   };
 
+  setPlotAnswer = answer => {
+    const {currentPlotId, projectPlots} = this.state;
+    this.savePlotAnswer(answer);
+    const newProjectPlots = projectPlots.map(p => (p.id === currentPlotId ? {...p, answer} : p));
+    this.setState({projectPlots: newProjectPlots});
+  };
+
   setMap = theMap => this.setState({theMap});
 
   setLatLon = latLon => this.setState({selectedLatLon: latLon});
 
+  /// API Calls ///
+
+  savePlotAnswer = answer => jsonRequest(URLS.SAVE_ANSWER, {plotId: this.state.currentPlotId, answer});
+
   render() {
-    const {setShowInfo, myHeight, localeText: {home}} = this.context;
+    const {projectDetails, currentPlotId, projectPlots, theMap} = this.state;
+    const {setShowInfo, myHeight, localeText, localeText: {home}} = this.context;
+    const currentPlot = projectPlots.find(p => p.id === currentPlotId);
     return (
       <>
         <CollectMap
-          boundary={this.state.projectDetails.boundary}
-          currentPlotId={this.state.currentPlotId}
-          localeText={this.context.localeText}
+          boundary={projectDetails.boundary}
+          currentPlot={currentPlot}
+          localeText={localeText}
           myHeight={myHeight}
-          projectPlots={this.state.projectPlots}
+          projectPlots={projectPlots}
           setLatLon={this.setLatLon}
           setMap={this.setMap}
-          theMap={this.state.theMap}
+          theMap={theMap}
         />
         {home && (
           <SideBar>
@@ -108,6 +121,7 @@ class CollectContent extends React.Component {
           currentPlotId={this.state.currentPlotId}
           nextPlot={this.nextPlot}
           prevPlot={this.prevPlot}
+          setPlotAnswer={this.setPlotAnswer}
         />
       </>
     );

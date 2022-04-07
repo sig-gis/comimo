@@ -75,7 +75,7 @@ CREATE TABLE plots (
     project_rid    integer NOT NULL REFERENCES projects (project_uid) ON DELETE CASCADE ON UPDATE CASCADE,
     lat            float,
     lon            float,
-    answer         integer NOT NULL
+    answer         text
 );
 CREATE INDEX plots_projects_rid ON plots (project_rid);
 
