@@ -7,7 +7,7 @@ export const URLS = {
   DATA_DATES: "get-data-dates",
   CREATE_PROJ: "create-project",
   FEATURE_NAMES: "get-feature-names",
-  GEE_LAYER: "get-gee-tiles",
+  GET_IMAGE_URL: "get-image-url",
   GET_DL_URL: "get-download-url",
   GET_INFO: "get-info",
   IMG_DATES: "get-image-names",
@@ -17,7 +17,6 @@ export const URLS = {
   PREDICTIONS: "download-predictions",
   REPORT_MINE: "report-mine",
   SAVE_ANSWER: "save-user-answer",
-  SINGLE_IMAGE: "get-single-image",
   USER_MINES: "download-user-mines",
   USER_SUBS: "user-subscriptions",
   USER_PROJ: "user-projects"

@@ -2,9 +2,7 @@ import os
 import ee
 from config import IMAGE_REPO, LEVELS, FIELDS, POINTS_FOL
 
-
-########## Helper functions ##########
-
+### Initialize
 
 def initialize(ee_account='', ee_key_path=''):
     try:
@@ -17,15 +15,53 @@ def initialize(ee_account='', ee_key_path=''):
         print(e)
 
 
-def addBuffer(feature):
-    feature.buffer(1000)
+### Image helpers
 
-
-def getImageList():
-    assetList = ee.data.getList({'id': IMAGE_REPO})
+def getImageList(imageFolder):
+    assetList = ee.data.getList({'id': imageFolder})
     dates = list(map(lambda img: img['id'].split('/')[-1], assetList))
     dates.sort(reverse=True)
     return dates
+
+
+def getVectorUrl(source, color, fill):
+    table = ee.FeatureCollection(source)
+    layer = table.style(color=color, fillColor=fill, width=1)
+    mapid = ee.data.getTileUrl(layer.getMapId(), 0, 0, 0)[:-5]+"{z}/{x}/{y}"
+    return mapid
+
+
+def getImageUrl(source, color):
+    img = ee.Image(source)
+    img = img.select(0).selfMask()
+    mapid = ee.data.getTileUrl(img.getMapId({"palette": [color]}), 0, 0, 0)[:-5]+"{z}/{x}/{y}"
+    return mapid
+
+
+def getDownloadURL(source, region, level, scale):
+    img = ee.Image(source)
+    if (region == 'all'):
+        regionFC = ee.FeatureCollection(LEVELS['l0'])
+    else:
+        l1, l2 = region.split("_")
+        regionFC = ee.FeatureCollection(LEVELS[level])\
+            .filter(ee.Filter.eq(FIELDS['mun_l1'], l1.upper()))\
+            .filter(ee.Filter.eq(FIELDS['mun'], l2.upper()))
+    img = img.clip(regionFC)
+    img.reduceRegion(ee.Reducer.sum(),
+                     regionFC.first().geometry(),
+                     540,
+                     bestEffort=True).getInfo()
+    url = img.toByte().getDownloadURL(
+        {'region': regionFC.geometry(), 'scale': scale})
+    return {'action': 'success', 'url': url}
+
+
+### Plot helpers
+
+
+def addBuffer(feature):
+    feature.buffer(1000)
 
 
 def subscribedRegionsToFC(regions):

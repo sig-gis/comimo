@@ -56,22 +56,66 @@
 (defn location-in-country [lat lon]
   (py-wrapper utils/locationInCountry lat lon))
 
-(defn get-image-list []
-  (py-wrapper utils/getImageList))
+(defn get-image-list [image-folder]
+  (py-wrapper utils/getImageList image-folder))
 
 ;;; Routes
 
 (defn get-image-names [_]
-  (data-response (py-wrapper routes/getImageNames)))
+  (let [image-list (get-image-list "users/comimoapp/Images")]
+    (data-response {:cMines (filter #(re-matches #"\d{4}-\d{2}-\d{2}-\d{4}-\d{2}-\d{2}-C" %) image-list)
+                    :nMines (filter #(re-matches #"\d{4}-\d{2}-\d{2}-N" %) image-list)
+                    :pMines (filter #(re-matches #"\d{4}-\d{2}-\d{2}-P" %) image-list)})))
 
-(defn get-single-image [{:keys [json-params]}]
-  (data-response (py-wrapper routes/getSingleImage json-params)))
+(def image-options {"cMines" {:source-type :image :source-base "users/comimoapp/Images" :color "purple"}
+                    "nMines" {:source-type :image :source-base "users/comimoapp/Images" :color "red"}
+                    "pMines" {:source-type :image :source-base "users/comimoapp/Images" :color "orange"}
+                    "municipalBounds"     {:source-type :vector
+                                           :source      "users/comimoapp/Shapes/Municipal_Bounds"
+                                           :line        "#f66"
+                                           :fill        "#0000"}
+                    "legalMines"          {:source-type :vector
+                                           :source      "users/comimoapp/Shapes/Legal_Mines"
+                                           :line        "#ff0"
+                                           :fill        "#ffff0011"}
+                    "otherAuthorizations" {:source-type :vector
+                                           :source      "users/comimoapp/Shapes/Solicitudes_de_Legalizacion_2010"
+                                           :line        "#047"
+                                           :fill        "#00447711"}
+                    "tierrasDeCom"        {:source-type :vector
+                                           :source      "users/comimoapp/Shapes/Tierras_de_comunidades_negras"
+                                           :line        "#fd9"
+                                           :fill        "#ffdd9911"}
+                    "resguardos"          {:source-type :vector
+                                           :source      "users/comimoapp/Shapes/Resguardos_Indigenas"
+                                           :line        "#d9d"
+                                           :fill        "#dd99dd11"}
+                    "protectedAreas"      {:source-type :vector
+                                           :source      "users/comimoapp/Shapes/RUNAP"
+                                           :line        "#35f0ab"
+                                           :fill        "#dd99dd11"}})
 
-(defn get-gee-tiles [{:keys [json-params]}]
-  (data-response (py-wrapper routes/getGEETiles json-params)))
+(defn get-image-url [{:keys [params]}]
+  (let [image-type (:type params)
+        opts       (get image-options image-type)]
+    (-> (case (:source-type opts)
+          :vector (let [{:keys [source line fill]} opts]
+                    (py-wrapper utils/getVectorUrl source line fill))
 
-(defn get-download-url [{:keys [json-params]}]
-  (data-response (py-wrapper routes/getDownloadURL json-params)))
+          :image  (let [layerName (:layerName params)
+                        {:keys [source-base color]} opts]
+                    (py-wrapper utils/getImageUrl (str source-base "/" layerName) color))
+
+          "")
+        (data-response))))
+
+(defn get-download-url [{:keys [params]}]
+  (let [{:keys [level region dataLayer]} params]
+    (data-response (py-wrapper utils/getDownloadURL
+                               (str "users/comimoapp/Images" "/" dataLayer)
+                               region
+                               level
+                               540))))
 
 (defn- get-subscribed-regions [user-id]
   (->> (call-sql "get_user_subscriptions" user-id)
