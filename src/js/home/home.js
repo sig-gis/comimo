@@ -113,6 +113,7 @@ class HomeContents extends React.Component {
       <>
         <HomeMap
           localeText={this.context.localeText}
+          mapboxToken={this.props.mapboxToken}
           myHeight={myHeight}
           reportPopup={this.state.visiblePanel === "report"}
           selectDates={this.selectDates}
@@ -173,6 +174,7 @@ class HomeContents extends React.Component {
               <SearchPanel
                 featureNames={this.state.featureNames}
                 fitMap={this.fitMap}
+                mapquestKey={this.props.mapquestKey}
                 selectedDates={this.state.selectedDates}
                 selectRegion={this.selectRegion}
               />
@@ -272,7 +274,10 @@ export function pageInit(args) {
       userLang={args.userLang}
       username={args.username}
     >
-      <HomeContents/>
+      <HomeContents
+        mapboxToken={args.mapboxToken}
+        mapquestKey={args.mapquestKey}
+      />
     </PageLayout>,
     document.getElementById("main-container")
   );

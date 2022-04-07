@@ -8,7 +8,6 @@ import LngLatHud from "../components/LngLatHud";
 import InfoPopupContent from "./InfoPopupContent";
 import ReportPopupContent from "./ReportPopupContent";
 
-import {mapboxToken} from "../appConfig";
 import {URLS, availableLayers, startVisible} from "../constants";
 import {toPrecision, jsonRequest} from "../utils";
 import {MainContext} from "../components/PageLayout";
@@ -119,7 +118,7 @@ export default class HomeMap extends React.Component {
   /// Mapbox ///
 
   initMap = () => {
-    mapboxgl.accessToken = mapboxToken;
+    mapboxgl.accessToken = this.props.mapboxToken;
     const theMap = new mapboxgl.Map({
       container: "mapbox",
       style: "mapbox://styles/mapbox/satellite-streets-v9",
