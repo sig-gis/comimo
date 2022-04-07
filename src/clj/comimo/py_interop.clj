@@ -50,7 +50,7 @@
 ;;; Utils
 
 (defn get-points-within [regions data-layer]
-  (py-wrapper utils/getPointsWithin regions data-layer))
+  (py-wrapper utils/getPointsWithin "users/comimoapp/ValidationPoints" regions data-layer))
 
 (defn location-in-country [lat lon]
   (py-wrapper utils/locationInCountry lat lon))
@@ -134,9 +134,10 @@
                                (get-subscribed-regions user-id)))))
 
 (defn get-stat-totals [{:keys [params]}]
-  (let [layer-name (:layerName params)]
+  (let [user-id    (tc/val->int (:userId params))]
     (data-response (py-wrapper utils/statTotals
-                               (str "users/comimoapp/Images" "/" layer-name)))))
+                               (str "users/comimoapp/Images")
+                               (get-subscribed-regions user-id)))))
 
 
 (defn get-info [{:keys [params]}]
