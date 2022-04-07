@@ -28,3 +28,10 @@ export function jsonRequest(url, jsonBody = {}, method = "POST") {
                })
     .then(response => (response.ok ? response.json() : Promise.reject(response)));
 }
+
+export function titleCase(str) {
+  return str
+    .split(" ")
+    .map(word => word[0].toUpperCase() + word.slice(1).toLowerCase())
+    .join(" ");
+}
