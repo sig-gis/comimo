@@ -57,6 +57,22 @@ def getDownloadURL(source, region, level, scale):
     return {'action': 'success', 'url': url}
 
 
+def imagePointExists(source, lat, lon):
+    point = ee.Geometry.Point(lon, lat)
+    pointFeature = ee.Feature(point)
+    image = ee.Image(source).select([0], ['cval'])
+    pt = image.sampleRegions(pointFeature)
+    return pt.size().gt(0).getInfo() == 1
+
+
+def vectorPointOverlaps(source, lat, lon, cols):
+    try:
+        point = ee.Geometry.Point(lon, lat)
+        fc = ee.FeatureCollection(source).filterBounds(point)
+        return list(map((lambda c: fc.first().get(c).getInfo()), cols))
+    except:
+        return None
+
 ### Plot helpers
 
 

@@ -17,8 +17,7 @@
 
 (require-python '[sys :bind-ns])
 (py. (get-attr sys "path") "append" "src/py")
-(require-python '[gee.routes :as routes]
-                '[gee.utils :as utils])
+(require-python '[gee.utils :as utils])
 
 (defonce last-initialized (atom 0))
 
@@ -72,26 +71,32 @@
                     "pMines" {:source-type :image :source-base "users/comimoapp/Images" :color "orange"}
                     "municipalBounds"     {:source-type :vector
                                            :source      "users/comimoapp/Shapes/Municipal_Bounds"
+                                           :info-cols   ["MPIO_CNMBR" "DPTO_CNMBR"]
                                            :line        "#f66"
                                            :fill        "#0000"}
                     "legalMines"          {:source-type :vector
                                            :source      "users/comimoapp/Shapes/Legal_Mines"
+                                           :info-cols   ["ID"]
                                            :line        "#ff0"
                                            :fill        "#ffff0011"}
                     "otherAuthorizations" {:source-type :vector
                                            :source      "users/comimoapp/Shapes/Solicitudes_de_Legalizacion_2010"
+                                           :info-cols   ["ID"]
                                            :line        "#047"
                                            :fill        "#00447711"}
                     "tierrasDeCom"        {:source-type :vector
                                            :source      "users/comimoapp/Shapes/Tierras_de_comunidades_negras"
+                                           :info-cols   ["NOMBRE"]
                                            :line        "#fd9"
                                            :fill        "#ffdd9911"}
                     "resguardos"          {:source-type :vector
                                            :source      "users/comimoapp/Shapes/Resguardos_Indigenas"
+                                           :info-cols   ["NOMBRE"]
                                            :line        "#d9d"
                                            :fill        "#dd99dd11"}
                     "protectedAreas"      {:source-type :vector
                                            :source      "users/comimoapp/Shapes/RUNAP"
+                                           :info-cols   ["categoria" "nombre"]
                                            :line        "#35f0ab"
                                            :fill        "#dd99dd11"}})
 
@@ -133,5 +138,24 @@
     (data-response (py-wrapper utils/statTotals
                                (str "users/comimoapp/Images" "/" layer-name)))))
 
-(defn get-info [{:keys [json-params]}]
-  (data-response (py-wrapper routes/getInfo json-params)))
+
+(defn get-info [{:keys [params]}]
+  (let [visible-layers (:visibleLayers params)
+        mine-dates     (:dates params)
+        lat            (tc/val->double (:lat params))
+        lon            (tc/val->double (:lon params))]
+    (data-response (->> visible-layers
+                        (pmap
+                         (fn [v]
+                           [v (let [{:keys [source-type source source-base info-cols]} (get image-options v)]
+
+                                (case source-type
+                                  :image (py-wrapper utils/imagePointExists
+                                                     (str source-base "/" (get mine-dates (keyword v)))
+                                                     lat
+                                                     lon)
+
+                                  :vector (py-wrapper utils/vectorPointOverlaps source lat lon info-cols)
+
+                                  ""))]))
+                        (into {})))))
