@@ -26,10 +26,9 @@ const CardHeader = styled.h2`
   padding: 1rem;
 `;
 
-export default function AccountForm({render, header, children}) {
+export default function AccountForm({header, children}) {
   return (
     <OuterForm>
-      {render && render()}
       <OuterCard>
         {header && (
           <CardHeader>

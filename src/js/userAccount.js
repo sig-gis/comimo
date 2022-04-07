@@ -139,40 +139,40 @@ class UserAccount extends React.Component {
   render() {
     const {localeText, defaultLang} = this.state;
     return (
-      <AccountForm
-        header={localeText.userAccountTitle}
-        render={this.state.showModal && (() => (<LoadingModal message={localeText.modalMessage}/>))}
-      >
-        <div className="d-flex">
-          <label className="mr-3">{localeText.language}</label>
-          <LanguageSelector
-            selectedLanguage={defaultLang}
-            selectLanguage={this.selectLanguage}
-          />
-        </div>
-        {this.renderField(localeText.username, "text", "username", true)}
-        {this.renderField(localeText.email, "email", "email", true)}
-        {this.renderField(localeText.fullName, "text", "fullName")}
-        {this.renderField(localeText.institution, "text", "institution")}
-        {this.renderSelect(
-          localeText.sector,
-          [
-            {key: "academic", optLabel: localeText.academic},
-            {key: "government", optLabel: localeText.government},
-            {key: "ngo", optLabel: localeText.ngo}
-          ],
-          "sector"
-        )}
-        <div className="d-flex justify-content-between align-items-center">
-          <span style={{color: "red"}}>{localeText.allRequired}</span>
-          <Button
-            className="mt-2"
-            onClick={this.updateUser}
-          >
-            {localeText.save}
-          </Button>
-        </div>
-      </AccountForm>
+      <>
+        {this.state.showModal && (() => (<LoadingModal message={localeText.modalMessage}/>))}
+        <AccountForm header={localeText.userAccountTitle}>
+          <div className="d-flex">
+            <label className="mr-3">{localeText.language}</label>
+            <LanguageSelector
+              selectedLanguage={defaultLang}
+              selectLanguage={this.selectLanguage}
+            />
+          </div>
+          {this.renderField(localeText.username, "text", "username", true)}
+          {this.renderField(localeText.email, "email", "email", true)}
+          {this.renderField(localeText.fullName, "text", "fullName")}
+          {this.renderField(localeText.institution, "text", "institution")}
+          {this.renderSelect(
+            localeText.sector,
+            [
+              {key: "academic", optLabel: localeText.academic},
+              {key: "government", optLabel: localeText.government},
+              {key: "ngo", optLabel: localeText.ngo}
+            ],
+            "sector"
+          )}
+          <div className="d-flex justify-content-between align-items-center">
+            <span style={{color: "red"}}>{localeText.allRequired}</span>
+            <Button
+              className="mt-2"
+              onClick={this.updateUser}
+            >
+              {localeText.save}
+            </Button>
+          </div>
+        </AccountForm>
+      </>
     );
   }
 }
