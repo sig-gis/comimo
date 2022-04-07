@@ -31,8 +31,8 @@
    [:post "/get-image-names"]     {:handler     py/get-image-names}
    [:post "/get-image-url"]       {:handler     py/get-image-url}
    [:post "/get-download-url"]    {:handler     py/get-download-url}
-   [:post "/get-area-predicted"]  {:handler     py/get-area-predicted}
-   [:post "/get-area-ts"]         {:handler     py/get-area-ts}
+   [:post "/get-stats-by-region"] {:handler     py/get-stats-by-region}
+   [:post "/get-stat-totals"]     {:handler     py/get-stat-totals}
    [:post "/get-info"]            {:handler     py/get-info}
 
    ;; Users API

@@ -4,62 +4,6 @@ from config import IMAGE_REPO, LEVELS, FIELDS
 from utils import getImageList, subscribedRegionsToFC
 
 
-# get area of predicted mineswithin study region
-
-
-def getAreaPredicted(request):
-    layerName = request.get('layerName')
-    subscribedRegions = request.get('subscribedRegions')
-    try:
-        fc = subscribedRegionsToFC(subscribedRegions)
-        image = ee.Image(IMAGE_REPO + '/' + layerName)
-        pa = ee.Image.pixelArea()
-        image = image.selfMask().multiply(pa)
-        rr = image.reduceRegions(collection=fc,
-                                 reducer=ee.Reducer.count(),
-                                 scale=540,
-                                 crs='EPSG:4326')
-        count = rr.aggregate_array('count')
-        names = rr.aggregate_array('MPIO_CNMBR')
-        resp = ee.Dictionary({'count': count, 'names': names}).getInfo()
-        resp['action'] = 'Success'
-        return resp
-    except Exception as e:
-        print(e)
-        return {'action': 'Error', 'message': 'Something went wrong!'}
-
-
-# get area of predicted mineswithin study region
-
-
-def getAreaPredictedTS(subscribedRegions):
-    try:
-        fc = subscribedRegionsToFC(subscribedRegions)
-
-        def asBands(image, passedImage):
-            image = ee.Image(image)
-            id = image.id()
-            image = image.selfMask()
-            passedImage = ee.Image(passedImage)
-            return passedImage.addBands(image.rename(id))
-        image = ee.Image(ee.ImageCollection(IMAGE_REPO)
-                         .filter(ee.Filter.stringEndsWith('system:index', '-C'))
-                         .iterate(asBands, ee.Image()))
-        image = image.select(image.bandNames().remove('constant'))
-        rr = image.reduceRegion(geometry=fc.geometry(),
-                                reducer=ee.Reducer.count(),
-                                scale=540,
-                                crs='EPSG:4326',
-                                bestEffort=True)
-        count = rr.values()
-        names = rr.keys()
-        resp = ee.Dictionary({'count': count, 'names': names}).getInfo()
-        resp['action'] = 'Success'
-        return resp
-    except Exception as e:
-        print(e)
-        return {'action': 'Error', 'message': 'Something went wrong!'}
-
 
 def getInfo(request):
     try:

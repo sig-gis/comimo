@@ -1,7 +1,7 @@
 export const URLS = {
   ADD_SUBS: "add-subscription",
-  AREA_STATS: "get-area-predicted",
-  AREA_TOTAL_STATS: "get-area-ts",
+  AREA_STATS: "get-stats-by-region",
+  AREA_TOTAL_STATS: "get-stat-totals",
   CLOSE_PROJ: "close-project",
   DEL_SUBS: "remove-subscription",
   DATA_DATES: "get-data-dates",

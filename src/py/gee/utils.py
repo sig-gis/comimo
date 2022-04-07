@@ -63,6 +63,12 @@ def getDownloadURL(source, region, level, scale):
 def addBuffer(feature):
     feature.buffer(1000)
 
+def locationInCountry(lat, lon):
+    point = ee.Geometry.Point(lon, lat)
+    admnames = ee.FeatureCollection(
+        "users/comimoapp/Shapes/Level0").filterBounds(point)
+    return ee.Algorithms.If(admnames.size().gt(0), True, False).getInfo()
+
 
 def subscribedRegionsToFC(regions):
     fc = ee.FeatureCollection([])
@@ -106,8 +112,40 @@ def getPointsWithin(regions, dataLayer):
         print(e)
 
 
-def locationInCountry(lat, lon):
-    point = ee.Geometry.Point(lon, lat)
-    admnames = ee.FeatureCollection(
-        "users/comimoapp/Shapes/Level0").filterBounds(point)
-    return ee.Algorithms.If(admnames.size().gt(0), True, False).getInfo()
+def statsByRegion(source, regions):
+    fc = subscribedRegionsToFC(regions)
+    image = ee.Image(source)
+    pa = ee.Image.pixelArea()
+    image = image.selfMask().multiply(pa)
+    rr = image.reduceRegions(collection=fc,
+                                reducer=ee.Reducer.count(),
+                                scale=540,
+                                crs='EPSG:4326')
+    count = rr.aggregate_array('count')
+    names = rr.aggregate_array('MPIO_CNMBR')
+    resp = ee.Dictionary({'count': count, 'names': names}).getInfo()
+    resp['action'] = 'Success'
+    return resp
+
+def statTotals(subscribedRegions):
+    fc = subscribedRegionsToFC(subscribedRegions)
+    def asBands(image, passedImage):
+        image = ee.Image(image)
+        id = image.id()
+        image = image.selfMask()
+        passedImage = ee.Image(passedImage)
+        return passedImage.addBands(image.rename(id))
+    image = ee.Image(ee.ImageCollection(IMAGE_REPO)
+                        .filter(ee.Filter.stringEndsWith('system:index', '-C'))
+                        .iterate(asBands, ee.Image()))
+    image = image.select(image.bandNames().remove('constant'))
+    rr = image.reduceRegion(geometry=fc.geometry(),
+                            reducer=ee.Reducer.count(),
+                            scale=540,
+                            crs='EPSG:4326',
+                            bestEffort=True)
+    count = rr.values()
+    names = rr.keys()
+    resp = ee.Dictionary({'count': count, 'names': names}).getInfo()
+    resp['action'] = 'Success'
+    return resp

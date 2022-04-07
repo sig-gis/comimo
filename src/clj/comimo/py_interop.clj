@@ -121,16 +121,17 @@
   (->> (call-sql "get_user_subscriptions" user-id)
        (map :region)))
 
-(defn get-area-predicted [{:keys [params json-params]}]
-  (let [user-id (tc/val->int (:userId params))]
-    (data-response (py-wrapper routes/getAreaPredicted
-                               (assoc json-params
-                                      "subscribedRegions" (get-subscribed-regions user-id))))))
-
-(defn get-area-ts [{:keys [params json-params]}]
-  (let [user-id (tc/val->int (:userId params))]
-    (data-response (py-wrapper routes/getAreaPredictedTS
+(defn get-stats-by-region [{:keys [params]}]
+  (let [user-id    (tc/val->int (:userId params))
+        layer-name (:layerName params)]
+    (data-response (py-wrapper utils/statsByRegion
+                               (str "users/comimoapp/Images" "/" layer-name)
                                (get-subscribed-regions user-id)))))
+
+(defn get-stat-totals [{:keys [params]}]
+  (let [layer-name (:layerName params)]
+    (data-response (py-wrapper utils/statTotals
+                               (str "users/comimoapp/Images" "/" layer-name)))))
 
 (defn get-info [{:keys [json-params]}]
   (data-response (py-wrapper routes/getInfo json-params)))
