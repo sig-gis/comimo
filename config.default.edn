@@ -1,8 +1,8 @@
 {:database     {:host     "localhost"
                 :port     5432
-                :dbname   "ceo"
-                :user     "ceo"
-                :password "ceo"}
+                :dbname   "comimo"
+                :user     "comimo"
+                :password "comimo"}
  :mail         {:host     "smtp.gmail.com"
                 :user     ""
                 :pass     ""
