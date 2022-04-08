@@ -141,7 +141,10 @@ class UserAccount extends React.Component {
     return (
       <>
         {this.state.showModal && (() => (<LoadingModal message={localeText.modalMessage}/>))}
-        <AccountForm header={localeText.userAccountTitle}>
+        <AccountForm
+          header={localeText.userAccountTitle}
+          submitFn={this.updateUser}
+        >
           <div className="d-flex">
             <label className="mr-3">{localeText.language}</label>
             <LanguageSelector

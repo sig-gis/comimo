@@ -2,8 +2,8 @@ import React from "react";
 
 import LoginMessage from "./LoginMessage";
 import Button from "../components/Button";
-import SvgIcon from "../components/SvgIcon";
 import ToolPanel from "../components/ToolPanel";
+import ProjectCard from "../components/ProjectCard";
 
 import {jsonRequest} from "../utils";
 import {URLS} from "../constants";
@@ -107,39 +107,6 @@ export default class ValidatePanel extends React.Component {
     }
   };
 
-  renderProject = ({dataLayer, createdDate, id, name, regions}) => {
-    const {localeText: {validate}} = this.context;
-    return (
-      <tr key={id}>
-        <td style={{width: "calc(100% - 30px)"}}>
-          <div style={{display: "flex", flexDirection: "column"}}>
-            <label>{name}</label>
-            <small>{`${validate.predictionLabel}: ${dataLayer}`}</small>
-            <small>{`${validate.createdLabel}: ${createdDate}`}</small>
-            <small>{`${validate.regionsLabel}:`}
-              <ul>
-                {regions
-                  .map(x => x.split("_"))
-                  .map(x => <li key={x}>{`${x[2]}, ${x[1]}`}</li>)}
-              </ul>
-            </small>
-          </div>
-        </td>
-        <td style={{verticalAlign: "top"}}>
-          <button
-            className="del-btn green-btn p-0"
-            onClick={() => this.closeProject(id)}
-            style={{height: "1.75rem", width: "1.75rem"}}
-            title={"Close " + name}
-            type="button"
-          >
-            <SvgIcon extraStyle={{margin: "0px .3rem .1rem"}} icon="check" size="1.25rem"/>
-          </button>
-        </td>
-      </tr>
-    );
-  };
-
   customSelect = val => {
     const {customRegions} = this.state;
     const newRegions = customRegions.includes(val)
@@ -199,15 +166,9 @@ export default class ValidatePanel extends React.Component {
               {projects.length === 0
                 ? <span>{validate.noProjects}</span>
                 : (
-                  <table style={{width: "100%", textAlign: "left"}}>
-                    <thead>
-                      <tr>
-                        <th style={{width: "calc(100% - 50px)"}}>{validate.name}</th>
-                        <th>{}</th>
-                      </tr>
-                    </thead>
-                    <tbody>{projects.map(p => this.renderProject(p))}</tbody>
-                  </table>
+                  <> {projects.map(project =>
+                    (<ProjectCard onClick={this.closeProject} project={project}/>))}
+                  </>
                 )}
               <h3 style={{marginBottom: 0}}>{`${validate.createProject}:`}</h3>
               <label>{`${validate.projectName}:`}</label>
