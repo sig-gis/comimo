@@ -38,7 +38,7 @@
                  {:type "application/json"})) ; the json file is already json
 
 (defn send-email-alerts []
-  (let [latest-image (first (get-image-list "users/comimoapp/Images")) ; TODO, maybe sort just in case
+  (let [latest-image (first (get-image-list "users/comimoapp/Images"))
         latest-time  (subs latest-image 0 (- (count latest-image) 2))]
     (when-let [user-subs (call-sql "get_unsent_subscriptions" latest-time)]
       (doseq [{:keys [user_id email default_lang] :as user} user-subs]
