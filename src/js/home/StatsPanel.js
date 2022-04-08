@@ -51,18 +51,7 @@ export default class StatsPanel extends React.Component {
     const {localeText: {stats}} = this.context;
     document.getElementById("stats1").innerHTML = `${stats.loading}...`;
     jsonRequest(URLS.AREA_STATS, {layerName: selectedDate})
-      .then(result => {
-        const data = [];
-        for (let i = 0; i < result.names.length; i += 1) {
-          const count = result.count[i];
-          const name = result.names[i];
-          if (count > 0.0) {
-            data.push([
-              name,
-              count
-            ]);
-          }
-        }
+      .then(data => {
         if (data.length > 0) {
           const dataTable = new google.visualization.DataTable();
           dataTable.addColumn("string", stats.munLabel);
@@ -93,20 +82,9 @@ export default class StatsPanel extends React.Component {
     const {localeText: {stats}} = this.context;
     document.getElementById("stats2").innerHTML = `${stats.loading}...`;
     jsonRequest(URLS.AREA_TOTAL_STATS)
-      .then(result => {
-        const data = [];
-        let nonzero = false;
-        for (let i = 0; i < result.names.length; i += 1) {
-          const count = result.count[i];
-          const dateParts = result.names[i].split("-");
-          const shortDate = `${dateParts[1]}/${dateParts[0].slice(2)} a ${dateParts[4]}/${dateParts[3].slice(2)}`;
-          data.push([
-            shortDate,
-            count
-          ]);
-          if (count > 0.0) nonzero = true;
-        }
-        if (nonzero) {
+      .then(data => {
+        const sum = data.reduce((acc, [_, c]) => acc + c, 0);
+        if (sum > 0.0) {
           const dataTable = new google.visualization.DataTable();
           dataTable.addColumn("string", stats.dateLabel);
           dataTable.addColumn("number", stats.countLabel);

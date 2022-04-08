@@ -126,19 +126,29 @@
   (->> (call-sql "get_user_subscriptions" user-id)
        (map :region)))
 
+(defn combine-stats [{:strs [count names] :as xx}]
+  (zipmap names count))
+
 (defn get-stats-by-region [{:keys [params]}]
   (let [user-id    (tc/val->int (:userId params))
         layer-name (:layerName params)]
-    (data-response (py-wrapper utils/statsByRegion
-                               (str "users/comimoapp/Images" "/" layer-name)
-                               (get-subscribed-regions user-id)))))
+    (->> (py-wrapper utils/statsByRegion
+                     (str "users/comimoapp/Images" "/" layer-name)
+                     (get-subscribed-regions user-id))
+         (combine-stats)
+         (filterv (fn [[_k v]] (> v 0.0)))
+         (data-response))))
 
 (defn get-stat-totals [{:keys [params]}]
   (let [user-id    (tc/val->int (:userId params))]
-    (data-response (py-wrapper utils/statTotals
-                               (str "users/comimoapp/Images")
-                               (get-subscribed-regions user-id)))))
-
+    (->> (py-wrapper utils/statTotals
+                     (str "users/comimoapp/Images")
+                     (get-subscribed-regions user-id))
+         (mapv (fn [[k v]]
+                 (let [[a b _ c d] (str/split k #"-")
+                       new-k     (format "%s/%s a %s/%s" b (subs a 2) d (subs c 2))]
+                   [new-k v])))
+         (data-response))))
 
 (defn get-info [{:keys [params]}]
   (let [visible-layers (:visibleLayers params)

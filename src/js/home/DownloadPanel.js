@@ -26,10 +26,8 @@ export default class DownloadPanel extends React.Component {
 
     const [level, region] = clipOption === 1 ? ["", "all"] : selectedRegion.split("_", 1);
     jsonRequest(URLS.GET_DL_URL, {level, region, dataLayer: selectedDates[mineType]})
-      .then(res => {
-        if (res.action === "success") {
-          this.setState({downloadURL: [region, level, selectedDates[mineType], res.url]});
-        }
+      .then(resp => {
+        this.setState({downloadURL: [region, level, selectedDates[mineType], resp]});
       })
       .catch(err => {
         console.error(err);
