@@ -17,7 +17,7 @@ export default class InfoPopupContent extends React.Component {
     if (visibleLayers.length > 0) {
       jsonRequest(URLS.GET_INFO, {lat, lon, dates: selectedDates, visibleLayers})
         .then(resp => {
-          this.setState({layerInfo: resp.value});
+          this.setState({layerInfo: resp});
         })
         .catch(err => console.error(err));
     }
@@ -47,22 +47,23 @@ export default class InfoPopupContent extends React.Component {
           </div>
           {visibleLayers.includes("nMines") && (
             <div>
-              <b>{localeText.nMines}:</b> {nMines ? localeText.eeLayerDetected : localeText.eeLayerNotDetected}
+              <b>{localeText.nMines}: </b>{nMines ? localeText.eeLayerDetected : localeText.eeLayerNotDetected}
             </div>
           )}
           {visibleLayers.includes("pMines") && (
             <div>
-              <b>{localeText.pMines}:</b> {pMines ? localeText.eeLayerDetected : localeText.eeLayerNotDetected}
+              <b>{localeText.pMines}: </b>{pMines ? localeText.eeLayerDetected : localeText.eeLayerNotDetected}
             </div>
           )}
           {visibleLayers.includes("cMines") && (
             <div>
-              <b>{localeText.cMines}:</b> {cMines ? localeText.eeLayerDetected : localeText.eeLayerNotDetected}
+              <b>{localeText.cMines}: </b>{cMines ? localeText.eeLayerDetected : localeText.eeLayerNotDetected}
             </div>
           )}
           {visibleLayers.includes("municipalBounds") && (
             <div>
-              <b>{localeText.municipalBoundsPopup}:</b> {municipalBounds || localeText.municipalBoundsNotFound}
+              <b>{localeText.municipalBoundsPopup}: </b>
+              {municipalBounds ? municipalBounds[0] + ", " + municipalBounds[1] : localeText.municipalBoundsNotFound}
             </div>
           )}
           {visibleLayers.includes("protectedAreas") && protectedAreas && (
@@ -73,16 +74,16 @@ export default class InfoPopupContent extends React.Component {
             </div>
           )}
           {visibleLayers.includes("otherAuthorizations") && otherAuthorizations && (
-            <div><b>{localeText.otherAuthorizationsPopup}:</b> {otherAuthorizations}</div>
+            <div><b>{localeText.otherAuthorizationsPopup}: </b>{otherAuthorizations}</div>
           )}
           {visibleLayers.includes("legalMines") && legalMines && (
-            <div><b>{localeText.legalMinesPopup}:</b> {legalMines}</div>
+            <div><b>{localeText.legalMinesPopup}: </b>{legalMines}</div>
           )}
           {visibleLayers.includes("tierrasDeCom") && tierrasDeCom && (
-            <div><b>{localeText.tierrasDeComPopup}:</b> {tierrasDeCom}</div>
+            <div><b>{localeText.tierrasDeComPopup}: </b>{tierrasDeCom}</div>
           )}
           {visibleLayers.includes("resguardos") && resguardos && (
-            <div><b>{localeText.resguardosPopup}:</b> {resguardos}</div>
+            <div><b>{localeText.resguardosPopup}: </b>{resguardos}</div>
           )}
         </div>
       ) : (
