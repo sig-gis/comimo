@@ -58,10 +58,7 @@ class Login extends React.Component {
     return (
       <AccountForm
         header={localeText.loginTitle}
-        onSubmit={e => {
-          e.preventDefault();
-          this.requestLogin();
-        }}
+        submitFn={this.requestLogin}
       >
         {this.renderField(localeText.username, "text", "username")}
         {this.renderField(localeText.password, "password", "password")}

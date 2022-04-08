@@ -1,34 +1,60 @@
 import React, {useContext} from "react";
+import styled from "styled-components";
 
 import Button from "./Button";
 
-import {MainContext} from "../home/constants";
 import {titleCase} from "../utils";
+import {MainContext} from "./PageLayout";
+
+const CardOuter = styled.div`
+  border: 1px solid rgb(0, 0, 0, 0.9);
+  border-radius: 6px;
+  box-shadow: 0 0 3px 1px rgb(0, 0, 0, 0.5);
+  margin-bottom: .5rem;
+  padding: .5rem;
+`;
+
+const Title = styled.h3`
+  text-align: center;
+  margin: 0;
+`;
+
+const Info = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
+
+const ButtonRow = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  width: 100%;
+`;
 
 export default function ProjectCard({project: {dataLayer, createdDate, id, name, regions}, onClick}) {
   const {localeText: {validate}} = useContext(MainContext);
 
   return (
-    <li key={id} style={{display: "flex", flexDirection: "row", alignItems: "flex-end"}}>
-      <div style={{display: "flex", flexGrow: 4, flexDirection: "column"}}>
-        <label style={{alignSelf: "center"}}>{name}</label>
-        <small>{`${validate.predictionLabel}: ${dataLayer}`}</small>
-        <small>{`${validate.createdLabel}: ${createdDate}`}</small>
-        <small>{`${validate.regionsLabel}:`}
+    <CardOuter>
+      <Info>
+        <Title>{name}</Title>
+        <span>{`${validate.predictionLabel}: ${dataLayer}`}</span>
+        <span>{`${validate.createdLabel}: ${createdDate}`}</span>
+        <span>{`${validate.regionsLabel}:`}
           <ul>
             {regions
               .map(x => x.toUpperCase().split("_"))
               .map(x => <li key={x}>{`${titleCase(x[2])}, ${titleCase(x[1])}`}</li>)}
           </ul>
-        </small>
-      </div>
-      <Button
-        onClick={() => onClick(id)}
-        style={{height:"2rem"}}
-        title={"Close " + name}
-      >
+        </span>
+      </Info>
+      <ButtonRow>
+        <Button
+          onClick={() => onClick(id)}
+          title={"Close " + name}
+        >
         Close
-      </Button>
-    </li>
+        </Button>
+      </ButtonRow>
+    </CardOuter>
   );
 }

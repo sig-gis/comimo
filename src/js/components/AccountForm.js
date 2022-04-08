@@ -1,13 +1,13 @@
 import React from "react";
 import styled from "styled-components";
 
-const OuterForm = styled.form`
+const FormArea = styled.div`
   display: flex;
   padding-top: 2rem;
   justify-content: center;
 `;
 
-const OuterCard = styled.div`
+const OuterCard = styled.form`
   border: 2px solid black;
   border-radius: 4px;
   overflow: hidden;
@@ -26,10 +26,15 @@ const CardHeader = styled.h2`
   padding: 1rem;
 `;
 
-export default function AccountForm({header, children}) {
+export default function AccountForm({header, submitFn, children}) {
   return (
-    <OuterForm>
-      <OuterCard>
+    <FormArea>
+      <OuterCard
+        onSubmit={e => {
+          e.preventDefault();
+          submitFn();
+        }}
+      >
         {header && (
           <CardHeader>
             {header}
@@ -39,6 +44,6 @@ export default function AccountForm({header, children}) {
           {children}
         </InnerCard>
       </OuterCard>
-    </OuterForm>
+    </FormArea>
   );
 }
