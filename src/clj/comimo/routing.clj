@@ -11,13 +11,13 @@
   {;; Page Routes
    [:get  "/"]                    {:handler     (render-page "/home")}
    [:get  "/download-data"]       {:handler     (render-page "/download-data")
-                                   :auth-type   :none ; :admin
+                                   :auth-type   :admin
                                    :auth-action :redirect}
    [:get  "/user-account"]        {:handler     (render-page "/user-account")
                                    :auth-type   :user
                                    :auth-action :redirect}
    [:get  "/collect"]             {:handler     (render-page "/collect")
-                                   :auth-type   :none
+                                   :auth-type   :collect
                                    :auth-action :redirect}
    [:get  "/home"]                {:handler     (render-page "/home")}
    [:get  "/login"]               {:handler     (render-page "/login")}
@@ -70,19 +70,20 @@
                                    :auth-type   :user
                                    :auth-action :block}
    [:post "/get-project-by-id"]   {:handler     projects/get-project-by-id}
-   [:post "/user-projects"]       {:handler     projects/user-projects
-                                   :auth-type   :user
-                                   :auth-action :block}
+   [:post "/user-projects"]       {:handler     projects/user-projects}
 
    ;; Plots API
    [:post "/get-project-plots"]   {:handler     plots/get-project-plots}
    [:post "/save-user-answer"]    {:handler     plots/save-user-answer
-                                  ;;  :auth-type   :collect
-                                  ;;  :auth-action :block
-                                   }
+                                   :auth-type   :collect
+                                   :auth-action :block}
    [:post "/get-data-dates"]       {:handler     plots/get-data-dates}
-   [:post "/download-predictions"] {:handler     plots/download-predictions}
-   [:post "/download-user-mines"]  {:handler     plots/download-user-mines}
+   [:post "/download-predictions"] {:handler     plots/download-predictions
+                                    :auth-type   :admin
+                                    :auth-action :block}
+   [:post "/download-user-mines"]  {:handler     plots/download-user-mines
+                                    :auth-type   :admin
+                                    :auth-action :block}
 
    ;; Proxy Routes
    [:post "/get-nicfi-dates"]     {:handler     proxy/get-nicfi-dates

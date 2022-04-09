@@ -1,6 +1,19 @@
 -- NAMESPACE: plots
 -- REQUIRES: clear, project
 
+-- Check if user has collection rights (read rights) for the project
+CREATE OR REPLACE FUNCTION can_user_collect_plot(_user_id integer, _plot_id integer)
+ RETURNS boolean AS $$
+
+    SELECT count(1) > 0
+    FROM projects, plots
+    WHERE project_uid = project_rid
+        AND user_rid = _user_id
+        AND plot_uid = _plot_id
+
+$$ LANGUAGE SQL;
+
+
 CREATE OR REPLACE FUNCTION select_project_plots(_project_id integer, _m_buffer real)
  RETURNS table (
     plot_id    integer,

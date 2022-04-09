@@ -20,7 +20,7 @@
             [ring.middleware.ssl                :refer [wrap-ssl-redirect]]
             [ring.middleware.x-headers          :refer [wrap-frame-options wrap-content-type-options wrap-xss-protection]]
             [ring.util.response                 :refer [redirect]]
-            [ring.util.codec                    :refer [url-encode url-decode]]
+            [ring.util.codec                    :refer [url-encode]]
             [triangulum.logging                 :refer [log-str]]
             [triangulum.config                  :refer [get-config]]
             [triangulum.type-conversion         :as tc]
@@ -55,10 +55,11 @@
   (let [{:keys [auth-type auth-action handler] :as route} (get routes [request-method uri])
         user-id      (:userId params -1)
         project-id   (tc/val->int (:projectId params))
+        plot-id      (tc/val->int (:plotId params))
         next-handler (if route
                        (if (condp = auth-type
                              :user     (pos? user-id)
-                             :collect  (can-collect? user-id project-id)
+                             :collect  (can-collect? user-id project-id plot-id)
                              :admin    (is-admin? user-id)
                              :no-cross (no-cross-traffic? headers)
                              true)

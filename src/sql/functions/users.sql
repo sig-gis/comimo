@@ -8,7 +8,7 @@
 CREATE OR REPLACE FUNCTION is_user_admin(_user_id integer)
  RETURNS boolean AS $$
 
-    SELECT count(1) > 1
+    SELECT count(1) > 0
     FROM users
     WHERE user_uid = _user_id
         AND role = 'admin'
