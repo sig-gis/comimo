@@ -167,7 +167,7 @@ export default class ValidatePanel extends React.Component {
                 ? <span>{validate.noProjects}</span>
                 : (
                   <> {projects.map(project =>
-                    (<ProjectCard onClick={this.closeProject} project={project}/>))}
+                    (<ProjectCard closeProject={this.closeProject} project={project}/>))}
                   </>
                 )}
               <h3 style={{marginBottom: 0}}>{`${validate.createProject}:`}</h3>
