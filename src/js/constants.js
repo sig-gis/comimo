@@ -1,3 +1,19 @@
+export const THEME = {
+  primary: {
+    background: "#f0ad4e"
+  },
+  mina: {
+    background: "red"
+  },
+  noMina: {
+    background: "green"
+  },
+  map: {
+    boundary: "yellow",
+    unanswered: "blue"
+  }
+};
+
 export const URLS = {
   ADD_SUBS: "add-subscription",
   AREA_STATS: "get-stats-by-region",

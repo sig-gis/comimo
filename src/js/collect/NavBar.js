@@ -33,8 +33,19 @@ export default function NavBar({currentPlotId, nextPlot, prevPlot, setPlotAnswer
           : (
             <>
               <Button onClick={prevPlot}>Prev</Button>
-              <Button onClick={() => setPlotAnswer("Mina")}>Mina</Button>
-              <Button onClick={() => setPlotAnswer("No Mina")}>No Mina</Button>
+              <Button
+                $type="mina"
+                onClick={() => setPlotAnswer("Mina")}
+              >
+                Mina
+              </Button>
+              <Button
+                $type="noMina"
+                onClick={() => setPlotAnswer("No Mina")}
+              >
+                No Mina
+              </Button>
+
               <Button onClick={nextPlot}>Next</Button>
             </>
           )}

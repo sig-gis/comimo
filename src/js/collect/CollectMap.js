@@ -8,6 +8,7 @@ import {get, isString} from "lodash";
 import LngLatHud from "../components/LngLatHud";
 
 import {toPrecision} from "../utils";
+import {THEME} from "../constants";
 
 const MapBoxWrapper = styled.div`
   height: 100%;
@@ -141,7 +142,7 @@ export default class CollectMap extends React.Component {
         "line-cap": "round"
       },
       paint: {
-        "line-color": "yellow",
+        "line-color": THEME.map.boundary,
         "line-width": 4
       }
     });
@@ -149,10 +150,10 @@ export default class CollectMap extends React.Component {
   };
 
   plotColor = answer => (answer === "Mina"
-    ? "red"
+    ? THEME.mina.background
     : answer === "No Mina"
-      ? "green"
-      : "blue");
+      ? THEME.noMina.background
+      : THEME.map.unanswered);
 
   addPlots = () => {
     const {theMap} = this.state;
@@ -196,6 +197,11 @@ export default class CollectMap extends React.Component {
         id + "",
         "line-color",
         this.plotColor(answer)
+      );
+      theMap.setPaintProperty(
+        id + "",
+        "line-width",
+        6
       );
       // Update visibility
       projectPlots.forEach(p => {

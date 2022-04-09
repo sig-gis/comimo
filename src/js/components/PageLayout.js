@@ -1,9 +1,11 @@
 import React from "react";
 
+import {ThemeProvider} from "styled-components";
 import AppInfo from "../home/AppInfo";
 import Header from "./Header";
 
 import {getLanguage, jsonRequest} from "../utils";
+import {THEME} from "../constants";
 
 export const MainContext = React.createContext();
 export class PageLayout extends React.Component {
@@ -60,43 +62,45 @@ export class PageLayout extends React.Component {
           setShowInfo: this.setShowInfo
         }}
       >
-        {showInfo && (
-          <AppInfo
-            isAdmin={isAdmin}
-            localeText={localeText}
-            onClose={() => this.setShowInfo(false)}
-          />
-        )}
-        <div
-          id="root-component"
-          style={{
-            height: myHeight,
-            width: "100%",
-            margin: 0,
-            padding: 0,
-            position: "relative",
-            display: "flex",
-            flexDirection: "column"
-          }}
-        >
-          <Header
-            localeText={localeText}
-            selectedLanguage={selectedLanguage}
-            selectLanguage={this.selectLanguage}
-            setShowInfo={this.setShowInfo}
-            username={username}
-          />
+        <ThemeProvider theme={THEME}>
+          {showInfo && (
+            <AppInfo
+              isAdmin={isAdmin}
+              localeText={localeText}
+              onClose={() => this.setShowInfo(false)}
+            />
+          )}
           <div
-            id="page-body"
+            id="root-component"
             style={{
-              margin: "0px",
-              padding: "0px",
+              height: myHeight,
+              width: "100%",
+              margin: 0,
+              padding: 0,
               position: "relative",
-              flex: "1"
+              display: "flex",
+              flexDirection: "column"
             }}
-          />
-          {children}
-        </div>
+          >
+            <Header
+              localeText={localeText}
+              selectedLanguage={selectedLanguage}
+              selectLanguage={this.selectLanguage}
+              setShowInfo={this.setShowInfo}
+              username={username}
+            />
+            <div
+              id="page-body"
+              style={{
+                margin: "0px",
+                padding: "0px",
+                position: "relative",
+                flex: "1"
+              }}
+            />
+            {children}
+          </div>
+        </ThemeProvider>
       </MainContext.Provider>
     );
   }
