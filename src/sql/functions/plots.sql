@@ -1,7 +1,7 @@
 -- NAMESPACE: plots
 -- REQUIRES: clear, project
 
--- Check if user has collection rights (read rights) for the project
+-- Check if user has collection rights (read rights) for the plot
 CREATE OR REPLACE FUNCTION can_user_collect_plot(_user_id integer, _plot_id integer)
  RETURNS boolean AS $$
 
