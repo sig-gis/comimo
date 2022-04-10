@@ -108,7 +108,6 @@ Copy ~config.default.edn~ to ~config.edn~ and update any settings that you wish.
 Use ~pip~ to install dependencies.  The python / clj interop does not support virtual environments.
 
 #+begin_src sh
-pip install -r requirements.txt
 pip install earthengine-api --upgrade
 #+end_src
 
@@ -124,11 +123,9 @@ earthengine authenticate
 
 This command will open a window in your browser containing a key that you should copy and paste back into your terminal. You do not need to update the ~:gee~ section of ~config.edn~ if you use this method.
 
-*** Create accounts FUTURE
+*** Create accounts
 
-To be able to crate accounts without having to send email for confirmation, set ~:auto-validate?~ of ~:mail~ to ~true~ in ~config.edn~.
-There can only be one superuser account with ~user_uid~ of ~1~ ~adminstrator~ flag set to ~true~.
-Activating this flag for other users can cause their queries to sometimes not return the full result, as some of those queries assume only one root superuser to be existing.
+To be able to crate accounts without having to send email for confirmation, set ~:auto-validate?~ of ~:mail~ to ~true~ in ~config.edn~. There can only be one superuser account with ~user_uid~ of ~1~ ~adminstrator~ flag set to ~true~. Activating this flag for other users can cause their queries to sometimes not return the full result, as some of those queries assume only one root superuser to be existing.
 
 *** Compile and run
 
