@@ -8,7 +8,7 @@ import LngLatHud from "../components/LngLatHud";
 import InfoPopupContent from "./InfoPopupContent";
 import ReportPopupContent from "./ReportPopupContent";
 
-import {URLS, availableLayers, startVisible} from "../constants";
+import {URLS, availableLayers, startVisible, attributions} from "../constants";
 import {toPrecision, jsonRequest} from "../utils";
 import {MainContext} from "../components/PageLayout";
 
@@ -192,7 +192,16 @@ export default class HomeMap extends React.Component {
   // Adds layers initially with no styling, URL is updated later.  This is to guarantee z order in mapbox
   addLayerSources = (theMap, list) => {
     list.forEach(name => {
-      theMap.addSource(name, {type: "raster", tiles: [], tileSize: 256, vis: {palette: []}});
+      theMap.addSource(
+        name,
+        {
+          type: "raster",
+          tiles: [],
+          tileSize: 256,
+          vis: {palette: []},
+          ...attributions[name] && {attribution: attributions[name]}
+        }
+      );
       theMap.addLayer({
         id: name,
         type: "raster",

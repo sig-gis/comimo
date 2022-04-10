@@ -35,4 +35,12 @@
     (reset-cache! (nicfi-dates)))
   @nicfi-layer-cache)
 
-(defn get-nicfi-tiles [{:keys [params]}])
+(defn get-nicfi-tiles [{:keys [params]}]
+  (let [{:keys [x y z dataLayer]} params]
+    (client/get (format "https://tiles0.planet.com/basemaps/v1/planet-tiles/%s/gmap/%s/%s/%s.png?api_key=%s"
+                        dataLayer
+                        z
+                        x
+                        y
+                        (get-config :nicfi-key))
+                {:as :stream})))

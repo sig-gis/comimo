@@ -54,9 +54,15 @@ export const availableLayers = [
   "otherAuthorizations",
   "tierrasDeCom",
   "resguardos",
-  "protectedAreas"
+  "protectedAreas",
+  "NICFI"
 ];
 
 export const startVisible = [
-  "cMines"
+  "cMines",
+  "NICFI"
 ];
+
+export const attributions = {
+  "NICFI": "<a target=\"_top\" rel=\"noopener\" href=\"https://www.planet.com/nicfi/\">Imagery ©2021 Planet Labs Inc</a>. <a target=\"_top\" rel=\"noopener\" href=\"https://assets.planet.com/docs/Planet_ParticipantLicenseAgreement_NICFI.pdf\">All use subject to the Participant License Agreement</a>"
+};

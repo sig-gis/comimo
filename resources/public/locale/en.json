@@ -72,7 +72,8 @@
         "otherAuthorizations": "Other authorizations",
         "tierrasDeCom": "Afrocolombian Communal Lands",
         "resguardos": "Indigenous Reservations",
-        "protectedAreas": "Protected Areas"
+        "protectedAreas": "Protected Areas",
+        "NICFI": "Planet NICFI"
     },
     "report": {
         "title": "Report Mines",
