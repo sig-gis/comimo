@@ -109,7 +109,7 @@ export default class HomeMap extends React.Component {
     const eeLayers = ["nMines", "pMines", "cMines"];
     const {selectedDates} = this.props;
     eeLayers.forEach(eeLayer => {
-      jsonRequest(URLS.GET_IMAGE_URL, {layerName: selectedDates[eeLayer], type: eeLayer})
+      jsonRequest(URLS.GET_IMAGE_URL, {dataLayer: selectedDates[eeLayer], type: eeLayer})
         .then(url => this.setLayerUrl(eeLayer, url, firstTime))
         .catch(error => console.error(error));
     });

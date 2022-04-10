@@ -107,9 +107,9 @@
           :vector (let [{:keys [source line fill]} opts]
                     (py-wrapper utils/getVectorUrl source line fill))
 
-          :image  (let [layerName (:layerName params)
+          :image  (let [data-layer (:dataLayer params)
                         {:keys [source-base color]} opts]
-                    (py-wrapper utils/getImageUrl (str source-base "/" layerName) color))
+                    (py-wrapper utils/getImageUrl (str source-base "/" data-layer) color))
 
           "")
         (data-response))))
@@ -131,9 +131,9 @@
 
 (defn get-stats-by-region [{:keys [params]}]
   (let [user-id    (tc/val->int (:userId params))
-        layer-name (:layerName params)]
+        data-layer (:dataLayer params)]
     (->> (py-wrapper utils/statsByRegion
-                     (str "users/comimoapp/Images" "/" layer-name)
+                     (str "users/comimoapp/Images" "/" data-layer)
                      (get-subscribed-regions user-id))
          (combine-stats)
          (filterv (fn [[_k v]] (> v 0.0)))
