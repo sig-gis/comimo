@@ -75,22 +75,29 @@ export default class HomeMap extends React.Component {
     if (this.state.thePopup && prevProps.reportPopup && !this.props.reportPopup) {
       this.state.thePopup.remove();
     }
+
+    if (this.props.theMap && Object.keys(this.props.selectedDates).length
+        && (prevProps.theMap !== this.props.theMap
+          || this.props.selectedDates !== prevProps.selectedDates)) {
+      this.updateEELayers(Object.keys(this.props.selectedDates));
+    }
   }
 
-  /// API Calls ///
+  /// Mapbox ///
 
-  setLayerUrl = (layer, url, firstTime = false) => {
-    if (layer && url) {
+  setLayerUrl = (layer, url) => {
+    if (layer && url && url !== "") {
       const {theMap} = this.props;
       const style = theMap.getStyle();
       const layers = style.layers;
       const layerIdx = layers.findIndex(l => l.id === layer);
       const thisLayer = layers[layerIdx];
       const {layout: {visibility}} = thisLayer;
+      const oldUrl = style.sources[layer].tiles.length;
       style.sources[layer].tiles = [url];
       style.layers[layerIdx] = {
         ...thisLayer,
-        layout: {visibility: firstTime && startVisible.includes(layer) ? "visible" : visibility}
+        layout: {visibility: oldUrl === 0 && startVisible.includes(layer) ? "visible" : visibility}
       };
       theMap.setStyle(style);
     } else {
@@ -98,42 +105,31 @@ export default class HomeMap extends React.Component {
     }
   };
 
-  getGEELayers = list => {
-    list.forEach(layer =>
-      jsonRequest(URLS.GET_IMAGE_URL, {type: layer})
-        .then(url => this.setLayerUrl(layer, url, true))
-        .catch(error => console.error(error)));
-  };
-
-  updateEELayers = (firstTime = false) => {
-    const eeLayers = ["nMines", "pMines", "cMines"];
+  updateEELayers = list => {
     const {selectedDates} = this.props;
-    eeLayers.forEach(eeLayer => {
+    list.forEach(eeLayer => {
       jsonRequest(URLS.GET_IMAGE_URL, {dataLayer: selectedDates[eeLayer], type: eeLayer})
-        .then(url => this.setLayerUrl(eeLayer, url, firstTime))
+        .then(url => this.setLayerUrl(eeLayer, url))
         .catch(error => console.error(error));
     });
   };
 
-  /// Mapbox ///
-
   initMap = () => {
-    mapboxgl.accessToken = this.props.mapboxToken;
+    const {selectedDates, mapboxToken} = this.props;
+    mapboxgl.accessToken = mapboxToken;
     const theMap = new mapboxgl.Map({
       container: "mapbox",
       style: "mapbox://styles/mapbox/satellite-streets-v9",
       center: [-73.5609339, 4.6371205],
       zoom: 5
     });
-    this.props.setMap(theMap);
+    setTimeout(() => theMap.resize(), 1);
 
     theMap.on("load", () => {
       theMap.addControl(new mapboxgl.NavigationControl({showCompass: false}));
 
-      this.addLayerSources([...availableLayers].reverse());
-      // This is not safe, the updates could be called before the options are returned
-      this.getGEELayers(availableLayers.slice(3));
-      this.updateEELayers(true);
+      // Add layers first in the
+      this.addLayerSources(theMap, [...availableLayers].reverse());
 
       theMap.on("mousemove", e => {
         const lat = toPrecision(e.lngLat.lat, 4);
@@ -144,6 +140,11 @@ export default class HomeMap extends React.Component {
         const {lng, lat} = e.lngLat;
         this.addPopup(lat, lng);
       });
+
+      this.props.setMap(theMap);
+      // This is a bit hard coded
+      this.updateEELayers(availableLayers.slice(3), true);
+      if (Object.keys(selectedDates).length) this.updateEELayers(Object.keys(selectedDates), true);
     });
   };
 
@@ -189,9 +190,7 @@ export default class HomeMap extends React.Component {
   isLayerVisible = layer => this.props.theMap.getLayer(layer).visibility === "visible";
 
   // Adds layers initially with no styling, URL is updated later.  This is to guarantee z order in mapbox
-  addLayerSources = list => {
-    const {theMap} = this.props;
-
+  addLayerSources = (theMap, list) => {
     list.forEach(name => {
       theMap.addSource(name, {type: "raster", tiles: [], tileSize: 256, vis: {palette: []}});
       theMap.addLayer({

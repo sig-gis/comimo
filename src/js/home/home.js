@@ -61,10 +61,7 @@ class HomeContents extends React.Component {
 
   updateSubList = list => this.setState({subscribedList: list});
 
-  selectDates = newDates => this.setState(
-    {selectedDates: {...this.state.selectedDates, ...newDates}},
-    this.updateEELayer
-  );
+  selectDates = newDates => this.setState({selectedDates: {...this.state.selectedDates, ...newDates}});
 
   selectRegion = region => this.setState({selectedRegion: region});
 
