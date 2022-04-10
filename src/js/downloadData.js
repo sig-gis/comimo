@@ -1,5 +1,10 @@
 import React from "react";
 import ReactDOM from "react-dom";
+import {ReactTabulator} from "react-tabulator";
+
+import "react-tabulator/lib/styles.css"; // required styles
+import "react-tabulator/lib/css/tabulator_bootstrap4.min.css"; // theme
+
 import {URLS} from "./constants";
 import {jsonRequest} from "./utils";
 
@@ -129,55 +134,10 @@ class Predictions extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      table: null,
-      selectedDate: -1
+      selectedDate: -1,
+      tableRef: null
     };
   }
-
-  componentDidMount() {
-    const table = new Tabulator("#prediction-table", {
-      layout: "fitColumns", // fit columns to width of table
-      responsiveLayout: "hide", // hide columns that dont fit on the table
-      tooltips: true, // show tool tips on cells
-      addRowPos: "top", // when adding a new row, add it to the top of the table
-      history: true, // allow undo and redo actions on the table
-      pagination: "local",
-      paginationSize: 100,
-      movableColumns: true, // allow column order to be changed
-      resizableRows: true, // allow row order to be changed
-      columns: [
-        // define the table columns
-        {title: "user", field: "username", headerFilter: "input"},
-        {title: "email", field: "email", headerFilter: "input"},
-        {title: "organization", field: "institution", headerFilter: "input"},
-        {title: "project name", field: "projectName", headerFilter: "input"},
-        {title: "latitude", field: "lat", headerFilter: "input"},
-        {title: "longitude", field: "lon", headerFilter: "input"},
-        {title: "dataLayer", field: "dataLayer", headerFilter: "input"},
-        {title: "mine", field: "answer", headerFilter: "input"}
-      ]
-    });
-    this.setState({table});
-  }
-
-  componentDidUpdate(prevProps, prevState) {
-    if (prevProps.collectedData !== this.props.collectedData) {
-      const {table, selectedDate} = this.state;
-      const {collectedData} = this.props;
-      table.clearData();
-      table.setData(collectedData[selectedDate]);
-    }
-  }
-
-  /// Change State ///
-
-  changeDate = newDate => {
-    const {table} = this.state;
-    const {collectedData} = this.props;
-    table.clearData();
-    table.setData(collectedData[newDate]);
-    this.setState({selectedDate: newDate});
-  };
 
   /// API Calls ///
 
@@ -193,8 +153,8 @@ class Predictions extends React.Component {
   /// Helper Functions ///
 
   downloadData = type => {
-    const {table, selectedDate} = this.state;
-    table.download(type, `validated-predictions-${selectedDate}-data.${type}`);
+    const {tableRef, selectedDate} = this.state;
+    tableRef.current.download(type, `validated-predictions-${selectedDate}-data.${type}`);
   };
 
   render() {
@@ -206,7 +166,7 @@ class Predictions extends React.Component {
           <label htmlFor="project-date">Prediction date</label>
           <select
             id="project-date"
-            onChange={e => this.changeDate(e.target.value)}
+            onChange={e => this.setState({selectedDate: e.target.value})}
             style={{padding: ".25rem", borderRadius: "3px", margin: ".75rem"}}
             value={selectedDate}
           >
@@ -226,7 +186,32 @@ class Predictions extends React.Component {
             {collectedData[selectedDate] ? "Reload" : "Load"}
           </button>
         </div>
-        <div id="prediction-table" style={{flex: 1}}/>
+        <ReactTabulator
+          columns={[
+          // define the table columns
+            {title: "user", field: "username", headerFilter: "input"},
+            {title: "email", field: "email", headerFilter: "input"},
+            {title: "organization", field: "institution", headerFilter: "input"},
+            {title: "project name", field: "projectName", headerFilter: "input"},
+            {title: "latitude", field: "lat", headerFilter: "input"},
+            {title: "longitude", field: "lon", headerFilter: "input"},
+            {title: "dataLayer", field: "dataLayer", headerFilter: "input"},
+            {title: "mine", field: "answer", headerFilter: "input"}
+          ]}
+          data={this.props.collectedData[selectedDate]}
+          onRef={ref => this.setState({tableRef: ref})}
+          options={{
+            layout: "fitColumns", // fit columns to width of table
+            responsiveLayout: "hide", // hide columns that dont fit on the table
+            tooltips: true, // show tool tips on cells
+            addRowPos: "top", // when adding a new row, add it to the top of the table
+            history: true, // allow undo and redo actions on the table
+            pagination: "local",
+            paginationSize: 100,
+            movableColumns: true, // allow column order to be changed
+            resizableRows: true // allow row order to be changed
+          }}
+        />
         {renderButtons(this.downloadData)}
       </>
     );
@@ -237,53 +222,10 @@ class UserMines extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      table: null,
-      selectedDate: -1
+      selectedDate: -1,
+      tableRef: null
     };
   }
-
-  componentDidMount() {
-    const table = new Tabulator("#prediction-table", {
-      layout: "fitColumns", // fit columns to width of table
-      responsiveLayout: "hide", // hide columns that dont fit on the table
-      tooltips: true, // show tool tips on cells
-      addRowPos: "top", // when adding a new row, add it to the top of the table
-      history: true, // allow undo and redo actions on the table
-      pagination: "local",
-      paginationSize: 100,
-      movableColumns: true, // allow column order to be changed
-      resizableRows: true, // allow row order to be changed
-      columns: [
-        // define the table columns
-        {title: "user", field: "username", headerFilter: "input"},
-        {title: "email", field: "email", headerFilter: "input"},
-        {title: "organization", field: "institution", headerFilter: "input"},
-        {title: "longitude", field: "lat", headerFilter: "input"},
-        {title: "latitude", field: "lon", headerFilter: "input"},
-        {title: "reportedDate", field: "reportedDate", headerFilter: "input"}
-      ]
-    });
-    this.setState({table});
-  }
-
-  componentDidUpdate(prevProps, prevState) {
-    if (prevProps.collectedData !== this.props.collectedData) {
-      const {table, selectedDate} = this.state;
-      const {collectedData} = this.props;
-      table.clearData();
-      table.setData(collectedData[selectedDate]);
-    }
-  }
-
-  /// Change State ///
-
-  changeDate = newDate => {
-    const {table} = this.state;
-    const {collectedData} = this.props;
-    table.clearData();
-    table.setData(collectedData[newDate]);
-    this.setState({selectedDate: newDate});
-  };
 
   /// API Calls ///
 
@@ -299,8 +241,8 @@ class UserMines extends React.Component {
   /// Helper Functions ///
 
   downloadData = type => {
-    const {table, selectedDate} = this.state;
-    table.download(type, `user-mines-${selectedDate}-data.${type}`);
+    const {tableRef, selectedDate} = this.state;
+    tableRef.current.download(type, `user-mines-${selectedDate}-data.${type}`);
   };
 
   render() {
@@ -312,7 +254,7 @@ class UserMines extends React.Component {
           <label htmlFor="project-date">Reporting month</label>
           <select
             id="project-date"
-            onChange={e => this.changeDate(e.target.value)}
+            onChange={e => this.setState({selectedDate: e.target.value})}
             style={{padding: ".25rem", borderRadius: "3px", margin: ".75rem"}}
             value={selectedDate}
           >
@@ -332,7 +274,30 @@ class UserMines extends React.Component {
             {collectedData[selectedDate] ? "Reload" : "Load"}
           </button>
         </div>
-        <div id="prediction-table" style={{flex: 1}}/>
+        <ReactTabulator
+          columns={[
+            // define the table columns
+            {title: "user", field: "username", headerFilter: "input"},
+            {title: "email", field: "email", headerFilter: "input"},
+            {title: "organization", field: "institution", headerFilter: "input"},
+            {title: "longitude", field: "lat", headerFilter: "input"},
+            {title: "latitude", field: "lon", headerFilter: "input"},
+            {title: "reportedDate", field: "reportedDate", headerFilter: "input"}
+          ]}
+          data={this.props.collectedData[selectedDate]}
+          onRef={ref => this.setState({tableRef: ref})}
+          options={{
+            layout: "fitColumns", // fit columns to width of table
+            responsiveLayout: "hide", // hide columns that dont fit on the table
+            tooltips: true, // show tool tips on cells
+            addRowPos: "top", // when adding a new row, add it to the top of the table
+            history: true, // allow undo and redo actions on the table
+            pagination: "local",
+            paginationSize: 100,
+            movableColumns: true, // allow column order to be changed
+            resizableRows: true // allow row order to be changed
+          }}
+        />
         {renderButtons(this.downloadData)}
       </>
     );
