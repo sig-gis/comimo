@@ -50,7 +50,7 @@ export default class StatsPanel extends React.Component {
     const {selectedDate} = this.props;
     const {localeText: {stats}} = this.context;
     document.getElementById("stats1").innerHTML = `${stats.loading}...`;
-    jsonRequest(URLS.AREA_STATS, {layerName: selectedDate})
+    jsonRequest(URLS.AREA_STATS, {dataLayer: selectedDate})
       .then(data => {
         if (data.length > 0) {
           const dataTable = new google.visualization.DataTable();
