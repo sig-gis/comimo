@@ -14,8 +14,11 @@
 ;;; Auth Functions
 ;;;
 
-(defn can-collect? [user-id project-id]
-  (sql-primitive (call-sql "can_user_collect_project" {:log? false} user-id project-id)))
+(defn can-collect? [user-id project-id plot-id]
+  (or (and (pos? project-id)
+           (sql-primitive (call-sql "can_user_collect_project" {:log? false} user-id project-id)))
+      (and (pos? plot-id)
+           (sql-primitive (call-sql "can_user_collect_plot" {:log? false} user-id plot-id)))))
 
 ;;;
 ;;; Get Project Data
