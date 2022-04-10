@@ -1,12 +1,19 @@
 export const THEME = {
+  disabled: {
+    background: "#ddd",
+    color: "#999"
+  },
   primary: {
-    background: "#f0ad4e"
+    background: "#f0ad4e",
+    color: "#eee"
   },
   mina: {
-    background: "red"
+    background: "red",
+    color: "#eee"
   },
   noMina: {
-    background: "green"
+    background: "green",
+    color: "#eee"
   },
   map: {
     boundary: "yellow",

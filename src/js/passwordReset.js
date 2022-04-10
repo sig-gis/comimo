@@ -1,9 +1,11 @@
 import React from "react";
 import ReactDOM from "react-dom";
+import {ThemeProvider} from "styled-components";
 
 import Button from "./components/Button";
 
 import {getLanguage, jsonRequest, validatePassword} from "./utils";
+import {THEME} from "./constants";
 
 class PasswordReset extends React.Component {
   constructor(props) {
@@ -71,27 +73,29 @@ class PasswordReset extends React.Component {
   render() {
     const {localeText} = this.state;
     return (
-      <div
-        className="d-flex justify-content-center"
-        style={{paddingTop: "20vh"}}
-      >
-        <div className="card">
-          <div className="card-header">{localeText.resetTitle}</div>
-          <div className="card-body">
-            {this.renderField(localeText.email, "email", "email", true)}
-            {this.renderField(localeText.password, "password", "password")}
-            {this.renderField(localeText.confirm, "password", "passwordConfirmation")}
-            <div className="d-flex justify-content-end">
-              <Button
-                className="mt-3"
-                onClick={this.resetPassword}
-              >
-                {localeText.resetTitle}
-              </Button>
+      <ThemeProvider theme={THEME}>
+        <div
+          className="d-flex justify-content-center"
+          style={{paddingTop: "20vh"}}
+        >
+          <div className="card">
+            <div className="card-header">{localeText.resetTitle}</div>
+            <div className="card-body">
+              {this.renderField(localeText.email, "email", "email", true)}
+              {this.renderField(localeText.password, "password", "password")}
+              {this.renderField(localeText.confirm, "password", "passwordConfirmation")}
+              <div className="d-flex justify-content-end">
+                <Button
+                  className="mt-3"
+                  onClick={this.resetPassword}
+                >
+                  {localeText.resetTitle}
+                </Button>
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      </ThemeProvider>
     );
   }
 }

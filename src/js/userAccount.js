@@ -1,5 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom";
+import {ThemeProvider} from "styled-components";
 
 import AccountForm from "./components/AccountForm";
 import Button from "./components/Button";
@@ -7,6 +8,7 @@ import LanguageSelector from "./components/LanguageSelector";
 import LoadingModal from "./components/LoadingModal";
 
 import {jsonRequest} from "./utils";
+import {THEME} from "./constants";
 
 class UserAccount extends React.Component {
   constructor(props) {
@@ -139,7 +141,7 @@ class UserAccount extends React.Component {
   render() {
     const {localeText, defaultLang} = this.state;
     return (
-      <>
+      <ThemeProvider theme={THEME}>
         {this.state.showModal && (() => (<LoadingModal message={localeText.modalMessage}/>))}
         <AccountForm
           header={localeText.userAccountTitle}
@@ -175,7 +177,7 @@ class UserAccount extends React.Component {
             </Button>
           </div>
         </AccountForm>
-      </>
+      </ThemeProvider>
     );
   }
 }

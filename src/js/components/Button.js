@@ -2,7 +2,7 @@ import styled from "styled-components";
 
 const getBackground = ({theme, $type, disabled}) => {
   if (disabled) {
-    return "#ddd";
+    return theme.disabled.background;
   } else if (theme[$type]?.background) {
     return theme[$type].background;
   } else {
@@ -10,17 +10,19 @@ const getBackground = ({theme, $type, disabled}) => {
   }
 };
 
-const getColor = ({disabled}) => {
+const getColor = ({theme, $type, disabled}) => {
   if (disabled) {
-    return "#999";
+    return theme.disabled.color;
+  } else if (theme[$type]?.color) {
+    return theme[$type].color;
   } else {
-    return "#ddd";
+    return theme.primary.color;
   }
 };
 
 const Button = styled.button`
   background: ${getBackground};
-  border: ${props => "1px solid " + getColor(props)};
+  border: none;
   border-radius: .25rem;
   color: ${getColor};
   font-weight: 400;

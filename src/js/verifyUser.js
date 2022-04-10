@@ -1,7 +1,9 @@
 import React from "react";
 import ReactDOM from "react-dom";
+import {ThemeProvider} from "styled-components";
 
 import {getLanguage, jsonRequest} from "./utils";
+import {THEME} from "./constants";
 
 class PasswordReset extends React.Component {
   constructor(props) {
@@ -46,17 +48,19 @@ class PasswordReset extends React.Component {
   render() {
     const {localeText} = this.state;
     return (
-      <div
-        className="d-flex justify-content-center"
-        style={{paddingTop: "20vh"}}
-      >
-        <div className="card">
-          <div className="card-header">{localeText.verifyUser}</div>
-          <div className="card-body">
-            <label>{localeText.verifying}...</label>
+      <ThemeProvider theme={THEME}>
+        <div
+          className="d-flex justify-content-center"
+          style={{paddingTop: "20vh"}}
+        >
+          <div className="card">
+            <div className="card-header">{localeText.verifyUser}</div>
+            <div className="card-body">
+              <label>{localeText.verifying}...</label>
+            </div>
           </div>
         </div>
-      </div>
+      </ThemeProvider>
     );
   }
 }
