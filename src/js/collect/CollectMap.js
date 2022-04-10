@@ -91,7 +91,7 @@ export default class CollectMap extends React.Component {
     setTimeout(() => theMap.resize(), 1);
 
     theMap.on("load", () => {
-      this.props.setMap(theMap);
+      this.setState({theMap});
       theMap.addControl(new mapboxgl.NavigationControl({showCompass: false}));
 
       theMap.on("mousemove", e => {
@@ -105,7 +105,7 @@ export default class CollectMap extends React.Component {
   isLayerVisible = layer => this.state.theMap.getLayer(layer).visibility === "visible";
 
   fitMap = (type, arg) => {
-    const {theMap} = this.props;
+    const {theMap} = this.state;
     if (type === "point") {
       try {
         theMap.flyTo({center: arg, essential: true});
@@ -122,7 +122,8 @@ export default class CollectMap extends React.Component {
   };
 
   addBoundary = () => {
-    const {theMap, boundary} = this.props;
+    const {theMap} = this.state;
+    const {boundary} = this.props;
     const geoJSON = {
       type: "Feature",
       geometry: boundary
@@ -154,7 +155,8 @@ export default class CollectMap extends React.Component {
       : "blue");
 
   addPlots = () => {
-    const {theMap, projectPlots} = this.props;
+    const {theMap} = this.state;
+    const {projectPlots} = this.props;
     const geoJSON = {
       type: "FeatureCollection",
       features: projectPlots.map(p => ({
@@ -186,7 +188,8 @@ export default class CollectMap extends React.Component {
   };
 
   updateVisiblePlot = () => {
-    const {theMap, projectPlots, currentPlot: {geom, id, answer}} = this.props;
+    const {theMap} = this.state;
+    const {projectPlots, currentPlot: {geom, id, answer}} = this.props;
     if (geom) {
       // Set new color
       theMap.setPaintProperty(

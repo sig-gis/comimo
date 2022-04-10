@@ -7,14 +7,14 @@ const FormArea = styled.div`
   justify-content: center;
 `;
 
-const OuterCard = styled.form`
+const Form = styled.form`
   border: 2px solid black;
   border-radius: 4px;
   overflow: hidden;
   width: 25rem;
 `;
 
-const InnerCard = styled.div`
+const FormContents = styled.div`
   padding: 1rem;
 `;
 
@@ -29,7 +29,7 @@ const CardHeader = styled.h2`
 export default function AccountForm({header, submitFn, children}) {
   return (
     <FormArea>
-      <OuterCard
+      <Form
         onSubmit={e => {
           e.preventDefault();
           submitFn();
@@ -40,10 +40,10 @@ export default function AccountForm({header, submitFn, children}) {
             {header}
           </CardHeader>
         )}
-        <InnerCard>
+        <FormContents>
           {children}
-        </InnerCard>
-      </OuterCard>
+        </FormContents>
+      </Form>
     </FormArea>
   );
 }

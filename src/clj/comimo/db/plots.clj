@@ -13,7 +13,7 @@
     (data-response (mapv #(-> %
                               (set/rename-keys {:plot_id :id})
                               (update :geom tc/json->clj))
-                         (call-sql "select_project_plots" project-id (/ 540 2))))))
+                         (call-sql "select_project_plots" project-id (/ (* 0.95 540) 2))))))
 
 (defn save-user-answer [{:keys [params]}]
   (let [plot-id (tc/val->int (:plotId params))

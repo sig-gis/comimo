@@ -14,14 +14,20 @@ const CardOuter = styled.div`
   padding: .5rem;
 `;
 
-const Title = styled.h3`
-  text-align: center;
+const Title = styled.a`
+  font-size: 1.25rem;
+  font-weight: bold;
   margin: 0;
+  text-align: center;
 `;
 
 const Info = styled.div`
   display: flex;
   flex-direction: column;
+`;
+
+const RegionsList = styled.ul`
+  margin: 0;
 `;
 
 const ButtonRow = styled.div`
@@ -30,26 +36,26 @@ const ButtonRow = styled.div`
   width: 100%;
 `;
 
-export default function ProjectCard({project: {dataLayer, createdDate, id, name, regions}, onClick}) {
+export default function ProjectCard({project: {dataLayer, createdDate, id, name, regions}, closeProject}) {
   const {localeText: {validate}} = useContext(MainContext);
 
   return (
     <CardOuter>
       <Info>
-        <Title>{name}</Title>
-        <span>{`${validate.predictionLabel}: ${dataLayer}`}</span>
-        <span>{`${validate.createdLabel}: ${createdDate}`}</span>
-        <span>{`${validate.regionsLabel}:`}
-          <ul>
+        <Title href={`/collect?projectId=${id}`}>{name}</Title>
+        <div>{`${validate.predictionLabel}: ${dataLayer}`}</div>
+        <div>{`${validate.createdLabel}: ${createdDate}`}</div>
+        <div>{`${validate.regionsLabel}:`}
+          <RegionsList>
             {regions
               .map(x => x.toUpperCase().split("_"))
               .map(x => <li key={x}>{`${titleCase(x[2])}, ${titleCase(x[1])}`}</li>)}
-          </ul>
-        </span>
+          </RegionsList>
+        </div>
       </Info>
       <ButtonRow>
         <Button
-          onClick={() => onClick(id)}
+          onClick={() => closeProject(id)}
           title={"Close " + name}
         >
         Close
