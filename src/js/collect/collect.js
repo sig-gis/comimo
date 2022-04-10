@@ -67,14 +67,15 @@ class CollectContent extends React.Component {
 
   setPlotAnswer = answer => {
     const {currentPlotId, projectPlots} = this.state;
-    this.savePlotAnswer(answer);
-    const newProjectPlots = projectPlots.map(p => (p.id === currentPlotId ? {...p, answer} : p));
-    this.setState({projectPlots: newProjectPlots});
+    jsonRequest(URLS.SAVE_ANSWER, {plotId: this.state.currentPlotId, answer})
+      .then(() => {
+        const newProjectPlots = projectPlots.map(p => (p.id === currentPlotId ? {...p, answer} : p));
+        this.setState({projectPlots: newProjectPlots});
+      })
+      .catch(() => {
+        alert("Error Saving plot");
+      });
   };
-
-  /// API Calls ///
-
-  savePlotAnswer = answer => jsonRequest(URLS.SAVE_ANSWER, {plotId: this.state.currentPlotId, answer});
 
   render() {
     const {projectDetails, currentPlotId, projectPlots} = this.state;
