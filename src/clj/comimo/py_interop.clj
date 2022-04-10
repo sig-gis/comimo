@@ -126,7 +126,7 @@
   (->> (call-sql "get_user_subscriptions" user-id)
        (map :region)))
 
-(defn combine-stats [{:strs [count names] :as xx}]
+(defn combine-stats [{:strs [names count]}]
   (zipmap names count))
 
 (defn get-stats-by-region [{:keys [params]}]

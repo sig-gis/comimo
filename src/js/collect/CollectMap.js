@@ -92,14 +92,13 @@ export default class CollectMap extends React.Component {
     setTimeout(() => theMap.resize(), 1);
 
     theMap.on("load", () => {
-      this.setState({theMap});
       theMap.addControl(new mapboxgl.NavigationControl({showCompass: false}));
-
       theMap.on("mousemove", e => {
         const lat = toPrecision(e.lngLat.lat, 4);
         const lng = toPrecision(e.lngLat.lng, 4);
         this.setState({mouseCoords: {lat, lng}});
       });
+      this.setState({theMap});
     });
   };
 
