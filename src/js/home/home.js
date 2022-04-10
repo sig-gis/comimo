@@ -33,14 +33,21 @@ class HomeContents extends React.Component {
       featureNames: {},
       subscribedList: [],
       theMap: null,
-      selectedLatLon: null
+      selectedLatLon: null,
+      extraParams: {
+        NICFI: {
+          dataLayer: null,
+          band: "rgb"
+        }
+      },
+      nicfiLayers: []
     };
   }
 
   /// Lifecycle Functions ///
 
   componentDidMount() {
-    Promise.all([this.getFeatureNames(), this.getImageDates()])
+    Promise.all([this.getFeatureNames(), this.getImageDates(), this.getNICFIDates()])
       .catch(error => console.error(error));
   }
 
@@ -69,6 +76,15 @@ class HomeContents extends React.Component {
 
   setLatLon = latLon => this.setState({selectedLatLon: latLon});
 
+  setParams = (param, value) => {
+    this.setState({
+      extraParams: {
+        ...this.state.extraParams,
+        [param]: value
+      }
+    });
+  };
+
   /// API Calls ///
 
   getImageDates = () => jsonRequest(URLS.IMG_DATES)
@@ -83,6 +99,15 @@ class HomeContents extends React.Component {
 
   getFeatureNames = () => jsonRequest(URLS.FEATURE_NAMES)
     .then(features => { this.setState({featureNames: features}); });
+
+  getNICFIDates = () => jsonRequest(URLS.NICFI_DATES)
+    .then(dates => {
+      this.setState({nicfiLayers: dates});
+      this.setParams("NICFI", {
+        ...this.state.extraParams.NICFI,
+        dataLayer: dates[0]
+      });
+    });
 
   /// Global Map Functions ///
 
@@ -109,6 +134,7 @@ class HomeContents extends React.Component {
     return (
       <>
         <HomeMap
+          extraParams={this.state.extraParams}
           localeText={this.context.localeText}
           mapboxToken={this.props.mapboxToken}
           myHeight={myHeight}
@@ -128,7 +154,12 @@ class HomeContents extends React.Component {
               selectedItem={this.state.visiblePanel}
               tooltip={home.layersTooltip}
             >
-              <LayersPanel theMap={this.state.theMap}/>
+              <LayersPanel
+                extraParams={this.state.extraParams}
+                nicfiLayers={this.state.nicfiLayers}
+                setParams={this.setParams}
+                theMap={this.state.theMap}
+              />
             </MenuItem>
 
             {/* Subscribe */}

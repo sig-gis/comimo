@@ -66,7 +66,7 @@
                     :nMines (filter #(re-matches #"\d{4}-\d{2}-\d{2}-N" %) image-list)
                     :pMines (filter #(re-matches #"\d{4}-\d{2}-\d{2}-P" %) image-list)})))
 
-(def image-options {"NICFI"  {:source-type :wms :source "get-nicfi-tiles?dataLayer=planet_medres_visual_2021-09_mosaic&z={z}&x={x}&y={y}"}
+(def image-options {"NICFI"  {:source-type :wms :source "get-nicfi-tiles?z={z}&x={x}&y={y}"}
                     "cMines" {:source-type :image :source-base "users/comimoapp/Images" :color "purple"}
                     "nMines" {:source-type :image :source-base "users/comimoapp/Images" :color "red"}
                     "pMines" {:source-type :image :source-base "users/comimoapp/Images" :color "orange"}
