@@ -24,13 +24,11 @@
            [:script (str "window.dataLayer = window.dataLayer || []; function gtag(){dataLayer.push(arguments);} gtag('js', new Date()); gtag('config', '" ga-id "', {'page_location': location.host + location.pathname});")]))
    (include-css "css/bootstrap-grid.min.4.3.1.css"
                 "css/gmw_global.css"
-                "css/tabulator_bootstrap4-4.5.3.min.css" ; only download
                 "css/gmw_main.css" ; only home
                 )
    (apply include-js
           "/js/google-charts.js"
           "/js/jquery-3.4.1.min.js"
-          "/js/tabulator-4.5.3.min.js" ; FIXME, replace with NPM https://www.npmjs.com/package/react-tabulator
           extra-js)])
 
 (defn uri->page [uri]
