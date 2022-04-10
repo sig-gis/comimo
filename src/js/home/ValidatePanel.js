@@ -154,7 +154,7 @@ export default class ValidatePanel extends React.Component {
   };
 
   render() {
-    const {projects, projectName, regionType, creatingProject, errorMsg, mineType} = this.state;
+    const {projects, projectName, regionType, errorMsg, mineType} = this.state;
     const {selectedDates} = this.props;
     const {username, localeText: {validate}} = this.context;
     return (
@@ -167,7 +167,7 @@ export default class ValidatePanel extends React.Component {
                 ? <span>{validate.noProjects}</span>
                 : (
                   <> {projects.map(project =>
-                    (<ProjectCard closeProject={this.closeProject} project={project}/>))}
+                    (<ProjectCard key={project.id} closeProject={this.closeProject} project={project}/>))}
                   </>
                 )}
               <h3 style={{marginBottom: 0}}>{`${validate.createProject}:`}</h3>
