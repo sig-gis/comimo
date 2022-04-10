@@ -77,6 +77,14 @@ class CollectContent extends React.Component {
       });
   };
 
+  geomToKML = geom => {
+    const coordinates = geom.coordinates[0];
+    const strCoords = coordinates.map(c => c.join(",")).join(" ");
+    return "<kml xmlns=\"http://www.opengis.net/kml/2.2\" xmlns:gx=\"http://www.google.com/kml/ext/2.2\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://www.opengis.net/kml/2.2 https://developers.google.com/kml/schema/kml22gx.xsd\"><Document><Placemark><Polygon><outerBoundaryIs><LinearRing><coordinates>"
+      + strCoords
+      + "</coordinates></LinearRing></outerBoundaryIs></Polygon></Placemark></Document></kml>";
+  };
+
   render() {
     const {projectDetails, currentPlotId, projectPlots} = this.state;
     const {setShowInfo, myHeight, localeText: {home}} = this.context;
@@ -99,7 +107,16 @@ class CollectContent extends React.Component {
               selectedItem={this.state.visiblePanel}
               tooltip={home.layersTooltip}
             >
-              <ToolPanel title="Placeholder"/>
+              <ToolPanel title="Placeholder">
+                {currentPlot?.geom && (
+                  <a
+                    download={"comimo_projectId-" + this.props.projectId + "_plotId-" + this.state.currentPlotId + ".kml"}
+                    href={"data:earth.kml+xml application/vnd.google-earth.kmz, " + encodeURIComponent(this.geomToKML(currentPlot?.geom))}
+                  >
+                    Download Plot KML
+                  </a>
+                )}
+              </ToolPanel>
             </MenuItem>
             <SideIcon
               clickHandler={() => setShowInfo(true)}
