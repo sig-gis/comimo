@@ -1,3 +1,26 @@
+export const THEME = {
+  disabled: {
+    background: "#ddd",
+    color: "#999"
+  },
+  primary: {
+    background: "#f0ad4e",
+    color: "#eee"
+  },
+  mina: {
+    background: "red",
+    color: "#eee"
+  },
+  noMina: {
+    background: "green",
+    color: "#eee"
+  },
+  map: {
+    boundary: "yellow",
+    unanswered: "blue"
+  }
+};
+
 export const URLS = {
   ADD_SUBS: "add-subscription",
   AREA_STATS: "get-stats-by-region",

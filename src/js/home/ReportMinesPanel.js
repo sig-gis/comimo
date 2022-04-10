@@ -74,7 +74,7 @@ export default class ReportMinesPanel extends React.Component {
         <label>{report.coordLabel}</label>
         <div className="d-flex">
           <input
-            className="w_100"
+            className="w-100"
             onChange={e => this.setState({latLonText: e.target.value})}
             onKeyUp={e => { if (e.key === "Enter") this.processLatLng(); }}
             value={latLonText}
@@ -90,14 +90,12 @@ export default class ReportMinesPanel extends React.Component {
               <span><b>{report.latitude}:</b> {selectedLatLon[0]}</span>
               <span><b>{report.longitude}:</b> {selectedLatLon[1]}</span>
               <div style={{display: "flex", width: "100%", justifyContent: "flex-end"}}>
-                <button
-                  className="btn map-upd-btn mt-1"
+                <Button
                   disabled={reportingMine || reported}
                   onClick={this.submitMine}
-                  type="button"
                 >
                   {reported ? report.reported : report.submit}
-                </button>
+                </Button>
               </div>
             </>
           ) : (

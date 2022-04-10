@@ -1,10 +1,12 @@
 import React from "react";
 import ReactDOM from "react-dom";
 
+import {ThemeProvider} from "styled-components";
 import LoadingModal from "./components/LoadingModal";
 import Button from "./components/Button";
 
 import {getLanguage, jsonRequest} from "./utils";
+import {THEME} from "./constants";
 
 class PasswordForgot extends React.Component {
   constructor(props) {
@@ -62,26 +64,28 @@ class PasswordForgot extends React.Component {
   render() {
     const {localeText} = this.state;
     return (
-      <div
-        className="d-flex justify-content-center"
-        style={{paddingTop: "20vh"}}
-      >
-        {this.state.showModal && <LoadingModal message={localeText.modalMessage}/>}
-        <div className="card">
-          <div className="card-header">{localeText.requestTitle}</div>
-          <div className="card-body">
-            {this.renderField(localeText.email, "email", "email")}
-            <div className="d-flex justify-content-end">
-              <Button
-                className="mt-3"
-                onClick={this.requestPassword}
-              >
-                {localeText.request}
-              </Button>
+      <ThemeProvider theme={THEME}>
+        <div
+          className="d-flex justify-content-center"
+          style={{paddingTop: "20vh"}}
+        >
+          {this.state.showModal && <LoadingModal message={localeText.modalMessage}/>}
+          <div className="card">
+            <div className="card-header">{localeText.requestTitle}</div>
+            <div className="card-body">
+              {this.renderField(localeText.email, "email", "email")}
+              <div className="d-flex justify-content-end">
+                <Button
+                  className="mt-3"
+                  onClick={this.requestPassword}
+                >
+                  {localeText.request}
+                </Button>
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      </ThemeProvider>
     );
   }
 }

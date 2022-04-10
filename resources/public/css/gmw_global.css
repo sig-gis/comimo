@@ -1,10 +1,11 @@
-html, body {
+html,
+body {
   height: 100%;
   width: 100%;
   margin: 0;
   padding: 0;
   font-family: 'Roboto Condensed', sans-serif !important;
-  line-height: 1.5rem!important;
+  line-height: 1.5rem !important;
   font-size: 16px;
 }
 
@@ -18,16 +19,34 @@ html, body {
 /**************/
 /* Typography */
 /**************/
-h1, h2 {text-align: center;}
-h1, h2, h3 {
+h1,
+h2 {
+  text-align: center;
+}
+
+h1,
+h2,
+h3 {
   font-weight: bold;
   margin-top: .25rem;
   margin-bottom: .5rem;
 }
-h1 {font-size: 2rem;}
-h2 {font-size: 1.5rem;}
-h3 {font-size: 1rem;}
-h4 {font-size: .75rem;}
+
+h1 {
+  font-size: 2rem;
+}
+
+h2 {
+  font-size: 1.5rem;
+}
+
+h3 {
+  font-size: 1rem;
+}
+
+h4 {
+  font-size: .75rem;
+}
 
 a {
   text-decoration: underline !important;
@@ -42,11 +61,9 @@ label {
   font-size: 1rem;
 }
 
-span, a {
-  font-size: 1rem;
-}
 
-input, select {
+input,
+select {
   border-radius: 3px;
   border: solid 1px darkgray;
   padding: .25rem;
@@ -57,30 +74,12 @@ select {
   background: white;
 }
 
-button {
-  background: lightgray;
-  display: inline-block;
-  font-weight: 400;
-  color: black;
-  text-align: center;
-  vertical-align: middle;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
-  border: 1px solid transparent;
-  padding: .2rem .5rem;
-  font-size: 1rem;
-  line-height: 1.5;
-  border-radius: .25rem;
-  transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out
-}
-
 button:focus {
   outline: 0;
 }
 
-input[type="radio"], input[type="checkbox"] {
+input[type="radio"],
+input[type="checkbox"] {
   margin-right: .5rem;
 }
 
@@ -98,42 +97,10 @@ input[type="range"] {
 /* Style Classes  */
 /******************/
 
-small {
-  font-size: .75rem !important;
-}
-
-.see-through {
-  opacity: 0;
-  pointer-events: none;
-}
-
-.gold-drop {
-  background: gold;
-}
-
-.ht_0 {
-  height: 0;
-}
-
-.w_100 {
-  width: 100%;
-}
-.w_50 {
-  width: 50%;
-  display: inline-block;
-}
-
-.center {
-  text-align: center;
-}
 
 .disabled-group {
   opacity: 0.4;
   pointer-events: none;
-}
-
-.circle {
-  border-radius: 100%;
 }
 
 /****************************/
@@ -152,48 +119,103 @@ small {
   -webkit-animation: sweep 1s infinite linear;
 }
 
-@keyframes         sweep { to { transform: rotate(360deg); } }
-@-o-keyframes      sweep { to { -o-transform: rotate(360deg); } }
-@-moz-keyframes    sweep { to { -moz-transform: rotate(360deg); } }
-@-webkit-keyframes sweep { to { -webkit-transform: rotate(360deg); } }
+@keyframes sweep {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@-o-keyframes sweep {
+  to {
+    -o-transform: rotate(360deg);
+  }
+}
+
+@-moz-keyframes sweep {
+  to {
+    -moz-transform: rotate(360deg);
+  }
+}
+
+@-webkit-keyframes sweep {
+  to {
+    -webkit-transform: rotate(360deg);
+  }
+}
 
 /*****************/
 /* Flash Message */
 /*****************/
 .alert {
-    position: absolute;
-    top: 2.5rem;
-    left: 3.5rem;
-    width: 35rem;
-    border: 1px solid #009;
-    padding: 1rem;
-    z-index: 1000;
-    font-size: 1rem;
-    font-style: italic;
-    background: white;
-    opacity: 0;
-    animation: fade-out 6s;
-    -webkit-animation: fade-out 6s;
-    -moz-animation: fade-out 6s;
-    -o-animation: fade-out 6s;
+  position: absolute;
+  top: 2.5rem;
+  left: 3.5rem;
+  width: 35rem;
+  border: 1px solid #009;
+  padding: 1rem;
+  z-index: 1000;
+  font-size: 1rem;
+  font-style: italic;
+  background: white;
+  opacity: 0;
+  animation: fade-out 6s;
+  -webkit-animation: fade-out 6s;
+  -moz-animation: fade-out 6s;
+  -o-animation: fade-out 6s;
 }
+
 @-webkit-keyframes fade-out {
-    0%   { opacity: 0; }
-    50%  { opacity: 1; }
-    100% { opacity: 0; }
+  0% {
+    opacity: 0;
+  }
+
+  50% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+  }
 }
+
 @-moz-keyframes fade-out {
-    0%   { opacity: 0; }
-    50%  { opacity: 1; }
-    100% { opacity: 0; }
+  0% {
+    opacity: 0;
+  }
+
+  50% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+  }
 }
+
 @-o-keyframes fade-out {
-    0%   { opacity: 0; }
-    50%  { opacity: 1; }
-    100% { opacity: 0; }
+  0% {
+    opacity: 0;
+  }
+
+  50% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+  }
 }
+
 @keyframes fade-out {
-    0%   { opacity: 0; }
-    50%  { opacity: 1; }
-    100% { opacity: 0; }
+  0% {
+    opacity: 0;
+  }
+
+  50% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+  }
 }

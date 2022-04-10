@@ -1,15 +1,40 @@
 import styled from "styled-components";
 
+const getBackground = ({theme, $type, disabled}) => {
+  if (disabled) {
+    return theme.disabled.background;
+  } else if (theme[$type]?.background) {
+    return theme[$type].background;
+  } else {
+    return theme.primary.background;
+  }
+};
+
+const getColor = ({theme, $type, disabled}) => {
+  if (disabled) {
+    return theme.disabled.color;
+  } else if (theme[$type]?.color) {
+    return theme[$type].color;
+  } else {
+    return theme.primary.color;
+  }
+};
+
 const Button = styled.button`
-  background: ${props => (props.disabled ? "#ddd" : "#f0ad4e")};
-  border: ${props => (props.disabled && "none")};
-  border-color: #462f0f;
-  border-radius: 3px;
-  color: ${props => (props.disabled ? "#aaa" : "#fff")};
+  background: ${getBackground};
+  border: none;
+  border-radius: .25rem;
+  color: ${getColor};
+  font-weight: 400;
+  font-size: 1rem;
+  line-height: 1.5;
+  text-align: center;
+  transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out;
+  padding: .2rem .5rem;
+  vertical-align: middle;
 
   &:hover {
-    background-color: #c57a12;
-    border-color: #462f0f;
+    filter: brightness(90%);
   }
 `;
 

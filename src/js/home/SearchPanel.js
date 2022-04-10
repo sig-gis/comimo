@@ -83,10 +83,10 @@ export default class SearchPanel extends React.Component {
     const l1Names = Object.keys(featureNames).sort() || [];
     const selectL1 = l1Names.length > 0
       ? (
-        <div className="w_100">
+        <div className="w-100">
           <small>{search.stateLabel}</small>
           <select
-            className="w_100"
+            className="w-100"
             onChange={e => this.setState({selectedL1: e.target.value, selectedL2: -1})}
             value={selectedL1}
           >
@@ -103,10 +103,10 @@ export default class SearchPanel extends React.Component {
     const l2names = Object.keys(activeMuns).sort();
     const selectL2 = l2names.length > 0
       ? (
-        <div className="w_100">
+        <div className="w-100">
           <small>{search.munLabel}</small>
           <select
-            className="w_100"
+            className="w-100"
             onChange={e => {
               const l2Name = e.target.value;
               const coords = activeMuns[l2Name];
@@ -129,7 +129,7 @@ export default class SearchPanel extends React.Component {
         <label>{search.internetLabel}</label>
         <div className="d-flex">
           <input
-            className="w_100"
+            className="w-100"
             onChange={e => this.setState({searchText: e.target.value})}
             onKeyUp={e => { if (e.key === "Enter") this.searchGeocode(); }}
             value={searchText}
@@ -142,7 +142,7 @@ export default class SearchPanel extends React.Component {
         <label>{search.coordLabel}</label>
         <div className="d-flex">
           <input
-            className="w_100"
+            className="w-100"
             onChange={e => this.setState({latLngText: e.target.value})}
             onKeyUp={e => { if (e.key === "Enter") this.processLatLng(); }}
             value={latLngText}
