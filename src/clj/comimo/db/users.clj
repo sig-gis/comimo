@@ -76,7 +76,7 @@
             (send-new-user-mail email reset-key default-lang)
             (data-response "")
             (catch Exception _
-              (data-response (str "A new user account was created but there was a server error.  Please contact support@sig-gis.com.")))))))))
+              (data-response "errorCreating"))))))))
 
 (defn logout [_]
   (-> (redirect "/")
@@ -95,7 +95,7 @@
               sector
               institution
               default-lang)
-    (data-response "success")))
+    (data-response "")))
 
 (defn password-request [{:keys [params]}]
   (let [default-lang (:defaultLang params)
@@ -106,9 +106,7 @@
         (send-reset-mail email reset-key default-lang)
         (data-response "")
         (catch Exception _
-          (data-response (str "A user with the email "
-                              email
-                              " was found, but there was a server error.  Please contact support@sig-gis.com."))))
+          (data-response "errorEmail")))
       (data-response "errorNotFound"))))
 
 (defn- get-verify-errors [user reset-key]

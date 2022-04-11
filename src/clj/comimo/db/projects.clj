@@ -73,7 +73,7 @@
                        "SQL Error: cannot create a project AOI.")
 
       ;; Return success message
-      {:action "Created"}
+      ""
 
       (catch Exception e
         ;; Delete new project on error
@@ -86,10 +86,9 @@
             (log (str "-" (str/join "\n-" causes)))
             (log (ex-message e)))
           ;; Return error stack to user
-          {:action "Error"
-           :message (if causes
-                      (str "-" (str/join "\n-" causes))
-                      "Unknown server error.")})))))
+          (if causes
+            "errorNewProject"
+            "errorUnknown"))))))
 
 (defn create-project [{:keys [params]}]
   (let [user-id    (:userId params -1)
