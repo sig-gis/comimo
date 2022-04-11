@@ -1,6 +1,6 @@
 export const THEME = {
   disabled: {
-    background: "#ddd",
+    background: "#f8f8f8",
     color: "#999"
   },
   primary: {
@@ -18,6 +18,10 @@ export const THEME = {
   map: {
     boundary: "yellow",
     unanswered: "blue"
+  },
+  admin: {
+    background: "#e1e1e1",
+    color: "#666666"
   }
 };
 
