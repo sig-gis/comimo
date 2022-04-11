@@ -148,6 +148,7 @@
         "noProjects": "You don't have any active projects.",
         "name": "Name",
         "createProject": "Create a new project",
+        "errorNewProject": "Error creating new project",
         "projectName": "Enter Project name",
         "projectRegion": "Select project municipalities",
         "subscribedRadio": "Subscribed municipalities",

@@ -69,14 +69,14 @@ export default class ValidatePanel extends React.Component {
       && confirm(question)) {
       jsonRequest(URLS.CREATE_PROJ, {dataLayer, name: projectName, regions: selectedArr})
         .then(res => {
-          if (res.action !== "Error") {
+          if (res === "") {
             this.getProjects();
             this.setState({
               creatingProject: false,
               errorMsg: ""
             });
           } else {
-            this.setState({creatingProject: false, errorMsg: res.message});
+            this.setState({creatingProject: false, errorMsg: validate[res]});
           }
         })
         .catch(err => {
