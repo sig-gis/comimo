@@ -136,19 +136,21 @@ class CollectContent extends React.Component {
               tooltip={home.layersTooltip}
             >
               <ToolPanel title="Placeholder">
-                {currentPlot?.geom && (
-                  <a
-                    download={"comimo_projectId-" + this.props.projectId + "_plotId-" + this.state.currentPlotId + ".kml"}
-                    href={"data:earth.kml+xml application/vnd.google-earth.kmz, " + encodeURIComponent(this.geomToKML(currentPlot?.geom))}
-                  >
-                    Download Plot KML
-                  </a>
-                )}
-                <NICFIControl
-                  extraParams={this.state.extraParams}
-                  nicfiLayers={this.state.nicfiLayers}
-                  setParams={this.setParams}
-                />
+                <div>
+                  <NICFIControl
+                    extraParams={this.state.extraParams}
+                    nicfiLayers={this.state.nicfiLayers}
+                    setParams={this.setParams}
+                  />
+                  {currentPlot?.geom && (
+                    <a
+                      download={"comimo_projectId-" + this.props.projectId + "_plotId-" + this.state.currentPlotId + ".kml"}
+                      href={"data:earth.kml+xml application/vnd.google-earth.kmz, " + encodeURIComponent(this.geomToKML(currentPlot?.geom))}
+                    >
+                      Download Plot KML
+                    </a>
+                  )}
+                </div>
               </ToolPanel>
             </MenuItem>
             <SideIcon
