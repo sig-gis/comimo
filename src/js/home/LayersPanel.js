@@ -1,6 +1,7 @@
 import React from "react";
 import {MainContext} from "../components/PageLayout";
 
+import NICFIControl from "../components/NICFIControl";
 import ToolPanel from "../components/ToolPanel";
 
 import {startVisible, availableLayers} from "../constants";
@@ -66,6 +67,18 @@ export default class LayersPanel extends React.Component {
     );
   };
 
+  renderControlWrapper = name => (name === "NICFI"
+    ? (
+      <div key={name} className="d-flex flex-column">
+        {this.renderControl(name)}
+        <NICFIControl
+          extraParams={this.props.extraParams}
+          nicfiLayers={this.props.nicfiLayers}
+          setParams={this.props.setParams}
+        />
+      </div>
+    ) : this.renderControl(name));
+
   render() {
     const {opacity, visible} = this.state;
     const {localeText: {layers}} = this.context;
@@ -77,7 +90,7 @@ export default class LayersPanel extends React.Component {
             <label style={{margin: "0 .25rem"}}>{layers.opacityLabel}</label>
           </div>
         </div>
-        {opacity && visible && availableLayers.map(l => this.renderControl(l))}
+        {opacity && visible && availableLayers.map(l => this.renderControlWrapper(l))}
       </ToolPanel>
     );
   }

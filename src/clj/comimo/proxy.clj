@@ -2,7 +2,8 @@
   (:require [clojure.data.json :as json]
             [clojure.string    :as str]
             [clj-http.client   :as client]
-            [triangulum.config :refer [get-config]]))
+            [triangulum.config :refer [get-config]]
+            [comimo.views      :refer [data-response]]))
 
 ;;; Option cache
 
@@ -26,21 +27,18 @@
     (json/read-str $ :key-fn keyword)
     (:mosaics $)
     (map :name $)
-    (filterv #(str/includes? % "normalized") $)))
+    (filterv #(str/includes? % "normalized") $)
+    (reverse $)))
 
 ;;; Routes
 
 (defn get-nicfi-dates [& _]
   (when-not (valid-cache?)
     (reset-cache! (nicfi-dates)))
-  @nicfi-layer-cache)
+  (data-response @nicfi-layer-cache))
 
 (defn get-nicfi-tiles [{:keys [params]}]
-  (let [{:keys [x y z dataLayer]} params]
-    (client/get (format "https://tiles0.planet.com/basemaps/v1/planet-tiles/%s/gmap/%s/%s/%s.png?api_key=%s"
-                        dataLayer
-                        z
-                        x
-                        y
-                        (get-config :nicfi-key))
+  (let [{:keys [x y z dataLayer band]} params]
+    (client/get (format "https://tiles0.planet.com/basemaps/v1/planet-tiles/%s/gmap/%s/%s/%s.png?proc=%s&api_key=%s"
+                        dataLayer z x y band (get-config :nicfi-key))
                 {:as :stream})))

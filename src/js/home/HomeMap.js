@@ -76,10 +76,16 @@ export default class HomeMap extends React.Component {
       this.state.thePopup.remove();
     }
 
-    if (this.props.theMap && Object.keys(this.props.selectedDates).length
+    if (this.props.theMap && Object.keys(this.props.selectedDates).length > 0
         && (prevProps.theMap !== this.props.theMap
-          || this.props.selectedDates !== prevProps.selectedDates)) {
-      this.updateEELayers(Object.keys(this.props.selectedDates));
+          || prevProps.selectedDates !== this.props.selectedDates)) {
+      this.getLayerUrl(Object.keys(this.props.selectedDates));
+    }
+
+    if (this.props.theMap && Object.keys(this.props.extraParams).length > 0
+        && (prevProps.theMap !== this.props.theMap
+          || prevProps.extraParams !== this.props.extraParams)) {
+      this.getLayerUrl(Object.keys(this.props.extraParams));
     }
   }
 
@@ -93,11 +99,11 @@ export default class HomeMap extends React.Component {
       const layerIdx = layers.findIndex(l => l.id === layer);
       const thisLayer = layers[layerIdx];
       const {layout: {visibility}} = thisLayer;
-      const oldUrl = style.sources[layer].tiles.length;
+      const noUrl = style.sources[layer].tiles.length === 0;
       style.sources[layer].tiles = [url];
       style.layers[layerIdx] = {
         ...thisLayer,
-        layout: {visibility: oldUrl === 0 && startVisible.includes(layer) ? "visible" : visibility}
+        layout: {visibility: noUrl && startVisible.includes(layer) ? "visible" : visibility}
       };
       theMap.setStyle(style);
     } else {
@@ -105,11 +111,20 @@ export default class HomeMap extends React.Component {
     }
   };
 
-  updateEELayers = list => {
+  getLayerUrl = list => {
     const {selectedDates} = this.props;
-    list.forEach(eeLayer => {
-      jsonRequest(URLS.GET_IMAGE_URL, {dataLayer: selectedDates[eeLayer], type: eeLayer})
-        .then(url => this.setLayerUrl(eeLayer, url))
+    list.forEach(layer => {
+      jsonRequest(URLS.GET_IMAGE_URL, {dataLayer: selectedDates[layer], type: layer})
+        .then(url => {
+          // As written the URL provided must already include ? and one param so &nextParam works.
+          const params = this.props.extraParams[layer];
+          const fullUrl = params == null
+            ? url
+            : url + Object.entries(params)
+              .map(([k, v]) => `&${k}=${v}`)
+              .join("");
+          this.setLayerUrl(layer, fullUrl);
+        })
         .catch(error => console.error(error));
     });
   };
@@ -143,8 +158,8 @@ export default class HomeMap extends React.Component {
 
       this.props.setMap(theMap);
       // This is a bit hard coded
-      this.updateEELayers(availableLayers.slice(3), true);
-      if (Object.keys(selectedDates).length) this.updateEELayers(Object.keys(selectedDates), true);
+      this.getLayerUrl(availableLayers.slice(3), true);
+      if (Object.keys(selectedDates).length) this.getLayerUrl(Object.keys(selectedDates), true);
     });
   };
 
