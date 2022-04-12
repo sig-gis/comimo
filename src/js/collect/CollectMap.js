@@ -7,8 +7,8 @@ import "mapbox-gl/dist/mapbox-gl.css";
 import {get, isString} from "lodash";
 import LngLatHud from "../components/LngLatHud";
 
-import {toPrecision} from "../utils";
-import {THEME} from "../constants";
+import {jsonRequest, toPrecision} from "../utils";
+import {attributions, THEME, URLS} from "../constants";
 
 const MapBoxWrapper = styled.div`
   height: 100%;
@@ -77,9 +77,50 @@ export default class CollectMap extends React.Component {
     if (this.props.projectPlots && this.mapChange(prevProps, prevState, "currentPlot")) {
       this.updateVisiblePlot();
     }
+
+    if (this.state.theMap && Object.keys(this.props.extraParams).length > 0
+        && (prevState.theMap !== this.state.theMap
+          || prevProps.extraParams !== this.props.extraParams)) {
+      this.getLayerUrl(Object.keys(this.props.extraParams));
+    }
   }
 
   /// Mapbox ///
+
+  setLayerUrl = (layer, url) => {
+    if (layer && url && url !== "") {
+      const {theMap} = this.state;
+      const style = theMap.getStyle();
+      const layers = style.layers;
+      const layerIdx = layers.findIndex(l => l.id === layer);
+      const thisLayer = layers[layerIdx];
+      style.sources[layer].tiles = [url];
+      style.layers[layerIdx] = {
+        ...thisLayer,
+        layout: {visibility: "visible"}
+      };
+      theMap.setStyle(style);
+    } else {
+      console.error("Error loading layer: ", layer, url);
+    }
+  };
+
+  getLayerUrl = list => {
+    list.forEach(layer => {
+      jsonRequest(URLS.GET_IMAGE_URL, {type: layer})
+        .then(url => {
+          // As written the URL provided must already include ? and one param so &nextParam works.
+          const params = this.props.extraParams[layer];
+          const fullUrl = params == null
+            ? url
+            : url + Object.entries(params)
+              .map(([k, v]) => `&${k}=${v}`)
+              .join("");
+          this.setLayerUrl(layer, fullUrl);
+        })
+        .catch(error => console.error(error));
+    });
+  };
 
   initMap = () => {
     mapboxgl.accessToken = this.props.mapboxToken;
@@ -92,6 +133,9 @@ export default class CollectMap extends React.Component {
     setTimeout(() => theMap.resize(), 1);
 
     theMap.on("load", () => {
+      // Add layers first in the
+      this.addLayerSources(theMap, ["NICFI"]);
+
       theMap.addControl(new mapboxgl.NavigationControl({showCompass: false}));
       theMap.on("mousemove", e => {
         const lat = toPrecision(e.lngLat.lat, 4);
@@ -99,10 +143,35 @@ export default class CollectMap extends React.Component {
         this.setState({mouseCoords: {lat, lng}});
       });
       this.setState({theMap});
+      this.getLayerUrl(["NICFI"]);
     });
   };
 
   isLayerVisible = layer => this.state.theMap.getLayer(layer).visibility === "visible";
+
+  // Adds layers initially with no styling, URL is updated later.  This is to guarantee z order in mapbox
+  addLayerSources = (theMap, list) => {
+    list.forEach(name => {
+      theMap.addSource(
+        name,
+        {
+          type: "raster",
+          tiles: [],
+          tileSize: 256,
+          vis: {palette: []},
+          ...attributions[name] && {attribution: attributions[name]}
+        }
+      );
+      theMap.addLayer({
+        id: name,
+        type: "raster",
+        source: name,
+        minzoom: 0,
+        maxzoom: 22,
+        layout: {visibility: "none"}
+      });
+    });
+  };
 
   fitMap = (type, arg) => {
     const {theMap} = this.state;

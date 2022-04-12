@@ -2,6 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom";
 
 import MenuItem from "../components/MenuItem";
+import NICFIControl from "../components/NICFIControl";
 import {PageLayout, MainContext} from "../components/PageLayout";
 import SideBar from "../components/SideBar";
 import SideIcon from "../components/SideIcon";
@@ -21,15 +22,21 @@ class CollectContent extends React.Component {
       visiblePanel: null,
       projectDetails: {},
       projectPlots: [],
-      currentPlotId: -1
+      currentPlotId: -1,
+      extraParams: {
+        NICFI: {
+          dataLayer: null,
+          band: "rgb"
+        }
+      },
+      nicfiLayers: []
     };
   }
 
   /// Lifecycle Functions ///
 
   componentDidMount() {
-    this.getProjectData();
-    this.getProjectPlots();
+    Promise.all([this.getProjectData(), this.getProjectPlots(), this.getNICFIDates()]);
   }
 
   getProjectData = () => jsonRequest(URLS.PROJ_DATA, {projectId: this.props.projectId})
@@ -41,6 +48,15 @@ class CollectContent extends React.Component {
   getProjectPlots = () => jsonRequest(URLS.PROJ_PLOTS, {projectId: this.props.projectId})
     .then(result => {
       this.setState({projectPlots: result});
+    });
+
+  getNICFIDates = () => jsonRequest(URLS.NICFI_DATES)
+    .then(dates => {
+      this.setState({nicfiLayers: dates});
+      this.setParams("NICFI", {
+        ...this.state.extraParams.NICFI,
+        dataLayer: dates[0]
+      });
     });
 
   /// State Update ///
@@ -77,6 +93,17 @@ class CollectContent extends React.Component {
       });
   };
 
+  setParams = (param, value) => {
+    this.setState({
+      extraParams: {
+        ...this.state.extraParams,
+        [param]: value
+      }
+    });
+  };
+
+  /// Helpers ///
+
   geomToKML = geom => {
     const coordinates = geom.coordinates[0];
     const strCoords = coordinates.map(c => c.join(",")).join(" ");
@@ -94,6 +121,7 @@ class CollectContent extends React.Component {
         <CollectMap
           boundary={projectDetails.boundary}
           currentPlot={currentPlot}
+          extraParams={this.state.extraParams}
           mapboxToken={this.props.mapboxToken}
           myHeight={myHeight}
           projectPlots={projectPlots}
@@ -116,6 +144,11 @@ class CollectContent extends React.Component {
                     Download Plot KML
                   </a>
                 )}
+                <NICFIControl
+                  extraParams={this.state.extraParams}
+                  nicfiLayers={this.state.nicfiLayers}
+                  setParams={this.setParams}
+                />
               </ToolPanel>
             </MenuItem>
             <SideIcon

@@ -158,8 +158,8 @@ export default class HomeMap extends React.Component {
 
       this.props.setMap(theMap);
       // This is a bit hard coded
-      this.getLayerUrl(availableLayers.slice(3), true);
-      if (Object.keys(selectedDates).length) this.getLayerUrl(Object.keys(selectedDates), true);
+      this.getLayerUrl(availableLayers.slice(3));
+      if (Object.keys(selectedDates).length) this.getLayerUrl(Object.keys(selectedDates));
     });
   };
 
