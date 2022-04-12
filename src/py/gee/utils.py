@@ -51,7 +51,7 @@ def subscribedRegionsToFC(regions):
     return regionsFC
 
 
-def getDownloadURL(source, region, level, scale):
+def getDownloadURL(source, region, scale):
     img = ee.Image(source)
     if (region == "all"):
         regionFC = ee.FeatureCollection("users/comimoapp/Shapes/Level0")

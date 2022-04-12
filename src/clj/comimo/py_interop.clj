@@ -118,11 +118,10 @@
         (data-response))))
 
 (defn get-download-url [{:keys [params]}]
-  (let [{:keys [level region dataLayer]} params]
+  (let [{:keys [region dataLayer]} params]
     (data-response (py-wrapper utils/getDownloadURL
                                (str "users/comimoapp/Images" "/" dataLayer)
                                region
-                               level
                                540))))
 
 (defn- get-subscribed-regions [user-id]
