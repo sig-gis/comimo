@@ -1,3 +1,4 @@
+import {last} from "lodash";
 import React from "react";
 import ReactDOM from "react-dom";
 
@@ -36,12 +37,22 @@ class CollectContent extends React.Component {
   /// Lifecycle Functions ///
 
   componentDidMount() {
-    Promise.all([this.getProjectData(), this.getProjectPlots(), this.getNICFIDates()]);
+    Promise.all([this.getProjectData(), this.getProjectPlots(), this.getNICFIDates()])
+      .then(([projectDetails, _, nicfiLayers]) => {
+        const dateRegex = /\d{4}-\d{2}/g;
+        const projectDate = last([...projectDetails.dataLayer.matchAll(dateRegex)])[0];
+        const nicfiDate = nicfiLayers.find(l => [...l.matchAll(dateRegex)].length === 1 && l.includes(projectDate));
+        this.setParams("NICFI", {
+          ...this.state.extraParams.NICFI,
+          dataLayer: nicfiDate || nicfiLayers[0]
+        });
+      });
   }
 
   getProjectData = () => jsonRequest(URLS.PROJ_DATA, {projectId: this.props.projectId})
     .then(result => {
       this.setState({projectDetails: result});
+      return result;
     });
 
   // TODO, this can probably be combined into get projectData
@@ -53,10 +64,7 @@ class CollectContent extends React.Component {
   getNICFIDates = () => jsonRequest(URLS.NICFI_DATES)
     .then(dates => {
       this.setState({nicfiLayers: dates});
-      this.setParams("NICFI", {
-        ...this.state.extraParams.NICFI,
-        dataLayer: dates[0]
-      });
+      return dates;
     });
 
   /// State Update ///
