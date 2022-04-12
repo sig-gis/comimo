@@ -13,8 +13,16 @@ CREATE OR REPLACE FUNCTION can_user_collect_plot(_user_id integer, _plot_id inte
 
 $$ LANGUAGE SQL;
 
+-- Calculates plot geom from for point data
+CREATE OR REPLACE FUNCTION calc_plot_geom(_project_id integer, _m_buffer real)
+ RETURNS void AS $$
 
-CREATE OR REPLACE FUNCTION select_project_plots(_project_id integer, _m_buffer real)
+    UPDATE plots SET geom = add_buffer(ST_MakePoint(lat, lon), _m_buffer)
+    WHERE project_rid = _project_id
+
+$$ LANGUAGE SQL;
+
+CREATE OR REPLACE FUNCTION select_project_plots(_project_id integer)
  RETURNS table (
     plot_id    integer,
     lat        float,
@@ -26,7 +34,7 @@ CREATE OR REPLACE FUNCTION select_project_plots(_project_id integer, _m_buffer r
     SELECT plot_uid,
         lat,
         lon,
-        ST_AsGeoJSON(add_buffer(ST_MakePoint(lat, lon), _m_buffer)),
+        ST_AsGeoJSON(geom),
         answer
     FROM plots
     WHERE project_rid = _project_id

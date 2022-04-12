@@ -154,22 +154,9 @@ export default class CollectMap extends React.Component {
       ? THEME.noMina.background
       : THEME.map.unanswered);
 
-  addPlots = () => {
+  addLayers = plots => {
     const {theMap} = this.state;
-    const {projectPlots} = this.props;
-    const geoJSON = {
-      type: "FeatureCollection",
-      features: projectPlots.map(p => ({
-        type: "Feature",
-        properties: {id: p.id},
-        geometry: p.geom
-      }))
-    };
-    theMap.addSource("plots", {
-      type: "geojson",
-      data: geoJSON
-    });
-    projectPlots.forEach(p => {
+    plots.forEach(p => {
       theMap.addLayer({
         id: p.id + "", // mapbox needs a string
         type: "line",
@@ -185,6 +172,26 @@ export default class CollectMap extends React.Component {
         }
       });
     });
+  };
+
+  addPlots = () => {
+    const {theMap} = this.state;
+    const {projectPlots} = this.props;
+    const geoJSON = {
+      type: "FeatureCollection",
+      features: projectPlots.map(p => ({
+        type: "Feature",
+        properties: {id: p.id},
+        geometry: p.geom
+      }))
+    };
+    theMap.addSource("plots", {
+      type: "geojson",
+      data: geoJSON
+    });
+    this.addLayers(projectPlots.filter(p => !p.answer));
+    this.addLayers(projectPlots.filter(p => p.answer === "No Mina"));
+    this.addLayers(projectPlots.filter(p => p.answer === "Mina"));
   };
 
   updateVisiblePlot = () => {

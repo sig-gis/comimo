@@ -59,18 +59,22 @@
                                             data-layer))]
     (try
       ;; Create plots
-      (let [plots (->> (get-points-within regions data-layer)
+      (let [plots (->> (get-points-within data-layer regions)
                        (mapv (fn [{:strs [lat lon]}]
                                {:lat lat
                                 :lon lon
                                 :project_rid project-id})))]
         (insert-rows! "plots" plots))
 
-      ;; Boundary must be created after plots are added
-      (try-catch-throw #(call-sql "set_boundary"
+      ;; Boundary and geom must be calculated after plots are added
+      (try-catch-throw #(call-sql "calc_project_boundary"
                                   project-id
                                   540)
                        "SQL Error: cannot create a project AOI.")
+      (try-catch-throw #(call-sql "calc_plot_geom"
+                                  project-id
+                                  (/ 540 2))
+                       "SQL Error: cannot create a plot geoms.")
 
       ;; Return success message
       ""

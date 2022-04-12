@@ -109,10 +109,10 @@ def getPlots(points):
     return plots
 
 
-def getPointsWithin(regions, dataLayer):
+def getPointsWithin(source, regions):
     fc = subscribedRegionsToFC(regions)
     try:
-        points = ee.FeatureCollection(POINTS_FOL + "/" + dataLayer)
+        points = ee.FeatureCollection(source)
         return getPlots(points.filterBounds(fc).getInfo())
     except Exception as e:
         print(e)
