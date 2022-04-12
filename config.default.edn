@@ -18,4 +18,5 @@
  :gee          {:ee-account  ""
                 :ee-key-path ""}
  :mapbox-token ""
- :mapquest-key ""}
+ :mapquest-key ""
+ :nicfi-key    ""}
