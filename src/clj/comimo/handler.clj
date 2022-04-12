@@ -106,6 +106,23 @@
                  (str content-type " response")))
       response)))
 
+
+(def updatable-session-keys [])
+
+(defn wrap-persistent-session [handler]
+  (fn [request]
+    (let [{:keys [params session]} request
+          to-update    (select-keys params updatable-session-keys)
+          session      (apply dissoc session (keys to-update))
+          intersection (set/intersection (set (keys params)) (set (keys session)))
+          response     (handler (update request :params merge session))]
+      (when-not (empty? intersection)
+        (log-str "WARNING! The following params are being overwritten by session values: " intersection))
+      (if (and (contains? response :session)
+               (nil? (:session response)))
+        response
+        (update response :session #(merge session to-update %))))))
+
 (defn wrap-exceptions [handler]
   (fn [request]
     (try
@@ -132,6 +149,7 @@
       (optional-middleware wrap-ssl-redirect ssl?)
       wrap-bad-uri
       wrap-request-logging
+      wrap-persistent-session
       wrap-keyword-params
       wrap-json-params
       wrap-nested-params
