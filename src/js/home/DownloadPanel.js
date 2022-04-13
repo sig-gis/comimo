@@ -6,6 +6,7 @@ import Button from "../components/Button";
 import {jsonRequest} from "../utils";
 import {URLS} from "../constants";
 import {MainContext} from "../components/PageLayout";
+import LoadingModal from "../components/LoadingModal";
 
 export default class DownloadPanel extends React.Component {
   constructor(props) {
@@ -15,24 +16,31 @@ export default class DownloadPanel extends React.Component {
       clipOption: 1,
       downloadURL: false,
       fetching: false,
-      mineType: "cMines"
+      mineType: "cMines",
+      showModal: false
     };
   }
+
+  processModal = callBack => new Promise(() => Promise.resolve(
+    this.setState(
+      {showModal: true},
+      () => callBack().finally(() => this.setState({showModal: false}))
+    )
+  ));
 
   getDownloadUrl = () => {
     const {selectedRegion, selectedDates} = this.props;
     const {clipOption, mineType} = this.state;
-    this.setState({fetching: true});
 
-    const [level, region] = clipOption === 1 ? ["", "all"] : selectedRegion.split("_", 1);
-    jsonRequest(URLS.GET_DL_URL, {level, region, dataLayer: selectedDates[mineType]})
-      .then(resp => {
-        this.setState({downloadURL: [region, level, selectedDates[mineType], resp]});
-      })
-      .catch(err => {
-        console.error(err);
-      })
-      .finally(() => this.setState({fetching: false}));
+    const region = clipOption === 1 ? "all" : selectedRegion;
+    this.processModal(() =>
+      jsonRequest(URLS.GET_DL_URL, {region, dataLayer: selectedDates[mineType]})
+        .then(resp => {
+          this.setState({downloadURL: [region, selectedDates[mineType], resp]});
+        })
+        .catch(err => {
+          console.error(err);
+        }));
   };
 
   render() {
@@ -41,6 +49,7 @@ export default class DownloadPanel extends React.Component {
     const {localeText: {download, validate}} = this.context;
     return (
       <ToolPanel title={download.title}>
+        {this.state.showModal && <LoadingModal message="Getting URL"/>}
         <label>{`${validate.typeLabel}:`}</label>
         <select
           onChange={e => this.setState({mineType: e.target.value})}
@@ -84,10 +93,10 @@ export default class DownloadPanel extends React.Component {
           : downloadURL && (
             <p>
               <span>
-                <a href={downloadURL[3]}>
+                <a href={downloadURL[2]}>
                   {`${download.clickHere}`
                     + ` ${downloadURL[0] === "all" ? download.completeData : download.munData + downloadURL[0]} `
-                    + `${download.prep} ${ downloadURL[2]}.`}
+                    + `${download.prep} ${ downloadURL[1]}.`}
                 </a>
               </span>
             </p>

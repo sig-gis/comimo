@@ -8,6 +8,7 @@ import ProjectCard from "../components/ProjectCard";
 import {jsonRequest} from "../utils";
 import {URLS} from "../constants";
 import {MainContext} from "../components/PageLayout";
+import LoadingModal from "../components/LoadingModal";
 
 export default class ValidatePanel extends React.Component {
   constructor(props) {
@@ -16,8 +17,7 @@ export default class ValidatePanel extends React.Component {
     this.state = {
       projects: [],
       projectName: "",
-      creatingProject: false,
-      errorMsg: false,
+      showModal: false,
       regionType: 1,
       customRegions: [],
       mineType: "pMines"
@@ -30,6 +30,13 @@ export default class ValidatePanel extends React.Component {
       this.getProjects();
     }
   }
+
+  processModal = callBack => new Promise(() => Promise.resolve(
+    this.setState(
+      {showModal: true},
+      () => callBack().finally(() => this.setState({showModal: false}))
+    )
+  ));
 
   getProjects = () => {
     jsonRequest(URLS.USER_PROJ)
@@ -52,7 +59,7 @@ export default class ValidatePanel extends React.Component {
     const {subscribedList} = this.props;
     const {localeText: {validate}} = this.context;
 
-    this.setState({creatingProject: true, errorMsg: false});
+    this.setState({errorMsg: false});
     const selectedArr = regionType === 1 ? subscribedList : customRegions.map(x => "mun_" + x);
     const regions = selectedArr
       .map(r => {
@@ -67,27 +74,19 @@ export default class ValidatePanel extends React.Component {
 
     if (this.checkProjectErrors(dataLayer, selectedArr, projectName, projects, regionType, validate)
       && confirm(question)) {
-      jsonRequest(URLS.CREATE_PROJ, {dataLayer, name: projectName, regions: selectedArr})
-        .then(res => {
-          if (res === "") {
-            this.getProjects();
-            this.setState({
-              creatingProject: false,
-              errorMsg: ""
-            });
-          } else {
-            this.setState({creatingProject: false, errorMsg: validate[res]});
-          }
-        })
-        .catch(err => {
-          console.error(err);
-          this.setState({
-            creatingProject: false,
-            errorMsg: validate.errorUnknown
-          });
-        });
-    } else {
-      this.setState({creatingProject: false});
+      this.processModal(() =>
+        jsonRequest(URLS.CREATE_PROJ, {dataLayer, name: projectName, regions: selectedArr})
+          .then(res => {
+            if (res === "") {
+              this.getProjects();
+            } else {
+              alert(validate[res]);
+            }
+          })
+          .catch(err => {
+            console.error(err);
+            alert(validate[validate.errorUnknown]);
+          }));
     }
   };
 
@@ -99,8 +98,7 @@ export default class ValidatePanel extends React.Component {
           if (res === "") {
             this.getProjects();
           } else {
-            // TODO pass back meaningful errors
-            this.setState({errorMsg: validate.errorClose});
+            alert(validate.errorClose);
           }
         })
         .catch(err => { console.error(err); });
@@ -160,6 +158,7 @@ export default class ValidatePanel extends React.Component {
     return (
       <ToolPanel title={validate.title}>
         <span>{validate.subtitle}</span>
+        {this.state.showModal && <LoadingModal message="Creating Project"/>}
         {username
           ? (
             <div style={{display: "flex", flexDirection: "column"}}>
