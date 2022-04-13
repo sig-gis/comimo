@@ -15,7 +15,7 @@ class PasswordForgot extends React.Component {
     this.state = {
       email: "",
       localeText: {},
-      showModal: false
+      showModal: null
     };
   }
 
@@ -66,8 +66,8 @@ class PasswordForgot extends React.Component {
     const {localeText} = this.state;
     return (
       <ThemeProvider theme={THEME}>
+        {this.state.showModal && <LoadingModal message={localeText.modalMessage}/>}
         <AccountForm header={localeText.requestTitle}>
-          {this.state.showModal && <LoadingModal message={localeText.modalMessage}/>}
           {this.renderField(localeText.email, "email", "email")}
           <div className="d-flex justify-content-end">
             <Button

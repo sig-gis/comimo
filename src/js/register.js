@@ -136,11 +136,11 @@ class Register extends React.Component {
     const {localeText, defaultLang} = this.state;
     return (
       <ThemeProvider theme={THEME}>
+        {this.state.showModal && <LoadingModal message={localeText.modalMessage}/>}
         <AccountForm
           header={localeText.registerTitle}
           submitFn={this.registerUser}
         >
-          {this.state.showModal && <LoadingModal message={localeText.modalMessage}/>}
           <div className="d-flex">
             <label className="mr-3">{localeText.language}</label>
             <LanguageSelector
