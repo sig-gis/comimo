@@ -3,6 +3,7 @@ import ReactDOM from "react-dom";
 import {ThemeProvider} from "styled-components";
 
 import Button from "./components/Button";
+import AccountForm from "./components/AccountForm";
 
 import {getLanguage, jsonRequest, validatePassword} from "./utils";
 import {THEME} from "./constants";
@@ -74,27 +75,22 @@ class PasswordReset extends React.Component {
     const {localeText} = this.state;
     return (
       <ThemeProvider theme={THEME}>
-        <div
-          className="d-flex justify-content-center"
-          style={{paddingTop: "20vh"}}
+        <AccountForm
+          header={localeText.resetTitle}
+          submitFn={this.resetPassword}
         >
-          <div className="card">
-            <div className="card-header">{localeText.resetTitle}</div>
-            <div className="card-body">
-              {this.renderField(localeText.email, "email", "email", true)}
-              {this.renderField(localeText.password, "password", "password")}
-              {this.renderField(localeText.confirm, "password", "passwordConfirmation")}
-              <div className="d-flex justify-content-end">
-                <Button
-                  className="mt-3"
-                  onClick={this.resetPassword}
-                >
-                  {localeText.resetTitle}
-                </Button>
-              </div>
-            </div>
+          {this.renderField(localeText.email, "email", "email", true)}
+          {this.renderField(localeText.password, "password", "password")}
+          {this.renderField(localeText.confirm, "password", "passwordConfirmation")}
+          <div className="d-flex justify-content-end">
+            <Button
+              className="mt-3"
+              onClick={this.resetPassword}
+            >
+              {localeText.resetTitle}
+            </Button>
           </div>
-        </div>
+        </AccountForm>
       </ThemeProvider>
     );
   }

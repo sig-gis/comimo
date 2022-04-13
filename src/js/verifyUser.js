@@ -2,6 +2,8 @@ import React from "react";
 import ReactDOM from "react-dom";
 import {ThemeProvider} from "styled-components";
 
+import AccountForm from "./components/AccountForm";
+
 import {getLanguage, jsonRequest} from "./utils";
 import {THEME} from "./constants";
 
@@ -31,11 +33,11 @@ class PasswordReset extends React.Component {
       .catch(error => console.error(error));
   }
 
-  getLocale = () => fetch(`/locale/${getLanguage(["en", "es"])}.json`, null, "GET")
-    .then(data => {
-      this.setState({localeText: data.users});
-      return true;
-    });
+   getLocale = () => {
+     jsonRequest(`/locale/${getLanguage(["en", "es"])}.json`, null, "GET")
+       .then(data => this.setState({localeText: data.users}))
+       .catch(err => console.error(err));
+   };
 
   verifyEmail = () => jsonRequest(
     "/verify-email/",
@@ -49,17 +51,9 @@ class PasswordReset extends React.Component {
     const {localeText} = this.state;
     return (
       <ThemeProvider theme={THEME}>
-        <div
-          className="d-flex justify-content-center"
-          style={{paddingTop: "20vh"}}
-        >
-          <div className="card">
-            <div className="card-header">{localeText.verifyUser}</div>
-            <div className="card-body">
-              <label>{localeText.verifying}...</label>
-            </div>
-          </div>
-        </div>
+        <AccountForm header={localeText.verifyUser}>
+          <label>{localeText.verifying}...</label>
+        </AccountForm>
       </ThemeProvider>
     );
   }
