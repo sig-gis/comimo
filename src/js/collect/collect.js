@@ -8,6 +8,7 @@ import {PageLayout, MainContext} from "../components/PageLayout";
 import SideBar from "../components/SideBar";
 import SideIcon from "../components/SideIcon";
 import ToolPanel from "../components/ToolPanel";
+import LoadingModal from "../components/LoadingModal";
 
 import {URLS} from "../constants";
 import {jsonRequest} from "../utils";
@@ -30,14 +31,15 @@ class CollectContent extends React.Component {
           band: "rgb"
         }
       },
-      nicfiLayers: []
+      nicfiLayers: [],
+      showModal: null
     };
   }
 
   /// Lifecycle Functions ///
 
   componentDidMount() {
-    Promise.all([this.getProjectData(), this.getProjectPlots(), this.getNICFIDates()])
+    this.processModal(() => Promise.all([this.getProjectData(), this.getProjectPlots(), this.getNICFIDates()]))
       .then(([projectDetails, _, nicfiLayers]) => {
         const dateRegex = /\d{4}-\d{2}/g;
         const projectDate = last([...projectDetails.dataLayer.matchAll(dateRegex)])[0];
@@ -48,6 +50,13 @@ class CollectContent extends React.Component {
         });
       });
   }
+
+  processModal = callBack => new Promise(() => Promise.resolve(
+    this.setState(
+      {showModal: true},
+      () => callBack().finally(() => this.setState({showModal: false}))
+    )
+  ));
 
   getProjectData = () => jsonRequest(URLS.PROJ_DATA, {projectId: this.props.projectId})
     .then(result => {
@@ -126,6 +135,7 @@ class CollectContent extends React.Component {
     const currentPlot = projectPlots.find(p => p.id === currentPlotId);
     return (
       <>
+        {home && this.state.showModal && <LoadingModal message={home.loading}/>}
         <CollectMap
           boundary={projectDetails.boundary}
           currentPlot={currentPlot}
