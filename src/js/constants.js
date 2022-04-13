@@ -1,6 +1,6 @@
 export const THEME = {
   disabled: {
-    background: "#ddd",
+    background: "#f8f8f8",
     color: "#999"
   },
   primary: {

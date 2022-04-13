@@ -1,23 +1,14 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import {ReactTabulator} from "react-tabulator";
+import {ThemeProvider} from "styled-components";
 
+import Button from "./components/Button";
 import "react-tabulator/lib/styles.css"; // required styles
 import "react-tabulator/lib/css/tabulator_bootstrap4.min.css"; // theme
 
-import {URLS} from "./constants";
+import {URLS, THEME} from "./constants";
 import {jsonRequest} from "./utils";
-
-const buttonStyle = disabled => (disabled
-  ? {
-    backgroundColor: "lightgray",
-    color: "gray",
-    cursor: "not-allowed"
-  } : {
-    backgroundColor: "gray",
-    color: "black",
-    cursor: "pointer"
-  });
 
 class DownloadData extends React.Component {
   constructor(props) {
@@ -58,22 +49,17 @@ class DownloadData extends React.Component {
         width: "100%"
       }}
     >
-      <button
-        className="btn-primary"
+      <Button
+        className="mr-1"
         onClick={() => downloadData("csv")}
-        style={buttonStyle(false)}
-        type="button"
       >
         Download CSV
-      </button>
-      <button
-        className="btn-primary"
+      </Button>
+      <Button
         onClick={() => downloadData("json")}
-        style={buttonStyle(false)}
-        type="button"
       >
         Download JSON
-      </button>
+      </Button>
     </div>
   );
 
@@ -177,14 +163,12 @@ class Predictions extends React.Component {
               <option key={d} value={d}>{d}</option>
             ))}
           </select>
-          <button
+          <Button
             disabled={selectedDate === -1}
             onClick={() => this.loadDateData(selectedDate)}
-            style={buttonStyle(selectedDate === -1)}
-            type="button"
           >
             {collectedData[selectedDate] ? "Reload" : "Load"}
-          </button>
+          </Button>
         </div>
         <ReactTabulator
           columns={[
@@ -265,14 +249,12 @@ class UserMines extends React.Component {
               <option key={d} value={d}>{d}</option>
             ))}
           </select>
-          <button
+          <Button
             disabled={selectedDate === -1}
             onClick={() => this.loadDateData(selectedDate)}
-            style={buttonStyle(selectedDate === -1)}
-            type="button"
           >
             {collectedData[selectedDate] ? "Reload" : "Load"}
-          </button>
+          </Button>
         </div>
         <ReactTabulator
           columns={[
@@ -306,7 +288,9 @@ class UserMines extends React.Component {
 
 export function pageInit(args) {
   ReactDOM.render(
-    <DownloadData/>,
+    <ThemeProvider theme={THEME}>
+      <DownloadData/>
+    </ThemeProvider>,
     document.getElementById("main-container")
   );
 }
