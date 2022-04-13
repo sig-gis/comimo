@@ -50,13 +50,12 @@ class DownloadData extends React.Component {
       }}
     >
       <Button
-        $type="admin"
+        className="mr-1"
         onClick={() => downloadData("csv")}
       >
         Download CSV
       </Button>
       <Button
-        $type="admin"
         onClick={() => downloadData("json")}
       >
         Download JSON
@@ -165,7 +164,6 @@ class Predictions extends React.Component {
             ))}
           </select>
           <Button
-            $type="admin"
             disabled={selectedDate === -1}
             onClick={() => this.loadDateData(selectedDate)}
           >
@@ -252,7 +250,6 @@ class UserMines extends React.Component {
             ))}
           </select>
           <Button
-            $type="admin"
             disabled={selectedDate === -1}
             onClick={() => this.loadDateData(selectedDate)}
           >

@@ -18,10 +18,6 @@ export const THEME = {
   map: {
     boundary: "yellow",
     unanswered: "blue"
-  },
-  admin: {
-    background: "#e1e1e1",
-    color: "#666666"
   }
 };
 
