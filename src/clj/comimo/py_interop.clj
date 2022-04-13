@@ -49,8 +49,8 @@
 
 ;;; Utils
 
-(defn get-points-within [regions data-layer]
-  (py-wrapper utils/getPointsWithin "users/comimoapp/ValidationPoints" regions data-layer))
+(defn get-points-within [data-layer regions]
+  (py-wrapper utils/getPointsWithin (str "users/comimoapp/ValidationPoints" "/" data-layer) regions))
 
 (defn location-in-country [lat lon]
   (py-wrapper utils/locationInCountry lat lon))

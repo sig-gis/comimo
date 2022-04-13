@@ -76,7 +76,7 @@ CREATE OR REPLACE FUNCTION delete_project(_project_id integer)
 $$ LANGUAGE PLPGSQL;
 
 -- Calculates boundary from for point data
-CREATE OR REPLACE FUNCTION set_boundary(_project_id integer, _m_buffer real)
+CREATE OR REPLACE FUNCTION calc_project_boundary(_project_id integer, _m_buffer real)
  RETURNS void AS $$
 
     UPDATE projects SET boundary = b
