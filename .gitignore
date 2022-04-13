@@ -5,6 +5,7 @@ config.edn
 announcement.txt
 
 # Build Directories and Files
+.cpcache/
 logs
 static
 node_modules
