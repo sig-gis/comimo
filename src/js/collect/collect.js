@@ -135,7 +135,7 @@ class CollectContent extends React.Component {
     const currentPlot = projectPlots.find(p => p.id === currentPlotId);
     return (
       <>
-        {home && this.state.showModal && <LoadingModal message={home.loading}/>}
+        {this.state.showModal && <LoadingModal message={home?.loading || "Cargando"}/>}
         <CollectMap
           boundary={projectDetails.boundary}
           currentPlot={currentPlot}
