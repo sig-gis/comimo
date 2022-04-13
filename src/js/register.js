@@ -6,6 +6,7 @@ import {ThemeProvider} from "styled-components";
 import LoadingModal from "./components/LoadingModal";
 import LanguageSelector from "./components/LanguageSelector";
 import Button from "./components/Button";
+import AccountForm from "./components/AccountForm";
 
 import {getLanguage, jsonRequest, validatePassword} from "./utils";
 import {THEME} from "./constants";
@@ -135,47 +136,43 @@ class Register extends React.Component {
     const {localeText, defaultLang} = this.state;
     return (
       <ThemeProvider theme={THEME}>
-        <div
-          className="d-flex justify-content-center"
-          style={{paddingTop: "2rem"}}
+        <AccountForm
+          header={localeText.registerTitle}
+          submitFn={this.registerUser}
         >
           {this.state.showModal && <LoadingModal message={localeText.modalMessage}/>}
-          <div className="card">
-            <div className="card-header">{localeText.registerTitle}</div>
-            <div className="card-body">
-              <div className="d-flex">
-                <label className="mr-3">{localeText.language}</label>
-                <LanguageSelector
-                  selectedLanguage={defaultLang}
-                  selectLanguage={this.selectLanguage}
-                />
-              </div>
-              {this.renderField(localeText.username, "text", "username")}
-              {this.renderField(localeText.email, "email", "email")}
-              {this.renderField(localeText.fullName, "text", "fullName")}
-              {this.renderField(localeText.institution, "text", "institution")}
-              {this.renderSelect(
-                localeText.sector,
-                [
-                  {key: "academic", optLabel: localeText.academic},
-                  {key: "government", optLabel: localeText.government},
-                  {key: "ngo", optLabel: localeText.ngo}
-                ],
-                "sector"
-              )}
-              {this.renderField(localeText.password, "password", "password")}
-              {this.renderField(localeText.confirm, "password", "passwordConfirmation")}
-              <div className="d-flex justify-content-between align-items-center">
-                <span style={{color: "red"}}>{localeText.allRequired}</span>
-                <Button
-                  onClick={this.registerUser}
-                >
-                  {localeText.register}
-                </Button>
-              </div>
-            </div>
+          <div className="d-flex">
+            <label className="mr-3">{localeText.language}</label>
+            <LanguageSelector
+              selectedLanguage={defaultLang}
+              selectLanguage={this.selectLanguage}
+            />
           </div>
-        </div>
+          {this.renderField(localeText.username, "text", "username")}
+          {this.renderField(localeText.email, "email", "email")}
+          {this.renderField(localeText.fullName, "text", "fullName")}
+          {this.renderField(localeText.institution, "text", "institution")}
+          {this.renderSelect(
+            localeText.sector,
+            [
+              {key: "academic", optLabel: localeText.academic},
+              {key: "government", optLabel: localeText.government},
+              {key: "ngo", optLabel: localeText.ngo}
+            ],
+            "sector"
+          )}
+          {this.renderField(localeText.password, "password", "password")}
+          {this.renderField(localeText.confirm, "password", "passwordConfirmation")}
+          <div className="d-flex justify-content-between align-items-center">
+            <span style={{color: "red"}}>{localeText.allRequired}</span>
+            <Button
+              className="mt-2"
+              onClick={this.registerUser}
+            >
+              {localeText.register}
+            </Button>
+          </div>
+        </AccountForm>
       </ThemeProvider>
     );
   }
