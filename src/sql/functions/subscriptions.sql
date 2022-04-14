@@ -98,6 +98,24 @@ CREATE OR REPLACE FUNCTION log_email_alert(
 
 $$ LANGUAGE SQL;
 
+CREATE OR REPLACE FUNCTION select_email_logs()
+ RETURNS table (
+    job_time          text,
+    username          text,
+    finish_status     text,
+    finish_message    text
+ ) AS $$
+
+    SELECT to_char(job_time, 'YYYY-MM-DD.SS'),
+        username,
+        finish_status,
+        finish_message
+    FROM auto_email_logs, users
+    WHERE user_uid = user_rid
+    ORDER BY job_time DESC
+
+$$ LANGUAGE SQL;
+
 --
 --  REPORTED MINES
 --

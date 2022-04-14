@@ -63,7 +63,7 @@ class Login extends React.Component {
           {this.renderField(localeText.username, "text", "username")}
           {this.renderField(localeText.password, "password", "password")}
           <div className="d-flex justify-content-between align-items-center">
-            <a href="/password-forgot">{localeText.forgot}</a>
+            <a href="/password-request">{localeText.forgot}</a>
             <Button
               className="mt-3"
               onClick={this.requestLogin}

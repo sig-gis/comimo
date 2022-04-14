@@ -96,7 +96,6 @@ CREATE OR REPLACE FUNCTION get_user_information(_user_id integer)
 
 $$ LANGUAGE SQL;
 
-
 -- Get information for single user
 CREATE OR REPLACE FUNCTION get_user_by_email(_email text)
  RETURNS table (
@@ -109,7 +108,6 @@ CREATE OR REPLACE FUNCTION get_user_by_email(_email text)
     WHERE email = _email
 
 $$ LANGUAGE SQL;
-
 
 -- Returns all of the user fields associated with the provided email
 CREATE OR REPLACE FUNCTION check_login(_email text, _password text)
@@ -172,5 +170,21 @@ CREATE OR REPLACE FUNCTION set_user_verified(_user_id integer)
     UPDATE users
     SET verified = TRUE
     WHERE user_uid = _user_id
+
+$$ LANGUAGE SQL;
+
+CREATE OR REPLACE FUNCTION select_users_list()
+ RETURNS table (
+     user_id     integer,
+     username    text,
+     email       text,
+     role        text
+ ) AS $$
+
+    SELECT user_uid,
+        username,
+        email,
+        role
+    FROM users
 
 $$ LANGUAGE SQL;

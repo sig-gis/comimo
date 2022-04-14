@@ -34,6 +34,7 @@ export const URLS = {
   GET_DL_URL: "get-download-url",
   GET_INFO: "get-info",
   IMG_DATES: "get-image-names",
+  LOGS: "get-log-list",
   NICFI_DATES: "get-nicfi-dates",
   MAPQUEST: "https://open.mapquestapi.com/geocoding/v1/address",
   PROJ_DATA: "get-project-by-id",
@@ -43,7 +44,8 @@ export const URLS = {
   SAVE_ANSWER: "save-user-answer",
   USER_MINES: "download-user-mines",
   USER_SUBS: "user-subscriptions",
-  USER_PROJ: "user-projects"
+  USER_PROJ: "user-projects",
+  USERS: "get-users-list"
 };
 
 export const availableLayers = [

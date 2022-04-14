@@ -1,6 +1,7 @@
 (ns comimo.db.users
   (:import java.util.UUID)
-  (:require [ring.util.response :refer [redirect]]
+  (:require [clojure.set :as set]
+            [ring.util.response :refer [redirect]]
             [triangulum.type-conversion :as tc]
             [triangulum.database        :refer [call-sql sql-primitive]]
             [triangulum.config          :refer [get-config]]
@@ -138,3 +139,8 @@
       (do
         (call-sql "user_verified" (:user_id user))
         (data-response "")))))
+
+(defn get-users-list [_]
+  (->> (call-sql "select_users_list")
+       (mapv #(set/rename-keys % {:user_id :userId}))
+       (data-response)))
