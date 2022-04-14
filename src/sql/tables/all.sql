@@ -13,7 +13,7 @@ CREATE TABLE users (
     reset_key       text DEFAULT NULL,
     verified        boolean DEFAULT FALSE,
     created_date    date DEFAULT NOW(),
-    role            text DEFAULT 'user',
+    role            text DEFAULT 'user' CHECK (role in ('user', 'admin')),
     full_name       text,
     sector          text,
     institution     text,

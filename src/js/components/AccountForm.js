@@ -1,5 +1,6 @@
 import React from "react";
 import styled from "styled-components";
+import TitledForm from "./TitledForm";
 
 const FormArea = styled.div`
   display: flex;
@@ -7,43 +8,10 @@ const FormArea = styled.div`
   justify-content: center;
 `;
 
-const Form = styled.form`
-  border: 2px solid black;
-  border-radius: 4px;
-  overflow: hidden;
-  width: 25rem;
-`;
-
-const FormContents = styled.div`
-  padding: 1rem;
-`;
-
-const CardHeader = styled.h2`
-  background-color: #f0ad4e;
-  border-bottom: 2px solid black;
-  font-size: larger;
-  margin: -1px;
-  padding: 1rem;
-`;
-
-export default function AccountForm({header, submitFn, children}) {
+export default function AccountForm(props) {
   return (
     <FormArea>
-      <Form
-        onSubmit={e => {
-          e.preventDefault();
-          submitFn();
-        }}
-      >
-        {header && (
-          <CardHeader>
-            {header}
-          </CardHeader>
-        )}
-        <FormContents>
-          {children}
-        </FormContents>
-      </Form>
+      <TitledForm {...props}/>
     </FormArea>
   );
 }

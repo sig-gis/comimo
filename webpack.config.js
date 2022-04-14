@@ -8,6 +8,7 @@ module.exports = env => ({
   devtool: env.dev ? "eval-cheap-module-source-map" : "eval",
   watch: env.dev,
   entry: {
+    admin:           path.resolve(__dirname, "src/js/admin/admin.js"),
     collect:         path.resolve(__dirname, "src/js/collect/collect.js"),
     downloadData:    path.resolve(__dirname, "src/js/downloadData.js"),
     home:            path.resolve(__dirname, "src/js/home/home.js"),

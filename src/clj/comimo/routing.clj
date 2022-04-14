@@ -20,6 +20,7 @@
                                    :auth-type   :collect
                                    :auth-action :redirect}
    [:get  "/home"]                {:handler     (render-page "/home")}
+   [:get  "/admin"]               {:handler     (render-page "/admin")}
    [:get  "/login"]               {:handler     (render-page "/login")}
    [:get  "/logout"]              {:handler     users/logout}
    [:get  "/password-request"]    {:handler     (render-page "/password-request")}
@@ -43,6 +44,7 @@
                                    :auth-type   :user
                                    :auth-action :block}
    [:post "/login"]               {:handler     users/login}
+   [:post "/get-users-list"]      {:handler     users/get-users-list}
    [:post "/password-request"]    {:handler     users/password-request}
    [:post "/password-reset"]      {:handler     users/password-reset}
    [:post "/verify-email"]        {:handler     users/verify-email}

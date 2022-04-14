@@ -43,7 +43,8 @@ export const URLS = {
   SAVE_ANSWER: "save-user-answer",
   USER_MINES: "download-user-mines",
   USER_SUBS: "user-subscriptions",
-  USER_PROJ: "user-projects"
+  USER_PROJ: "user-projects",
+  USERS: "get-users-list"
 };
 
 export const availableLayers = [
