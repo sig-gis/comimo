@@ -34,6 +34,7 @@ export const URLS = {
   GET_DL_URL: "get-download-url",
   GET_INFO: "get-info",
   IMG_DATES: "get-image-names",
+  LOGS: "get-log-list",
   NICFI_DATES: "get-nicfi-dates",
   MAPQUEST: "https://open.mapquestapi.com/geocoding/v1/address",
   PROJ_DATA: "get-project-by-id",

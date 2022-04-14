@@ -55,6 +55,7 @@
                                    :auth-type   :user
                                    :auth-action :block}
    [:post "/get-feature-names"]   {:handler     subscriptions/get-feature-names}
+   [:post "/get-log-list"]        {:handler     subscriptions/get-log-list}
    [:post "/remove-subscription"] {:handler     subscriptions/remove-subscription
                                    :auth-type   :user
                                    :auth-action :block}
@@ -62,7 +63,6 @@
                                    :auth-type   :user
                                    :auth-action :block}
    [:post "/user-subscriptions"]  {:handler     subscriptions/user-subscriptions}
-
 
    ;; Projects API
    [:post "/close-project"]       {:handler     projects/close-project!

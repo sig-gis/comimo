@@ -1,5 +1,6 @@
 (ns comimo.db.subscriptions
   (:require [clojure.string :as str]
+            [clojure.set    :as set]
             [triangulum.type-conversion :as tc]
             [triangulum.database        :refer [call-sql sql-primitive]]
             [comimo.views               :refer [data-response]]
@@ -79,3 +80,14 @@
       (do
         (call-sql "add_reported_mine" user-id lat lon)
         (data-response "")))))
+
+;;;
+;;; Logs
+;;;
+
+(defn get-log-list [_]
+  (->> (call-sql "select_email_logs")
+       (mapv #(set/rename-keys % {:job_time       :jobTime
+                                  :finish_status  :finishStatus,
+                                  :finish_message :finishMessage}))
+       (data-response)))

@@ -30,7 +30,7 @@ const DataArea = styled.div`
   overflow-y: scroll;
 `;
 
-const UsersSection = styled.div`
+const GridSection = styled.div`
   border: 1px solid black;
   border-radius: .5rem;
   display: flex;
@@ -65,15 +65,21 @@ const OptionRow = styled.div`
 
 function AdminContent() {
   const [userList, setUsers] = useState([]);
+  const [logList, setLogs] = useState([]);
   const [selectedPage, setPage] = useState("users");
 
   useEffect(() => {
     // eslint-disable-next-line no-use-before-define
     getUsers();
+    // eslint-disable-next-line no-use-before-define
+    getLogs();
   }, []);
 
   const getUsers = () => jsonRequest(URLS.USERS)
     .then(result => { setUsers(result); });
+
+  const getLogs = () => jsonRequest(URLS.LOGS)
+    .then(result => { setLogs(result); });
 
   /// Render Functions ///
 
@@ -87,10 +93,26 @@ function AdminContent() {
   );
 
   const renderUsers = () => (
-    <UsersSection>
-      {renderUserRow({userId: "User Id", username: "Username", email: "Email", role: "Role"})}
+    <GridSection>
+      {renderUserRow({userId: "Id", username: "Username", email: "Email", role: "Role"})}
       {userList.map(renderUserRow)}
-    </UsersSection>
+    </GridSection>
+  );
+
+  const renderLogRow = ({jobTime, username, finishStatus, finishMessage}) => (
+    <GridRow key={jobTime + username}>
+      <label className="col-3">{jobTime}</label>
+      <label className="col-3">{username}</label>
+      <label className="col-3">{finishStatus}</label>
+      <label className="col-3">{finishMessage}</label>
+    </GridRow>
+  );
+
+  const renderLogs = () => (
+    <GridSection>
+      {renderLogRow({jobTime: "Time", username: "Username", finishStatus: "Status", finishMessage: "Message"})}
+      {logList.map(renderLogRow)}
+    </GridSection>
   );
 
   return (
@@ -111,6 +133,7 @@ function AdminContent() {
         </div>
         <DataArea>
           {selectedPage === "users" && renderUsers()}
+          {selectedPage === "logs" && renderLogs()}
         </DataArea>
       </Content>
     </PageContainer>
