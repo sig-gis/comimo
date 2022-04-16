@@ -169,12 +169,19 @@ class UserAccount extends React.Component {
           )}
           <div className="d-flex justify-content-between align-items-center">
             <span style={{color: "red"}}>{localeText.allRequired}</span>
-            <Button
-              className="mt-2"
-              onClick={this.updateUser}
-            >
-              {localeText.save}
-            </Button>
+            <div className="mt-2 d-flex">
+              <Button
+                className="mr-2"
+                onClick={() => window.location.assign("/logout")}
+              >
+                Logout
+              </Button>
+              <Button
+                onClick={this.updateUser}
+              >
+                {localeText.save}
+              </Button>
+            </div>
           </div>
         </AccountForm>
       </ThemeProvider>
