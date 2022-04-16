@@ -12,6 +12,8 @@
 ;;; Constants
 
 (def ^:private max-age (* 24 60 1000)) ; Once a day
+(def point-location "users/comimoapp/ValidationPoints")
+(def image-location "users/comimoapp/Images")
 
 ;;; GEE Python interface
 
@@ -50,26 +52,27 @@
 ;;; Utils
 
 (defn get-points-within [data-layer regions]
-  (py-wrapper utils/getPointsWithin (str "users/comimoapp/ValidationPoints" "/" data-layer) regions))
+  (py-wrapper utils/getPointsWithin (str point-location "/" data-layer) regions))
 
 (defn location-in-country [lat lon]
   (py-wrapper utils/locationInCountry lat lon))
 
-(defn get-image-list [image-folder]
-  (py-wrapper utils/getImageList image-folder))
+;; For now this isnt generic.
+(defn get-image-list []
+  (py-wrapper utils/getImageList image-location))
 
 ;;; Routes
 
 (defn get-image-names [_]
-  (let [image-list (get-image-list "users/comimoapp/Images")]
+  (let [image-list (get-image-list)]
     (data-response {:cMines (filter #(re-matches #"\d{4}-\d{2}-\d{2}-\d{4}-\d{2}-\d{2}-C" %) image-list)
                     :nMines (filter #(re-matches #"\d{4}-\d{2}-\d{2}-N" %) image-list)
                     :pMines (filter #(re-matches #"\d{4}-\d{2}-\d{2}-P" %) image-list)})))
 
 (def image-options {"NICFI"  {:source-type :wms :source "get-nicfi-tiles?z={z}&x={x}&y={y}"}
-                    "cMines" {:source-type :image :source-base "users/comimoapp/Images" :color "purple"}
-                    "nMines" {:source-type :image :source-base "users/comimoapp/Images" :color "red"}
-                    "pMines" {:source-type :image :source-base "users/comimoapp/Images" :color "orange"}
+                    "cMines" {:source-type :image :source-base image-location :color "purple"}
+                    "nMines" {:source-type :image :source-base image-location :color "red"}
+                    "pMines" {:source-type :image :source-base image-location :color "orange"}
                     "municipalBounds"     {:source-type :vector
                                            :source      "users/comimoapp/Shapes/Municipal_Bounds"
                                            :info-cols   ["MPIO_CNMBR" "DPTO_CNMBR"]
@@ -120,7 +123,7 @@
 (defn get-download-url [{:keys [params]}]
   (let [{:keys [region dataLayer]} params]
     (data-response (py-wrapper utils/getDownloadURL
-                               (str "users/comimoapp/Images" "/" dataLayer)
+                               (str image-location "/" dataLayer)
                                region
                                540))))
 
@@ -135,7 +138,7 @@
   (let [user-id    (tc/val->int (:userId params))
         data-layer (:dataLayer params)]
     (->> (py-wrapper utils/statsByRegion
-                     (str "users/comimoapp/Images" "/" data-layer)
+                     (str image-location "/" data-layer)
                      (get-subscribed-regions user-id))
          (combine-stats)
          (filterv (fn [[_k v]] (> v 0.0)))
@@ -144,7 +147,7 @@
 (defn get-stat-totals [{:keys [params]}]
   (let [user-id    (tc/val->int (:userId params))]
     (->> (py-wrapper utils/statTotals
-                     (str "users/comimoapp/Images")
+                     (str image-location)
                      (get-subscribed-regions user-id))
          (mapv (fn [[k v]]
                  (let [[a b _ c d] (str/split k #"-")
