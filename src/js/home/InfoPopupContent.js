@@ -1,7 +1,7 @@
 import React from "react";
 
 import {jsonRequest, toPrecision} from "../utils";
-import {URLS} from "../constants";
+import {URLS, availableLayers} from "../constants";
 
 export default class InfoPopupContent extends React.Component {
   constructor(props) {
@@ -39,55 +39,50 @@ export default class InfoPopupContent extends React.Component {
       }
     } = this.state;
     const {visibleLayers, localeText, lat, lon} = this.props;
-    return Object.keys(layerInfo).length === visibleLayers.length
+    const layerToInfo = {
+      nMines:
+        <div key="nMines">
+          <b>{localeText.nMines}: </b>{nMines ? localeText.eeLayerDetected : localeText.eeLayerNotDetected}
+        </div>,
+      pMines:
+        <div key="pMines">
+          <b>{localeText.nMines}: </b>{pMines ? localeText.eeLayerDetected : localeText.eeLayerNotDetected}
+        </div>,
+      cMines:
+        <div key="cMines">
+          <b>{localeText.cMines}: </b>{cMines ? localeText.eeLayerDetected : localeText.eeLayerNotDetected}
+        </div>,
+      municipalBounds:
+        <div key="municipalBounds">
+          <b>{localeText.municipalBoundsPopup}: </b>
+          {municipalBounds ? municipalBounds[0] + ", " + municipalBounds[1] : localeText.municipalBoundsNotFound}
+        </div>,
+      protectedAreas: protectedAreas
+          && (
+            <div key="protectedAreas">
+              <b>{localeText.protectedAreasPopup}:</b>
+              {localeText.protectedAreasCategory}: {protectedAreas[0]}
+              {localeText.protectedAreasName}: {protectedAreas[1]}
+            </div>
+          ),
+      otherAuthorizations: otherAuthorizations && <div key="otherAuthorizations"><b>{localeText.otherAuthorizationsPopup}: </b>{otherAuthorizations}</div>,
+      legalMines: legalMines && <div key="legalMines"><b>{localeText.legalMinesPopup}: </b>{legalMines}</div>,
+      tierrasDeCom: tierrasDeCom && <div key="tierrasDeCom"><b>{localeText.tierrasDeComPopup}: </b>{tierrasDeCom}</div>,
+      visibleLayers: resguardos && <div key="visibleLayers"><b>{localeText.resguardosPopup}: </b>{resguardos}</div>
+    };
+
+    return (Object.keys(layerInfo).length === visibleLayers.length
       ? (
         <div className="d-flex flex-column font-small">
           <div>
             <b>Lat, lon:</b> {toPrecision(lat, 4)}, {toPrecision(lon, 4)}
           </div>
-          {visibleLayers.includes("nMines") && (
-            <div>
-              <b>{localeText.nMines}: </b>{nMines ? localeText.eeLayerDetected : localeText.eeLayerNotDetected}
-            </div>
-          )}
-          {visibleLayers.includes("pMines") && (
-            <div>
-              <b>{localeText.pMines}: </b>{pMines ? localeText.eeLayerDetected : localeText.eeLayerNotDetected}
-            </div>
-          )}
-          {visibleLayers.includes("cMines") && (
-            <div>
-              <b>{localeText.cMines}: </b>{cMines ? localeText.eeLayerDetected : localeText.eeLayerNotDetected}
-            </div>
-          )}
-          {visibleLayers.includes("municipalBounds") && (
-            <div>
-              <b>{localeText.municipalBoundsPopup}: </b>
-              {municipalBounds ? municipalBounds[0] + ", " + municipalBounds[1] : localeText.municipalBoundsNotFound}
-            </div>
-          )}
-          {visibleLayers.includes("protectedAreas") && protectedAreas && (
-            <div>
-              <b>{localeText.protectedAreasPopup}:</b>
-              {localeText.protectedAreasCategory}: {protectedAreas[0]}
-              {localeText.protectedAreasName}: {protectedAreas[1]}
-            </div>
-          )}
-          {visibleLayers.includes("otherAuthorizations") && otherAuthorizations && (
-            <div><b>{localeText.otherAuthorizationsPopup}: </b>{otherAuthorizations}</div>
-          )}
-          {visibleLayers.includes("legalMines") && legalMines && (
-            <div><b>{localeText.legalMinesPopup}: </b>{legalMines}</div>
-          )}
-          {visibleLayers.includes("tierrasDeCom") && tierrasDeCom && (
-            <div><b>{localeText.tierrasDeComPopup}: </b>{tierrasDeCom}</div>
-          )}
-          {visibleLayers.includes("resguardos") && resguardos && (
-            <div><b>{localeText.resguardosPopup}: </b>{resguardos}</div>
-          )}
+          {availableLayers.filter(l => visibleLayers.includes(l)).map(l => layerToInfo[l])}
         </div>
-      ) : (
+      )
+      : (
         <div>Loading...</div>
-      );
+      )
+    );
   }
 }
