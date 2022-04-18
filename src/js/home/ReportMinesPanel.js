@@ -87,8 +87,11 @@ export default class ReportMinesPanel extends React.Component {
         {selectedLatLon
           ? (
             <>
-              <span><b>{report.latitude}:</b> {selectedLatLon[0]}</span>
-              <span><b>{report.longitude}:</b> {selectedLatLon[1]}</span>
+              <div className="d-flex flex-column">
+                <span><b>{report.latitude}:</b> {selectedLatLon[0]}</span>
+                <span><b>{report.longitude}:</b> {selectedLatLon[1]}</span>
+              </div>
+
               <div style={{display: "flex", width: "100%", justifyContent: "flex-end"}}>
                 <Button
                   disabled={reportingMine || reported}
