@@ -10,7 +10,7 @@ const SideBarContainer = styled.div`
   position: absolute;
   top: 3.5rem;
   width: 50px;
-  z-index: 1000;
+  z-index: 99;
 
   @media only screen and (orientation: portrait) {
     bottom: 0;

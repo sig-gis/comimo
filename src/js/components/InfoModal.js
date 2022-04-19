@@ -12,7 +12,7 @@ const OuterContainer = styled.div`
   position: fixed;
   top: 0;
   width: 100%;
-  z-index: 99;
+  z-index: 100;
 
   &.p {
     white-space: pre-wrap;
