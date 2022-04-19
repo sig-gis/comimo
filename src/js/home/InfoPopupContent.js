@@ -81,12 +81,10 @@ export default class InfoPopupContent extends React.Component {
     return (Object.keys(layerInfo).length === visibleLayers.length
       ? (
         <div className="d-flex flex-column font-small">
-          <PopupMapInfo>
-            <label><b>Lat:</b></label>
-            <label>{toPrecision(lat, 4)}</label>
-            <label><b>Long:</b></label>
-            <label>{toPrecision(lon, 4)}</label>
-          </PopupMapInfo>
+          <div>
+            <label><b>Lat: </b>{toPrecision(lat, 4)}, </label>
+            <label><b>Long: </b>{toPrecision(lon, 4)}</label>
+          </div>
           {availableLayers.filter(l => visibleLayers.includes(l)).map(l => layerToInfo[l])}
         </div>
       )
