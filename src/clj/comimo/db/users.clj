@@ -99,11 +99,12 @@
     (data-response "")))
 
 (defn password-request [{:keys [params]}]
-  (let [default-lang (:defaultLang params)
+  (let [email        (:email params)
         reset-key    (str (UUID/randomUUID))
-        email        (sql-primitive (call-sql "set_password_reset_key" {:log? false} (:email params) reset-key))]
-    (if email
+        default-lang (:default_lang (first (call-sql "get_user_by_email" email)))]
+    (if default-lang
       (try
+        (sql-primitive (call-sql "set_password_reset_key" {:log? false} email reset-key))
         (send-reset-mail email reset-key default-lang)
         (data-response "")
         (catch Exception e

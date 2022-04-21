@@ -99,11 +99,12 @@ $$ LANGUAGE SQL;
 -- Get information for single user
 CREATE OR REPLACE FUNCTION get_user_by_email(_email text)
  RETURNS table (
-    user_id      integer,
-    reset_key    text
+    user_id         integer,
+    reset_key       text,
+    default_lang    text
  ) AS $$
 
-    SELECT user_uid, reset_key
+    SELECT user_uid, reset_key, default_lang
     FROM users
     WHERE email = _email
 
