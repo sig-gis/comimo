@@ -40,9 +40,9 @@ class PasswordReset extends React.Component {
    };
 
   verifyEmail = () => jsonRequest(
-    "/verify-email/",
+    "/verify-email",
     {
-      passwordResetKey: this.props.passwordResetKey,
+      token: this.props.token,
       email: this.props.email
     }
   );
@@ -63,7 +63,7 @@ export function pageInit(args) {
   ReactDOM.render(
     <PasswordReset
       email={args.email || ""}
-      passwordResetKey={args.passwordResetKey || ""}
+      token={args.token || ""}
     />,
     document.getElementById("main-container")
   );

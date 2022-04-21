@@ -121,20 +121,20 @@
 
 (defn password-reset [{:keys [params]}]
   (let [email     (:email params)
-        reset-key (:passwordResetKey params)
+        token     (:token params)
         password  (:password params)
         user      (first (call-sql "get_user_by_email" email))]
-    (if-let [error-msg (get-verify-errors user reset-key)]
+    (if-let [error-msg (get-verify-errors user token)]
       (data-response error-msg)
       (do
         (call-sql "update_password" {:log? false} email password)
         (data-response "")))))
 
 (defn verify-email [{:keys [params]}]
-  (let [email     (:email params)
-        reset-key (:passwordResetKey params)
-        user      (first (call-sql "get_user_by_email" email))]
-    (if-let [error-msg (get-verify-errors user reset-key)]
+  (let [email (:email params)
+        token (:token params)
+        user  (first (call-sql "get_user_by_email" email))]
+    (if-let [error-msg (get-verify-errors user token)]
       (data-response error-msg)
       (do
         (call-sql "user_verified" (:user_id user))
