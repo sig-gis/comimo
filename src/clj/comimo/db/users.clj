@@ -106,7 +106,8 @@
       (try
         (send-reset-mail email reset-key default-lang)
         (data-response "")
-        (catch Exception _
+        (catch Exception e
+          (println e)
           (data-response "errorEmail")))
       (data-response "errorNotFound"))))
 
