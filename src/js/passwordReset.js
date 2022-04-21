@@ -25,7 +25,8 @@ class PasswordReset extends React.Component {
   }
 
   verifyInputs = () => {
-    const {email, password, passwordConfirmation, localeText} = this.state;
+    const {password, passwordConfirmation, localeText} = this.state;
+    const {email} = this.props;
     return [
       email.length === 0 && localeText.errorEmailReq,
       !validatePassword(password) && localeText.errorPassword,
@@ -39,11 +40,11 @@ class PasswordReset extends React.Component {
       alert(errors.map(e => " - " + e).join("\n"));
     } else {
       const {password} = this.state;
-      const {email, passwordResetKey} = this.props;
-      jsonRequest("/password-reset/", {email, passwordResetKey, password})
+      const {email, token} = this.props;
+      jsonRequest("/password-reset", {email, token, password})
         .then(resp => {
           if (resp === "") {
-            window.location = "/";
+            window.location = "/login";
           } else {
             console.error(resp);
             alert(this.state.localeText[resp] || this.state.localeText.errorCreating);
@@ -100,7 +101,7 @@ export function pageInit(args) {
   ReactDOM.render(
     <PasswordReset
       email={args.email || ""}
-      passwordResetKey={args.passwordResetKey || ""}
+      token={args.token || ""}
     />,
     document.getElementById("main-container")
   );
