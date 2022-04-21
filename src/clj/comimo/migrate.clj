@@ -7,7 +7,7 @@
               full_name,
               default_lang,
               case when is_superuser = 1 then 'admin' else 'user' end as role,
-              '' as password
+              'changeme' as password
               from auth_user
               inner join accounts_profile
               on user_id = auth_user.id")
