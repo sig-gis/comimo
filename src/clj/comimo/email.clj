@@ -45,7 +45,7 @@
                            (get-base-url)
                            token
                            email)}]
-    (send-mail email nil nil (lang title) (lang text) "text/plain")))
+    (send-mail email nil nil (get title (keyword lang)) (get text (keyword lang)) "text/plain")))
 
 (defn send-alert-mail [email project-url lang]
   (let [title {:en "CoMiMo: mine alert"
@@ -62,22 +62,21 @@
                                 "Para validar esta información, diríjase al panel de validación en la aplicación o acceda directamente a CEO: %s&locale=es")
                            (get-base-url)
                            project-url)}]
-    (send-mail email nil nil (lang title) (lang text) "text/plain")))
+    (send-mail email nil nil (get title (keyword lang)) (get text (keyword lang)) "text/plain")))
 
 (defn send-reset-mail [email token lang]
   (let [title {:en "CoMiMo password reset"
                :es "CoMiMo restablecimiento de contraseña"}
-        msg   {:en (format (str "Mine Alert\n\n"
-                                "We have detected possible mining sites in the areas to which it is subscribed.\n\n"
-                                "You can see the new validations listed in CoMiMo here: %s\n\n"
-                                "To validate this information, go to the validation panel in the application or go directly to CEO: %s&locale=en")
+        text  {:en (format (str "Password Reset\n\n"
+                                "To reset your password, click the link below and enter your new password:\n\n"
+                                "%s/password-reset?token=%s&email=%s")
                            (get-base-url)
                            token
                            email)
-               :es (format (str "Password Reset\n\n"
-                                "To reset your password, click the link below and enter your new password:\n\n"
-                                "%s/password-reset?token=%s&email=%s"
-                                (get-base-url)
-                                token
-                                email))}]
-    (send-mail email nil nil (lang title) (lang msg) "text/plain")))
+               :es (format (str "Restablecimiento de contraseña\n\n"
+                                "Para restablecer su contraseña haga clic en el siguiente enlace e ingrese su nueva contraseña:\n\n"
+                                "%s/password-reset?token=%s&email=%s")
+                           (get-base-url)
+                           token
+                           email)}]
+    (send-mail email nil nil (get title (keyword lang)) (get text (keyword lang)) "text/plain")))

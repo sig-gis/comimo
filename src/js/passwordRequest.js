@@ -35,7 +35,7 @@ class PasswordForgot extends React.Component {
   requestPassword = () => this.processModal(() =>
     jsonRequest("/password-request", {email: this.state.email})
       .then(data => {
-        if (data[0] && data[1] === "") {
+        if (data === "") {
           alert(this.state.localeText.tokenSent);
           window.location = "/";
         } else {
