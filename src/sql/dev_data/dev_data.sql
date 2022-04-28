@@ -2,10 +2,10 @@
 
 -- Adds an administrator and a user
 INSERT INTO users
-            (user_uid, username, email, password, role, verified)
+            (user_uid, username, email, password, verified, created_date, role, full_name, sector, institution, default_lang)
 VALUES
-(1, 'admin', 'admin@com.dev', crypt('admin', gen_salt('bf')), 'admin', TRUE),
-(2, 'user', 'user@com.dev', crypt('user', gen_salt('bf')), 'user', TRUE);
+(1, 'admin', 'admin@com.dev', crypt('admin', gen_salt('bf')), TRUE, '2022-04-22', 'admin', 'COM Admin', 'academic', 'dev', 'en'),
+(2, 'user', 'user@com.dev', crypt('user', gen_salt('bf')), TRUE, '2022-04-22', 'user', 'COM User', 'academic', 'dev', 'en');
 
 SELECT setval(pg_get_serial_sequence('users', 'user_uid'), (SELECT MAX(user_uid) FROM users) + 1);
 
@@ -13,7 +13,10 @@ SELECT setval(pg_get_serial_sequence('users', 'user_uid'), (SELECT MAX(user_uid)
 INSERT INTO user_mines
             (user_mine_uid, user_rid, lat, lon, reported_date)
 VALUES
-(1,1, 4.867040157318115, -71.9569320678711, '2022-04-19');
+(1,1, 4.867040157318115, -71.9569320678711, '2022-04-19'),
+(2,2, 4.867040157318115, -71.9569320678711, '2022-04-19');
+
+SELECT setval(pg_get_serial_sequence('user_mines', 'user_mine_uid'), (SELECT MAX(user_mine_uid) FROM user_mines) + 1);
 
 -- Adds subscriptions
 INSERT INTO subscriptions
