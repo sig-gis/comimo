@@ -92,7 +92,7 @@ export default class InfoPopupContent extends React.Component {
             <label>{tierrasDeCom}</label>
           </PopupMapInfo>
         ),
-      visibleLayers: resguardos && (
+      resguardos: resguardos && (
         <PopupMapInfo key="visibleLayers">
           <label><b>{localeText.resguardosPopup}: </b></label>
           <label>{resguardos}</label>
