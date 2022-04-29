@@ -62,9 +62,6 @@ class PasswordReset extends React.Component {
         disabled={fromProps}
         id={stateKey}
         onChange={e => this.setState({[stateKey]: e.target.value})}
-        onKeyPress={e => {
-          if (e.key === "Enter") this.resetPassword();
-        }}
         placeholder={`Enter ${(label || "").toLowerCase()}`}
         type={type}
         value={fromProps ? this.props[stateKey] : this.state[stateKey]}
@@ -86,7 +83,7 @@ class PasswordReset extends React.Component {
           <div className="d-flex justify-content-end">
             <Button
               className="mt-3"
-              onClick={this.resetPassword}
+              type="submit"
             >
               {localeText.resetTitle}
             </Button>
