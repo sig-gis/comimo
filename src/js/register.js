@@ -99,10 +99,11 @@ class Register extends React.Component {
 
   /// Render Functions ///
 
-  renderField = (label, type, stateKey) => (
+  renderField = (label, type, stateKey, autocomplete = "") => (
     <div className="d-flex flex-column">
       <label htmlFor={stateKey}>{label}</label>
       <input
+        autoComplete={autocomplete}
         className="p-2"
         id={stateKey}
         onChange={e => this.setState({[stateKey]: e.target.value})}
@@ -145,7 +146,7 @@ class Register extends React.Component {
               selectLanguage={this.selectLanguage}
             />
           </div>
-          {this.renderField(localeText.username, "text", "username")}
+          {this.renderField(localeText.username, "text", "username", "username")}
           {this.renderField(localeText.email, "email", "email")}
           {this.renderField(localeText.fullName, "text", "fullName")}
           {this.renderField(localeText.institution, "text", "institution")}
@@ -158,8 +159,8 @@ class Register extends React.Component {
             ],
             "sector"
           )}
-          {this.renderField(localeText.password, "password", "password")}
-          {this.renderField(localeText.confirm, "password", "passwordConfirmation")}
+          {this.renderField(localeText.password, "password", "password", "new-password")}
+          {this.renderField(localeText.confirm, "password", "passwordConfirmation", "new-password")}
           <div className="d-flex justify-content-between align-items-center">
             <span style={{color: "red"}}>{localeText.allRequired}</span>
             <Button

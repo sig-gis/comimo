@@ -54,10 +54,11 @@ class PasswordReset extends React.Component {
     }
   };
 
-  renderField = (label, type, stateKey, fromProps = false) => (
+  renderField = (label, type, stateKey, fromProps = false, autocomplete = "") => (
     <div className="d-flex flex-column">
       <label htmlFor={stateKey}>{label}</label>
       <input
+        autoComplete={autocomplete}
         className="p-2"
         disabled={fromProps}
         id={stateKey}
@@ -78,8 +79,8 @@ class PasswordReset extends React.Component {
           submitFn={this.resetPassword}
         >
           {this.renderField(localeText.email, "email", "email", true)}
-          {this.renderField(localeText.password, "password", "password")}
-          {this.renderField(localeText.confirm, "password", "passwordConfirmation")}
+          {this.renderField(localeText.password, "password", "password", false, "new-password")}
+          {this.renderField(localeText.confirm, "password", "passwordConfirmation", false, "new-password")}
           <div className="d-flex justify-content-end">
             <Button
               className="mt-3"
