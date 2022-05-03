@@ -88,14 +88,14 @@ class CollectContent extends React.Component {
   nextPlot = () => {
     const {currentPlotId, projectPlots} = this.state;
     const nextPlot = projectPlots.find(p => p.id > currentPlotId) || projectPlots[0];
-    this.setState({currentPlotId: nextPlot.id});
+    currentPlotId === nextPlot.id ? alert("No more plots") : this.setState({currentPlotId: nextPlot.id});
   };
 
   prevPlot = () => {
     const {currentPlotId, projectPlots} = this.state;
     const plotsCopy = [...projectPlots].reverse();
     const prevPlot = plotsCopy.find(p => p.id < currentPlotId) || plotsCopy[0];
-    this.setState({currentPlotId: prevPlot.id});
+    currentPlotId === prevPlot.id ? alert("No more plots") : this.setState({currentPlotId: prevPlot.id});
   };
 
   setPlotAnswer = answer => {
