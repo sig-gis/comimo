@@ -81,7 +81,7 @@ export default class ValidatePanel extends React.Component {
               this.getProjects();
             } else {
               const [alertError, logError] = res.split(", ");
-              console.log(logError);
+              logError && console.log(logError);
               alert(validate[alertError]);
             }
           })
