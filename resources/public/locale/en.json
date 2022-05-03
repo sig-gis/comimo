@@ -150,6 +150,7 @@
         "name": "Name",
         "createProject": "Create a new project",
         "errorNewProject": "Error creating new project",
+        "projectExists": "Project already exists",
         "projectName": "Enter Project name",
         "projectRegion": "Select project municipalities",
         "subscribedRadio": "Subscribed municipalities",

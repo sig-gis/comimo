@@ -52,47 +52,51 @@
 ;;;
 
 (defn create-project! [user-id proj-name regions data-layer]
-  (let [project-id (sql-primitive (call-sql "create_project"
-                                            user-id
-                                            proj-name
-                                            (str/join "__" regions)
-                                            data-layer))]
-    (try
-      ;; Create plots
-      (let [plots (->> (get-points-within data-layer regions)
-                       (mapv (fn [{:strs [lat lon]}]
-                               {:lat lat
-                                :lon lon
-                                :project_rid project-id})))]
-        (insert-rows! "plots" plots))
+  (if (sql-primitive (call-sql "project_exists" data-layer (str/join "__" regions)))
+    "projectExists"
+    (let [project-id (sql-primitive (call-sql "create_project"
+                                              user-id
+                                              proj-name
+                                              (str/join "__" regions)
+                                              data-layer))]
 
-      ;; Boundary and geom must be calculated after plots are added
-      (try-catch-throw #(call-sql "calc_project_boundary"
-                                  project-id
-                                  540)
-                       "SQL Error: cannot create a project AOI.")
-      (try-catch-throw #(call-sql "calc_plot_geom"
-                                  project-id
-                                  (/ 540 2))
-                       "SQL Error: cannot create a plot geoms.")
+      (try
+        ;; Create plots
+        (let [plots (->> (get-points-within data-layer regions)
+                         (mapv (fn [{:strs [lat lon]}]
+                                 {:lat         lat
+                                  :lon         lon
+                                  :project_rid project-id})))]
+          (when (seq plots)
+            (insert-rows! "plots" plots)))
 
-      ;; Return success message
-      ""
+        ;; Boundary and geom must be calculated after plots are added
+        (try-catch-throw #(call-sql "calc_project_boundary"
+                                    project-id
+                                    540)
+                         "SQL Error: cannot create a project AOI.")
+        (try-catch-throw #(call-sql "calc_plot_geom"
+                                    project-id
+                                    (/ 540 2))
+                         "SQL Error: cannot create a plot geoms.")
 
-      (catch Exception e
-        ;; Delete new project on error
-        (try
-          (call-sql "delete_project" project-id)
-          (catch Exception _))
-        (let [causes (:causes (ex-data e))]
-          ;; Log errors
-          (if causes
-            (log (str "-" (str/join "\n-" causes)))
-            (log (ex-message e)))
-          ;; Return error stack to user
-          (if causes
-            "errorNewProject"
-            "errorUnknown"))))))
+        ;; Return success message
+        ""
+
+        (catch Exception e
+          ;; Delete new project on error
+          (try
+            (call-sql "delete_project" project-id)
+            (catch Exception _))
+          (let [causes (:causes (ex-data e))]
+            ;; Log errors
+            (if causes
+              (log (str "-" (str/join "\n-" causes)))
+              (log (ex-message e)))
+            ;; Return error stack to user
+            (if causes
+              (str "errorNewProject" ", " (str "-" (str/join "\n-" causes)))
+              "errorUnknown")))))))
 
 (defn create-project [{:keys [params]}]
   (let [user-id    (:userId params -1)
