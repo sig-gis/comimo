@@ -208,5 +208,9 @@
         "errorPassMatch": "Your passwords must match.",
         "errorEmailReq": "Please enter your email.",
         "errorUpdating": "An error occurred while updating account. Contact support."
+    },
+    "admin": {
+        "save": "Save",
+        "errorRoleUpdate": "Error updating users role"
     }
 }

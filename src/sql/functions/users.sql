@@ -96,6 +96,8 @@ CREATE OR REPLACE FUNCTION get_user_information(_user_id integer)
 
 $$ LANGUAGE SQL;
 
+
+
 -- Get information for single user
 CREATE OR REPLACE FUNCTION get_user_by_email(_email text)
  RETURNS table (
@@ -187,5 +189,14 @@ CREATE OR REPLACE FUNCTION select_users_list()
         email,
         role
     FROM users
+
+$$ LANGUAGE SQL;
+
+CREATE OR REPLACE FUNCTION update_user_role(_user_id integer, _role text)
+ RETURNS void AS $$
+
+    UPDATE users
+    SET role = _role
+    WHERE user_uid = _user_id
 
 $$ LANGUAGE SQL;

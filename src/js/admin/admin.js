@@ -1,9 +1,11 @@
-import React, {useEffect, useState} from "react";
+import React, {useEffect, useState, useContext} from "react";
 import ReactDOM from "react-dom";
 import styled from "styled-components";
 
-import {PageLayout} from "../components/PageLayout";
+import {isEqual} from "lodash";
+import {PageLayout, MainContext} from "../components/PageLayout";
 import TitledForm from "../components/TitledForm";
+import Button from "../components/Button";
 
 import {URLS} from "../constants";
 import {jsonRequest} from "../utils";
@@ -64,9 +66,12 @@ const OptionRow = styled.div`
 `;
 
 function AdminContent() {
+  const {localeText: {admin}} = useContext(MainContext);
   const [userList, setUsers] = useState([]);
+  const [savedUserList, setSaveduserlist] = useState([]);
   const [logList, setLogs] = useState([]);
   const [selectedPage, setPage] = useState("users");
+  const [roleChanged, setRoleChanged] = useState(false);
 
   useEffect(() => {
     // eslint-disable-next-line no-use-before-define
@@ -76,27 +81,75 @@ function AdminContent() {
   }, []);
 
   const getUsers = () => jsonRequest(URLS.USERS)
-    .then(result => { setUsers(result); });
+    .then(result => {
+      setUsers(result);
+      setSaveduserlist(result);
+    });
 
   const getLogs = () => jsonRequest(URLS.LOGS)
     .then(result => { setLogs(result); });
 
+  const updateUserRoles = (id, role) => {
+    const updatedUserList = userList.filter((u, i) => u.role !== savedUserList[i].role);
+    jsonRequest(
+      "/update-user-role",
+      {updatedUserList}
+    )
+      .then(resp => {
+        if (resp === "") {
+          getUsers();
+          setRoleChanged(isEqual(userList, savedUserList));
+        } else {
+          console.error(resp);
+          alert(admin?.errorRoleUpdate);
+        }
+      })
+      .catch(err => console.error(err));
+  };
+
   /// Render Functions ///
 
-  const renderUserRow = ({userId, username, email, role}) => (
-    <GridRow key={userId}>
-      <label className="col-1">{userId}</label>
-      <label className="col-4">{username}</label>
-      <label className="col-5">{email}</label>
-      <label className="col-2">{role}</label>
-    </GridRow>
-  );
+  const renderUserRow = (user, i) => {
+    const {userId, username, email, role} = user;
+    return (
+      <GridRow key={userId}>
+        <label className="col-1">{userId}</label>
+        <label className="col-4">{username}</label>
+        <label className="col-5">{email}</label>
+        {(userId === "Id") ? <label className="col-2">{role} </label>
+          : (
+            <select
+              className="w-20"
+              id="role-selection"
+              onChange={e => {
+                setUsers([...(userList.slice(0, i)), {...user, role: e.target.value}, ...userList.slice(i + 1)]);
+                setRoleChanged(isEqual(userList, savedUserList));
+              }}
+              value={role}
+            >
+              {["admin", "user"].map(role => <option key={role} value={role}>{role}</option>)}
+            </select>
+          )}
+      </GridRow>
+    );
+  };
 
   const renderUsers = () => (
-    <GridSection>
-      {renderUserRow({userId: "Id", username: "Username", email: "Email", role: "Role"})}
-      {userList.map(renderUserRow)}
-    </GridSection>
+    <>
+      <GridSection>
+        {renderUserRow({userId: "Id", username: "Username", email: "Email", role: "Role"})}
+        {userList.map(renderUserRow)}
+      </GridSection>
+      <div className="m-3 d-flex">
+        <div className="flex-grow-1"/>
+        <Button
+          disabled={!roleChanged}
+          onClick={updateUserRoles}
+        >
+          {admin?.save}
+        </Button>
+      </div>
+    </>
   );
 
   const renderLogRow = ({jobTime, username, finishStatus, finishMessage}) => (

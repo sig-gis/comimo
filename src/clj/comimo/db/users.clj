@@ -5,6 +5,7 @@
             [triangulum.type-conversion :as tc]
             [triangulum.database        :refer [call-sql sql-primitive]]
             [triangulum.config          :refer [get-config]]
+            [triangulum.logging         :refer [log log-str]]
             [comimo.email               :refer [send-new-user-mail send-reset-mail]]
             [comimo.views               :refer [data-response]]))
 
@@ -98,6 +99,7 @@
               default-lang)
     (data-response "")))
 
+
 (defn password-request [{:keys [params]}]
   (let [email        (:email params)
         reset-key    (str (UUID/randomUUID))
@@ -146,3 +148,10 @@
   (->> (call-sql "select_users_list")
        (mapv #(set/rename-keys % {:user_id :userId}))
        (data-response)))
+
+(defn update-user-role [{:keys [params] :as in}]
+  (doseq [user (:updatedUserList params)]
+    (let [user-id (tc/val->int (:userId user))
+          role    (:role user)]
+      (call-sql "update_user_role" user-id role)))
+  (data-response ""))

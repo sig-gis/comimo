@@ -43,6 +43,9 @@
    [:post "/user-information"]    {:handler     users/user-information
                                    :auth-type   :user
                                    :auth-action :block}
+   [:post "/update-user-role"]    {:handler     users/update-user-role
+                                   :auth-type   :admin
+                                   :auth-action :block}
    [:post "/login"]               {:handler     users/login}
    [:post "/get-users-list"]      {:handler     users/get-users-list}
    [:post "/password-request"]    {:handler     users/password-request}
