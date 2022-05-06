@@ -211,6 +211,16 @@
     },
     "admin": {
         "save": "Save",
-        "errorRoleUpdate": "Error updating users role"
+        "errorRoleUpdate": "Error updating users role",
+        "users": "Users",
+        "logs": "Logs",
+        "predictions": "Collected predictions",
+        "userMines": "User reported mines",
+        "load": "Load",
+        "reload": "Reload",
+        "selectDate": "Select Date...",
+        "loadingDates": "Loading Dates...",
+        "downloadJSON": "Download JSON",
+        "downloadCSV": "Download CSV"
     }
 }
