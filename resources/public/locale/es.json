@@ -210,6 +210,16 @@
     },
     "admin": {
         "save": "Guardar",
-        "errorRoleUpdate": "Error al actualizar el rol de las usuarias"
+        "errorRoleUpdate": "Error al actualizar el rol de los usuarios",
+        "users": "Usuarias",
+        "logs": "Registros",
+        "predictions": "Predicciones recopiladas",
+        "userMines": "Minas reportadas por usuarios",
+        "load": "Carga",
+        "reload": "Recargar",
+        "selectDate": "Seleccione Fecha...",
+        "loadingDates": "Fechas de carga...",
+        "downloadJSON": "Descargar JSON",
+        "downloadCSV": "Descargar CSV"
     }
 }
