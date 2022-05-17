@@ -2,6 +2,7 @@ import React from "react";
 
 import ToolPanel from "../components/ToolPanel";
 import Button from "../components/Button";
+import Select from "../components/Select";
 
 import {MainContext} from "../components/PageLayout";
 
@@ -32,36 +33,24 @@ export default class FilterPanel extends React.Component {
       <ToolPanel title={filter.title}>
         <span htmlFor="select-image-date">{filter.selectLabel}:</span>
         <div style={{display: "flex", flexDirection: "column"}}>
-          <label htmlFor="select-image-date">{layers.cMines}</label>
-          <select
-            id="select-image-date"
+          <Select
+            label={layers.cMines}
             onChange={e => this.setSelectedDate("cMines", e.target.value)}
+            options={cMines}
             value={newSelectedDates.cMines}
-          >
-            {(cMines || []).map(d => (
-              <option key={d} value={d}>{d}</option>
-            ))}
-          </select>
-          <label htmlFor="select-image-date">{layers.nMines}</label>
-          <select
-            id="select-image-date"
+          />
+          <Select
+            label={layers.nMines}
             onChange={e => this.setSelectedDate("nMines", e.target.value)}
+            options={nMines}
             value={newSelectedDates.nMines}
-          >
-            {(nMines || []).map(d => (
-              <option key={d} value={d}>{d}</option>
-            ))}
-          </select>
-          <label htmlFor="select-image-date">{layers.pMines}</label>
-          <select
-            id="select-image-date"
+          />
+          <Select
+            label={layers.pMines}
             onChange={e => this.setSelectedDate("pMines", e.target.value)}
+            options={pMines}
             value={newSelectedDates.pMines}
-          >
-            {(pMines || []).map(d => (
-              <option key={d} value={d}>{d}</option>
-            ))}
-          </select>
+          />
         </div>
         <div style={{textAlign: "center", width: "100%"}}>
           <Button

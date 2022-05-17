@@ -2,6 +2,7 @@ import React from "react";
 
 import ToolPanel from "../components/ToolPanel";
 import Button from "../components/Button";
+import Select from "../components/Select";
 
 import {jsonRequest} from "../utils";
 import {MainContext} from "../components/PageLayout";
@@ -81,21 +82,16 @@ export default class SearchPanel extends React.Component {
       );
 
     const l1Names = Object.keys(featureNames).sort() || [];
+    console.log(l1Names);
     const selectL1 = l1Names.length > 0
       ? (
-        <div className="w-100">
-          <small>{search.stateLabel}</small>
-          <select
-            className="w-100"
-            onChange={e => this.setState({selectedL1: e.target.value, selectedL2: -1})}
-            value={selectedL1}
-          >
-            <option key={-1} disabled value={-1}>{search.defaultState}</option>
-            {l1Names.map(name => (
-              <option key={name} value={name}>{name}</option>
-            ))}
-          </select>
-        </div>
+        <Select
+          defaultOption={search.defaultState}
+          label={search.stateLabel}
+          onChange={e => this.setState({selectedL1: e.target.value, selectedL2: -1})}
+          options={l1Names}
+          value={selectedL1}
+        />
       )
       : search.loading + "...";
 
@@ -103,25 +99,19 @@ export default class SearchPanel extends React.Component {
     const l2names = Object.keys(activeMuns).sort();
     const selectL2 = l2names.length > 0
       ? (
-        <div className="w-100">
-          <small>{search.munLabel}</small>
-          <select
-            className="w-100"
-            onChange={e => {
-              const l2Name = e.target.value;
-              const coords = activeMuns[l2Name];
-              this.setState({selectedL2: l2Name});
-              if (Array.isArray(coords)) fitMap("bbox", coords);
-              selectRegion("mun_" + selectedL1 + "_" + l2Name);
-            }}
-            value={selectedL2}
-          >
-            <option key={-1} disabled value={-1}>{search.defaultMun}</option>
-            {l2names.map(item => (
-              <option key={item} value={item}>{item}</option>
-            ))}
-          </select>
-        </div>
+        <Select
+          defaultOption={search.defaultMun}
+          label={search.munLabel}
+          onChange={e => {
+            const l2Name = e.target.value;
+            const coords = activeMuns[l2Name];
+            this.setState({selectedL2: l2Name});
+            if (Array.isArray(coords)) fitMap("bbox", coords);
+            selectRegion("mun_" + selectedL1 + "_" + l2Name);
+          }}
+          options={l2names}
+          value={selectedL2}
+        />
       ) : "";
 
     return (

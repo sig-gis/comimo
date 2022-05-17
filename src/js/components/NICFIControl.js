@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from "react";
 
 import Button from "./Button";
+import Select from "./Select";
 
 export default function NICFIControl({extraParams, setParams, nicfiLayers}) {
   const [selectedTime, setTime] = useState("");
@@ -14,16 +15,12 @@ export default function NICFIControl({extraParams, setParams, nicfiLayers}) {
 
   return (
     <div className="m-3 d-flex flex-column">
-      <div className="d-flex mb-2">
-        <label className="mb-0 mr-3" htmlFor="time-selection">Select Time</label>
-        <select
-          id="time-selection"
-          onChange={e => setTime(e.target.value)}
-          value={selectedTime}
-        >
-          {nicfiLayers.map(time => <option key={time} value={time}>{time.slice(34, time.length - 7)}</option>)}
-        </select>
-      </div>
+      <Select
+        label="Select Time"
+        onChange={e => setTime(e.target.value)}
+        options={nicfiLayers.map(time => ({value: time, label: time.slice(34, time.length - 7)}))}
+        value={selectedTime}
+      />
       <div className="d-flex mb-2 align-items-center">
         <label className="mb-0 mr-3">Select Band</label>
         <div>

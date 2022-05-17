@@ -6,6 +6,7 @@ import AccountForm from "./components/AccountForm";
 import Button from "./components/Button";
 import LanguageSelector from "./components/LanguageSelector";
 import LoadingModal from "./components/LoadingModal";
+import Select from "./components/Select";
 
 import {jsonRequest} from "./utils";
 import {THEME} from "./constants";
@@ -123,19 +124,13 @@ class UserAccount extends React.Component {
   );
 
   renderSelect = (label, options, stateKey) => (
-    <div className="d-flex flex-column">
-      <label htmlFor={stateKey}>{label}</label>
-      <select
-        className="p-2"
-        id={stateKey}
-        onChange={e => this.setState({[stateKey]: e.target.value})}
-        value={this.state[stateKey]}
-      >
-        {options.map(({key, optLabel}) => (
-          <option key={key} value={key}>{optLabel}</option>
-        ))}
-      </select>
-    </div>
+    <Select
+      id={stateKey}
+      label={label}
+      onChange={e => this.setState({[stateKey]: e.target.value})}
+      options={options}
+      value={this.state[stateKey]}
+    />
   );
 
   render() {
@@ -161,9 +156,9 @@ class UserAccount extends React.Component {
           {this.renderSelect(
             localeText.sector,
             [
-              {key: "academic", optLabel: localeText.academic},
-              {key: "government", optLabel: localeText.government},
-              {key: "ngo", optLabel: localeText.ngo}
+              {value: "academic", label: localeText.academic},
+              {value: "government", label: localeText.government},
+              {value: "ngo", label: localeText.ngo}
             ],
             "sector"
           )}

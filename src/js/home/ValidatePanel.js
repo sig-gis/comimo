@@ -4,6 +4,7 @@ import LoginMessage from "./LoginMessage";
 import Button from "../components/Button";
 import ToolPanel from "../components/ToolPanel";
 import ProjectCard from "../components/ProjectCard";
+import Select from "../components/Select";
 
 import {jsonRequest} from "../utils";
 import {URLS} from "../constants";
@@ -178,15 +179,12 @@ export default class ValidatePanel extends React.Component {
                 style={{width: "100%"}}
                 value={projectName}
               />
-              <label>{`${validate.typeLabel}:`}</label>
-              <select
+              <Select
+                label={`${validate.typeLabel}:`}
                 onChange={e => this.setState({mineType: e.target.value})}
-                style={{width: "100%"}}
+                options={["pMines", "nMines", "cMines"].map(m => ({value: m, label: validate[m]}))}
                 value={mineType}
-              >
-                {["pMines", "nMines", "cMines"].map(m =>
-                  <option key={m} value={m}>{validate[m]}</option>)}
-              </select>
+              />
               <label>{`${validate.projectRegion}:`}</label>
               <span style={{marginTop: ".25rem"}}>
                 <input
