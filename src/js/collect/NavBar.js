@@ -1,4 +1,5 @@
-import React from "react";
+import React, {useState} from "react";
+
 import styled from "styled-components";
 import Button from "../components/Button";
 
@@ -24,7 +25,8 @@ const ButtonRowInner = styled.div`
   }
 `;
 
-export default function NavBar({currentPlotId, nextPlot, prevPlot, setPlotAnswer}) {
+export default function NavBar({currentPlotId, goToPlot, nextPlot, prevPlot, setPlotAnswer}) {
+  const [targetPlotNumber, setTargetPlotNumber] = useState(null);
   return (
     <ButtonRowOuter>
       <ButtonRowInner>
@@ -44,6 +46,25 @@ export default function NavBar({currentPlotId, nextPlot, prevPlot, setPlotAnswer
                 onClick={() => setPlotAnswer("No Mina")}
               >
                 No Mina
+              </Button>
+              <input
+                autoComplete="off"
+                className="col-2 ml-1"
+                id="plotId"
+                onChange={e => {
+                  setTargetPlotNumber(e.target.value);
+                }}
+                onKeyDown={() => goToPlot(targetPlotNumber)}
+                type="number"
+                value={targetPlotNumber}
+              />
+              <Button
+                onClick={() => {
+                  goToPlot(targetPlotNumber);
+                }}
+                type="button"
+              >
+                Go
               </Button>
 
               <Button onClick={nextPlot}>Next</Button>
