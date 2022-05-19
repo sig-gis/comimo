@@ -25,13 +25,46 @@ const ButtonRowInner = styled.div`
   }
 `;
 
+const PlotNumberInput = styled.input`
+   margine-left: 1;
+   width: 3em;
+`;
+
 export default function NavBar({currentPlotId, goToPlot, nextPlot, prevPlot, setPlotAnswer}) {
-  const [targetPlotNumber, setTargetPlotNumber] = useState(null);
+  const {localeText: {collect}} = useContext(MainContext);
+
+  const GoToPlot = () => {
+    const [targetPlotNumber, setTargetPlotNumber] = useState(1);
+
+    return (
+      <>
+        <PlotNumberInput
+          autoComplete="off"
+          id="plotId"
+          onChange={e => {
+            setTargetPlotNumber(e.target.value);
+          }}
+          onKeyDown={() => goToPlot(targetPlotNumber)}
+          type="number"
+          value={targetPlotNumber}
+        />
+
+        <Button
+          onClick={() => {
+            goToPlot(targetPlotNumber);
+          }}
+        >
+          {collect?.go}
+        </Button>
+      </>
+    );
+  };
+
   return (
     <ButtonRowOuter>
       <ButtonRowInner>
         {currentPlotId === -1
-          ? <Button onClick={nextPlot}>Go To First Plot</Button>
+          ? <div><GoToPlot/></div>
           : (
             <>
               <Button onClick={prevPlot}>Prev</Button>
