@@ -1,10 +1,11 @@
 import React from "react";
 import ReactDOM from "react-dom";
 
-import {ThemeProvider} from "styled-components";
+import {jsx, ThemeProvider} from "@emotion/react";
 import LoadingModal from "./components/LoadingModal";
 import Button from "./components/Button";
 import AccountForm from "./components/AccountForm";
+import TextInput from "./components/TextInput";
 
 import {getLanguage, jsonRequest} from "./utils";
 import {THEME} from "./constants";
@@ -46,20 +47,18 @@ class PasswordForgot extends React.Component {
       .catch(err => console.error(err)));
 
   renderField = (label, type, stateKey) => (
-    <div className="d-flex flex-column">
-      <label htmlFor={stateKey}>{label}</label>
-      <input
-        className="p-2"
-        id={stateKey}
-        onChange={e => this.setState({[stateKey]: e.target.value})}
-        onKeyPress={e => {
-          if (e.key === "Enter") this.requestPassword();
-        }}
-        placeholder={`Enter ${(label || "").toLowerCase()}`}
-        type={type}
-        value={this.state[stateKey]}
-      />
-    </div>
+    <TextInput
+      className="p-1 mb-3 mt-1"
+      id={stateKey}
+      label={label}
+      onChange={e => this.setState({[stateKey]: e.target.value})}
+      onKeyPress={e => {
+        if (e.key === "Enter") this.requestPassword();
+      }}
+      placeholder={`Enter ${(label || "").toLowerCase()}`}
+      type={type}
+      value={this.state[stateKey]}
+    />
   );
 
   render() {

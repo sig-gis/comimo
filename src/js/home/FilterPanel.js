@@ -32,7 +32,7 @@ export default class FilterPanel extends React.Component {
     return (
       <ToolPanel title={filter.title}>
         <span htmlFor="select-image-date">{filter.selectLabel}:</span>
-        <div style={{display: "flex", flexDirection: "column"}}>
+        <div className="flex flex-col">
           <Select
             label={layers.cMines}
             onChange={e => this.setSelectedDate("cMines", e.target.value)}
@@ -51,15 +51,14 @@ export default class FilterPanel extends React.Component {
             options={pMines}
             value={newSelectedDates.pMines}
           />
-        </div>
-        <div style={{textAlign: "center", width: "100%"}}>
           <Button
-            className="mt-2"
+            className="mt-4"
             onClick={() => selectDates(newSelectedDates)}
           >
             {filter.updateMap}
           </Button>
         </div>
+
       </ToolPanel>
     );
   }

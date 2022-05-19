@@ -2,6 +2,7 @@ import React from "react";
 
 import Button from "../components/Button";
 import ToolPanel from "../components/ToolPanel";
+import TextInput from "../components/TextInput";
 
 import {MainContext} from "../components/PageLayout";
 import {URLS} from "../constants";
@@ -71,18 +72,18 @@ export default class ReportMinesPanel extends React.Component {
     return (
       <ToolPanel title={report.title}>
         {report.subTitle}
-        <label>{report.coordLabel}</label>
-        <div className="d-flex">
-          <input
-            className="w-100"
-            onChange={e => this.setState({latLonText: e.target.value})}
-            onKeyUp={e => { if (e.key === "Enter") this.processLatLng(); }}
-            value={latLonText}
-          />
-          <Button onClick={this.processLatLng}>
-            {report.goButton}
-          </Button>
-        </div>
+        <TextInput
+          className="mt-20"
+          label={report.coordLabel}
+          onChange={e => this.setState({latLonText: e.target.value})}
+          onKeyUp={e => { if (e.key === "Enter") this.processLatLng(); }}
+          render={() => (
+            <Button onClick={this.processLatLng}>
+              {report.goButton}
+            </Button>
+          )}
+          value={latLonText}
+        />
         <h3 className="mt-3">{report.selectedLocation}</h3>
         {selectedLatLon
           ? (

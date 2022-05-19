@@ -5,6 +5,7 @@ import Button from "../components/Button";
 import ToolPanel from "../components/ToolPanel";
 import ProjectCard from "../components/ProjectCard";
 import Select from "../components/Select";
+import TextInput from "../components/TextInput";
 
 import {jsonRequest} from "../utils";
 import {URLS} from "../constants";
@@ -171,12 +172,10 @@ export default class ValidatePanel extends React.Component {
                   </>
                 )}
               <h3 style={{marginBottom: 0}}>{`${validate.createProject}:`}</h3>
-              <label>{`${validate.projectName}:`}</label>
-              <input
+              <TextInput
                 id="projectName"
-                length="2"
+                label={`${validate.projectName}:`}
                 onChange={e => this.setState({projectName: e.target.value})}
-                style={{width: "100%"}}
                 value={projectName}
               />
               <Select
@@ -207,7 +206,7 @@ export default class ValidatePanel extends React.Component {
               </span>
               {regionType === 2 && this.renderCustomRegions()}
               <Button
-                className="mt-2"
+                className="mt-4"
                 onClick={() => this.createProject(selectedDates[mineType] || "2022-01-01-N")}
               >
                 {`${validate.createButton} ${selectedDates[mineType]}`}

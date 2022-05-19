@@ -3,6 +3,7 @@ import React from "react";
 import ToolPanel from "../components/ToolPanel";
 import Button from "../components/Button";
 import Select from "../components/Select";
+import TextInput from "../components/TextInput";
 
 import {jsonRequest} from "../utils";
 import {MainContext} from "../components/PageLayout";
@@ -82,7 +83,6 @@ export default class SearchPanel extends React.Component {
       );
 
     const l1Names = Object.keys(featureNames).sort() || [];
-    console.log(l1Names);
     const selectL1 = l1Names.length > 0
       ? (
         <Select
@@ -116,31 +116,29 @@ export default class SearchPanel extends React.Component {
 
     return (
       <ToolPanel title={search.title}>
-        <label>{search.internetLabel}</label>
-        <div className="d-flex">
-          <input
-            className="w-100"
-            onChange={e => this.setState({searchText: e.target.value})}
-            onKeyUp={e => { if (e.key === "Enter") this.searchGeocode(); }}
-            value={searchText}
-          />
-          <Button onClick={this.searchGeocode}>
-            {search.goButton}
-          </Button>
-        </div>
+        <TextInput
+          label={search.internetLabel}
+          onChange={e => this.setState({searchText: e.target.value})}
+          onKeyUp={e => { if (e.key === "Enter") this.searchGeocode(); }}
+          render={() => (
+            <Button onClick={this.searchGeocode}>
+              {search.goButton}
+            </Button>
+          )}
+          value={searchText}
+        />
         {geoSearchResults}
-        <label>{search.coordLabel}</label>
-        <div className="d-flex">
-          <input
-            className="w-100"
-            onChange={e => this.setState({latLngText: e.target.value})}
-            onKeyUp={e => { if (e.key === "Enter") this.processLatLng(); }}
-            value={latLngText}
-          />
-          <Button onClick={this.processLatLng}>
-            {search.goButton}
-          </Button>
-        </div>
+        <TextInput
+          label={search.coordLabel}
+          onChange={e => this.setState({latLngText: e.target.value})}
+          onKeyUp={e => { if (e.key === "Enter") this.processLatLng(); }}
+          render={() => (
+            <Button onClick={this.processLatLng}>
+              {search.goButton}
+            </Button>
+          )}
+          value={latLngText}
+        />
         <label>{search.selectLabel}</label>
         {selectL1}
         {selectL2}

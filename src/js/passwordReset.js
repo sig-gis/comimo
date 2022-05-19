@@ -1,9 +1,10 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import {ThemeProvider} from "styled-components";
+import {jsx, ThemeProvider} from "@emotion/react";
 
 import Button from "./components/Button";
 import AccountForm from "./components/AccountForm";
+import TextInput from "./components/TextInput";
 
 import {getLanguage, jsonRequest, validatePassword} from "./utils";
 import {THEME} from "./constants";
@@ -55,21 +56,20 @@ class PasswordReset extends React.Component {
   };
 
   renderField = (label, type, stateKey, fromProps = false) => (
-    <div className="d-flex flex-column">
-      <label htmlFor={stateKey}>{label}</label>
-      <input
-        className="p-2"
-        disabled={fromProps}
-        id={stateKey}
-        onChange={e => this.setState({[stateKey]: e.target.value})}
-        onKeyPress={e => {
-          if (e.key === "Enter") this.resetPassword();
-        }}
-        placeholder={`Enter ${(label || "").toLowerCase()}`}
-        type={type}
-        value={fromProps ? this.props[stateKey] : this.state[stateKey]}
-      />
-    </div>
+    <TextInput
+      className="p-1 mb-3 mt-1"
+      disabled={fromProps}
+      id={stateKey}
+      label={label}
+      onChange={e => this.setState({[stateKey]: e.target.value})}
+      onKeyPress={e => {
+        if (e.key === "Enter") this.resetPassword();
+      }}
+      placeholder={`Enter ${(label || "").toLowerCase()}`}
+      type={type}
+      value={fromProps ? this.props[stateKey] : this.state[stateKey]}
+
+    />
   );
 
   render() {
