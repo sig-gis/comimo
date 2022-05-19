@@ -50,57 +50,61 @@ export default class DownloadPanel extends React.Component {
     return (
       <ToolPanel title={download.title}>
         {this.state.showModal && <LoadingModal message="Getting URL"/>}
-        <label>{`${validate.typeLabel}:`}</label>
-        <select
-          onChange={e => this.setState({mineType: e.target.value})}
-          style={{width: "100%"}}
-          value={mineType}
-        >
-          {["pMines", "nMines", "cMines"].map(m =>
-            <option key={m} value={m}>{validate[m]}</option>)}
-        </select>
-        <label>{download.regionLabel}</label>
-        <div style={{marginTop: ".25rem"}}>
-          <input
-            checked={clipOption === 1}
-            name="downloadRegion"
-            onChange={() => this.setState({clipOption: 1})}
-            type="radio"
-          />
-          <span>{download.allRadio}</span>
-        </div>
-        <div className={selectedRegion ? "" : "disabled-group"} style={{marginTop: ".25rem"}}>
-          <input
-            checked={clipOption === 2}
-            name="downloadRegion"
-            onChange={() => this.setState({clipOption: 2})}
-            type="radio"
-          />
-          <span>{download.selectedRadio}</span>
-        </div>
-        {selectedDates && (
-          <div style={{textAlign: "center", width: "100%", marginTop: ".5rem"}}>
+        <div className="flex flex-col">
+          <label>{`${validate.typeLabel}:`}</label>
+          <select
+            onChange={e => this.setState({mineType: e.target.value})}
+            style={{width: "100%"}}
+            value={mineType}
+          >
+            {["pMines", "nMines", "cMines"].map(m =>
+              <option key={m} value={m}>{validate[m]}</option>)}
+          </select>
+          <label>{download.regionLabel}</label>
+          <div style={{marginTop: ".25rem"}}>
+            <input
+              checked={clipOption === 1}
+              name="downloadRegion"
+              onChange={() => this.setState({clipOption: 1})}
+              type="radio"
+            />
+            <span>{download.allRadio}</span>
+          </div>
+          <div className={selectedRegion ? "" : "disabled-group"} style={{marginTop: ".25rem"}}>
+            <input
+              checked={clipOption === 2}
+              name="downloadRegion"
+              onChange={() => this.setState({clipOption: 2})}
+              type="radio"
+            />
+            <span>{download.selectedRadio}</span>
+          </div>
+          {selectedDates && (
+
             <Button
+              className="mt-4"
               disabled={fetching}
               onClick={this.getDownloadUrl}
             >
               {download.getUrl} {selectedDates[mineType]}
             </Button>
-          </div>
-        )}
-        {fetching
-          ? <p>{`${download.fetching}...`}</p>
-          : downloadURL && (
-            <p>
-              <span>
-                <a href={downloadURL[2]}>
-                  {`${download.clickHere}`
+
+          )}
+          {fetching
+            ? <p>{`${download.fetching}...`}</p>
+            : downloadURL && (
+              <p>
+                <span>
+                  <a href={downloadURL[2]}>
+                    {`${download.clickHere}`
                     + ` ${downloadURL[0] === "all" ? download.completeData : download.munData + downloadURL[0]} `
                     + `${download.prep} ${ downloadURL[1]}.`}
-                </a>
-              </span>
-            </p>
-          )}
+                  </a>
+                </span>
+              </p>
+            )}
+        </div>
+
       </ToolPanel>
     );
   }
