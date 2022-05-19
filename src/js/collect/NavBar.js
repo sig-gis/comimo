@@ -38,7 +38,7 @@ export default function NavBar({currentPlotId, goToPlot, nextPlot, prevPlot, set
   const {localeText: {collect}} = useContext(MainContext);
   const [targetPlotNumber, setTargetPlotNumber] = useState(1);
 
-  const GoToPlot = () => (
+  const renderGoToPlot = () => (
     <>
       <PlotNumberInput
         autoComplete="off"
@@ -65,7 +65,7 @@ export default function NavBar({currentPlotId, goToPlot, nextPlot, prevPlot, set
     <ButtonRowOuter>
       <ButtonRowInner>
         {currentPlotId === -1
-          ? <div><GoToPlot/></div>
+          ? renderGoToPlot()
           : (
             <>
               <Button onClick={prevPlot}>Prev</Button>
@@ -83,7 +83,7 @@ export default function NavBar({currentPlotId, goToPlot, nextPlot, prevPlot, set
                 {collect?.noMina}
               </Button>
               <Button onClick={nextPlot}>{collect?.next}</Button>
-              <GoToPlot/>
+              {renderGoToPlot()}
               <Button
                 onClick={() => {
                   window.location.assign("/");
