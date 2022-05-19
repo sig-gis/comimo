@@ -57,7 +57,6 @@ class PasswordReset extends React.Component {
 
   renderField = (label, type, stateKey, fromProps = false) => (
     <TextInput
-      className="p-1 mb-3 mt-1"
       disabled={fromProps}
       id={stateKey}
       label={label}

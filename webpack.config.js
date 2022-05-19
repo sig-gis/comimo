@@ -37,11 +37,14 @@ module.exports = env => ({
           options: {
             presets: [
               "@babel/preset-env",
-              "@babel/preset-react"
+              "@babel/preset-react",
+              "@emotion/babel-preset-css-prop"
             ],
             plugins: [
               "@babel/plugin-proposal-class-properties",
               "@babel/plugin-transform-runtime",
+              "babel-plugin-twin",
+              "babel-plugin-macros",
               "lodash"
             ]
           }

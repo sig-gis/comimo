@@ -7,6 +7,7 @@ import Button from "./components/Button";
 import LanguageSelector from "./components/LanguageSelector";
 import LoadingModal from "./components/LoadingModal";
 import Select from "./components/Select";
+import TextInput from "./components/TextInput";
 
 import {jsonRequest} from "./utils";
 import {THEME} from "./constants";
@@ -109,18 +110,15 @@ class UserAccount extends React.Component {
   /// Render Functions ///
 
   renderField = (label, type, stateKey, disabled = false) => (
-    <div className="d-flex flex-column">
-      <label htmlFor={stateKey}>{label}</label>
-      <input
-        className="p-2"
-        disabled={disabled}
-        id={stateKey}
-        onChange={e => this.setState({[stateKey]: e.target.value})}
-        placeholder={`Enter ${(label || "").toLowerCase()}`}
-        type={type}
-        value={this.state[stateKey]}
-      />
-    </div>
+    <TextInput
+      disabled={disabled}
+      id={stateKey}
+      label={label}
+      onChange={e => this.setState({[stateKey]: e.target.value})}
+      placeholder={`Enter ${(label || "").toLowerCase()}`}
+      type={type}
+      value={this.state[stateKey]}
+    />
   );
 
   renderSelect = (label, options, stateKey) => (
@@ -137,7 +135,7 @@ class UserAccount extends React.Component {
     const {localeText, defaultLang} = this.state;
     return (
       <ThemeProvider theme={THEME}>
-        {this.state.showModal && (() => (<LoadingModal message={localeText.modalMessage}/>))}
+        {this.state.showModal && (<LoadingModal message={localeText.modalMessage}/>)}
         <AccountForm
           header={localeText.userAccountTitle}
           submitFn={this.updateUser}

@@ -1,12 +1,8 @@
 import React, {useState} from "react";
-import styled from "@emotion/styled";
+import tw, {styled} from "twin.macro";
 
-const Input = styled.input`
-  flex-grow: 1
-`;
-const InputContainer = styled.div`
-  display: flex
-`;
+const InputContainer = tw.div`flex mb-3`;
+const Input = tw.input`mt-1 p-1 m-0`;
 
 // TODO: Add showing error like when in searching for invalide coordinates...
 

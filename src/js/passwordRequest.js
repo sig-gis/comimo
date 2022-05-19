@@ -48,7 +48,6 @@ class PasswordForgot extends React.Component {
 
   renderField = (label, type, stateKey) => (
     <TextInput
-      className="p-1 mb-3 mt-1"
       id={stateKey}
       label={label}
       onChange={e => this.setState({[stateKey]: e.target.value})}

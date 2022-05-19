@@ -37,6 +37,9 @@
         "babel-loader": "^8.2.3",
         "babel-plugin-lodash": "^3.3.4",
         "css-loader": "^4.3.0",
+        "@emotion/babel-preset-css-prop": "^11.2.0",
+        "babel-plugin-macros": "^3.1.0",
+        "babel-plugin-twin": "^1.0.2",
         "eslint": "^7.32.0",
         "eslint-config-airbnb": "^18.2.1",
         "eslint-plugin-import": "^2.25.4",
@@ -47,7 +50,13 @@
         "tailwindcss": "^3.0.24",
         "tern": "^0.23.0",
         "webpack": "^5.69.1",
-        "webpack-cli": "^4.9.2"
+        "webpack-cli": "^4.9.2",
+        "twin.macro": "^2.7.0"
+    },
+    "babelMacros": {
+        "twin": {
+            "preset": "emotion"
+        }
     },
     "scripts": {
         "lint": "./node_modules/.bin/eslint src/js/**/* --fix",

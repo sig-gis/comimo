@@ -8,6 +8,7 @@ import LanguageSelector from "./components/LanguageSelector";
 import Button from "./components/Button";
 import AccountForm from "./components/AccountForm";
 import Select from "./components/Select";
+import TextInput from "./components/TextInput";
 
 import {getLanguage, jsonRequest, validatePassword} from "./utils";
 import {THEME} from "./constants";
@@ -101,20 +102,17 @@ class Register extends React.Component {
   /// Render Functions ///
 
   renderField = (label, type, stateKey) => (
-    <div className="d-flex flex-column">
-      <label htmlFor={stateKey}>{label}</label>
-      <input
-        className="p-2"
-        id={stateKey}
-        onChange={e => this.setState({[stateKey]: e.target.value})}
-        onKeyPress={e => {
-          if (e.key === "Enter") this.registerUser();
-        }}
-        placeholder={`Enter ${(label || "").toLowerCase()}`}
-        type={type}
-        value={this.state[stateKey]}
-      />
-    </div>
+    <TextInput
+      id={stateKey}
+      label={label}
+      onChange={e => this.setState({[stateKey]: e.target.value})}
+      onKeyPress={e => {
+        if (e.key === "Enter") this.registerUser();
+      }}
+      placeholder={`Enter ${(label || "").toLowerCase()}`}
+      type={type}
+      value={this.state[stateKey]}
+    />
   );
 
   renderSelect = (label, options, stateKey) => (

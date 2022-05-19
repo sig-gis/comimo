@@ -25,10 +25,10 @@ export default function Select({
   defaultOption
 }) {
   return (
-    <div className="w-100">
+    <div className="w-100 mb-3">
       <label htmlFor={id}>{label}</label>
       <select
-        className="col-12 p-1 mt-1 mb-3"
+        className="col-12 p-1 mt-1"
         disabled={disabled}
         id={id}
         onChange={onChange}

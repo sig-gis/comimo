@@ -1,9 +1,10 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import {ThemeProvider} from "styled-components";
+import {ThemeProvider} from "@emotion/react";
 
 import AccountForm from "./components/AccountForm";
 import Button from "./components/Button";
+import TextInput from "./components/TextInput";
 
 import {getLanguage, jsonRequest} from "./utils";
 import {THEME} from "./constants";
@@ -39,17 +40,14 @@ class Login extends React.Component {
   };
 
   renderField = (label, type, stateKey) => (
-    <div className="d-flex flex-column">
-      <label htmlFor={stateKey}>{label}</label>
-      <input
-        className="p-2"
-        id={stateKey}
-        onChange={e => this.setState({[stateKey]: e.target.value})}
-        placeholder={`Enter ${(label || "").toLowerCase()}`}
-        type={type}
-        value={this.state[stateKey]}
-      />
-    </div>
+    <TextInput
+      id={stateKey}
+      label={label}
+      onChange={e => this.setState({[stateKey]: e.target.value})}
+      placeholder={`Enter ${(label || "").toLowerCase()}`}
+      type={type}
+      value={this.state[stateKey]}
+    />
   );
 
   render() {
