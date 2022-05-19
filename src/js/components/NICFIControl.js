@@ -14,51 +14,54 @@ export default function NICFIControl({extraParams, setParams, nicfiLayers}) {
   }, [extraParams]);
 
   return (
-    <div className="m-3 d-flex flex-column">
+    <div className="flex flex-col pl-3">
       <Select
         label="Select Time"
         onChange={e => setTime(e.target.value)}
         options={nicfiLayers.map(time => ({value: time, label: time.slice(34, time.length - 7)}))}
         value={selectedTime}
       />
-      <div className="d-flex mb-2 align-items-center">
+      <div className="flex flex-col">
         <label className="mb-0 mr-3">Select Band</label>
-        <div>
-          <input
-            checked={selectedBand === "rgb"}
-            id="visible"
-            onChange={() => setBand("rgb")}
-            type="radio"
-          />
-          <label htmlFor="visible">
+        <div className="flex">
+          <div>
+            <input
+              checked={selectedBand === "rgb"}
+              id="visible"
+              onChange={() => setBand("rgb")}
+              type="radio"
+            />
+            <label htmlFor="visible">
             Visible
-          </label>
-        </div>
-        <div>
-          <input
-            checked={selectedBand === "cir"}
-            id="infrared"
-            onChange={() => setBand("cir")}
-            type="radio"
-          />
-          <label htmlFor="infrared">
+            </label>
+          </div>
+          <div className="pl-2">
+            <input
+              checked={selectedBand === "cir"}
+              id="infrared"
+              onChange={() => setBand("cir")}
+              type="radio"
+            />
+            <label htmlFor="infrared">
             Infrared
-          </label>
+            </label>
+          </div>
         </div>
       </div>
-      <div className="w-100">
-        <Button
-          onClick={() => setParams(
-            "NICFI",
-            {
-              dataLayer: selectedTime,
-              band: selectedBand
-            }
-          )}
-        >
+
+      <Button
+        className="mt-4"
+        onClick={() => setParams(
+          "NICFI",
+          {
+            dataLayer: selectedTime,
+            band: selectedBand
+          }
+        )}
+      >
           Update Map
-        </Button>
-      </div>
+      </Button>
+
     </div>
   );
 }
