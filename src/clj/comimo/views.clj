@@ -25,7 +25,7 @@
    (include-css "css/bootstrap-grid.min.4.3.1.css"
                 "css/gmw_global.css"
                 "css/gmw_main.css" ; only home
-                )
+                "/css/tailwindOutput.css")
    (apply include-js
           "/js/google-charts.js"
           "/js/jquery-3.4.1.min.js"
