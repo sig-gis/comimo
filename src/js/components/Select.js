@@ -28,7 +28,7 @@ export default function Select({
     <div className="w-100">
       <label htmlFor={id}>{label}</label>
       <select
-        className="col-12 pl-1"
+        className="col-12 p-1 mt-1 mb-3"
         disabled={disabled}
         id={id}
         onChange={onChange}
