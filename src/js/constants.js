@@ -4,20 +4,24 @@ export const THEME = {
     color: "#999"
   },
   primary: {
-    background: "#f0ad4e",
+    background: "#f8b556",
     color: "#eee"
   },
   mina: {
-    background: "red",
+    // red
+    background: "#fb8072",
     color: "#eee"
   },
   noMina: {
-    background: "green",
+    // green
+    background: "#8dd3c7",
     color: "#eee"
   },
   map: {
-    boundary: "yellow",
-    unanswered: "blue"
+    // yellow?
+    boundary: "#ffffb3",
+    // blue
+    unanswered: "#bebada"
   }
 };
 
