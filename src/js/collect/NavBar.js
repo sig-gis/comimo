@@ -1,19 +1,23 @@
-import React, {useState} from "react";
-
+import React, {useState, useContext} from "react";
 import styled from "styled-components";
+
 import Button from "../components/Button";
+import {MainContext} from "../components/PageLayout";
 
 const ButtonRowOuter = styled.div`
   bottom: 32px;
+  margin-left: 50px;
   display: flex;
   justify-content: center;
   position: fixed;
+  text-align: center;
   width: 100%;
   z-index: 10000;
 `;
 
 const ButtonRowInner = styled.div`
   align-items: center;
+  display: inline-block;
   display: flex;
 
   button {
@@ -72,35 +76,25 @@ export default function NavBar({currentPlotId, goToPlot, nextPlot, prevPlot, set
                 $type="mina"
                 onClick={() => setPlotAnswer("Mina")}
               >
-                Mina
+                {collect?.mina}
               </Button>
+
               <Button
                 $type="noMina"
                 onClick={() => setPlotAnswer("No Mina")}
               >
-                No Mina
+                {collect?.noMina}
               </Button>
-              <input
-                autoComplete="off"
-                className="col-2 ml-1"
-                id="plotId"
-                onChange={e => {
-                  setTargetPlotNumber(e.target.value);
-                }}
-                onKeyDown={() => goToPlot(targetPlotNumber)}
-                type="number"
-                value={targetPlotNumber}
-              />
+              <Button onClick={nextPlot}>{collect?.next}</Button>
+              <GoToPlot/>
               <Button
                 onClick={() => {
-                  goToPlot(targetPlotNumber);
+                  window.location.assign("/");
                 }}
-                type="button"
               >
-                Go
+                {collect?.exit}
               </Button>
 
-              <Button onClick={nextPlot}>Next</Button>
             </>
           )}
       </ButtonRowInner>
