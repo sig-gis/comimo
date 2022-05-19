@@ -75,7 +75,6 @@ export default function NavBar({currentPlotId, goToPlot, nextPlot, prevPlot, set
               >
                 {collect?.mina}
               </Button>
-
               <Button
                 $type="noMina"
                 onClick={() => setPlotAnswer("No Mina")}
@@ -91,7 +90,6 @@ export default function NavBar({currentPlotId, goToPlot, nextPlot, prevPlot, set
               >
                 {collect?.exit}
               </Button>
-
             </>
           )}
       </ButtonRowInner>
