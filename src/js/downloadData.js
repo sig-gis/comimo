@@ -1,7 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import {ReactTabulator} from "react-tabulator";
-import {ThemeProvider} from "styled-components";
+import {ThemeProvider} from "@emotion/react";
 
 import Button from "./components/Button";
 import "react-tabulator/lib/styles.css"; // required styles

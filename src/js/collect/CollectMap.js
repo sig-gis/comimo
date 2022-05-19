@@ -1,7 +1,7 @@
 import React from "react";
 import mapboxgl from "mapbox-gl";
 import extent from "turf-extent";
-import styled from "styled-components";
+import styled from "@emotion/styled";
 import "mapbox-gl/dist/mapbox-gl.css";
 
 import {get, isString} from "lodash";

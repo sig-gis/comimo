@@ -2,7 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom";
 import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
-import styled from "styled-components";
+import styled from "@emotion/styled";
 
 import LngLatHud from "../components/LngLatHud";
 import InfoPopupContent from "./InfoPopupContent";

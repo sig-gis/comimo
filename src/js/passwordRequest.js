@@ -1,7 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom";
 
-import {jsx, ThemeProvider} from "@emotion/react";
+import {ThemeProvider} from "@emotion/react";
 import LoadingModal from "./components/LoadingModal";
 import Button from "./components/Button";
 import AccountForm from "./components/AccountForm";

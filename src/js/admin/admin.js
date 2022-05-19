@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from "react";
 import ReactDOM from "react-dom";
-import styled from "styled-components";
+import styled from "@emotion/styled";
 
 import {PageLayout} from "../components/PageLayout";
 import TitledForm from "../components/TitledForm";

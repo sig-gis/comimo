@@ -25,7 +25,7 @@ export default function Select({
   defaultOption
 }) {
   return (
-    <div clssName="w-100">
+    <div className="w-100">
       <label htmlFor={id}>{label}</label>
       <select
         className="col-12 pl-1"

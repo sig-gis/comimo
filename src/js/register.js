@@ -2,7 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom";
 import EmailValidator from "email-validator";
 
-import {ThemeProvider} from "styled-components";
+import {ThemeProvider} from "@emotion/react";
 import LoadingModal from "./components/LoadingModal";
 import LanguageSelector from "./components/LanguageSelector";
 import Button from "./components/Button";

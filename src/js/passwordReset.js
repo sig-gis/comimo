@@ -1,6 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import {jsx, ThemeProvider} from "@emotion/react";
+import {ThemeProvider} from "@emotion/react";
 
 import Button from "./components/Button";
 import AccountForm from "./components/AccountForm";

@@ -1,5 +1,5 @@
 import React from "react";
-import styled from "styled-components";
+import styled from "@emotion/styled";
 
 const LngLatHudLabel = styled.div`
   background: rgba(255,255,255,.7);
