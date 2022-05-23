@@ -22,61 +22,115 @@
                :content body}]}))
 
 (defn send-mail [to-addresses cc-addresses bcc-addresses subject body content-type]
-  (let [{:keys [message error]} (send-postal to-addresses
+  (let [MIME                    {:text "text/plain"
+                                 :html "text/html"}
+        {:keys [message error]} (send-postal to-addresses
                                              cc-addresses
                                              bcc-addresses
                                              subject
                                              body
-                                             content-type)]
+                                             (content-type MIME))]
     (when-not (= :SUCCESS error) (log-str message))))
 
-(defn send-new-user-mail [email token lang]
-  (let [title {:en "Welcome to CoMiMo"
+(defn send-new-user-mail [email token lang & {:keys [type] :or {type :text}}]
+  (let [lang  (keyword lang)
+        title {:en "Welcome to CoMiMo"
                :es "Bienvenida a CoMiMo"}
-        text  {:en (format (str "Welcome to CoMiMo\n\n"
-                                "Please verify your email by clicking the following link: \n\n"
-                                "%s/verify-user?token=%s&email=%s")
+        body  {:text {:en (format (str "Welcome to CoMiMo\n\n"
+                                       "Please verify your email by clicking the following link: \n\n"
+                                       "%s/verify-user?token=%s&email=%s")
+                                  (get-base-url)
+                                  token
+                                  email)
+                      :es (format (str "Bienvenida a CoMiMo\n\n"
+                                       "Verifique su correo electrónico haciendo clic en el siguiente enlace: \n\n"
+                                       "%s/verify-user?token=%s&email=%s")
+                                  (get-base-url)
+                                  token
+                                  email)}
+               :html {:en (format
+                           (str "<html><body>"
+                                "<h3>Welcome to CoMiMo</h3>"
+                                "Please verify your email by clicking <a href='%s/verify-user?token=%s&email=%s'>here</a>."
+                                "</body></html>")
                            (get-base-url)
                            token
                            email)
-               :es (format (str "Bienvenida a CoMiMo\n\n"
-                                "Verifique su correo electrónico haciendo clic en el siguiente enlace: \n\n"
-                                "%s/verify-user?token=%s&email=%s")
-                           (get-base-url)
-                           token
-                           email)}]
-    (send-mail email nil nil (get title (keyword lang)) (get text (keyword lang)) "text/plain")))
+                      :es (format (str "<html><body>"
+                                       "<h3>Bienvenida a CoMiMo</h3>"
+                                       "Verifique su correo electrónico haciendo clic <a href='%s/verify-user?token=%s&email=%s'>aquí</a>."
 
-(defn send-alert-mail [email project-url lang]
-  (let [title {:en "CoMiMo: mine alert"
+                                       "</body></html>")
+                                  (get-base-url)
+                                  token
+                                  email)}}]
+    (send-mail email nil nil (get-in title [type lang]) (get-in body [type lang]) type)))
+
+(defn send-alert-mail [email project-url lang & {:keys [type] :or {type :text}}]
+  (let [lang  (keyword lang)
+        title {:en "CoMiMo: mine alert"
                :es "CoMiMo: alerta minera"}
-        text  {:en (format (str "Mine Alert\n\n"
-                                "We have detected possible mining sites in the areas to which it is subscribed.\n\n"
-                                "You can see the new validations listed in CoMiMo here: %s\n\n"
-                                "To validate this information, go to the validation panel in the application or go directly to CEO: %s&locale=en")
-                           (get-base-url)
-                           project-url)
-               :es (format (str "¡Alerta!\n\n"
-                                "Hemos detectado posibles sitios de explotación minera en las áreas a las cuales se encuentra suscrito.\n\n"
-                                "Puede visualizar estas áreas aquí: %s\n\n"
-                                "Para validar esta información, diríjase al panel de validación en la aplicación o acceda directamente a CEO: %s&locale=es")
-                           (get-base-url)
-                           project-url)}]
-    (send-mail email nil nil (get title (keyword lang)) (get text (keyword lang)) "text/plain")))
+        body  {:text {:en (format (str "Mine Alert\n\n"
+                                       "We have detected possible mining sites in the areas to which it is subscribed.\n\n"
+                                       "You can see the new validations listed in CoMiMo here: %s\n\n"
+                                       "To validate this information, go to the validation panel in the application or go directly to CEO: %s&locale=en")
+                                  (get-base-url)
+                                  project-url)
+                      :es (format (str "¡Alerta!\n\n"
+                                       "Hemos detectado posibles sitios de explotación minera en las áreas a las cuales se encuentra suscrito.\n\n"
+                                       "Puede visualizar estas áreas aquí: %s\n\n"
+                                       "Para validar esta información, diríjase al panel de validación en la aplicación o acceda directamente a CEO: %s&locale=es")
+                                  (get-base-url)
+                                  project-url)}
+               :html {:en (format (str "<html><body>"
+                                       "<h3>Mine Alert</h3>"
+                                       "We have detected possible mining sites in the areas to which it is subscribed."
+                                       "<br/><br/>"
+                                       "You can see the new validations listed in CoMiMo <a href='%s'>here.</a>."
+                                       "<br/><br/>"
+                                       "To validate this information, go to the validation panel in the application or go directly to"
+                                       "<a href='%s&locale=en'>CEO</a>."
+                                       "</body></html>")
+                                  (get-base-url)
+                                  project-url)
+                      :es (format (str "<html> <body>"
+                                       "<h3>¡Alerta!</h3>"
+                                       "Hemos detectado posibles sitios de explotación minera en las áreas a las cuales se encuentra suscrito."
+                                       "<br/><br/>"
+                                       "Puede visualizar estas áreas <a href='%s'>aquí</a>."
+                                       "<br/><br/>"
+                                       "Para validar esta información, diríjase al panel de validación en la aplicación o acceda directamente a"
+                                       "<a href='%s&locale=en'>CEO</a>."
+                                       "</body></html>")
+                                  (get-base-url)
+                                  project-url)}}]
+    (send-mail email nil nil (get title lang) (get-in body [type lang]) type)))
 
-(defn send-reset-mail [email token lang]
-  (let [title {:en "CoMiMo password reset"
+(defn send-reset-mail [email token lang type & {:keys [type] :or {type :text}}]
+  (let [lang  (keyword lang)
+        title {:en "CoMiMo password reset"
                :es "CoMiMo restablecimiento de contraseña"}
-        text  {:en (format (str "Password Reset\n\n"
-                                "To reset your password, click the link below and enter your new password:\n\n"
-                                "%s/password-reset?token=%s&email=%s")
-                           (get-base-url)
-                           token
-                           email)
-               :es (format (str "Restablecimiento de contraseña\n\n"
-                                "Para restablecer su contraseña haga clic en el siguiente enlace e ingrese su nueva contraseña:\n\n"
-                                "%s/password-reset?token=%s&email=%s")
-                           (get-base-url)
-                           token
-                           email)}]
-    (send-mail email nil nil (get title (keyword lang)) (get text (keyword lang)) "text/plain")))
+        body  {:text {:en (format (str "Password Reset\n\n"
+                                       "To reset your password, click the link below and enter your new password:\n\n"
+                                       "%s/password-reset?token=%s&email=%s")
+                                  (get-base-url)
+                                  token
+                                  email)
+                      :es (format (str "Restablecimiento de contraseña\n\n"
+                                       "Para restablecer su contraseña haga clic en el siguiente enlace e ingrese su nueva contraseña:\n\n"
+                                       "%s/password-reset?token=%s&email=%s")
+                                  (get-base-url)
+                                  token
+                                  email)}
+               :html {:en (format (str "<html><body>"
+                                       "<h3>Password reset</h3>"
+                                       "To reset your password, click <a href='%s/password-reset?token=%s&email=%s'>here</a> and enter your new password."
+                                       "</body></html>")
+                                  (get-base-url)
+                                  token
+                                  email)
+                      :es (format (str "<html> <body>"
+                                       "<h3>Restablecimiento de contraseña</h3>"
+                                       "Para restablecer su contraseña haga clic <a href='%s/password-reset?token=%s&email=%s'>aquí</a> e ingrese su nueva contraseña."
+                                       "</body></html>"))}}]
+    (send-mail email nil nil (get title lang) (get-in body [type lang]) type)))
