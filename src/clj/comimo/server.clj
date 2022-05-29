@@ -1,16 +1,16 @@
 (ns comimo.server
-  (:require [clojure.java.io         :as io]
-            [nrepl.server :as nrepl-server]
-            [cider.nrepl :refer (cider-nrepl-handler)]
+  (:require [cider.nrepl             :refer [cider-nrepl-handler]]
+            [comimo.db.subscriptions :refer [send-email-alerts]]
+            [comimo.handler          :refer [create-handler-stack]]
+            [nrepl.server            :as nrepl-server]
             [ring.adapter.jetty      :refer [run-jetty]]
             [triangulum.cli          :refer [get-cli-options]]
             [triangulum.config       :refer [get-config]]
-            [triangulum.notify       :refer [available? ready!]]
-            [triangulum.logging      :refer [log-str set-log-path!]]
-            [triangulum.sockets      :refer [send-to-server! socket-open?]]
             [triangulum.database     :refer [call-sql]]
-            [comimo.handler          :refer [create-handler-stack]]
-            [comimo.db.subscriptions :refer [send-email-alerts]]))
+            [triangulum.logging      :refer [log-str set-log-path!]]
+            [triangulum.notify       :refer [available? ready!]]
+            [triangulum.sockets      :refer [send-to-server! socket-open?]]
+            [clojure.java.io         :as io]))
 
 (defonce ^:private server             (atom nil))
 (defonce ^:private repl-server        (atom nil))
