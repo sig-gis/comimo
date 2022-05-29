@@ -226,9 +226,7 @@ export default class CollectMap extends React.Component {
   addLayers = plots => {
     const {goToPlot} = this.props;
     const {theMap} = this.state;
-
     const shiftId = plots[0]?.id;
-    console.log(shiftId);
 
     plots.forEach(p => {
       const number = p.id - shiftId + 1;
@@ -257,7 +255,6 @@ export default class CollectMap extends React.Component {
         layout: {
           "line-join": "round",
           "line-cap": "round"
-
         },
         paint: {
           "line-color": color,
@@ -278,7 +275,7 @@ export default class CollectMap extends React.Component {
       type: "FeatureCollection",
       features: projectPlots.map(p => ({
         type: "Feature",
-        properties: {id: p.id, title: "Test", name: "NameTest"},
+        properties: {id: p.id},
         geometry: p.geom
       }))
     };

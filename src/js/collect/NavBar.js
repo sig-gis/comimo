@@ -30,7 +30,7 @@ const ButtonRowInner = styled.div`
 `;
 
 const PlotNumberInput = styled.input`
-   margine-left: 1;
+   margin-left: 1rem;
    width: 3em;
 `;
 
@@ -44,10 +44,8 @@ export default function NavBar({currentPlotId, goToPlot, nextPlot, prevPlot, set
         autoComplete="off"
         id="plotId"
         min="1"
-        onChange={e => {
-          setTargetPlotNumber(e.target.value);
-        }}
-        onKeyDown={() => goToPlot(targetPlotNumber)}
+        onChange={e => setTargetPlotNumber(e.target.value)}
+        onKeyDown={e => { if (e.key === "Enter") goToPlot(targetPlotNumber); }}
         type="number"
         value={targetPlotNumber}
       />
