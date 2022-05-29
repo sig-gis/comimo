@@ -3,7 +3,6 @@ import ReactDOM from "react-dom";
 import styled from "styled-components";
 import {ReactTabulator} from "react-tabulator";
 
-import {isEqual} from "lodash";
 import {PageLayout, MainContext} from "../components/PageLayout";
 import TitledForm from "../components/TitledForm";
 import Button from "../components/Button";
@@ -67,6 +66,87 @@ const OptionRow = styled.div`
     filter: brightness(90%);
   }
 `;
+
+function makeAdminTableComponent(dateDataURL, columnFields) {
+  return ({addCollectedData, availableDates, collectedData, renderButtons}) => {
+    // STATE
+    const [selectedDate, setSelectedDate] = useState(-1);
+    const [tableRef, setTableRef] = useState(-1);
+    const {localeText: {admin}} = useContext(MainContext);
+
+    /// API ///
+    const loadDateData = yearMonth =>
+      jsonRequest(dateDataURL, {yearMonth})
+        .then(data => addCollectedData(yearMonth, data))
+        .catch(err => console.error(err));
+
+    /// Helper Functions ///
+    const downloadData = type =>
+      tableRef.current.download(type, `user-mines-${selectedDate}-data.${type}`);
+
+    return (
+      <>
+        <div>
+          <label htmlFor="project-date">Reporting month</label>
+          <select
+            id="project-date"
+            onChange={e => setSelectedDate(e.target.value)}
+            style={{padding: ".25rem", borderRadius: "3px", margin: ".75rem"}}
+            value={selectedDate}
+          >
+            {selectedDate === -1 && (
+              <option key={-1} value={-1}>{availableDates.length > 0 ? admin.selectDate : admin.loadingDates}</option>
+            )}
+            {availableDates.map(d => (
+              <option key={d} value={d}>{d}</option>
+            ))}
+          </select>
+          <Button
+            disabled={selectedDate === -1}
+            onClick={() => loadDateData(selectedDate)}
+          >
+            {collectedData[selectedDate] ? admin.reload : admin.load}
+          </Button>
+        </div>
+        <ReactTabulator
+          columns={columnFields.map(m => ({...m, headerFilter: "input"}))}
+          data={collectedData[selectedDate]}
+          onRef={ref => setTableRef(ref)}
+          options={{
+            layout: "fitColumns", // fit columns to width of table
+            responsiveLayout: "hide", // hide columns that dont fit on the table
+            tooltips: true, // show tool tips on cells
+            addRowPos: "top", // when adding a new row, add it to the top of the table
+            history: true, // allow undo and redo actions on the table
+            pagination: "local",
+            paginationSize: 100,
+            movableColumns: true, // allow column order to be changed
+            resizableRows: true // allow row order to be changed
+          }}
+        />
+        {renderButtons(downloadData)}
+      </>
+    );
+  };
+}
+
+const UserMines = makeAdminTableComponent(URLS.USER_MINES,
+                                          [{title: "user", field: "username"},
+                                           {title: "email", field: "email"},
+                                           {title: "organization", field: "institution"},
+                                           {title: "longitude", field: "lat"},
+                                           {title: "latitude", field: "lon"},
+                                           {title: "reported date", field: "reportedDate"}]);
+
+const Predictions = makeAdminTableComponent(URLS.PREDICTIONS,
+                                            [{title: "user", field: "username", headerFilter: "input"},
+                                             {title: "email", field: "email", headerFilter: "input"},
+                                             {title: "organization", field: "institution", headerFilter: "input"},
+                                             {title: "project name", field: "projectName", headerFilter: "input"},
+                                             {title: "latitude", field: "lat", headerFilter: "input"},
+                                             {title: "longitude", field: "lon", headerFilter: "input"},
+                                             {title: "data layer", field: "dataLayer", headerFilter: "input"},
+                                             {title: "mine", field: "answer", headerFilter: "input"}]);
 
 function AdminContent() {
   const {localeText: {admin}} = useContext(MainContext);
@@ -141,7 +221,7 @@ function AdminContent() {
               }}
               value={role}
             >
-              {["admin", "user"].map(role => <option key={role} value={role}>{role}</option>)}
+              {["admin", "user"].map(r => <option key={r} value={role}>{role}</option>)}
             </select>
           )}
       </GridRow>
@@ -207,8 +287,8 @@ function AdminContent() {
   const renderPredictions = () => (
     <Predictions
       addCollectedData={addCollectedData}
+      availableDates={predictions}
       collectedData={collectedData}
-      predictions={predictions}
       renderButtons={renderButtons}
     />
   );
@@ -216,9 +296,9 @@ function AdminContent() {
   const renderUserMines = () => (
     <UserMines
       addCollectedData={addCollectedData}
+      availableDates={userMines}
       collectedData={collectedData}
       renderButtons={renderButtons}
-      userMines={userMines}
     />
   );
 
@@ -264,178 +344,6 @@ function AdminContent() {
     </PageContainer>
   );
 }
-
-class Predictions extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      selectedDate: -1,
-      tableRef: null
-    };
-  }
-
-  /// API Calls ///
-
-  loadDateData = dataLayer => {
-    const {addCollectedData} = this.props;
-    jsonRequest(URLS.PREDICTIONS, {dataLayer})
-      .then(data => addCollectedData(dataLayer, data))
-      .catch(err => console.error(err));
-  };
-
-  /// Helper Functions ///
-
-  downloadData = type => {
-    const {tableRef, selectedDate} = this.state;
-    tableRef.current.download(type, `validated-predictions-${selectedDate}-data.${type}`);
-  };
-
-  render() {
-    const {selectedDate} = this.state;
-    const {predictions, collectedData, renderButtons} = this.props;
-    const {localeText: {admin}} = this.context;
-
-    return (
-      <>
-        <div>
-          <label htmlFor="project-date">Prediction date</label>
-          <select
-            id="project-date"
-            onChange={e => this.setState({selectedDate: e.target.value})}
-            style={{padding: ".25rem", borderRadius: "3px", margin: ".75rem"}}
-            value={selectedDate}
-          >
-            {selectedDate === -1 && (
-              <option key={-1} value={-1}>{predictions.length > 0 ? admin.selectDate : admin.loadingDates}</option>
-            )}
-            {predictions.map(d => (
-              <option key={d} value={d}>{d}</option>
-            ))}
-          </select>
-          <Button
-            disabled={selectedDate === -1}
-            onClick={() => this.loadDateData(selectedDate)}
-          >
-            {collectedData[selectedDate] ? admin.reload : admin.load}
-          </Button>
-        </div>
-        <ReactTabulator
-          columns={[
-            // define the table columns
-            {title: "user", field: "username", headerFilter: "input"},
-            {title: "email", field: "email", headerFilter: "input"},
-            {title: "organization", field: "institution", headerFilter: "input"},
-            {title: "project name", field: "projectName", headerFilter: "input"},
-            {title: "latitude", field: "lat", headerFilter: "input"},
-            {title: "longitude", field: "lon", headerFilter: "input"},
-            {title: "data layer", field: "dataLayer", headerFilter: "input"},
-            {title: "mine", field: "answer", headerFilter: "input"}
-          ]}
-          data={this.props.collectedData[selectedDate]}
-          onRef={ref => this.setState({tableRef: ref})}
-          options={{
-            layout: "fitColumns", // fit columns to width of table
-            responsiveLayout: "hide", // hide columns that dont fit on the table
-            tooltips: true, // show tool tips on cells
-            addRowPos: "top", // when adding a new row, add it to the top of the table
-            history: true, // allow undo and redo actions on the table
-            pagination: "local",
-            paginationSize: 100,
-            movableColumns: true, // allow column order to be changed
-            resizableRows: true // allow row order to be changed
-          }}
-        />
-        {renderButtons(this.downloadData)}
-      </>
-    );
-  }
-}
-Predictions.contextType = MainContext;
-
-class UserMines extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      selectedDate: -1,
-      tableRef: null
-    };
-  }
-
-  /// API Calls ///
-
-  loadDateData = yearMonth => {
-    const {addCollectedData} = this.props;
-    jsonRequest(URLS.USER_MINES, {yearMonth})
-      .then(data => addCollectedData(yearMonth, data))
-      .catch(err => console.error(err));
-  };
-
-  /// Helper Functions ///
-
-  downloadData = type => {
-    const {tableRef, selectedDate} = this.state;
-    tableRef.current.download(type, `user-mines-${selectedDate}-data.${type}`);
-  };
-
-  render() {
-    const {selectedDate} = this.state;
-    const {userMines, collectedData, renderButtons} = this.props;
-    const {localeText: {admin}} = this.context;
-
-    return (
-      <>
-        <div>
-          <label htmlFor="project-date">Reporting month</label>
-          <select
-            id="project-date"
-            onChange={e => this.setState({selectedDate: e.target.value})}
-            style={{padding: ".25rem", borderRadius: "3px", margin: ".75rem"}}
-            value={selectedDate}
-          >
-            {selectedDate === -1 && (
-              <option key={-1} value={-1}>{userMines.length > 0 ? admin.selectDate : admin.loadingDates}</option>
-            )}
-            {userMines.map(d => (
-              <option key={d} value={d}>{d}</option>
-            ))}
-          </select>
-          <Button
-            disabled={selectedDate === -1}
-            onClick={() => this.loadDateData(selectedDate)}
-          >
-            {collectedData[selectedDate] ? admin.reload : admin.load}
-          </Button>
-        </div>
-        <ReactTabulator
-          columns={[
-            // define the table columns
-            {title: "user", field: "username", headerFilter: "input"},
-            {title: "email", field: "email", headerFilter: "input"},
-            {title: "organization", field: "institution", headerFilter: "input"},
-            {title: "longitude", field: "lat", headerFilter: "input"},
-            {title: "latitude", field: "lon", headerFilter: "input"},
-            {title: "reported date", field: "reportedDate", headerFilter: "input"}
-          ]}
-          data={this.props.collectedData[selectedDate]}
-          onRef={ref => this.setState({tableRef: ref})}
-          options={{
-            layout: "fitColumns", // fit columns to width of table
-            responsiveLayout: "hide", // hide columns that dont fit on the table
-            tooltips: true, // show tool tips on cells
-            addRowPos: "top", // when adding a new row, add it to the top of the table
-            history: true, // allow undo and redo actions on the table
-            pagination: "local",
-            paginationSize: 100,
-            movableColumns: true, // allow column order to be changed
-            resizableRows: true // allow row order to be changed
-          }}
-        />
-        {renderButtons(this.downloadData)}
-      </>
-    );
-  }
-}
-UserMines.contextType = MainContext;
 
 export function pageInit(args) {
   ReactDOM.render(
