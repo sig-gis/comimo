@@ -75,15 +75,10 @@ function AdminContent() {
   const [logList, setLogs] = useState([]);
   const [selectedPage, setPage] = useState("users");
   const [roleChanged, setRoleChanged] = useState(false);
-  const [availableDates, setAvailabeDates] = useState({predictions: [], userMines: []});
-  const [collectedData, setCollectedDate] = useState({});
-
+  const [availableDates, setAvailableDates] = useState({predictions: [], userMines: []});
+  const [collectedData, setCollectedData] = useState({});
   const {predictions, userMines} = availableDates;
-
-
-  const addCollectedData = (dataLayer, data) => {
-    setCollectedDate({...collectedData, [dataLayer]: data});
-  };
+  const addCollectedData = (dataLayer, data) => setCollectedData({...collectedData, [dataLayer]: data});
 
   useEffect(() => {
     // eslint-disable-next-line no-use-before-define
@@ -101,9 +96,9 @@ function AdminContent() {
     });
 
   const getLogs = () => jsonRequest(URLS.LOGS)
-        .then(result => { setLogs(result); });
+    .then(result => setLogs(result));
 
-  const updateUserRoles = (id, role) => {
+  const updateUserRoles = _ => {
     const updatedUserList = userList.filter((u, i) => u.role !== savedUserList[i].role);
     jsonRequest(
       "/update-user-role",
@@ -121,12 +116,10 @@ function AdminContent() {
       .catch(err => console.error(err));
   };
 
-  const loadDates = () => (
+  const loadDates = () =>
     jsonRequest(URLS.DATA_DATES)
-      .then(data => {
-        setAvailabeDates(data);
-      })
-      .catch(err => console.error(err)))
+      .then(data => setAvailableDates(data))
+      .catch(err => console.error(err));
 
   /// Render Functions ///
 
@@ -138,19 +131,19 @@ function AdminContent() {
         <label className="col-4">{username}</label>
         <label className="col-5">{email}</label>
         {(userId === "Id") ? <label className="col-2">{role} </label>
-         : (
-           <select
-             className="w-20"
-             id="role-selection"
-             onChange={e => {
-               setUsers([...(userList.slice(0, i)), {...user, role: e.target.value}, ...userList.slice(i + 1)]);
-               setRoleChanged(isEqual(userList, savedUserList));
-             }}
-             value={role}
-           >
-             {["admin", "user"].map(role => <option key={role} value={role}>{role}</option>)}
-           </select>
-         )}
+          : (
+            <select
+              className="w-20"
+              id="role-selection"
+              onChange={e => {
+                setUsers([...(userList.slice(0, i)), {...user, role: e.target.value}, ...userList.slice(i + 1)]);
+                setRoleChanged(isEqual(userList, savedUserList));
+              }}
+              value={role}
+            >
+              {["admin", "user"].map(role => <option key={role} value={role}>{role}</option>)}
+            </select>
+          )}
       </GridRow>
     );
   };
@@ -189,22 +182,6 @@ function AdminContent() {
     </GridSection>
   );
 
-  const rendePredictions = () => (
-    <Predictions
-      addCollectedData={addCollectedData}
-      collectedData={collectedData}
-      predictions={predictions}
-      renderButtons={renderButtons}
-    />);
-
-  const renderUserMines = () => (
-    <UserMines
-      addCollectedData={addCollectedData}
-      collectedData={collectedData}
-      renderButtons={renderButtons}
-      userMines={userMines}
-    />);
-
   const renderButtons = downloadData => (
     <div
       style={{
@@ -227,6 +204,23 @@ function AdminContent() {
     </div>
   );
 
+  const renderPredictions = () => (
+    <Predictions
+      addCollectedData={addCollectedData}
+      collectedData={collectedData}
+      predictions={predictions}
+      renderButtons={renderButtons}
+    />
+  );
+
+  const renderUserMines = () => (
+    <UserMines
+      addCollectedData={addCollectedData}
+      collectedData={collectedData}
+      renderButtons={renderButtons}
+      userMines={userMines}
+    />
+  );
 
   return (
     <PageContainer>
@@ -262,7 +256,7 @@ function AdminContent() {
               height: "100%"
             }}
           >
-            {selectedPage === "predictions" && rendePredictions()}
+            {selectedPage === "predictions" && renderPredictions()}
             {selectedPage === "userMines" && renderUserMines()}
           </div>
         </DataArea>
@@ -285,9 +279,7 @@ class Predictions extends React.Component {
   loadDateData = dataLayer => {
     const {addCollectedData} = this.props;
     jsonRequest(URLS.PREDICTIONS, {dataLayer})
-      .then(data => {
-        addCollectedData(dataLayer, data);
-      })
+      .then(data => addCollectedData(dataLayer, data))
       .catch(err => console.error(err));
   };
 
@@ -336,7 +328,7 @@ class Predictions extends React.Component {
             {title: "project name", field: "projectName", headerFilter: "input"},
             {title: "latitude", field: "lat", headerFilter: "input"},
             {title: "longitude", field: "lon", headerFilter: "input"},
-            {title: "dataLayer", field: "dataLayer", headerFilter: "input"},
+            {title: "data layer", field: "dataLayer", headerFilter: "input"},
             {title: "mine", field: "answer", headerFilter: "input"}
           ]}
           data={this.props.collectedData[selectedDate]}
@@ -358,7 +350,6 @@ class Predictions extends React.Component {
     );
   }
 }
-
 Predictions.contextType = MainContext;
 
 class UserMines extends React.Component {
@@ -375,9 +366,7 @@ class UserMines extends React.Component {
   loadDateData = yearMonth => {
     const {addCollectedData} = this.props;
     jsonRequest(URLS.USER_MINES, {yearMonth})
-      .then(data => {
-        addCollectedData(yearMonth, data);
-      })
+      .then(data => addCollectedData(yearMonth, data))
       .catch(err => console.error(err));
   };
 
@@ -425,7 +414,7 @@ class UserMines extends React.Component {
             {title: "organization", field: "institution", headerFilter: "input"},
             {title: "longitude", field: "lat", headerFilter: "input"},
             {title: "latitude", field: "lon", headerFilter: "input"},
-            {title: "reportedDate", field: "reportedDate", headerFilter: "input"}
+            {title: "reported date", field: "reportedDate", headerFilter: "input"}
           ]}
           data={this.props.collectedData[selectedDate]}
           onRef={ref => this.setState({tableRef: ref})}
