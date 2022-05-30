@@ -286,7 +286,6 @@ class HomeContents extends React.Component {
               <SideIcon
                 clickHandler={() => window.location.assign("/admin")}
                 icon="admin"
-                parentClass=""
                 tooltip={home.admin}
               />
             )}
