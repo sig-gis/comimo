@@ -45,17 +45,17 @@
       (doseq [{:keys [user_id email default_lang] :as user} user-subs]
         (try
           (let
-           [regions (-> user (:regions) (.getArray) (vec))
-            {:keys [action message]} (create-project! user_id
-                                                      (str (if (= "en" default_lang) "Alert for " "Alerta para ")
-                                                           latest-image)
-                                                      regions
-                                                      latest-image)]
+              [regions                  (->> user :region (into-array String))
+               {:keys [action message]} (create-project! user_id
+                                                         (str (if (= "en" default_lang) "Alert for " "Alerta para ")
+                                                              latest-image)
+                                                         regions
+                                                         latest-image)]
             (when (= action "Created")
               (println "email sent to " email)
               #_(send-alert-email email default_lang))
             (call-sql "set_last_alert_for" user_id latest-time)
-            (call-sql "log_email_alert" user_id action message (str/join "__" regions)))
+            (call-sql "log_email_alert" user_id action message regions))
           (catch Exception e
             (call-sql "log_email_alert" user_id "Error" (ex-message e) "")))))))
 

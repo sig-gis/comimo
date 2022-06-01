@@ -47,7 +47,7 @@ CREATE TABLE projects (
     project_uid     SERIAL PRIMARY KEY,
     user_rid        integer NOT NULL REFERENCES users (user_uid) ON DELETE CASCADE ON UPDATE CASCADE,
     name            text NOT NULL,
-    regions         text,
+    regions         varchar[],
     data_layer      text,
     boundary        geometry(geometry,4326),
     status          text DEFAULT 'active',
@@ -73,6 +73,6 @@ CREATE TABLE auto_email_logs (
     user_rid          integer NOT NULL REFERENCES users (user_uid) ON DELETE CASCADE ON UPDATE CASCADE,
     finish_status     text,
     finish_message    text,
-    regions           text
+    regions           varchar[]
 );
 CREATE INDEX email_log_user_rid ON auto_email_logs (user_rid);
