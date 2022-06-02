@@ -39,7 +39,7 @@ class CollectContent extends React.Component {
   /// Lifecycle Functions ///
 
   componentDidMount() {
-    this.processModal(() => Promise.all([this.getProjectData(), this.getProjectPlots(), this.getNICFIDates()]))
+    Promise.all([this.getProjectData(), this.getProjectPlots(), this.getNICFIDates()])
       .then(([projectDetails, _, nicfiLayers]) => {
         const dateRegex = /\d{4}-\d{2}/g;
         const projectDate = last([...projectDetails.dataLayer.matchAll(dateRegex)])[0];
