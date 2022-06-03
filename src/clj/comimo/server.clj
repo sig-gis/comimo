@@ -1,5 +1,6 @@
 (ns comimo.server
   (:require [cider.nrepl             :refer [cider-nrepl-handler]]
+            [clojure.java.io         :as io]
             [comimo.db.subscriptions :refer [send-email-alerts]]
             [comimo.handler          :refer [create-handler-stack]]
             [nrepl.server            :as nrepl-server]
@@ -9,8 +10,7 @@
             [triangulum.database     :refer [call-sql]]
             [triangulum.logging      :refer [log-str set-log-path!]]
             [triangulum.notify       :refer [available? ready!]]
-            [triangulum.sockets      :refer [send-to-server! socket-open?]]
-            [clojure.java.io         :as io]))
+            [triangulum.sockets      :refer [send-to-server! socket-open?]]))
 
 (defonce ^:private server             (atom nil))
 (defonce ^:private repl-server        (atom nil))
