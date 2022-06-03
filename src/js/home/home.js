@@ -292,7 +292,6 @@ class HomeContents extends React.Component {
             <SideIcon
               clickHandler={() => setShowInfo(true)}
               icon="info"
-              parentClass=""
               tooltip={home.appInfoTooltip}
             />
           </SideBar>
