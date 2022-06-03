@@ -2,7 +2,7 @@
 
 -- Adds an administrator and a user
 INSERT INTO users
-    (user_uid, email, password, administrator, reset_key, verified)
+    (user_uid, email, password, administrator, token, verified)
 VALUES
     (1, 'admin@comimo.dev', crypt('admin', gen_salt('bf')), TRUE, null, TRUE),
     (2, 'user@comimo.dev', crypt('user', gen_salt('bf')), FALSE, null, TRUE),

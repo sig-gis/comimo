@@ -10,7 +10,7 @@ CREATE TABLE users (
     username        text NOT NULL UNIQUE,
     email           text NOT NULL UNIQUE,
     password        varchar(72) NOT NULL,
-    reset_key       text DEFAULT NULL,
+    token           text DEFAULT NULL,
     verified        boolean DEFAULT FALSE,
     created_date    date DEFAULT NOW(),
     role            text DEFAULT 'user' CHECK (role in ('user', 'admin')),

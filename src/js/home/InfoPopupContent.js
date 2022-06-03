@@ -44,28 +44,28 @@ export default class InfoPopupContent extends React.Component {
     const layerToInfo = {
       nMines:
         <PopupMapInfo key="nMines">
-          <label><b>{localeText.nMines}: </b></label>
+          <label><strong>{localeText.nMines}: </strong></label>
           <label>{nMines ? localeText.eeLayerDetected : localeText.eeLayerNotDetected}</label>
         </PopupMapInfo>,
       pMines:
         <PopupMapInfo key="pMines">
-          <label><b>{localeText.nMines}: </b></label>
+          <label><strong>{localeText.nMines}: </strong></label>
           <label>{pMines ? localeText.eeLayerDetected : localeText.eeLayerNotDetected}</label>
         </PopupMapInfo>,
       cMines:
         <PopupMapInfo key="cMines">
-          <label><b>{localeText.cMines}: </b></label>
+          <label><strong>{localeText.cMines}: </strong></label>
           <label>{cMines ? localeText.eeLayerDetected : localeText.eeLayerNotDetected}</label>
         </PopupMapInfo>,
       municipalBounds:
         <PopupMapInfo key="municipalBounds">
-          <label><b>{localeText.municipalBoundsPopup}: </b></label>
+          <label><strong>{localeText.municipalBoundsPopup}: </strong></label>
           <label>{municipalBounds ? municipalBounds[0] + ", " + municipalBounds[1] : localeText.municipalBoundsNotFound}</label>
         </PopupMapInfo>,
       protectedAreas: protectedAreas
         && (
           <PopupMapInfo key="protectedAreas">
-            <label> <b>{localeText.protectedAreasPopup}:</b></label>
+            <label> <strong>{localeText.protectedAreasPopup}:</strong></label>
             <label>{localeText.protectedAreasCategory}:</label>
             <label> {protectedAreas[0]}</label>
             <label>{localeText.protectedAreasName}:</label>
@@ -74,27 +74,26 @@ export default class InfoPopupContent extends React.Component {
         ),
       otherAuthorizations: otherAuthorizations && (
         <PopupMapInfo key="otherAuthorizations">
-          <label><b>{localeText.otherAuthorizationsPopup}: </b></label>
+          <label><strong>{localeText.otherAuthorizationsPopup}: </strong></label>
           <label>{otherAuthorizations}</label>
         </PopupMapInfo>
       ),
-      legalMines: legalMines
-        && (
-          <PopupMapInfo key="legalMines">
-            <label><b>{localeText.legalMinesPopup}: </b></label>
-            <label>{legalMines}</label>
-          </PopupMapInfo>
-        ),
+      legalMines: legalMines && (
+        <PopupMapInfo key="legalMines">
+          <label><strong>{localeText.legalMinesPopup}: </strong></label>
+          <label>{legalMines}</label>
+        </PopupMapInfo>
+      ),
       tierrasDeCom: tierrasDeCom
         && (
           <PopupMapInfo key="tierrasDeCom">
-            <label><b>{localeText.tierrasDeComPopup}: </b></label>
+            <label><strong>{localeText.tierrasDeComPopup}: </strong></label>
             <label>{tierrasDeCom}</label>
           </PopupMapInfo>
         ),
       resguardos: resguardos && (
         <PopupMapInfo key="visibleLayers">
-          <label><b>{localeText.resguardosPopup}: </b></label>
+          <label><strong>{localeText.resguardosPopup}: </strong></label>
           <label>{resguardos}</label>
         </PopupMapInfo>
       )
@@ -102,6 +101,7 @@ export default class InfoPopupContent extends React.Component {
 
     return (Object.keys(layerInfo).length === visibleLayers.length
       ? (
+<<<<<<< HEAD
         <div className="d-flex flex-column">
           <PopupMapInfo key="latLong">
             <label><b>Lat: </b></label>
@@ -109,6 +109,12 @@ export default class InfoPopupContent extends React.Component {
             <label><b>Long: </b></label>
             <label>{toPrecision(lon, 4)}</label>
           </PopupMapInfo>
+=======
+        <div className="d-flex flex-column font-small">
+          <div>
+            <label><strong>Lat: </strong>{toPrecision(lat, 4)}, <strong>Long: </strong>{toPrecision(lon, 4)}</label>
+          </div>
+>>>>>>> 595ba09 (Update naming and styling for consistency)
           {availableLayers.filter(l => visibleLayers.includes(l)).map(l => layerToInfo[l])}
         </div>
       )
