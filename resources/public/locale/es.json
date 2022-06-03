@@ -193,7 +193,7 @@
         "userAccountTitle": "Actualizar cuenta",
         "updated": "Tu cuenta ha sido actualizada.",
         "save": "Guardar",
-        "errorEmail": "Ya existe un usuario con este correo electrónico.",
+        "errorEmail": "Error al enviar el correo electrónico de restablecimiento.",
         "errorUsername": "Ya existe un usuario con este nombre.",
         "errorCreating": "Se produjo un error al crear nuevo usuario. Contactar con soporte.",
         "errorLogin": "Nombre de usuario y/o contraseña no válidos. Si te registraste recientemente, por favor valida tu cuenta a través del link que recibiste en tu email.",
