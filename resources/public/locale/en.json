@@ -194,7 +194,7 @@
         "userAccountTitle": "Update account",
         "updated": "Your account has been updated.",
         "save": "Save",
-        "errorEmail": "A user with this email already exists.",
+        "errorEmail": "Error sending reset email.",
         "errorUsername": "A user with this username already exists.",
         "errorCreating": "An error occurred while creating a new user. Contact support.",
         "errorLogin": "Invalid username and password combination.  If you have registered, check your email for a new user verification link.",
@@ -208,5 +208,12 @@
         "errorPassMatch": "Your passwords must match.",
         "errorEmailReq": "Please enter your email.",
         "errorUpdating": "An error occurred while updating account. Contact support."
+    },
+    "collect": {
+        "mina": "Mine",
+        "noMina": "No Mine",
+        "go": "Go",
+        "exit": "Exit",
+        "next": "Next"
     }
 }

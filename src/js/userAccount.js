@@ -177,7 +177,7 @@ class UserAccount extends React.Component {
                 Logout
               </Button>
               <Button
-                onClick={this.updateUser}
+                type="submit"
               >
                 {localeText.save}
               </Button>

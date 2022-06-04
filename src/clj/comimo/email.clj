@@ -46,6 +46,7 @@
                            (get-base-url)
                            token
                            email)}]
+
     (send-mail email nil nil (title lang) (text lang) "text/plain")))
 
 (defn send-alert-mail [email project-url lang]

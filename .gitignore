@@ -8,9 +8,11 @@ announcement.txt
 .cpcache/
 logs
 static
-node_modules
+node_modules/
 target/
 package-lock.json
 __pycache__
 classes
 .nrepl-port
+.log/
+.DS_Store

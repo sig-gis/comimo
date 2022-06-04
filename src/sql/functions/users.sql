@@ -58,7 +58,6 @@ $$ LANGUAGE SQL;
 -- Updates a new user to the database
 CREATE OR REPLACE FUNCTION update_user(
     _user_id         integer,
-    _password        text,
     _full_name       text,
     _sector          text,
     _institution     text,
@@ -66,8 +65,7 @@ CREATE OR REPLACE FUNCTION update_user(
  ) RETURNS void AS $$
 
     UPDATE users
-    SET password =  crypt(_password, gen_salt('bf')),
-        full_name = _full_name,
+    SET full_name = _full_name,
         sector = _sector,
         institution = _institution,
         default_lang = _default_lang

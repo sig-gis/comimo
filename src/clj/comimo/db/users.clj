@@ -121,7 +121,7 @@
 
         :else nil))
 
-(defn password-reset [{:keys [params]}]
+(defn password-reset [{:keys [params]}]=
   (let [email    (:email params)
         token    (:token params)
         password (:password params)

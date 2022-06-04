@@ -91,6 +91,14 @@ class CollectContent extends React.Component {
     this.setState({currentPlotId: nextPlot.id});
   };
 
+  goToPlot = number => {
+    const {currentPlotId, projectPlots} = this.state;
+    if (number > 0 && number <= projectPlots.length) {
+      const nextPlot = projectPlots[number - 1];
+      this.setState({currentPlotId: nextPlot.id});
+    }
+  };
+
   prevPlot = () => {
     const {currentPlotId, projectPlots} = this.state;
     const plotsCopy = [...projectPlots].reverse();
@@ -140,6 +148,7 @@ class CollectContent extends React.Component {
           boundary={projectDetails.boundary}
           currentPlot={currentPlot}
           extraParams={this.state.extraParams}
+          goToPlot={this.goToPlot}
           mapboxToken={this.props.mapboxToken}
           myHeight={myHeight}
           projectPlots={projectPlots}
@@ -181,6 +190,7 @@ class CollectContent extends React.Component {
         )}
         <NavBar
           currentPlotId={this.state.currentPlotId}
+          goToPlot={this.goToPlot}
           nextPlot={this.nextPlot}
           prevPlot={this.prevPlot}
           setPlotAnswer={this.setPlotAnswer}
