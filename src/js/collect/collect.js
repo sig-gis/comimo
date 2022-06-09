@@ -51,13 +51,6 @@ class CollectContent extends React.Component {
       });
   }
 
-  processModal = callBack => new Promise(() => Promise.resolve(
-    this.setState(
-      {showModal: true},
-      () => callBack().finally(() => this.setState({showModal: false}))
-    )
-  ));
-
   getProjectData = () => jsonRequest(URLS.PROJ_DATA, {projectId: this.props.projectId})
     .then(result => {
       this.setState({projectDetails: result});
