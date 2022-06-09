@@ -51,13 +51,6 @@ class CollectContent extends React.Component {
       });
   }
 
-  processModal = callBack => new Promise(() => Promise.resolve(
-    this.setState(
-      {showModal: true},
-      () => callBack().finally(() => this.setState({showModal: false}))
-    )
-  ));
-
   getProjectData = () => jsonRequest(URLS.PROJ_DATA, {projectId: this.props.projectId})
     .then(result => {
       this.setState({projectDetails: result});
@@ -86,16 +79,18 @@ class CollectContent extends React.Component {
   };
 
   nextPlot = () => {
+    const {localeText: {home}} = this.context;
     const {currentPlotId, projectPlots} = this.state;
     const nextPlot = projectPlots.find(p => p.id > currentPlotId) || projectPlots[0];
-    currentPlotId === nextPlot.id ? alert("No more plots") : this.setState({currentPlotId: nextPlot.id});
+    currentPlotId === nextPlot.id ? alert(home.noMorePlots) : this.setState({currentPlotId: nextPlot.id});
   };
 
   prevPlot = () => {
+    const {localeText: {home}} = this.context;
     const {currentPlotId, projectPlots} = this.state;
     const plotsCopy = [...projectPlots].reverse();
     const prevPlot = plotsCopy.find(p => p.id < currentPlotId) || plotsCopy[0];
-    currentPlotId === prevPlot.id ? alert("No more plots") : this.setState({currentPlotId: prevPlot.id});
+    currentPlotId === prevPlot.id ? alert(home.noMorePlots) : this.setState({currentPlotId: prevPlot.id});
   };
 
   setPlotAnswer = answer => {
