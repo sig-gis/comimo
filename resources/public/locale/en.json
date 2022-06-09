@@ -26,7 +26,8 @@
         "downloadTooltip": "Download data",
         "appInfoTooltip": "App info",
         "reportToolTip": "Report mine",
-        "loading": "Loading"
+        "loading": "Loading",
+        "admin": "Admin"
     },
     "appInfo": {
         "download": "Download validated data",

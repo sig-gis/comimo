@@ -26,7 +26,8 @@
         "downloadTooltip": "Descargar datos",
         "appInfoTooltip": "Información de la aplicación",
         "reportToolTip": "Reportar mina",
-        "loading": "Cargando"
+        "loading": "Cargando",
+        "admin": "Administración"
     },
     "appInfo": {
         "download": "Descargar datos validados",
