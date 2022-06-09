@@ -72,7 +72,7 @@ function makeAdminTableComponent(dateDataURL, columnFields) {
   return ({addCollectedData, availableDates, collectedData, renderButtons}) => {
     // STATE
     const [selectedDate, setSelectedDate] = useState(-1);
-    const [tableRef, setTableRef] = useState(-1);
+    const [tableRef, setTableRef] = useState(null);
     const {localeText: {admin}} = useContext(MainContext);
 
     /// API ///
