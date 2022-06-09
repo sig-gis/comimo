@@ -28,6 +28,7 @@
         "reportToolTip": "Reportar mina",
         "loading": "Cargando",
         "admin": "Administración"
+        "noMorePlots": "No más parcelas"
     },
     "appInfo": {
         "download": "Descargar datos validados",

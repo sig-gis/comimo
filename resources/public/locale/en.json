@@ -28,6 +28,7 @@
         "reportToolTip": "Report mine",
         "loading": "Loading",
         "admin": "Admin"
+        "noMorePlots": "No more plots"
     },
     "appInfo": {
         "download": "Download validated data",
