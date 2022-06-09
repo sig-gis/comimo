@@ -44,13 +44,12 @@
     (when-let [user-subs (call-sql "get_unsent_subscriptions" latest-time)]
       (doseq [{:keys [user_id email default_lang] :as user} user-subs]
         (try
-          (let
-              [regions                  (->> user :region (into-array String))
-               {:keys [action message]} (create-project! user_id
-                                                         (str (if (= "en" default_lang) "Alert for " "Alerta para ")
-                                                              latest-image)
-                                                         regions
-                                                         latest-image)]
+          (let [regions                  (->> user :regions (into-array String))
+                {:keys [action message]} (create-project! user_id
+                                                          (str (if (= "en" default_lang) "Alert for " "Alerta para ")
+                                                               latest-image)
+                                                          regions
+                                                          latest-image)]
             (when (= action "Created")
               (println "email sent to " email)
               #_(send-alert-email email default_lang))

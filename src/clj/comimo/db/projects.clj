@@ -39,7 +39,7 @@
        (map build-project)))
 
 (defn get-project-by-id [{:keys [params]}]
-  (let [project-id (tc/val->int (:projectId params))]
+  (let [project-id (tcf/val->int (:projectId params))]
     (data-response (single-project-by-id project-id))))
 
 (defn user-projects [{:keys [params]}]
@@ -60,8 +60,8 @@
       ;; Create plots
       (let [plots (->> (get-points-within data-layer regions)
                        (mapv (fn [{:strs [lat lon]}]
-                               {:lat lat
-                                :lon lon
+                               {:lat         lat
+                                :lon         lon
                                 :project_rid project-id})))]
         (insert-rows! "plots" plots))
 
