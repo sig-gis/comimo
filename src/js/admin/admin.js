@@ -68,7 +68,7 @@ const OptionRow = styled.div`
   }
 `;
 
-function makeAdminTableComponent(dateDataURL, columnFields) {
+function makeAdminTableComponent(dateDataURL, columnFields, tableRefDownloadURL) {
   return ({addCollectedData, availableDates, collectedData, renderButtons}) => {
     // STATE
     const [selectedDate, setSelectedDate] = useState(-1);
@@ -83,7 +83,7 @@ function makeAdminTableComponent(dateDataURL, columnFields) {
 
     /// Helper Functions ///
     const downloadData = type =>
-      tableRef.current.download(type, `user-mines-${selectedDate}-data.${type}`);
+	  tableRef.current.download(type, `${tableRefDownloadURL}-${selectedDate}-data.${type}`);
 
     return (
       <>
@@ -135,19 +135,21 @@ const UserMines = makeAdminTableComponent(URLS.USER_MINES,
                                           [{title: "user", field: "username"},
                                            {title: "email", field: "email"},
                                            {title: "organization", field: "institution"},
-                                           {title: "longitude", field: "lat"},
-                                           {title: "latitude", field: "lon"},
-                                           {title: "reported date", field: "reportedDate"}]);
+					   {title: "latitude", field: "lat"},
+					   {title: "longitude", field: "lon"},
+                                           {title: "reported date", field: "reportedDate"}],
+					  "user-mines");
 
 const Predictions = makeAdminTableComponent(URLS.PREDICTIONS,
-                                            [{title: "user", field: "username", headerFilter: "input"},
-                                             {title: "email", field: "email", headerFilter: "input"},
-                                             {title: "organization", field: "institution", headerFilter: "input"},
-                                             {title: "project name", field: "projectName", headerFilter: "input"},
-                                             {title: "latitude", field: "lat", headerFilter: "input"},
-                                             {title: "longitude", field: "lon", headerFilter: "input"},
-                                             {title: "data layer", field: "dataLayer", headerFilter: "input"},
-                                             {title: "mine", field: "answer", headerFilter: "input"}]);
+                                            [{title: "user", field: "username"},
+                                             {title: "email", field: "email"},
+                                             {title: "organization", field: "institution"},
+                                             {title: "project name", field: "projectName"},
+                                             {title: "latitude", field: "lat"},
+                                             {title: "longitude", field: "lon"},
+                                             {title: "data layer", field: "dataLayer"},
+                                             {title: "mine", field: "answer"},
+					     "validated-predictions"]);
 
 function AdminContent() {
   const {localeText: {admin}} = useContext(MainContext);
