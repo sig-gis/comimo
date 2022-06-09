@@ -4,7 +4,6 @@ import styled from "styled-components";
 
 import {PageLayout} from "../components/PageLayout";
 import TitledForm from "../components/TitledForm";
-import Button from "../components/Button";
 
 import {URLS} from "../constants";
 import {jsonRequest} from "../utils";
