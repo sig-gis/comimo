@@ -77,7 +77,7 @@ function makeAdminTableComponent(dateDataURL, columnFields, tableRefDownloadURL)
 
     /// API ///
     const loadDateData = yearMonth =>
-      jsonRequest(dateDataURL, {yearMonth})
+	  jsonRequest(dateDataURL, {yearMonth})
         .then(data => addCollectedData(yearMonth, data))
         .catch(err => console.error(err));
 
@@ -174,8 +174,8 @@ function AdminContent() {
 
   const getUsers = () => jsonRequest(URLS.USERS)
     .then(result => {
-      setUsers(result);
-      setSaveduserlist(result);
+	  setUsers(result);
+	  setSaveduserlist(result);
     });
 
   const getLogs = () => jsonRequest(URLS.LOGS)
