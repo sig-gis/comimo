@@ -2,6 +2,7 @@ import React, {useEffect, useState, useContext} from "react";
 import ReactDOM from "react-dom";
 import styled from "styled-components";
 import {ReactTabulator} from "react-tabulator";
+import {isEqual} from "lodash";
 
 import {PageLayout, MainContext} from "../components/PageLayout";
 import TitledForm from "../components/TitledForm";
@@ -221,7 +222,7 @@ function AdminContent() {
               }}
               value={role}
             >
-              {["admin", "user"].map(r => <option key={r} value={role}>{role}</option>)}
+              {["admin", "user"].map(r => <option key={r} value={r}>{r}</option>)}
             </select>
           )}
       </GridRow>
