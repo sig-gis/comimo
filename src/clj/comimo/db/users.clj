@@ -49,7 +49,7 @@
         :else nil))
 
 (defn register [{:keys [params]}]
-  (let [reset-key    (str (UUID/randomUUID))
+  (let [token        (str (UUID/randomUUID))
         email        (:email params)
         full-name    (:fullName params)
         institution  (:institution params)
@@ -65,7 +65,7 @@
                                                     username
                                                     email
                                                     password
-                                                    reset-key
+                                                    token
                                                     full-name
                                                     sector
                                                     institution
@@ -74,7 +74,7 @@
           (do (call-sql "set_user_verified" user-id)
               (data-response ""))
           (try
-            (send-new-user-mail email reset-key default-lang)
+            (send-new-user-mail email token default-lang)
             (data-response "")
             (catch Exception _
               (data-response "errorCreating"))))))))
@@ -100,32 +100,32 @@
 
 (defn password-request [{:keys [params]}]
   (let [email        (:email params)
-        reset-key    (str (UUID/randomUUID))
+        token        (str (UUID/randomUUID))
         default-lang (:default_lang (first (call-sql "get_user_by_email" email)))]
     (if default-lang
       (try
-        (sql-primitive (call-sql "set_password_reset_key" {:log? false} email reset-key))
-        (send-reset-mail email reset-key default-lang)
+        (call-sql "set_password_reset_token" {:log? false} email token)
+        (send-reset-mail email token default-lang)
         (data-response "")
         (catch Exception e
           (println e)
           (data-response "errorEmail")))
       (data-response "errorNotFound"))))
 
-(defn- get-verify-errors [user reset-key]
+(defn- get-verify-errors [user token]
   (cond (nil? user)
         "errorNotFound"
 
-        (not= reset-key (:reset_key user))
+        (not= token (:token user))
         "errorToken"
 
         :else nil))
 
-(defn password-reset [{:keys [params]}]
-  (let [email     (:email params)
-        token     (:token params)
-        password  (:password params)
-        user      (first (call-sql "get_user_by_email" email))]
+(defn password-reset [{:keys [params]}]=
+  (let [email    (:email params)
+        token    (:token params)
+        password (:password params)
+        user     (first (call-sql "get_user_by_email" email))]
     (if-let [error-msg (get-verify-errors user token)]
       (data-response error-msg)
       (do

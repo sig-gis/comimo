@@ -31,7 +31,8 @@
     (when-not (= :SUCCESS error) (log-str message))))
 
 (defn send-new-user-mail [email token lang]
-  (let [title {:en "Welcome to CoMiMo"
+  (let [lang  (keyword lang)
+        title {:en "Welcome to CoMiMo"
                :es "Bienvenida a CoMiMo"}
         text  {:en (format (str "Welcome to CoMiMo\n\n"
                                 "Please verify your email by clicking the following link: \n\n"
@@ -45,10 +46,13 @@
                            (get-base-url)
                            token
                            email)}]
-    (send-mail email nil nil (get title (keyword lang)) (get text (keyword lang)) "text/plain")))
 
-(defn send-alert-email [email project-url lang]
-  (let [title {:en "CoMiMo: mine alert"
+    (send-mail email nil nil (title lang) (text lang) "text/plain")))
+
+
+(defn send-alert-mail [email project-url lang]
+  (let [lang  (keyword lang)
+        title {:en "CoMiMo: mine alert"
                :es "CoMiMo: alerta minera"}
         text  {:en (format (str "Mine Alert\n\n"
                                 "We have detected possible mining sites in the areas to which it is subscribed.\n\n"
@@ -62,10 +66,11 @@
                                 "Para validar esta información, diríjase al panel de validación en la aplicación o acceda directamente a: %s&locale=es")
                            (get-base-url)
                            project-url)}]
-    (send-mail email nil nil (get title (keyword lang)) (get text (keyword lang)) "text/plain")))
+    (send-mail email nil nil (title lang) (text lang) "text/plain")))
 
 (defn send-reset-mail [email token lang]
-  (let [title {:en "CoMiMo password reset"
+  (let [lang  (keyword lang)
+        title {:en "CoMiMo password reset"
                :es "CoMiMo restablecimiento de contraseña"}
         text  {:en (format (str "Password Reset\n\n"
                                 "To reset your password, click the link below and enter your new password:\n\n"
@@ -79,4 +84,4 @@
                            (get-base-url)
                            token
                            email)}]
-    (send-mail email nil nil (get title (keyword lang)) (get text (keyword lang)) "text/plain")))
+    (send-mail email nil nil (title lang) (text lang) "text/plain")))

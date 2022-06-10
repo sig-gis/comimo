@@ -39,7 +39,7 @@ class CollectContent extends React.Component {
   /// Lifecycle Functions ///
 
   componentDidMount() {
-    this.processModal(() => Promise.all([this.getProjectData(), this.getProjectPlots(), this.getNICFIDates()]))
+    Promise.all([this.getProjectData(), this.getProjectPlots(), this.getNICFIDates()])
       .then(([projectDetails, _, nicfiLayers]) => {
         const dateRegex = /\d{4}-\d{2}/g;
         const projectDate = last([...projectDetails.dataLayer.matchAll(dateRegex)])[0];
@@ -50,13 +50,6 @@ class CollectContent extends React.Component {
         });
       });
   }
-
-  processModal = callBack => new Promise(() => Promise.resolve(
-    this.setState(
-      {showModal: true},
-      () => callBack().finally(() => this.setState({showModal: false}))
-    )
-  ));
 
   getProjectData = () => jsonRequest(URLS.PROJ_DATA, {projectId: this.props.projectId})
     .then(result => {
@@ -86,9 +79,10 @@ class CollectContent extends React.Component {
   };
 
   nextPlot = () => {
+    const {localeText: {home}} = this.context;
     const {currentPlotId, projectPlots} = this.state;
     const nextPlot = projectPlots.find(p => p.id > currentPlotId) || projectPlots[0];
-    this.setState({currentPlotId: nextPlot.id});
+    currentPlotId === nextPlot.id ? alert(home.noMorePlots) : this.setState({currentPlotId: nextPlot.id});
   };
 
   goToPlot = number => {
@@ -100,10 +94,11 @@ class CollectContent extends React.Component {
   };
 
   prevPlot = () => {
+    const {localeText: {home}} = this.context;
     const {currentPlotId, projectPlots} = this.state;
     const plotsCopy = [...projectPlots].reverse();
     const prevPlot = plotsCopy.find(p => p.id < currentPlotId) || plotsCopy[0];
-    this.setState({currentPlotId: prevPlot.id});
+    currentPlotId === prevPlot.id ? alert(home.noMorePlots) : this.setState({currentPlotId: prevPlot.id});
   };
 
   setPlotAnswer = answer => {

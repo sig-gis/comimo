@@ -2,11 +2,6 @@
   display: none;
 }
 
-.disclaimer {
-  position: absolute;
-  left: 0;
-  bottom: 3px;
-}
 .search-results:hover {
   background: #eee;
   cursor: pointer;
@@ -86,9 +81,6 @@ select[multiple] optgroup option:checked::before {
   .info-modal .inner-container {
     padding: 1.5rem;
     line-height: 1rem;
-  }
-  .disclaimer {
-    position: relative;
   }
   #lnglathud-shell {
     display: none;

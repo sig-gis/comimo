@@ -63,10 +63,15 @@ const OptionRow = styled.div`
   }
 `;
 
+const Filter = styled.input`
+  margin: 0 0 1rem 1rem;
+`;
+
 function AdminContent() {
   const [userList, setUsers] = useState([]);
   const [logList, setLogs] = useState([]);
   const [selectedPage, setPage] = useState("users");
+  const [filterStr, setFilterStr] = useState("");
 
   useEffect(() => {
     // eslint-disable-next-line no-use-before-define
@@ -80,6 +85,8 @@ function AdminContent() {
 
   const getLogs = () => jsonRequest(URLS.LOGS)
     .then(result => { setLogs(result); });
+
+  const isRowIncluded = row => Object.values(row).join("").includes(filterStr);
 
   /// Render Functions ///
 
@@ -95,7 +102,7 @@ function AdminContent() {
   const renderUsers = () => (
     <GridSection>
       {renderUserRow({userId: "Id", username: "Username", email: "Email", role: "Role"})}
-      {userList.map(renderUserRow)}
+      {userList.filter(row => isRowIncluded(row)).map(renderUserRow)}
     </GridSection>
   );
 
@@ -111,7 +118,7 @@ function AdminContent() {
   const renderLogs = () => (
     <GridSection>
       {renderLogRow({jobTime: "Time", username: "Username", finishStatus: "Status", finishMessage: "Message"})}
-      {logList.map(renderLogRow)}
+      {logList.filter(row => isRowIncluded(row)).map(renderLogRow)}
     </GridSection>
   );
 
@@ -122,16 +129,31 @@ function AdminContent() {
         <div>
           <TitledForm header="Options">
             <div className="d-flex flex-column">
-              <OptionRow onClick={() => setPage("users")}>
+              <OptionRow
+                onClick={() => {
+                  setFilterStr("");
+                  setPage("users");
+                }}
+              >
                 Users
               </OptionRow>
-              <OptionRow onClick={() => setPage("logs")}>
+              <OptionRow
+                onClick={() => {
+                  setFilterStr("");
+                  setPage("logs");
+                }}
+              >
                 <label>Logs</label>
               </OptionRow>
             </div>
           </TitledForm>
         </div>
         <DataArea>
+          <Filter
+            onChange={e => setFilterStr(e.target.value)}
+            placeholder="Filter"
+            value={filterStr}
+          />
           {selectedPage === "users" && renderUsers()}
           {selectedPage === "logs" && renderLogs()}
         </DataArea>

@@ -2,7 +2,7 @@
 
 -- Adds an administrator and a user
 INSERT INTO users
-            (user_uid, username, email, password, verified, created_date, role, full_name, sector, institution, default_lang)
+    (user_uid, email, password, administrator, token, verified)
 VALUES
 (1, 'admin', 'admin@com.dev', crypt('admin', gen_salt('bf')), TRUE, '2022-04-22', 'admin', 'COM Admin', 'academic', 'dev', 'en'),
 (2, 'user', 'user@com.dev', crypt('user', gen_salt('bf')), TRUE, '2022-04-22', 'user', 'COM User', 'academic', 'dev', 'en');
