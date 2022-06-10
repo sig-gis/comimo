@@ -5,6 +5,7 @@
             [triangulum.database        :refer [call-sql sql-primitive]]
             [comimo.views               :refer [data-response]]
             [comimo.db.projects         :refer [create-project!]]
+            [comimo.email               :refer [send-alert-email]]
             [comimo.py-interop          :refer [location-in-country get-image-list]]))
 
 ;;;
@@ -53,7 +54,7 @@
                                                       latest-image)]
             (when (= action "Created")
               (println "email sent to " email)
-              #_(send-alert-email email default_lang))
+              (send-alert-email email default_lang))
             (call-sql "set_last_alert_for" user_id latest-time)
             (call-sql "log_email_alert" user_id action message (str/join "__" regions)))
           (catch Exception e
