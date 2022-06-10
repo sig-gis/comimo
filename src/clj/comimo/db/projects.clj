@@ -39,7 +39,7 @@
        (map build-project)))
 
 (defn get-project-by-id [{:keys [params]}]
-  (let [project-id (tcf/val->int (:projectId params))]
+  (let [project-id (tc/val->int (:projectId params))]
     (data-response (single-project-by-id project-id))))
 
 (defn user-projects [{:keys [params]}]
