@@ -2,6 +2,7 @@ import React, {useEffect, useState, useContext} from "react";
 import ReactDOM from "react-dom";
 import styled from "styled-components";
 import {ReactTabulator} from "react-tabulator";
+import {isEqual} from "lodash";
 
 import {PageLayout, MainContext} from "../components/PageLayout";
 import TitledForm from "../components/TitledForm";
@@ -67,11 +68,11 @@ const OptionRow = styled.div`
   }
 `;
 
-function makeAdminTableComponent(dateDataURL, columnFields) {
+function makeAdminTableComponent(dateDataURL, columnFields, tableRefDownloadURL) {
   return ({addCollectedData, availableDates, collectedData, renderButtons}) => {
     // STATE
     const [selectedDate, setSelectedDate] = useState(-1);
-    const [tableRef, setTableRef] = useState(-1);
+    const [tableRef, setTableRef] = useState(null);
     const {localeText: {admin}} = useContext(MainContext);
 
     /// API ///
@@ -82,7 +83,7 @@ function makeAdminTableComponent(dateDataURL, columnFields) {
 
     /// Helper Functions ///
     const downloadData = type =>
-      tableRef.current.download(type, `user-mines-${selectedDate}-data.${type}`);
+      tableRef.current.download(type, `${tableRefDownloadURL}-${selectedDate}-data.${type}`);
 
     return (
       <>
@@ -131,27 +132,29 @@ function makeAdminTableComponent(dateDataURL, columnFields) {
 }
 
 const UserMines = makeAdminTableComponent(URLS.USER_MINES,
-                                          [{title: "user", field: "username"},
-                                           {title: "email", field: "email"},
-                                           {title: "organization", field: "institution"},
-                                           {title: "longitude", field: "lat"},
-                                           {title: "latitude", field: "lon"},
-                                           {title: "reported date", field: "reportedDate"}]);
+                                          [{title: "user",          field: "username"},
+                                           {title: "email",         field: "email"},
+                                           {title: "organization",  field: "institution"},
+                                           {title: "latitude",      field: "lat"},
+                                           {title: "longitude",     field: "lon"},
+                                           {title: "reported date", field: "reportedDate"}],
+                                          "user-mines");
 
 const Predictions = makeAdminTableComponent(URLS.PREDICTIONS,
-                                            [{title: "user", field: "username", headerFilter: "input"},
-                                             {title: "email", field: "email", headerFilter: "input"},
-                                             {title: "organization", field: "institution", headerFilter: "input"},
-                                             {title: "project name", field: "projectName", headerFilter: "input"},
-                                             {title: "latitude", field: "lat", headerFilter: "input"},
-                                             {title: "longitude", field: "lon", headerFilter: "input"},
-                                             {title: "data layer", field: "dataLayer", headerFilter: "input"},
-                                             {title: "mine", field: "answer", headerFilter: "input"}]);
+                                            [{title: "user",         field: "username"},
+                                             {title: "email",        field: "email"},
+                                             {title: "organization", field: "institution"},
+                                             {title: "project name", field: "projectName"},
+                                             {title: "latitude",     field: "lat"},
+                                             {title: "longitude",    field: "lon"},
+                                             {title: "data layer",   field: "dataLayer"},
+                                             {title: "mine",         field: "answer"}],
+                                            "validated-predictions");
 
 function AdminContent() {
   const {localeText: {admin}} = useContext(MainContext);
   const [userList, setUsers] = useState([]);
-  const [savedUserList, setSaveduserlist] = useState([]);
+  const [savedUserList, setSavedUserList] = useState([]);
   const [logList, setLogs] = useState([]);
   const [selectedPage, setPage] = useState("users");
   const [roleChanged, setRoleChanged] = useState(false);
@@ -172,7 +175,7 @@ function AdminContent() {
   const getUsers = () => jsonRequest(URLS.USERS)
     .then(result => {
       setUsers(result);
-      setSaveduserlist(result);
+      setSavedUserList(result);
     });
 
   const getLogs = () => jsonRequest(URLS.LOGS)
@@ -221,7 +224,7 @@ function AdminContent() {
               }}
               value={role}
             >
-              {["admin", "user"].map(r => <option key={r} value={role}>{role}</option>)}
+              {["admin", "user"].map(r => <option key={r} value={r}>{r}</option>)}
             </select>
           )}
       </GridRow>
