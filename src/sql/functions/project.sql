@@ -37,7 +37,7 @@ $$ LANGUAGE SQL;
 CREATE OR REPLACE FUNCTION create_project(
     _user_id       integer,
     _name          text,
-    _regions       text,
+    _regions       varchar[],
     _data_layer    text
  ) RETURNS integer AS $$
 
@@ -98,7 +98,7 @@ CREATE OR REPLACE FUNCTION select_project_by_id(_project_id integer)
  RETURNS table (
     user_id       integer,
     name          text,
-    regions       text,
+    regions       varchar[],
     data_layer    text,
     boundary      text
  ) AS $$
@@ -118,7 +118,7 @@ CREATE OR REPLACE FUNCTION select_user_projects(_user_id integer)
  RETURNS table (
     project_id      integer,
     name            text,
-    regions         text,
+    regions         varchar[],
     data_layer      text,
     boundary        text,
     created_date    text

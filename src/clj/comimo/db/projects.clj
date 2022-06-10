@@ -29,7 +29,6 @@
       (set/rename-keys {:project_id   :id
                         :data_layer   :dataLayer
                         :created_date :createdDate})
-      (update :regions #(str/split % #"__"))
       (update :boundary tc/json->clj)))
 
 (defn- single-project-by-id [project-id]
@@ -55,14 +54,14 @@
   (let [project-id (sql-primitive (call-sql "create_project"
                                             user-id
                                             proj-name
-                                            (str/join "__" regions)
+                                            (into-array String regions)
                                             data-layer))]
     (try
       ;; Create plots
       (let [plots (->> (get-points-within data-layer regions)
                        (mapv (fn [{:strs [lat lon]}]
-                               {:lat lat
-                                :lon lon
+                               {:lat         lat
+                                :lon         lon
                                 :project_rid project-id})))]
         (insert-rows! "plots" plots))
 

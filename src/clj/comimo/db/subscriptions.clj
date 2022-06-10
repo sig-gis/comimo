@@ -42,20 +42,18 @@
   (let [latest-image (first (get-image-list))
         latest-time  (subs latest-image 0 (- (count latest-image) 2))]
     (when-let [user-subs (call-sql "get_unsent_subscriptions" latest-time)]
-      (doseq [{:keys [user_id email default_lang] :as user} user-subs]
+      (doseq [{:keys [user_id email default_lang regions]} user-subs]
         (try
-          (let
-           [regions (-> user (:regions) (.getArray) (vec))
-            {:keys [action message]} (create-project! user_id
-                                                      (str (if (= "en" default_lang) "Alert for " "Alerta para ")
-                                                           latest-image)
-                                                      regions
-                                                      latest-image)]
+          (let [{:keys [action message]} (create-project! user_id
+                                                          (str (if (= "en" default_lang) "Alert for " "Alerta para ")
+                                                               latest-image)
+                                                          regions
+                                                          latest-image)]
             (when (= action "Created")
               (println "email sent to " email)
               #_(send-alert-email email default_lang))
             (call-sql "set_last_alert_for" user_id latest-time)
-            (call-sql "log_email_alert" user_id action message (str/join "__" regions)))
+            (call-sql "log_email_alert" user_id action message (into-array String regions)))
           (catch Exception e
             (call-sql "log_email_alert" user_id "Error" (ex-message e) "")))))))
 
