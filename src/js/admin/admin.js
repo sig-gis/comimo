@@ -77,13 +77,13 @@ function makeAdminTableComponent(dateDataURL, columnFields, tableRefDownloadURL)
 
     /// API ///
     const loadDateData = yearMonth =>
-	  jsonRequest(dateDataURL, {yearMonth})
+      jsonRequest(dateDataURL, {yearMonth})
         .then(data => addCollectedData(yearMonth, data))
         .catch(err => console.error(err));
 
     /// Helper Functions ///
     const downloadData = type =>
-	  tableRef.current.download(type, `${tableRefDownloadURL}-${selectedDate}-data.${type}`);
+      tableRef.current.download(type, `${tableRefDownloadURL}-${selectedDate}-data.${type}`);
 
     return (
       <>
@@ -132,29 +132,29 @@ function makeAdminTableComponent(dateDataURL, columnFields, tableRefDownloadURL)
 }
 
 const UserMines = makeAdminTableComponent(URLS.USER_MINES,
-                                          [{title: "user", field: "username"},
-                                           {title: "email", field: "email"},
-                                           {title: "organization", field: "institution"},
-					   {title: "latitude", field: "lat"},
-					   {title: "longitude", field: "lon"},
+                                          [{title: "user",          field: "username"},
+                                           {title: "email",         field: "email"},
+                                           {title: "organization",  field: "institution"},
+                                           {title: "latitude",      field: "lat"},
+                                           {title: "longitude",     field: "lon"},
                                            {title: "reported date", field: "reportedDate"}],
-					  "user-mines");
+                                          "user-mines");
 
 const Predictions = makeAdminTableComponent(URLS.PREDICTIONS,
-                                            [{title: "user", field: "username"},
-                                             {title: "email", field: "email"},
+                                            [{title: "user",         field: "username"},
+                                             {title: "email",        field: "email"},
                                              {title: "organization", field: "institution"},
                                              {title: "project name", field: "projectName"},
-                                             {title: "latitude", field: "lat"},
-                                             {title: "longitude", field: "lon"},
-                                             {title: "data layer", field: "dataLayer"},
-                                             {title: "mine", field: "answer"},
-					     "validated-predictions"]);
+                                             {title: "latitude",     field: "lat"},
+                                             {title: "longitude",    field: "lon"},
+                                             {title: "data layer",   field: "dataLayer"},
+                                             {title: "mine",         field: "answer"}],
+                                            "validated-predictions");
 
 function AdminContent() {
   const {localeText: {admin}} = useContext(MainContext);
   const [userList, setUsers] = useState([]);
-  const [savedUserList, setSaveduserlist] = useState([]);
+  const [savedUserList, setSavedUserList] = useState([]);
   const [logList, setLogs] = useState([]);
   const [selectedPage, setPage] = useState("users");
   const [roleChanged, setRoleChanged] = useState(false);
@@ -174,8 +174,8 @@ function AdminContent() {
 
   const getUsers = () => jsonRequest(URLS.USERS)
     .then(result => {
-	  setUsers(result);
-	  setSaveduserlist(result);
+      setUsers(result);
+      setSavedUserList(result);
     });
 
   const getLogs = () => jsonRequest(URLS.LOGS)
