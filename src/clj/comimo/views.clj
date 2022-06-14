@@ -15,9 +15,9 @@
   [:head
    [:title "Colombian Mining Monitoring"]
    [:meta {:charset "utf-8"}]
-   [:meta {:name "viewport"    :content "width=device-width, user-scalable=no"}]
-  ;;  [:meta {:name "description" :content "Collect Earth Online is an Image Analysis Crowdsourcing Platform by OpenForis and Spatial Informatics Group"}]
-  ;;  [:meta {:name "keywords"    :content "collect earth online image analysis crowdsourcing platform openforis SIG spatial informatics group"}]
+   [:meta {:name "viewport" :content "width=device-width, user-scalable=no"}]
+   [:meta {:name "description" :content "Colombian Mining Monitoring (CoMiMo) is an online mining monitoring application that uses machine learning and satellite imagery to alert government authorities, NGOs and concerned citizens about possible mining activities anywhere in Colombia, and enables them to assess the location, lawfulness and potential impacts to the environment of those mines."}]
+   [:meta {:name "keywords" :content "colombian mining monitoring, comimo, satellite imagery, illegal mining, machine learning, image analysis, detection, crowdsourcing"}]
    [:link {:rel "shortcut icon" :href "favicon.ico"}]
    (when-let [ga-id (get-config :ga-id)]
      (list [:script {:async true :src (str "https://www.googletagmanager.com/gtag/js?id=" ga-id)}]
