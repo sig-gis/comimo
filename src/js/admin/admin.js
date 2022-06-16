@@ -68,7 +68,6 @@ const OptionRow = styled.div`
   }
 `;
 
-
 function makeAdminTableComponent(dateDataURL, columnFields, tableRefDownloadURL) {
   return ({addCollectedData, availableDates, collectedData, renderButtons}) => {
     // STATE
@@ -244,7 +243,7 @@ function AdminContent() {
     <>
       <GridSection>
         {renderUserRow({userId: "Id", username: "Username", email: "Email", role: "Role"})}
-       {userList.filter(row => isRowIncluded(row)).map(renderUserRow)}
+        {userList.filter(row => isRowIncluded(row)).map(renderUserRow)}
       </GridSection>
       <div className="m-3 d-flex">
         <div className="flex-grow-1"/>
