@@ -20,7 +20,9 @@
                                    :auth-type   :collect
                                    :auth-action :redirect}
    [:get  "/home"]                {:handler     (render-page "/home")}
-   [:get  "/admin"]               {:handler     (render-page "/admin")}
+   [:get  "/admin"]               {:handler     (render-page "/admin")
+                                   :auth-type   :admin
+                                   :auth-action :redirect}
    [:get  "/login"]               {:handler     (render-page "/login")}
    [:get  "/logout"]              {:handler     users/logout}
    [:get  "/password-request"]    {:handler     (render-page "/password-request")}

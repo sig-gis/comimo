@@ -68,6 +68,7 @@ const OptionRow = styled.div`
   }
 `;
 
+
 function makeAdminTableComponent(dateDataURL, columnFields, tableRefDownloadURL) {
   return ({addCollectedData, availableDates, collectedData, renderButtons}) => {
     // STATE
@@ -151,6 +152,10 @@ const Predictions = makeAdminTableComponent(URLS.PREDICTIONS,
                                              {title: "mine",         field: "answer"}],
                                             "validated-predictions");
 
+const Filter = styled.input`
+  margin: 0 0 1rem 1rem;
+`;
+
 function AdminContent() {
   const {localeText: {admin}} = useContext(MainContext);
   const [userList, setUsers] = useState([]);
@@ -162,6 +167,7 @@ function AdminContent() {
   const [collectedData, setCollectedData] = useState({});
   const {predictions, userMines} = availableDates;
   const addCollectedData = (dataLayer, data) => setCollectedData({...collectedData, [dataLayer]: data});
+  const [filterStr, setFilterStr] = useState("");
 
   useEffect(() => {
     // eslint-disable-next-line no-use-before-define
@@ -204,6 +210,8 @@ function AdminContent() {
       .then(data => setAvailableDates(data))
       .catch(err => console.error(err));
 
+  const isRowIncluded = row => Object.values(row).join("").includes(filterStr);
+
   /// Render Functions ///
 
   const renderUserRow = (user, i) => {
@@ -236,7 +244,7 @@ function AdminContent() {
     <>
       <GridSection>
         {renderUserRow({userId: "Id", username: "Username", email: "Email", role: "Role"})}
-        {userList.map(renderUserRow)}
+       {userList.filter(row => isRowIncluded(row)).map(renderUserRow)}
       </GridSection>
       <div className="m-3 d-flex">
         <div className="flex-grow-1"/>
@@ -262,7 +270,7 @@ function AdminContent() {
   const renderLogs = () => (
     <GridSection>
       {renderLogRow({jobTime: "Time", username: "Username", finishStatus: "Status", finishMessage: "Message"})}
-      {logList.map(renderLogRow)}
+      {logList.filter(row => isRowIncluded(row)).map(renderLogRow)}
     </GridSection>
   );
 
@@ -324,11 +332,31 @@ function AdminContent() {
               </OptionRow>
               <OptionRow onClick={() => setPage("userMines")}>
                 <label>{admin?.userMines}</label>
+              <OptionRow
+                onClick={() => {
+                  setFilterStr("");
+                  setPage("users");
+                }}
+              >
+                Users
+              </OptionRow>
+              <OptionRow
+                onClick={() => {
+                  setFilterStr("");
+                  setPage("logs");
+                }}
+              >
+                <label>Logs</label>
               </OptionRow>
             </div>
           </TitledForm>
         </div>
         <DataArea>
+          <Filter
+            onChange={e => setFilterStr(e.target.value)}
+            placeholder="Filter"
+            value={filterStr}
+          />
           {selectedPage === "users" && renderUsers()}
           {selectedPage === "logs" && renderLogs()}
           <div

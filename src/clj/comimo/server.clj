@@ -1,15 +1,16 @@
 (ns comimo.server
-  (:require [clojure.java.io         :as io]
-            [clojure.core.server     :refer [start-server]]
+  (:require [cider.nrepl             :refer [cider-nrepl-handler]]
+            [clojure.java.io         :as io]
+            [comimo.db.subscriptions :refer [send-email-alerts]]
+            [comimo.handler          :refer [create-handler-stack]]
+            [nrepl.server            :as nrepl-server]
             [ring.adapter.jetty      :refer [run-jetty]]
             [triangulum.cli          :refer [get-cli-options]]
             [triangulum.config       :refer [get-config]]
-            [triangulum.notify       :refer [available? ready!]]
-            [triangulum.logging      :refer [log-str set-log-path!]]
-            [triangulum.sockets      :refer [send-to-server! socket-open?]]
             [triangulum.database     :refer [call-sql]]
-            [comimo.handler          :refer [create-handler-stack]]
-            [comimo.db.subscriptions :refer [send-email-alerts]]))
+            [triangulum.logging      :refer [log-str set-log-path!]]
+            [triangulum.notify       :refer [available? ready!]]
+            [triangulum.sockets      :refer [send-to-server! socket-open?]]))
 
 (defonce ^:private server             (atom nil))
 (defonce ^:private repl-server        (atom nil))
@@ -71,8 +72,8 @@
                "  Create an SSL key for HTTPS or run without the --https-port (-P) option.")
       (do
         (when repl
-          (println "Starting REPL server on port 5555")
-          (reset! repl-server (start-server {:name :ceo-repl :port 5555 :accept 'clojure.core.server/repl})))
+          (println "Starting nREPL server on port 5555")
+          (reset! repl-server (nrepl-server/start-server :port 5555 :handler cider-nrepl-handler)))
         (reset! server (run-jetty handler config))
         (reset! scheduling-service (start-scheduling-service!))
         (set-log-path! log-dir)

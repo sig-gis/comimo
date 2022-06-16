@@ -26,7 +26,9 @@
         "downloadTooltip": "Descargar datos",
         "appInfoTooltip": "Información de la aplicación",
         "reportToolTip": "Reportar mina",
-        "loading": "Cargando"
+        "loading": "Cargando",
+        "admin": "Administración"
+        "noMorePlots": "No más parcelas"
     },
     "appInfo": {
         "download": "Descargar datos validados",
@@ -154,6 +156,8 @@
         "customRadio": "Municipios personalizados",
         "createButton": "Crear nuevo proyecto para",
         "errorNewProject": "Error al crear un nuevo proyecto",
+        "projectExists": "Proyecto ya existe",
+        "projectWithNoPlots": "Error al crear proyecto sin parcelas",
         "loginAction": "proyectos",
         "typeLabel": "Seleccione el tipo de predicción",
         "cMines": "Minas confirmadas",
@@ -193,7 +197,7 @@
         "userAccountTitle": "Actualizar cuenta",
         "updated": "Tu cuenta ha sido actualizada.",
         "save": "Guardar",
-        "errorEmail": "Ya existe un usuario con este correo electrónico.",
+        "errorEmail": "Error al enviar el correo electrónico de restablecimiento.",
         "errorUsername": "Ya existe un usuario con este nombre.",
         "errorCreating": "Se produjo un error al crear nuevo usuario. Contactar con soporte.",
         "errorLogin": "Nombre de usuario y/o contraseña no válidos. Si te registraste recientemente, por favor valida tu cuenta a través del link que recibiste en tu email.",

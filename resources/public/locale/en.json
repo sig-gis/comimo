@@ -26,7 +26,9 @@
         "downloadTooltip": "Download data",
         "appInfoTooltip": "App info",
         "reportToolTip": "Report mine",
-        "loading": "Loading"
+        "loading": "Loading",
+        "admin": "Admin"
+        "noMorePlots": "No more plots"
     },
     "appInfo": {
         "download": "Download validated data",
@@ -150,6 +152,8 @@
         "name": "Name",
         "createProject": "Create a new project",
         "errorNewProject": "Error creating new project",
+        "projectExists": "Project already exists",
+        "projectWithNoPlots": "Error creating project with no plots",
         "projectName": "Enter Project name",
         "projectRegion": "Select project municipalities",
         "subscribedRadio": "Subscribed municipalities",
@@ -194,7 +198,7 @@
         "userAccountTitle": "Update account",
         "updated": "Your account has been updated.",
         "save": "Save",
-        "errorEmail": "A user with this email already exists.",
+        "errorEmail": "Error sending reset email.",
         "errorUsername": "A user with this username already exists.",
         "errorCreating": "An error occurred while creating a new user. Contact support.",
         "errorLogin": "Invalid username and password combination.  If you have registered, check your email for a new user verification link.",
@@ -222,5 +226,12 @@
         "loadingDates": "Loading Dates...",
         "downloadJSON": "Download JSON",
         "downloadCSV": "Download CSV"
+    },
+    "collect": {
+        "mina": "Mine",
+        "noMina": "No Mine",
+        "go": "Go",
+        "exit": "Exit",
+        "next": "Next"
     }
 }

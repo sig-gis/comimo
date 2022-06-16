@@ -130,7 +130,7 @@ class HomeContents extends React.Component {
   };
 
   render() {
-    const {setShowInfo, myHeight, username, localeText: {home}} = this.context;
+    const {setShowInfo, myHeight, username, localeText: {home}, isAdmin} = this.context;
     return (
       <>
         <HomeMap
@@ -281,10 +281,17 @@ class HomeContents extends React.Component {
                 </MenuItem>
               </>
             )}
+            <div style={{"flexGrow": 1}}/>
+            {isAdmin && (
+              <SideIcon
+                clickHandler={() => window.location.assign("/admin")}
+                icon="admin"
+                tooltip={home.admin}
+              />
+            )}
             <SideIcon
               clickHandler={() => setShowInfo(true)}
               icon="info"
-              parentClass="disclaimer"
               tooltip={home.appInfoTooltip}
             />
           </SideBar>

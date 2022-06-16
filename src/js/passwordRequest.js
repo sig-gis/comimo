@@ -39,8 +39,8 @@ class PasswordForgot extends React.Component {
           alert(this.state.localeText.tokenSent);
           window.location = "/";
         } else {
-          console.error(data[1]);
-          alert(this.state.localeText[data[1]] || this.state.localeText.errorCreating);
+          console.error(data);
+          alert(this.state.localeText[data] || this.state.localeText.errorCreating);
         }
       })
       .catch(err => console.error(err)));
@@ -52,9 +52,6 @@ class PasswordForgot extends React.Component {
         className="p-2"
         id={stateKey}
         onChange={e => this.setState({[stateKey]: e.target.value})}
-        onKeyPress={e => {
-          if (e.key === "Enter") this.requestPassword();
-        }}
         placeholder={`Enter ${(label || "").toLowerCase()}`}
         type={type}
         value={this.state[stateKey]}
@@ -67,12 +64,15 @@ class PasswordForgot extends React.Component {
     return (
       <ThemeProvider theme={THEME}>
         {this.state.showModal && <LoadingModal message={localeText.modalMessage}/>}
-        <AccountForm header={localeText.requestTitle}>
+        <AccountForm
+          header={localeText.requestTitle}
+          submitFn={this.requestPassword}
+        >
           {this.renderField(localeText.email, "email", "email")}
           <div className="d-flex justify-content-end">
             <Button
               className="mt-3"
-              onClick={this.requestPassword}
+              type="submit"
             >
               {localeText.request}
             </Button>
