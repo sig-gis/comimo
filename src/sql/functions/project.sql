@@ -29,6 +29,19 @@ CREATE OR REPLACE FUNCTION add_buffer(_geom geometry, _m_buffer real)
 
 $$ LANGUAGE SQL;
 
+
+-- Checks if a new project already exists maybe under a different name
+CREATE OR REPLACE FUNCTION project_exists(_data_layer text, _regions text)
+  RETURNS boolean AS $$
+
+  SELECT EXISTS(SELECT 1
+                  FROM projects
+                 WHERE data_layer = _data_layer
+                   AND regions = _regions
+                   AND status = 'active')
+
+$$ LANGUAGE SQL;
+
 --
 --  MODIFY PROJECT FUNCTIONS
 --

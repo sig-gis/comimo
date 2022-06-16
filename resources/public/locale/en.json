@@ -152,6 +152,8 @@
         "name": "Name",
         "createProject": "Create a new project",
         "errorNewProject": "Error creating new project",
+        "projectExists": "Project already exists",
+        "projectWithNoPlots": "Error creating project with no plots",
         "projectName": "Enter Project name",
         "projectRegion": "Select project municipalities",
         "subscribedRadio": "Subscribed municipalities",
