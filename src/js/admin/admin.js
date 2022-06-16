@@ -213,20 +213,21 @@ function AdminContent() {
         <label className="col-1">{userId}</label>
         <label className="col-4">{username}</label>
         <label className="col-5">{email}</label>
-        {(userId === "Id") ? <label className="col-2">{role} </label>
-          : (
-            <select
-              className="w-20"
-              id="role-selection"
-              onChange={e => {
-                setUsers([...(userList.slice(0, i)), {...user, role: e.target.value}, ...userList.slice(i + 1)]);
-                setRoleChanged(isEqual(userList, savedUserList));
-              }}
-              value={role}
-            >
-              {["admin", "user"].map(r => <option key={r} value={r}>{r}</option>)}
-            </select>
-          )}
+        {(userId === "Id")
+         ? <label className="col-2">{role}</label>
+         : (
+           <select
+             className="w-20"
+             id="role-selection"
+             onChange={e => {
+               setUsers([...(userList.slice(0, i)), {...user, role: e.target.value}, ...userList.slice(i + 1)]);
+               setRoleChanged(isEqual(userList, savedUserList));
+             }}
+             value={role}
+           >
+             {["admin", "user"].map(r => <option key={r} value={r}>{r}</option>)}
+           </select>
+         )}
       </GridRow>
     );
   };

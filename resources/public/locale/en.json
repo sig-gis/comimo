@@ -211,7 +211,7 @@
     },
     "admin": {
         "save": "Save",
-        "errorRoleUpdate": "Error updating users role",
+        "errorRoleUpdate": "Error updating user's role",
         "users": "Users",
         "logs": "Logs",
         "predictions": "Collected predictions",
