@@ -154,7 +154,7 @@
         "customRadio": "Municipios personalizados",
         "createButton": "Crear nuevo proyecto para",
         "errorNewProject": "Error al crear un nuevo proyecto",
-        "projectExists": "proyecto ya existe",
+        "projectExists": "Proyecto ya existe",
         "projectWithNoPlots": "Error al crear proyecto sin parcelas",
         "loginAction": "proyectos",
         "typeLabel": "Seleccione el tipo de predicción",

@@ -78,11 +78,11 @@
               (try-catch-throw #(call-sql "calc_project_boundary"
                                           project-id
                                           540)
-                               "SQL Error: cannot create a project AOI.")
+                               "SQL Error: Cannot create a project AOI.")
               (try-catch-throw #(call-sql "calc_plot_geom"
                                           project-id
                                           (/ 540 2))
-                               "SQL Error: cannot create a plot geoms.")
+                               "SQL Error: Cannot create plot geometries.")
 
               ;; Return success message
               ""
@@ -99,7 +99,7 @@
                     (log (ex-message e)))
                   ;; Return error stack to user
                   (if causes
-                    (str "errorNewProject" ", " (str "-" (str/join "\n-" causes)))
+                    (str "errorNewProject, -" (str/join "\n-" causes))
                     "errorUnknown"))))))))
 
 (defn create-project [{:keys [params]}]
