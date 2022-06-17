@@ -71,16 +71,16 @@
         body  {:text {:en (format (str "Mine Alert\n\n"
                                        "We have detected possible mining sites in the areas to which it is subscribed.\n\n"
                                        "You can see the new validations listed in CoMiMo here: %s\n\n"
-                                       "To validate this information, go to the validation panel in the application or go directly to CEO: %s&locale=en")
+                                       "To validate this information, go to the validation panel in the application or go directly to CoMiMo: %s&locale=en")
                                   (get-base-url)
                                   project-url)
                       :es (format (str "¡Alerta!\n\n"
                                        "Hemos detectado posibles sitios de explotación minera en las áreas a las cuales se encuentra suscrito.\n\n"
                                        "Puede visualizar estas áreas aquí: %s\n\n"
-                                       "Para validar esta información, diríjase al panel de validación en la aplicación o acceda directamente a CEO: %s&locale=es")
+                                       "Para validar esta información, diríjase al panel de validación en la aplicación o acceda directamente a CoMiMo: %s&locale=es")
                                   (get-base-url)
                                   project-url)}
-               :html {:en (format (str "<html><body><p>"
+               :html {:en (format (str "<html><body>"
                                        "<h3>Mine Alert</h3>"
                                        "<p>We have detected possible mining sites in the areas to which it is subscribed.</p>"
                                        "<p>You can see the new validations listed in CoMiMo <a href='%s'>here.</a>.</p>"
@@ -116,7 +116,7 @@
                                   (get-base-url)
                                   token
                                   email)}
-               :html {:en (format (str "<html><body><p>"
+               :html {:en (format (str "<html><body>"
                                        "<h3>Password reset</h3>"
                                        "<p>To reset your password, click <a href='%s/password-reset?token=%s&email=%s'>here</a> and enter your new password.</p>"
                                        "</body></html>")
