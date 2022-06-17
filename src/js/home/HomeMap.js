@@ -20,8 +20,8 @@ const MapBoxWrapper = styled.div`
   width: 100%;
 
   .mapboxgl-popup-close-button {
-    font-size: 1.25rem;
-    padding: 0 3px 8px 8px;
+    font-size: 1.75rem;
+    padding: 3px 3px 8px 8px;
     line-height: 1.25rem;
   }
   .mapboxgl-popup-content {

@@ -24,7 +24,7 @@ CREATE OR REPLACE FUNCTION add_user(
     _username        text,
     _email           text,
     _password        text,
-    _reset_key       text,
+    _token           text,
     _full_name       text,
     _sector          text,
     _institution     text,
@@ -35,7 +35,7 @@ CREATE OR REPLACE FUNCTION add_user(
         username,
         email,
         password,
-        reset_key,
+        token,
         full_name,
         sector,
         institution,
@@ -45,7 +45,7 @@ CREATE OR REPLACE FUNCTION add_user(
         _username,
         _email,
         crypt(_password, gen_salt('bf')),
-        _reset_key,
+        _token,
         _full_name,
         _sector,
         _institution,
@@ -58,7 +58,6 @@ $$ LANGUAGE SQL;
 -- Updates a new user to the database
 CREATE OR REPLACE FUNCTION update_user(
     _user_id         integer,
-    _password        text,
     _full_name       text,
     _sector          text,
     _institution     text,
@@ -66,8 +65,7 @@ CREATE OR REPLACE FUNCTION update_user(
  ) RETURNS void AS $$
 
     UPDATE users
-    SET password =  crypt(_password, gen_salt('bf')),
-        full_name = _full_name,
+    SET full_name = _full_name,
         sector = _sector,
         institution = _institution,
         default_lang = _default_lang
@@ -100,11 +98,11 @@ $$ LANGUAGE SQL;
 CREATE OR REPLACE FUNCTION get_user_by_email(_email text)
  RETURNS table (
     user_id         integer,
-    reset_key       text,
+    token           text,
     default_lang    text
  ) AS $$
 
-    SELECT user_uid, reset_key, default_lang
+    SELECT user_uid, token, default_lang
     FROM users
     WHERE email = _email
 
@@ -143,11 +141,11 @@ CREATE OR REPLACE FUNCTION username_taken(_username text)
 $$ LANGUAGE SQL;
 
 -- Sets the password reset key for the given user. If one already exists, it is replaced.
-CREATE OR REPLACE FUNCTION set_password_reset_key(_email text, _reset_key text)
+CREATE OR REPLACE FUNCTION set_password_reset_token(_email text, _token text)
  RETURNS text AS $$
 
     UPDATE users
-    SET reset_key = _reset_key
+    SET token = _token
     WHERE email = _email
     RETURNING email
 
@@ -159,7 +157,7 @@ CREATE OR REPLACE FUNCTION update_password(_email text, _password text)
 
     UPDATE users
     SET password = crypt(_password, gen_salt('bf')),
-        reset_key = NULL,
+        token = NULL,
         verified = TRUE
     WHERE email = _email
 
@@ -187,5 +185,14 @@ CREATE OR REPLACE FUNCTION select_users_list()
         email,
         role
     FROM users
+
+$$ LANGUAGE SQL;
+
+CREATE OR REPLACE FUNCTION update_user_role(_user_id integer, _role text)
+ RETURNS void AS $$
+
+    UPDATE users
+    SET role = _role
+    WHERE user_uid = _user_id
 
 $$ LANGUAGE SQL;

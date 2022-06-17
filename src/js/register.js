@@ -106,9 +106,6 @@ class Register extends React.Component {
         className="p-2"
         id={stateKey}
         onChange={e => this.setState({[stateKey]: e.target.value})}
-        onKeyPress={e => {
-          if (e.key === "Enter") this.registerUser();
-        }}
         placeholder={`Enter ${(label || "").toLowerCase()}`}
         type={type}
         value={this.state[stateKey]}
@@ -167,7 +164,7 @@ class Register extends React.Component {
             <span style={{color: "red"}}>{localeText.allRequired}</span>
             <Button
               className="mt-2"
-              onClick={this.registerUser}
+              type="submit"
             >
               {localeText.register}
             </Button>
