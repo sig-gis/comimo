@@ -58,7 +58,6 @@
                       :es (format (str "<html><body>"
                                        "<h3>Bienvenida a CoMiMo</h3>"
                                        "<p>Verifique su correo electrónico haciendo clic <a href='%s/verify-user?token=%s&email=%s'>aquí</a>.</p>"
-
                                        "</body></html>")
                                   (get-base-url)
                                   token
@@ -86,7 +85,7 @@
                                        "<p>We have detected possible mining sites in the areas to which it is subscribed.</p>"
                                        "<p>You can see the new validations listed in CoMiMo <a href='%s'>here.</a>.</p>"
                                        "<p>To validate this information, go to the validation panel in the application or go directly to"
-                                       "<a href='%s&locale=en'>Comimo</a>.</p>"
+                                       "<a href='%s&locale=en'>CoMiMo</a>.</p>"
                                        "</body></html>")
                                   (get-base-url)
                                   project-url)
@@ -95,7 +94,7 @@
                                        "<p>Hemos detectado posibles sitios de explotación minera en las áreas a las cuales se encuentra suscrito.</p>"
                                        "<p>Puede visualizar estas áreas <a href='%s'>aquí</a>.</p>"
                                        "<p>Para validar esta información, diríjase al panel de validación en la aplicación o acceda directamente a"
-                                       "<a href='%s&locale=es'>Comimo</a>.</p>"
+                                       "<a href='%s&locale=es'>CoMiMo</a>.</p>"
                                        "</body></html>")
                                   (get-base-url)
                                   project-url)}}]
