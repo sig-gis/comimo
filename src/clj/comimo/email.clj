@@ -48,18 +48,18 @@
                                   (get-base-url)
                                   token
                                   email)}
-               :html {:en (format (str "<html><body><p>"
+               :html {:en (format (str "<html><body>"
                                        "<h3>Welcome to CoMiMo</h3>"
-                                       "Please verify your email by clicking <a href='%s/verify-user?token=%s&email=%s'>here</a>."
-                                       "</p></body></html>")
+                                       "<p>Please verify your email by clicking <a href='%s/verify-user?token=%s&email=%s'>here</a>.</p>"
+                                       "</body></html>")
                                   (get-base-url)
                                   token
                                   email)
-                      :es (format (str "<html><body><p>"
+                      :es (format (str "<html><body>"
                                        "<h3>Bienvenida a CoMiMo</h3>"
-                                       "Verifique su correo electrónico haciendo clic <a href='%s/verify-user?token=%s&email=%s'>aquí</a>."
+                                       "<p>Verifique su correo electrónico haciendo clic <a href='%s/verify-user?token=%s&email=%s'>aquí</a>.</p>"
 
-                                       "</p></body></html>")
+                                       "</body></html>")
                                   (get-base-url)
                                   token
                                   email)}}]
@@ -83,21 +83,19 @@
                                   project-url)}
                :html {:en (format (str "<html><body><p>"
                                        "<h3>Mine Alert</h3>"
-                                       "We have detected possible mining sites in the areas to which it is subscribed."
-                                       "You can see the new validations listed in CoMiMo <a href='%s'>here.</a>."
-                                       "To validate this information, go to the validation panel in the application or go directly to"
-                                       "<a href='%s&locale=en'>Comimo</a>."
-                                       "</p></body></html>")
+                                       "<p>We have detected possible mining sites in the areas to which it is subscribed.</p>"
+                                       "<p>You can see the new validations listed in CoMiMo <a href='%s'>here.</a>.</p>"
+                                       "<p>To validate this information, go to the validation panel in the application or go directly to"
+                                       "<a href='%s&locale=en'>Comimo</a>.</p>"
+                                       "</body></html>")
                                   (get-base-url)
                                   project-url)
-                      :es (format (str "<html> <body>"
+                      :es (format (str "<html><body>"
                                        "<h3>¡Alerta!</h3>"
-                                       "Hemos detectado posibles sitios de explotación minera en las áreas a las cuales se encuentra suscrito."
-                                       "<br/><br/>"
-                                       "Puede visualizar estas áreas <a href='%s'>aquí</a>."
-                                       "<br/><br/>"
-                                       "Para validar esta información, diríjase al panel de validación en la aplicación o acceda directamente a"
-                                       "<a href='%s&locale=es'>Comimo</a>."
+                                       "<p>Hemos detectado posibles sitios de explotación minera en las áreas a las cuales se encuentra suscrito.</p>"
+                                       "<p>Puede visualizar estas áreas <a href='%s'>aquí</a>.</p>"
+                                       "<p>Para validar esta información, diríjase al panel de validación en la aplicación o acceda directamente a"
+                                       "<a href='%s&locale=es'>Comimo</a>.</p>"
                                        "</body></html>")
                                   (get-base-url)
                                   project-url)}}]
@@ -121,13 +119,13 @@
                                   email)}
                :html {:en (format (str "<html><body><p>"
                                        "<h3>Password reset</h3>"
-                                       "To reset your password, click <a href='%s/password-reset?token=%s&email=%s'>here</a> and enter your new password."
-                                       "</p></body></html>")
+                                       "<p>To reset your password, click <a href='%s/password-reset?token=%s&email=%s'>here</a> and enter your new password.</p>"
+                                       "</body></html>")
                                   (get-base-url)
                                   token
                                   email)
-                      :es (format (str "<html><body><p>"
+                      :es (format (str "<html><body>"
                                        "<h3>Restablecimiento de contraseña</h3>"
-                                       "Para restablecer su contraseña haga clic <a href='%s/password-reset?token=%s&email=%s'>aquí</a> e ingrese su nueva contraseña."
-                                       "</p></body></html>"))}}]
+                                       "<p>Para restablecer su contraseña haga clic <a href='%s/password-reset?token=%s&email=%s'>aquí</a> e ingrese su nueva contraseña.</p>"
+                                       "</body></html>"))}}]
     (send-mail email nil nil (get title lang) (get-in body [type lang]) type)))
