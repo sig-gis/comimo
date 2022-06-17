@@ -34,18 +34,21 @@ export default class FilterPanel extends React.Component {
         <span htmlFor="select-image-date">{filter.selectLabel}:</span>
         <div className="flex flex-col">
           <Select
+            id="selectcMine"
             label={layers.cMines}
             onChange={e => this.setSelectedDate("cMines", e.target.value)}
             options={cMines}
             value={newSelectedDates.cMines}
           />
           <Select
+            id="selectnMine"
             label={layers.nMines}
             onChange={e => this.setSelectedDate("nMines", e.target.value)}
             options={nMines}
             value={newSelectedDates.nMines}
           />
           <Select
+            id="selectpMine"
             label={layers.pMines}
             onChange={e => this.setSelectedDate("pMines", e.target.value)}
             options={pMines}
@@ -58,7 +61,6 @@ export default class FilterPanel extends React.Component {
             {filter.updateMap}
           </Button>
         </div>
-
       </ToolPanel>
     );
   }

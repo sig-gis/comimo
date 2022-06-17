@@ -1,12 +1,13 @@
 import React from "react";
 
-import ToolPanel from "../components/ToolPanel";
 import Button from "../components/Button";
+import Select from "../components/Select";
+import ToolPanel from "../components/ToolPanel";
 
-import {jsonRequest} from "../utils";
-import {URLS} from "../constants";
-import {MainContext} from "../components/PageLayout";
 import LoadingModal from "../components/LoadingModal";
+import {MainContext} from "../components/PageLayout";
+import {URLS} from "../constants";
+import {jsonRequest} from "../utils";
 
 export default class DownloadPanel extends React.Component {
   constructor(props) {
@@ -52,14 +53,12 @@ export default class DownloadPanel extends React.Component {
         {this.state.showModal && <LoadingModal message="Getting URL"/>}
         <div className="flex flex-col">
           <label>{`${validate.typeLabel}:`}</label>
-          <select
+          <Select
+            id="selectMineType"
             onChange={e => this.setState({mineType: e.target.value})}
-            style={{width: "100%"}}
+            options={["pMines", "nMines", "cMines"].map(k => ({value: k, label: validate[k]}))}
             value={mineType}
-          >
-            {["pMines", "nMines", "cMines"].map(m =>
-              <option key={m} value={m}>{validate[m]}</option>)}
-          </select>
+          />
           <label>{download.regionLabel}</label>
           <div style={{marginTop: ".25rem"}}>
             <input
@@ -80,7 +79,6 @@ export default class DownloadPanel extends React.Component {
             <span>{download.selectedRadio}</span>
           </div>
           {selectedDates && (
-
             <Button
               className="mt-4"
               disabled={fetching}
@@ -88,7 +86,6 @@ export default class DownloadPanel extends React.Component {
             >
               {download.getUrl} {selectedDates[mineType]}
             </Button>
-
           )}
           {fetching
             ? <p>{`${download.fetching}...`}</p>
@@ -104,7 +101,6 @@ export default class DownloadPanel extends React.Component {
               </p>
             )}
         </div>
-
       </ToolPanel>
     );
   }

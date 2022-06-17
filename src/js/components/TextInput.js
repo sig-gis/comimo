@@ -1,12 +1,23 @@
 import React, {useState} from "react";
-import tw, {styled} from "twin.macro";
 
 const InputContainer = tw.div`flex mb-3`;
 const Input = tw.input`mt-1 p-1 m-0`;
 
 // TODO: Add showing error like when in searching for invalide coordinates...
 
-export default function TextInput({id, className, label, maxLength, onChange, onKeyUp, value, type, placeholder, render, required = false}) {
+export default function TextInput({
+  id = "textinput",
+  className = "",
+  label = "",
+  maxLength = 12,
+  onChange = () => {},
+  onKeyUp = () => {},
+  value = "",
+  type = "text",
+  placeholder = "",
+  render = null,
+  required = false
+}) {
   const [touched, setTouched] = useState(false);
   const error = required && touched && value.length === 0;
   return (
@@ -51,7 +62,6 @@ export default function TextInput({id, className, label, maxLength, onChange, on
           {`${label || "This field "} is required.`}
         </div>
       )}
-
     </div>
   );
 }

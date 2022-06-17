@@ -87,6 +87,7 @@ export default class SearchPanel extends React.Component {
       ? (
         <Select
           defaultOption={search.defaultState}
+          id="selectL1"
           label={search.stateLabel}
           onChange={e => this.setState({selectedL1: e.target.value, selectedL2: -1})}
           options={l1Names}
@@ -101,6 +102,7 @@ export default class SearchPanel extends React.Component {
       ? (
         <Select
           defaultOption={search.defaultMun}
+          id="selectL2"
           label={search.munLabel}
           onChange={e => {
             const l2Name = e.target.value;
@@ -117,6 +119,7 @@ export default class SearchPanel extends React.Component {
     return (
       <ToolPanel title={search.title}>
         <TextInput
+          id="inputGeocode"
           label={search.internetLabel}
           onChange={e => this.setState({searchText: e.target.value})}
           onKeyUp={e => { if (e.key === "Enter") this.searchGeocode(); }}
@@ -129,6 +132,7 @@ export default class SearchPanel extends React.Component {
         />
         {geoSearchResults}
         <TextInput
+          id="inputLatLng"
           label={search.coordLabel}
           onChange={e => this.setState({latLngText: e.target.value})}
           onKeyUp={e => { if (e.key === "Enter") this.processLatLng(); }}

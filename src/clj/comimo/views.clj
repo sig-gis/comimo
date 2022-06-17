@@ -15,9 +15,9 @@
   [:head
    [:title "Colombian Mining Monitoring"]
    [:meta {:charset "utf-8"}]
-   [:meta {:name "viewport"    :content "width=device-width, user-scalable=no"}]
-  ;;  [:meta {:name "description" :content "Collect Earth Online is an Image Analysis Crowdsourcing Platform by OpenForis and Spatial Informatics Group"}]
-  ;;  [:meta {:name "keywords"    :content "collect earth online image analysis crowdsourcing platform openforis SIG spatial informatics group"}]
+   [:meta {:name "viewport" :content "width=device-width, user-scalable=no"}]
+   ;;  [:meta {:name "description" :content "Collect Earth Online is an Image Analysis Crowdsourcing Platform by OpenForis and Spatial Informatics Group"}]
+   ;;  [:meta {:name "keywords"    :content "collect earth online image analysis crowdsourcing platform openforis SIG spatial informatics group"}]
    [:link {:rel "shortcut icon" :href "favicon.ico"}]
    (when-let [ga-id (get-config :ga-id)]
      (list [:script {:async true :src (str "https://www.googletagmanager.com/gtag/js?id=" ga-id)}]
@@ -25,7 +25,7 @@
    (include-css "css/bootstrap-grid.min.4.3.1.css"
                 "css/gmw_global.css"
                 "css/gmw_main.css" ; only home
-                "/css/tailwindOutput.css")
+                "css/tailwindOutput.css")
    (apply include-js
           "/js/google-charts.js"
           "/js/jquery-3.4.1.min.js"

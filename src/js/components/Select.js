@@ -9,20 +9,20 @@ function Option({option, valueKey = "value", labelKey = "label", disabled}) {
       ? [option[0], option[1]]
       : [option[valueKey], option[labelKey]];
   return (
-    <option key={value} disabled={disabled} value={value}>{label} </option>
+    <option key={value} disabled={disabled} value={value}>{label}</option>
   );
 }
 
 export default function Select({
-  disabled,
-  label,
-  id,
-  onChange,
-  value,
+  disabled = false,
+  label = "",
+  id = "select",
+  onChange = () => {},
+  value = "",
   options = [],
-  valueKey,
-  labelKey,
-  defaultOption
+  valueKey = "value",
+  labelKey = "label",
+  defaultOption = ""
 }) {
   return (
     <div className="w-100 mb-3">
@@ -34,14 +34,14 @@ export default function Select({
         onChange={onChange}
         value={value}
       >
-        <Option disabled option={[-1, defaultOption]} valueKey={valueKey}/>}
+        <Option disabled labelKey={labelKey} option={[-1, defaultOption]} valueKey={valueKey}/>
         {Array.isArray(options)
           ? options.map((o, i) =>
           /* eslint-disable-next-line react/no-array-index-key */
             <Option key={i} labelKey={labelKey} option={o} valueKey={valueKey}/>)
-          : Object.values(options).map((o, i) =>
+          : Object.values(options).map((o, _) =>
           /* eslint-disable-next-line react/no-array-index-key */
-            <Option key={i} labelKey={labelKey} option={o} valueKey={valueKey}/>)}
+            <Option labelKey={labelKey} option={o} valueKey={valueKey}/>)}
       </select>
     </div>
   );

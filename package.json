@@ -22,7 +22,6 @@
         "react": "^16.8.0",
         "react-dom": "^16.8.0",
         "react-tabulator": "^0.18.1",
-        "styled-components": "^5.3.3",
         "turf-extent": "^1.0.4"
     },
     "devDependencies": {
@@ -62,6 +61,6 @@
         "lint": "./node_modules/.bin/eslint src/js/**/* --fix",
         "tailwind": "npx tailwindcss -i ./src/css/tailwindInput.css -o ./resources/public/css/tailwindOutput.css",
         "webpack-dev": "npm run tailwind --watch && webpack --config webpack.config.js --env dev",
-        "webpack-prod": " npx tailwindcss -i ./src/css/tailwindInput.css -o ./resources/public/css/tailwindOutput.css && webpack --config webpack.config.js --env prod"
+        "webpack-prod": "npm run tailwind && webpack --config webpack.config.js --env prod"
     }
 }

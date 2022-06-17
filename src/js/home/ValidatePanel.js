@@ -179,6 +179,7 @@ export default class ValidatePanel extends React.Component {
                 value={projectName}
               />
               <Select
+                id="selectMineType"
                 label={`${validate.typeLabel}:`}
                 onChange={e => this.setState({mineType: e.target.value})}
                 options={["pMines", "nMines", "cMines"].map(m => ({value: m, label: validate[m]}))}

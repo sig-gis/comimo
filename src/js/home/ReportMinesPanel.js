@@ -74,6 +74,7 @@ export default class ReportMinesPanel extends React.Component {
         {report.subTitle}
         <TextInput
           className="mt-20"
+          id="inputCoords"
           label={report.coordLabel}
           onChange={e => this.setState({latLonText: e.target.value})}
           onKeyUp={e => { if (e.key === "Enter") this.processLatLng(); }}

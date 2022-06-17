@@ -16,6 +16,7 @@ export default function NICFIControl({extraParams, setParams, nicfiLayers}) {
   return (
     <div className="flex flex-col pl-3">
       <Select
+        id="time"
         label="Select Time"
         onChange={e => setTime(e.target.value)}
         options={nicfiLayers.map(time => ({value: time, label: time.slice(34, time.length - 7)}))}
@@ -48,7 +49,6 @@ export default function NICFIControl({extraParams, setParams, nicfiLayers}) {
           </div>
         </div>
       </div>
-
       <Button
         className="mt-4"
         onClick={() => setParams(
@@ -61,7 +61,6 @@ export default function NICFIControl({extraParams, setParams, nicfiLayers}) {
       >
           Update Map
       </Button>
-
     </div>
   );
 }
