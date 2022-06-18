@@ -67,7 +67,6 @@ class PasswordReset extends React.Component {
       placeholder={`Enter ${(label || "").toLowerCase()}`}
       type={type}
       value={fromProps ? this.props[stateKey] : this.state[stateKey]}
-
     />
   );
 
@@ -85,7 +84,7 @@ class PasswordReset extends React.Component {
           <div className="d-flex justify-content-end">
             <Button
               className="mt-3"
-              onClick={this.resetPassword}
+              type="submit"
             >
               {localeText.resetTitle}
             </Button>

@@ -61,7 +61,7 @@ CREATE OR REPLACE FUNCTION get_unsent_subscriptions(_date text)
     user_id         integer,
     email           text,
     default_lang    text,
-    regions         text[]
+    regions         varchar[]
  ) AS $$
 
     SELECT user_uid,
@@ -88,7 +88,7 @@ CREATE OR REPLACE FUNCTION log_email_alert(
     _user_id           integer,
     _finish_status     text,
     _finish_message    text,
-    _regions           text
+    _regions           varchar[]
  ) RETURNS void AS $$
 
     INSERT INTO auto_email_logs

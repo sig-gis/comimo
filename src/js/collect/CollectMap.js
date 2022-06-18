@@ -224,8 +224,29 @@ export default class CollectMap extends React.Component {
       : THEME.map.unanswered);
 
   addLayers = plots => {
+    const {goToPlot} = this.props;
     const {theMap} = this.state;
+    const shiftId = plots[0]?.id;
+
     plots.forEach(p => {
+      const number = p.id - shiftId + 1;
+      const color = this.plotColor(p.answer);
+
+      theMap.addLayer({
+        id: p.id + "sym", // mapbox needs a string
+        type: "symbol",
+        source: "plots",
+        filter: ["==", ["get", "id"], p.id],
+        layout: {
+          "text-field": "" + number,
+          "text-allow-overlap": true,
+          "text-size": 24
+        },
+        paint: {
+          "text-color": color
+        }
+      });
+
       theMap.addLayer({
         id: p.id + "", // mapbox needs a string
         type: "line",
@@ -236,9 +257,13 @@ export default class CollectMap extends React.Component {
           "line-cap": "round"
         },
         paint: {
-          "line-color": this.plotColor(p.answer),
+          "line-color": color,
           "line-width": 4
         }
+      });
+
+      theMap.on("click", p.id + "sym", e => {
+        goToPlot(number);
       });
     });
   };
@@ -258,9 +283,7 @@ export default class CollectMap extends React.Component {
       type: "geojson",
       data: geoJSON
     });
-    this.addLayers(projectPlots.filter(p => !p.answer));
-    this.addLayers(projectPlots.filter(p => p.answer === "No Mina"));
-    this.addLayers(projectPlots.filter(p => p.answer === "Mina"));
+    this.addLayers(projectPlots);
   };
 
   updateVisiblePlot = () => {
@@ -271,6 +294,11 @@ export default class CollectMap extends React.Component {
       theMap.setPaintProperty(
         id + "",
         "line-color",
+        this.plotColor(answer)
+      );
+      theMap.setPaintProperty(
+        id + "sym",
+        "text-color",
         this.plotColor(answer)
       );
       theMap.setPaintProperty(

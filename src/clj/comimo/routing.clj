@@ -20,7 +20,9 @@
                                    :auth-type   :collect
                                    :auth-action :redirect}
    [:get  "/home"]                {:handler     (render-page "/home")}
-   [:get  "/admin"]               {:handler     (render-page "/admin")}
+   [:get  "/admin"]               {:handler     (render-page "/admin")
+                                   :auth-type   :admin
+                                   :auth-action :redirect}
    [:get  "/login"]               {:handler     (render-page "/login")}
    [:get  "/logout"]              {:handler     users/logout}
    [:get  "/password-request"]    {:handler     (render-page "/password-request")}
@@ -42,6 +44,9 @@
                                    :auth-action :block}
    [:post "/user-information"]    {:handler     users/user-information
                                    :auth-type   :user
+                                   :auth-action :block}
+   [:post "/update-user-role"]    {:handler     users/update-user-role
+                                   :auth-type   :admin
                                    :auth-action :block}
    [:post "/login"]               {:handler     users/login}
    [:post "/get-users-list"]      {:handler     users/get-users-list}

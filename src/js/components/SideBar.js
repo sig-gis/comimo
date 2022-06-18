@@ -5,6 +5,8 @@ const SideBarContainer = styled.div`
   background: #ffffee;
   box-shadow: 0px 0px 0px 1px rgba(0,0,0,.1);
   height: calc(100% - 3.5rem);
+  display: flex;
+  flex-direction: column;
   margin: 0;
   padding: 0;
   position: absolute;

@@ -160,7 +160,7 @@ class Register extends React.Component {
             <span style={{color: "red"}}>{localeText.allRequired}</span>
             <Button
               className="mt-2"
-              onClick={this.registerUser}
+              type="submit"
             >
               {localeText.register}
             </Button>

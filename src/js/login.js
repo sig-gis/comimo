@@ -64,7 +64,7 @@ class Login extends React.Component {
             <a href="/password-request">{localeText.forgot}</a>
             <Button
               className="mt-3"
-              onClick={this.requestLogin}
+              type="submit"
             >
               {localeText.login}
             </Button>
