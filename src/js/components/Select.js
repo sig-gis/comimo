@@ -36,12 +36,12 @@ export default function Select({
       >
         <Option disabled labelKey={labelKey} option={[-1, defaultOption]} valueKey={valueKey}/>
         {Array.isArray(options)
-          ? options.map((o, i) =>
+          ? options.map(o =>
           /* eslint-disable-next-line react/no-array-index-key */
-            <Option key={i} labelKey={labelKey} option={o} valueKey={valueKey}/>)
-          : Object.values(options).map((o, _) =>
+            <Option labelKey={labelKey} valueKey={valueKey} option={o}/>)
+          : Object.values(options).map(o =>
           /* eslint-disable-next-line react/no-array-index-key */
-            <Option labelKey={labelKey} option={o} valueKey={valueKey}/>)}
+            <Option labelKey={labelKey} valueKey={valueKey} option={o}/>)}
       </select>
     </div>
   );
