@@ -20,7 +20,7 @@ export default function LanguageSelector({selectedLanguage, selectLanguage}) {
     >
       <img
         alt={language}
-        src={`/static/images/${languageList[language]}`}
+        src={`/img/${languageList[language]}`}
         style={{maxWidth: "100%", maxHeight: "100%"}}
       />
     </div>

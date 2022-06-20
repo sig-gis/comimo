@@ -1,6 +1,12 @@
 import React from "react";
 
-import {MainContext} from "./context";
+import Button from "../components/Button";
+import ToolPanel from "../components/ToolPanel";
+import TextInput from "../components/TextInput";
+
+import {MainContext} from "../components/PageLayout";
+import {URLS} from "../constants";
+import {jsonRequest} from "../utils";
 
 export default class ReportMinesPanel extends React.Component {
   constructor(props) {
@@ -21,15 +27,14 @@ export default class ReportMinesPanel extends React.Component {
     const [lat, lon] = selectedLatLon;
     if (lat && lon) {
       this.setState({reportingMine: true});
-      fetch("subscribe/report-mine?lat=" + lat + "&lon=" + lon)
-        .then(result => result.json())
+      jsonRequest(URLS.REPORT_MINE, {lat, lon})
         .then(result => {
-          if (result.action === "Created") {
+          if (result === "") {
             this.setState({reportedLatLon: selectedLatLon});
             alert(report.created);
-          } else if (result.action === "Exists") {
+          } else if (result === "Exists") {
             alert(report.existing);
-          } else if (result.action === "Outside") {
+          } else if (result === "Outside") {
             alert(report.outside);
           } else {
             alert(report.error);
@@ -60,47 +65,48 @@ export default class ReportMinesPanel extends React.Component {
 
   render() {
     const {latLonText, reportingMine, reportedLatLon} = this.state;
-    const {isHidden, selectedLatLon} = this.props;
+    const {selectedLatLon} = this.props;
     const {localeText: {report}} = this.context;
 
     const reported = reportedLatLon === selectedLatLon;
     return (
-      <div className={"popup-container search-panel " + (isHidden ? "see-through" : "")}>
-        <h3>{report.title}</h3>
+      <ToolPanel title={report.title}>
         {report.subTitle}
-        <label>{report.coordLabel}</label>
-        <div className="d-flex">
-          <input
-            className="w_100"
-            onChange={e => this.setState({latLonText: e.target.value})}
-            onKeyUp={e => { if (e.key === "Enter") this.processLatLng(); }}
-            value={latLonText}
-          />
-          <button className="map-upd-btn" onClick={this.processLatLng} type="button">
-            {report.goButton}
-          </button>
-        </div>
+        <TextInput
+          className="mt-20"
+          id="inputCoords"
+          label={report.coordLabel}
+          onChange={e => this.setState({latLonText: e.target.value})}
+          onKeyUp={e => { if (e.key === "Enter") this.processLatLng(); }}
+          render={() => (
+            <Button onClick={this.processLatLng}>
+              {report.goButton}
+            </Button>
+          )}
+          value={latLonText}
+        />
         <h3 className="mt-3">{report.selectedLocation}</h3>
         {selectedLatLon
           ? (
             <>
-              <span><b>{report.latitude}:</b> {selectedLatLon[0]}</span>
-              <span><b>{report.longitude}:</b> {selectedLatLon[1]}</span>
+              <div className="d-flex flex-column">
+                <span><b>{report.latitude}:</b> {selectedLatLon[0]}</span>
+                <span><b>{report.longitude}:</b> {selectedLatLon[1]}</span>
+              </div>
+
               <div style={{display: "flex", width: "100%", justifyContent: "flex-end"}}>
-                <button
-                  className="btn map-upd-btn mt-1"
+                <Button
                   disabled={reportingMine || reported}
                   onClick={this.submitMine}
-                  type="button"
                 >
                   {reported ? report.reported : report.submit}
-                </button>
+                </Button>
               </div>
             </>
           ) : (
             <span style={{fontStyle: "italic"}}>{report.noLocation}</span>
           )}
-      </div>
+      </ToolPanel>
     );
   }
 }

@@ -1,15 +1,14 @@
 import React from "react";
 
-import {MainContext} from "./context";
+import ToolPanel from "../components/ToolPanel";
+
+import {jsonRequest} from "../utils";
+import {MainContext} from "../components/PageLayout";
+import {URLS} from "../constants";
 
 export default class StatsPanel extends React.Component {
   constructor(props) {
     super(props);
-
-    this.URL = {
-      ARSTATS: "/api/getareapredicted",
-      ARTS: "/api/getareats"
-    };
 
     this.state = {
       subsListChanged: false,
@@ -51,20 +50,8 @@ export default class StatsPanel extends React.Component {
     const {selectedDate} = this.props;
     const {localeText: {stats}} = this.context;
     document.getElementById("stats1").innerHTML = `${stats.loading}...`;
-    fetch(this.URL.ARSTATS + "?layerName=" + selectedDate)
-      .then(res => res.json())
-      .then(result => {
-        const data = [];
-        for (let i = 0; i < result.names.length; i += 1) {
-          const count = result.count[i];
-          const name = result.names[i];
-          if (count > 0.0) {
-            data.push([
-              name,
-              count
-            ]);
-          }
-        }
+    jsonRequest(URLS.AREA_STATS, {dataLayer: selectedDate})
+      .then(data => {
         if (data.length > 0) {
           const dataTable = new google.visualization.DataTable();
           dataTable.addColumn("string", stats.munLabel);
@@ -94,22 +81,10 @@ export default class StatsPanel extends React.Component {
   getAreaTS() {
     const {localeText: {stats}} = this.context;
     document.getElementById("stats2").innerHTML = `${stats.loading}...`;
-    fetch(this.URL.ARTS)
-      .then(res => res.json())
-      .then(result => {
-        const data = [];
-        let nonzero = false;
-        for (let i = 0; i < result.names.length; i += 1) {
-          const count = result.count[i];
-          const dateParts = result.names[i].split("-");
-          const shortDate = `${dateParts[1]}/${dateParts[0].slice(2)} a ${dateParts[4]}/${dateParts[3].slice(2)}`;
-          data.push([
-            shortDate,
-            count
-          ]);
-          if (count > 0.0) nonzero = true;
-        }
-        if (nonzero) {
+    jsonRequest(URLS.AREA_TOTAL_STATS)
+      .then(data => {
+        const sum = data.reduce((acc, [_, c]) => acc + c, 0);
+        if (sum > 0.0) {
           const dataTable = new google.visualization.DataTable();
           dataTable.addColumn("string", stats.dateLabel);
           dataTable.addColumn("number", stats.countLabel);
@@ -137,14 +112,10 @@ export default class StatsPanel extends React.Component {
 
   render() {
     const {chartsLoaded} = this.state;
-    const {isHidden} = this.props;
     const {localeText: {stats}} = this.context;
     return (
-      <div
-        className={"popup-container stat-panel " + (isHidden ? "see-through" : "")}
-      >
+      <ToolPanel title={stats.regionTitle}>
         <div>
-          <h3>{stats.regionTitle}</h3>
           <p style={{lineHeight: "1rem", fontSize: ".75rem"}}>
             {stats.regionSubTitle}
           </p>
@@ -157,7 +128,7 @@ export default class StatsPanel extends React.Component {
             {stats.areaWarning}
           </p>
         </div>
-      </div>
+      </ToolPanel>
     );
   }
 }

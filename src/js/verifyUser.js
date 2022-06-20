@@ -1,7 +1,11 @@
 import React from "react";
 import ReactDOM from "react-dom";
+import {ThemeProvider} from "@emotion/react";
 
-import {getCookie, getLanguage} from "./utils";
+import AccountForm from "./components/AccountForm";
+
+import {getLanguage, jsonRequest} from "./utils";
+import {THEME} from "./constants";
 
 class PasswordReset extends React.Component {
   constructor(props) {
@@ -12,10 +16,9 @@ class PasswordReset extends React.Component {
   }
 
   componentDidMount() {
-    const urlParams = new URLSearchParams(window.location.search);
     Promise.all([
       this.getLocale(),
-      this.verifyUser(urlParams.get("email") || "", urlParams.get("token") || "")
+      this.verifyEmail()
     ])
       .then(data => {
         if (data[0] && data[1] === "") {
@@ -30,51 +33,38 @@ class PasswordReset extends React.Component {
       .catch(error => console.error(error));
   }
 
-  getLocale = () => fetch(
-    `/static/locale/${getLanguage(["en", "es"])}.json`,
-    {headers: {"Cache-Control": "no-cache", "Pragma": "no-cache", "Accept": "application/json"}}
-  )
-    .then(response => (response.ok ? response.json() : Promise.reject(response)))
-    .then(data => {
-      this.setState({localeText: data.users});
-      return true;
-    });
+   getLocale = () => {
+     jsonRequest(`/locale/${getLanguage(["en", "es"])}.json`, null, "GET")
+       .then(data => this.setState({localeText: data.users}))
+       .catch(err => console.error(err));
+   };
 
-  verifyUser = (email, token) => fetch(
-    "/verify-user/",
+  verifyEmail = () => jsonRequest(
+    "/verify-email",
     {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-        "X-CSRFToken": getCookie("csrftoken")
-      },
-      body: JSON.stringify({
-        token,
-        email
-      })
+      token: this.props.token,
+      email: this.props.email
     }
-  )
-    .then(response => (response.ok ? response.text() : Promise.reject(response)));
+  );
 
   render() {
     const {localeText} = this.state;
     return (
-      <div
-        className="d-flex justify-content-center"
-        style={{paddingTop: "20vh"}}
-      >
-        <div className="card">
-          <div className="card-header">{localeText.verifyUser}</div>
-          <div className="card-body">
-            <label>{localeText.verifying}...</label>
-          </div>
-        </div>
-      </div>
+      <ThemeProvider theme={THEME}>
+        <AccountForm header={localeText.verifyUser}>
+          <label>{localeText.verifying}...</label>
+        </AccountForm>
+      </ThemeProvider>
     );
   }
 }
 
 export function pageInit(args) {
-  ReactDOM.render(<PasswordReset/>, document.getElementById("main-container"));
+  ReactDOM.render(
+    <PasswordReset
+      email={args.email || ""}
+      token={args.token || ""}
+    />,
+    document.getElementById("main-container")
+  );
 }

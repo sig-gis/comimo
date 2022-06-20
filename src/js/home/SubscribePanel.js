@@ -1,18 +1,16 @@
 import React from "react";
 
 import LoginMessage from "./LoginMessage";
+import Button from "../components/Button";
+import ToolPanel from "../components/ToolPanel";
 
-import {MainContext} from "./context";
+import {URLS} from "../constants";
+import {jsonRequest} from "../utils";
+import {MainContext} from "../components/PageLayout";
 
 export default class SubscribePanel extends React.Component {
   constructor(props) {
     super(props);
-
-    this.URLS = {
-      SUBS: "subscribe/getsubs",
-      DELSUBS: "subscribe/delsubs",
-      ADDSUBS: "subscribe/addsubs"
-    };
 
     this.state = {
       subsLoaded: false
@@ -23,63 +21,43 @@ export default class SubscribePanel extends React.Component {
     this.getSubs();
   }
 
-  getSubs() {
+  subsResult = result => {
     const {updateSubList} = this.props;
-    const {isUser} = this.context;
-    if (isUser) {
-      fetch(this.URLS.SUBS)
-        .then(res => res.json())
-        .then(result => {
-          if (result.action === "Success") {
-            this.setState({
-              subsLoaded: true
-            });
-            updateSubList(result.regions.sort());
-          }
-        })
-        .catch(err => console.error(err));
+    const {localeText: {subscribe}} = this.context;
+    if (Array.isArray(result)) {
+      this.setState({subsLoaded: true});
+      updateSubList(result.sort());
+    } else {
+      alert(subscribe[result]);
     }
-  }
+  };
 
-  addSubs(region) {
-    const {updateSubList} = this.props;
-    const {subscribedList, localeText: {subscribe}} = this.context;
+  getSubs = () => {
+    jsonRequest(URLS.USER_SUBS)
+      .then(result => { this.subsResult(result); })
+      .catch(err => console.error(err));
+  };
+
+  addSubs = region => {
     if (region !== "") {
-      fetch(this.URLS.ADDSUBS + "?region=" + region[1] + "&level=" + region[0])
-        .then(res => res.json())
-        .then(result => {
-          if (result.action === "Created") {
-            const newList = [...subscribedList, result.level + "_" + result.region];
-            newList.sort();
-            updateSubList(newList);
-          } else if (result.action === "Exists") {
-            alert(subscribe.existing);
-          }
-        })
+      jsonRequest(URLS.ADD_SUBS, {region})
+        .then(result => { this.subsResult(result); })
         .catch(err => console.error(err));
     }
-  }
+  };
 
-  delSubs(data) {
-    const {updateSubList} = this.props;
-    const {subscribedList, localeText: {subscribe}} = this.context;
-    const arr = data.split("_");
-    const level = arr.splice(0, 1);
+  delSubs = region => {
+    const {localeText: {subscribe}} = this.context;
+    const arr = location.split("_");
     const delConfirm = confirm(
       `${subscribe.delConfirm1} ${arr.reverse().join(", ")}? ${subscribe.delConfirm2}`
     );
     if (delConfirm) {
-      fetch(this.URLS.DELSUBS + "?region=" + arr.reverse().join("_") + "&level=" + level)
-        .then(res => res.json())
-        .then(result => {
-          if (result.action !== "Error") {
-            const newList = subscribedList.filter(r => r !== result.level + "_" + result.region);
-            updateSubList(newList);
-          }
-        })
+      jsonRequest(URLS.DEL_SUBS, {region})
+        .then(result => { this.subsResult(result); })
         .catch(err => console.error(err));
     }
-  }
+  };
 
   renderSubscribedTable(subscribedList) {
     const {localeText: {subscribe}} = this.context;
@@ -93,10 +71,10 @@ export default class SubscribePanel extends React.Component {
           </tr>
         </thead>
         <tbody>
-          {subscribedList.map((fullRegion, idx) => {
-            const arr = fullRegion.split("_");
+          {subscribedList.map((region, idx) => {
+            const arr = region.split("_");
             return (
-              <tr key={fullRegion}>
+              <tr key={region}>
                 <td style={{width: "20px"}}>{idx + 1}</td>
                 <td style={{width: "calc(100% - 50px)"}}>
                   {arr[2] + ", "}
@@ -105,7 +83,7 @@ export default class SubscribePanel extends React.Component {
                 <td style={{width: "30px"}}>
                   <input
                     className="del-btn"
-                    onClick={() => this.delSubs(fullRegion)}
+                    onClick={() => this.delSubs(region)}
                     type="submit"
                     value="X"
                   />
@@ -120,13 +98,12 @@ export default class SubscribePanel extends React.Component {
 
   render() {
     const {subsLoaded} = this.state;
-    const {isHidden} = this.props;
-    const {selectedRegion, subscribedList, isUser, localeText: {subscribe}} = this.context;
-    const parsedRegion = selectedRegion && selectedRegion[1].split("_");
+    const {selectedRegion, subscribedList} = this.props;
+    const {username, localeText: {subscribe}} = this.context;
+    const parsedRegion = selectedRegion && selectedRegion.split("_");
     return (
-      <div className={"popup-container subs-panel " + (isHidden ? "see-through" : "")}>
-        <h3>{subscribe.title.toUpperCase()}</h3>
-        {isUser ? (
+      <ToolPanel title={subscribe.title}>
+        {username ? (
           <div>
             {subscribedList.length === 0
               ? <p>{subsLoaded ? subscribe.noSubs : subscribe.loadingSubs}</p>
@@ -136,22 +113,20 @@ export default class SubscribePanel extends React.Component {
                   {this.renderSubscribedTable(subscribedList)}
                 </div>
               )}
-            {parsedRegion && subscribedList.indexOf(selectedRegion[0] + "_" + selectedRegion[1]) === -1 && (
+            {selectedRegion && !subscribedList.includes(selectedRegion) && (
               <div style={{textAlign: "center", width: "100%"}}>
-                <button
-                  className="map-upd-btn"
+                <Button
                   onClick={() => this.addSubs(selectedRegion)}
-                  type="button"
                 >
-                  {`${subscribe.subscribeTo} ${parsedRegion[1]}, `}<i>{parsedRegion[0]}</i>
-                </button>
+                  {`${subscribe.subscribeTo} ${parsedRegion[2]}, `}<i>{parsedRegion[1]}</i>
+                </Button>
               </div>
             )}
           </div>
         ) : (
           <LoginMessage actionText={subscribe.loginAction}/>
         )}
-      </div>
+      </ToolPanel>
     );
   }
 }

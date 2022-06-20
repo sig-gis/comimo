@@ -3,22 +3,6 @@ export function toPrecision(val, n) {
   return Math.round(val * factor) / factor;
 }
 
-// From Django docs.  Not functionally written.
-export function getCookie(name) {
-  let cookieValue = null;
-  if (document.cookie && document.cookie !== "") {
-    const cookies = document.cookie.split(";");
-    for (let i = 0; i < cookies.length; i += 1) {
-      const cookie = cookies[i].trim();
-      if (cookie.substring(0, name.length + 1) === (name + "=")) {
-        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-        break;
-      }
-    }
-  }
-  return cookieValue;
-}
-
 export function getLanguage(acceptableLanguages) {
   const locale = navigator.language || navigator.browserLanguage || navigator.systemLanguage || "en";
   const language = locale.includes("-") ? locale.slice(0, 2) : locale;
@@ -28,4 +12,26 @@ export function getLanguage(acceptableLanguages) {
 export function validatePassword(password) {
   return /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/.test(password)
         || password.length >= 16;
+}
+
+export function jsonRequest(url, jsonBody = {}, method = "POST") {
+  return fetch(url,
+               {
+                 method,
+                 headers: {
+                   "Cache-Control": "no-cache",
+                   "Pragma": "no-cache",
+                   "Accept": "application/json",
+                   "Content-Type": "application/json"
+                 },
+                 ...method === "POST" && {body: JSON.stringify(jsonBody)}
+               })
+    .then(response => (response.ok ? response.json() : Promise.reject(response)));
+}
+
+export function titleCase(str) {
+  return str
+    .split(" ")
+    .map(word => word[0].toUpperCase() + word.slice(1).toLowerCase())
+    .join(" ");
 }

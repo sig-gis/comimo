@@ -1,26 +1,18 @@
+# Config
 gee-auth-key.json
 subscribe/config.py
-src/js/appConfig.js
-*.pyc
-venv/*
-gmw.sock
-logs
+config.edn
+announcement.txt
 
+# Build Directories and Files
+.cpcache/
+logs
+static
+node_modules/
+target/
+package-lock.json
 __pycache__
 classes
-target
-db.sqlite3
-
-static
-node_modules
-package-lock.json
-# Webpack output
-gmw/statics/js/home.js
-gmw/statics/js/login.js
-gmw/statics/js/passwordForgot.js
-gmw/statics/js/passwordReset.js
-gmw/statics/js/register.js
-gmw/statics/js/vendor.js
-gmw/statics/js/downloadData.js
-gmw/statics/js/verifyUser.js
-gmw/statics/js/userAccount.js
+.nrepl-port
+.log/
+.DS_Store

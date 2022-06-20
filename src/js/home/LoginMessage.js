@@ -1,24 +1,21 @@
-import React from "react";
+import React, {useContext} from "react";
 
-import {MainContext} from "./context";
+import Button from "../components/Button";
+
+import {MainContext} from "../components/PageLayout";
 
 export default function LoginMessage({actionText}) {
+  const {localeText: {users}} = useContext(MainContext);
   return (
-    <MainContext.Consumer>
-      {({localeText: {users}}) => (
-        <div style={{textAlign: "center", width: "100%"}}>
-          <p>{`${users.toView} ${actionText}.`}</p>
-          <button
-            className="map-upd-btn"
-            onClick={() => {
-              location.href = "login/";
-            }}
-            type="button"
-          >
-            {users.login}
-          </button>
-        </div>
-      )}
-    </MainContext.Consumer>
+    <div style={{textAlign: "center", width: "100%"}}>
+      <p>{`${users.toView} ${actionText}.`}</p>
+      <Button
+        onClick={() => {
+          location.href = "login";
+        }}
+      >
+        {users.login}
+      </Button>
+    </div>
   );
 }

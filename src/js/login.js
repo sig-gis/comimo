@@ -1,7 +1,13 @@
 import React from "react";
 import ReactDOM from "react-dom";
+import {ThemeProvider} from "@emotion/react";
 
-import {getCookie, getLanguage} from "./utils";
+import AccountForm from "./components/AccountForm";
+import Button from "./components/Button";
+import TextInput from "./components/TextInput";
+
+import {getLanguage, jsonRequest} from "./utils";
+import {THEME} from "./constants";
 
 class Login extends React.Component {
   constructor(props) {
@@ -14,98 +20,70 @@ class Login extends React.Component {
   }
 
   componentDidMount() {
-    fetch(
-            `/static/locale/${getLanguage(["en", "es"])}.json`,
-            {headers: {"Cache-Control": "no-cache", "Pragma": "no-cache", "Accept": "application/json"}}
-    )
-      .then(response => (response.ok ? response.json() : Promise.reject(response)))
+    jsonRequest(`/locale/${getLanguage(["en", "es"])}.json`, null, "GET")
       .then(data => this.setState({localeText: data.users}))
       .catch(error => console.error(error));
   }
 
   requestLogin = () => {
-    fetch("/login/",
-          {
-            method: "POST",
-            headers: {
-              Accept: "application/json",
-              "Content-Type": "application/json",
-              "X-CSRFToken": getCookie("csrftoken")
-            },
-            body: JSON.stringify({
-              username: this.state.username,
-              password: this.state.password
-            })
-          })
-      .then(response => Promise.all([response.ok, response.text()]))
+    const {username, password} = this.state;
+    jsonRequest("/login", {username, password})
       .then(data => {
-        if (data[0] && data[1] === "") {
+        if (data === "") {
           window.location = "/";
         } else {
-          console.error(data[1]);
-          alert(this.state.localeText[data[1]] || this.state.localeText.errorCreating);
+          console.error(data);
+          alert(this.state.localeText[data] || this.state.localeText.errorCreating);
         }
       })
       .catch(err => console.error(err));
   };
 
   renderField = (label, type, stateKey) => (
-    <div className="d-flex flex-column">
-      <label htmlFor={stateKey}>{label}</label>
-      <input
-        className="p-2"
-        id={stateKey}
-        onChange={e => this.setState({[stateKey]: e.target.value})}
-        onKeyPress={e => {
-          if (e.key === "Enter") this.requestLogin();
-        }}
-        placeholder={`Enter ${(label || "").toLowerCase()}`}
-        type={type}
-        value={this.state[stateKey]}
-      />
-    </div>
+    <TextInput
+      id={stateKey}
+      label={label}
+      onChange={e => this.setState({[stateKey]: e.target.value})}
+      placeholder={`Enter ${(label || "").toLowerCase()}`}
+      type={type}
+      value={this.state[stateKey]}
+    />
   );
 
   render() {
     const {localeText} = this.state;
     return (
-      <div
-        className="d-flex justify-content-center"
-        style={{paddingTop: "20vh"}}
-      >
-        <div className="card">
-          <div className="card-header">{localeText.loginTitle}</div>
-          <div className="card-body">
-            {this.renderField(localeText.username, "text", "username")}
-            {this.renderField(localeText.password, "password", "password")}
-            <div className="d-flex justify-content-between align-items-center">
-              <a href="/password-forgot">{localeText.forgot}</a>
-              <button
-                className="btn orange-btn mt-3"
-                onClick={this.requestLogin}
-                type="button"
-              >
-                {localeText.login}
-              </button>
-            </div>
-            <div className="d-flex flex-column align-items-center">
-              <h3 className="">{localeText.newUser}</h3>
-              <div className="">
-                <div >
-                  <button
-                    className="btn orange-btn"
-                    name="register"
-                    onClick={() => window.location = "/register"}
-                    type="button"
-                  >
-                    {localeText.register}
-                  </button>
-                </div>
+      <ThemeProvider theme={THEME}>
+        <AccountForm
+          header={localeText.loginTitle}
+          submitFn={this.requestLogin}
+        >
+          {this.renderField(localeText.username, "text", "username")}
+          {this.renderField(localeText.password, "password", "password")}
+          <div className="d-flex justify-content-between align-items-center">
+            <a href="/password-request">{localeText.forgot}</a>
+            <Button
+              className="mt-3"
+              type="submit"
+            >
+              {localeText.login}
+            </Button>
+          </div>
+          <div className="d-flex flex-column align-items-center">
+            <h3 className="">{localeText.newUser}</h3>
+            <div className="">
+              <div >
+                <Button
+                  name="register"
+                  onClick={() => { window.location = "/register"; }}
+                >
+                  {localeText.register}
+                </Button>
               </div>
             </div>
           </div>
-        </div>
-      </div>
+        </AccountForm>
+      </ThemeProvider>
     );
   }
 }

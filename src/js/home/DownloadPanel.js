@@ -1,103 +1,108 @@
 import React from "react";
 
-import {MainContext} from "./context";
+import Button from "../components/Button";
+import Select from "../components/Select";
+import ToolPanel from "../components/ToolPanel";
+
+import LoadingModal from "../components/LoadingModal";
+import {MainContext} from "../components/PageLayout";
+import {URLS} from "../constants";
+import {jsonRequest} from "../utils";
 
 export default class DownloadPanel extends React.Component {
   constructor(props) {
     super(props);
 
-    this.URL = {
-      GETDL: "/api/getdownloadurl"
-    };
-
     this.state = {
       clipOption: 1,
       downloadURL: false,
       fetching: false,
-      mineType: "cMines"
+      mineType: "cMines",
+      showModal: false
     };
   }
 
-  getDownloadUrl = () => {
-    const {selectedRegion, selectedDates} = this.context;
-    const {clipOption, mineType} = this.state;
-    this.setState({fetching: true});
+  processModal = callBack => new Promise(() => Promise.resolve(
+    this.setState(
+      {showModal: true},
+      () => callBack().finally(() => this.setState({showModal: false}))
+    )
+  ));
 
-    const [level, region] = clipOption === 1 ? ["", "all"] : selectedRegion;
-    fetch(this.URL.GETDL + "?region=" + region + "&level=" + level + "&dataLayer=" + selectedDates[mineType])
-      .then(res => res.json())
-      .then(res => {
-        if (res.action === "success") {
-          this.setState({downloadURL: [region, level, selectedDates[mineType], res.url]});
-        }
-      })
-      .catch(err => {
-        console.error(err);
-      })
-      .finally(() => this.setState({fetching: false}));
+  getDownloadUrl = () => {
+    const {selectedRegion, selectedDates} = this.props;
+    const {clipOption, mineType} = this.state;
+
+    const region = clipOption === 1 ? "all" : selectedRegion;
+    this.processModal(() =>
+      jsonRequest(URLS.GET_DL_URL, {region, dataLayer: selectedDates[mineType]})
+        .then(resp => {
+          this.setState({downloadURL: [region, selectedDates[mineType], resp]});
+        })
+        .catch(err => {
+          console.error(err);
+        }));
   };
 
   render() {
-    const {isHidden} = this.props;
     const {clipOption, fetching, downloadURL, mineType} = this.state;
-    const {selectedRegion, selectedDates, localeText: {download, validate}} = this.context;
+    const {selectedRegion, selectedDates} = this.props;
+    const {localeText: {download, validate}} = this.context;
     return (
-      <div className={"popup-container download-panel " + (isHidden ? "see-through" : "")}>
-        <h3>{download.title.toUpperCase()}</h3>
-        <label>{`${validate.typeLabel}:`}</label>
-        <select
-          onChange={e => this.setState({mineType: e.target.value})}
-          style={{width: "100%"}}
-          value={mineType}
-        >
-          {["pMines", "nMines", "cMines"].map(m =>
-            <option key={m} value={m}>{validate[m]}</option>)}
-        </select>
-        <label>{download.regionLabel}</label>
-        <div style={{marginTop: ".25rem"}}>
-          <input
-            checked={clipOption === 1}
-            name="downloadRegion"
-            onChange={() => this.setState({clipOption: 1})}
-            type="radio"
+      <ToolPanel title={download.title}>
+        {this.state.showModal && <LoadingModal message="Getting URL"/>}
+        <div className="flex flex-col">
+          <label>{`${validate.typeLabel}:`}</label>
+          <Select
+            id="selectMineType"
+            onChange={e => this.setState({mineType: e.target.value})}
+            options={["pMines", "nMines", "cMines"].map(k => ({value: k, label: validate[k]}))}
+            value={mineType}
           />
-          <span>{download.allRadio}</span>
-        </div>
-        <div className={selectedRegion ? "" : "disabled-group"} style={{marginTop: ".25rem"}}>
-          <input
-            checked={clipOption === 2}
-            name="downloadRegion"
-            onChange={() => this.setState({clipOption: 2})}
-            type="radio"
-          />
-          <span>{download.selectedRadio}</span>
-        </div>
-        {selectedDates && (
-          <div style={{textAlign: "center", width: "100%", marginTop: ".5rem"}}>
-            <button
-              className="map-upd-btn"
+          <label>{download.regionLabel}</label>
+          <div style={{marginTop: ".25rem"}}>
+            <input
+              checked={clipOption === 1}
+              name="downloadRegion"
+              onChange={() => this.setState({clipOption: 1})}
+              type="radio"
+            />
+            <span>{download.allRadio}</span>
+          </div>
+          <div className={selectedRegion ? "" : "disabled-group"} style={{marginTop: ".25rem"}}>
+            <input
+              checked={clipOption === 2}
+              name="downloadRegion"
+              onChange={() => this.setState({clipOption: 2})}
+              type="radio"
+            />
+            <span>{download.selectedRadio}</span>
+          </div>
+          {selectedDates && (
+            <Button
+              className="mt-4"
               disabled={fetching}
               onClick={this.getDownloadUrl}
-              type="button"
             >
               {download.getUrl} {selectedDates[mineType]}
-            </button>
-          </div>
-        )}
-        {fetching
-          ? <p>{`${download.fetching}...`}</p>
-          : downloadURL && (
-            <p>
-              <span>
-                <a href={downloadURL[3]}>
-                  {`${download.clickHere}`
-                                    + ` ${downloadURL[0] === "all" ? download.completeData : download.munData + downloadURL[0]} `
-                                    + `${download.prep} ${ downloadURL[2]}.`}
-                </a>
-              </span>
-            </p>
+            </Button>
           )}
-      </div>
+          {fetching
+            ? <p>{`${download.fetching}...`}</p>
+            : downloadURL && (
+              <p>
+                <span>
+                  <a href={downloadURL[2]}>
+                    {`${download.clickHere}`
+                     + ` ${downloadURL[0] === "all" ? download.completeData : download.munData + downloadURL[0]}`
+                     + ` ${download.prep}`
+                     + ` ${downloadURL[1]}.`}
+                  </a>
+                </span>
+              </p>
+            )}
+        </div>
+      </ToolPanel>
     );
   }
 }

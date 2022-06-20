@@ -1,15 +1,17 @@
 import React from "react";
 
-import {MainContext} from "./context";
-import {mapQuestKey} from "../appConfig";
+import ToolPanel from "../components/ToolPanel";
+import Button from "../components/Button";
+import Select from "../components/Select";
+import TextInput from "../components/TextInput";
+
+import {jsonRequest} from "../utils";
+import {MainContext} from "../components/PageLayout";
+import {URLS} from "../constants";
 
 export default class SearchPanel extends React.Component {
   constructor(props) {
     super(props);
-
-    this.URLS = {
-      GEOCODE: "https://open.mapquestapi.com/geocoding/v1/address"
-    };
 
     this.state = {
       geoCodedSearch: null,
@@ -22,10 +24,9 @@ export default class SearchPanel extends React.Component {
 
   searchGeocode = () => {
     const {searchText} = this.state;
-    const {featureNames} = this.context;
-    const url = this.URLS.GEOCODE + "?key=" + mapQuestKey + "&county=" + searchText + "&country=colombia";
-    fetch(url)
-      .then(resp => resp.json())
+    const {featureNames, mapQuestKey} = this.props;
+    const url = URLS.MAPQUEST + "?key=" + mapQuestKey + "&county=" + searchText + "&country=colombia";
+    jsonRequest(url, null, "GET")
       .then(result => {
         this.setState({
           geoCodedSearch: result.results[0].locations.filter(l => {
@@ -55,11 +56,11 @@ export default class SearchPanel extends React.Component {
 
   render() {
     const {geoCodedSearch, selectedL1, selectedL2, searchText, latLngText} = this.state;
-    const {fitMap, selectRegion, isHidden} = this.props;
-    const {featureNames, localeText: {search}} = this.context;
+    const {featureNames, fitMap, selectRegion} = this.props;
+    const {localeText: {search}} = this.context;
 
     const geoSearchResults = geoCodedSearch && geoCodedSearch.length === 0
-      ? <label>{search.noResults}</label>
+      ? <div className="ml-1">{search.noResults}</div>
       : geoCodedSearch && (
         <div>{geoCodedSearch.slice(0, 3).map(item => (
           <div
@@ -70,10 +71,7 @@ export default class SearchPanel extends React.Component {
               const mun = item.adminArea4.toUpperCase();
               this.setState({selectedL1: state, selectedL2: mun});
               fitMap("bbox", featureNames[state][mun]);
-              selectRegion(
-                "mun",
-                item.adminArea3.toUpperCase() + "_" + item.adminArea4.toUpperCase()
-              );
+              selectRegion("mun_" + item.adminArea3.toUpperCase() + "_" + item.adminArea4.toUpperCase());
             }}
             style={{display: "flex", flexDirection: "column"}}
           >
@@ -87,19 +85,14 @@ export default class SearchPanel extends React.Component {
     const l1Names = Object.keys(featureNames).sort() || [];
     const selectL1 = l1Names.length > 0
       ? (
-        <div className="w_100">
-          <small>{search.stateLabel}</small>
-          <select
-            className="w_100"
-            onChange={e => this.setState({selectedL1: e.target.value, selectedL2: -1})}
-            value={selectedL1}
-          >
-            <option key={-1} disabled value={-1}>{search.defaultState}</option>
-            {l1Names.map(name => (
-              <option key={name} value={name}>{name}</option>
-            ))}
-          </select>
-        </div>
+        <Select
+          defaultOption={search.defaultState}
+          id="selectL1"
+          label={search.stateLabel}
+          onChange={e => this.setState({selectedL1: e.target.value, selectedL2: -1})}
+          options={l1Names}
+          value={selectedL1}
+        />
       )
       : search.loading + "...";
 
@@ -107,62 +100,53 @@ export default class SearchPanel extends React.Component {
     const l2names = Object.keys(activeMuns).sort();
     const selectL2 = l2names.length > 0
       ? (
-        <div className="w_100">
-          <small>{search.munLabel}</small>
-          <select
-            className="w_100"
-            onChange={e => {
-              const name = e.target.value;
-              const coords = activeMuns[name];
-              this.setState({selectedL2: name});
-              if (Array.isArray(coords)) fitMap("bbox", coords);
-              selectRegion(
-                "mun",
-                selectedL1 + "_" + e.target.value
-              );
-            }}
-            value={selectedL2}
-          >
-            <option key={-1} disabled value={-1}>{search.defaultMun}</option>
-            {l2names.map(item => (
-              <option key={item} value={item}>{item}</option>
-            ))}
-          </select>
-        </div>
+        <Select
+          defaultOption={search.defaultMun}
+          id="selectL2"
+          label={search.munLabel}
+          onChange={e => {
+            const l2Name = e.target.value;
+            const coords = activeMuns[l2Name];
+            this.setState({selectedL2: l2Name});
+            if (Array.isArray(coords)) fitMap("bbox", coords);
+            selectRegion("mun_" + selectedL1 + "_" + l2Name);
+          }}
+          options={l2names}
+          value={selectedL2}
+        />
       ) : "";
 
     return (
-      <div className={"popup-container search-panel " + (isHidden ? "see-through" : "")}>
-        <h3>{search.title}</h3>
-        <label>{search.internetLabel}</label>
-        <div className="d-flex">
-          <input
-            className="w_100"
-            onChange={e => this.setState({searchText: e.target.value})}
-            onKeyUp={e => { if (e.key === "Enter") this.searchGeocode(); }}
-            value={searchText}
-          />
-          <button className="map-upd-btn" onClick={this.searchGeocode} type="button">
-            {search.goButton}
-          </button>
-        </div>
+      <ToolPanel title={search.title}>
+        <TextInput
+          id="inputGeocode"
+          label={search.internetLabel}
+          onChange={e => this.setState({searchText: e.target.value})}
+          onKeyUp={e => { if (e.key === "Enter") this.searchGeocode(); }}
+          render={() => (
+            <Button onClick={this.searchGeocode}>
+              {search.goButton}
+            </Button>
+          )}
+          value={searchText}
+        />
         {geoSearchResults}
-        <label>{search.coordLabel}</label>
-        <div className="d-flex">
-          <input
-            className="w_100"
-            onChange={e => this.setState({latLngText: e.target.value})}
-            onKeyUp={e => { if (e.key === "Enter") this.processLatLng(); }}
-            value={latLngText}
-          />
-          <button className="map-upd-btn" onClick={this.processLatLng} type="button">
-            {search.goButton}
-          </button>
-        </div>
+        <TextInput
+          id="inputLatLng"
+          label={search.coordLabel}
+          onChange={e => this.setState({latLngText: e.target.value})}
+          onKeyUp={e => { if (e.key === "Enter") this.processLatLng(); }}
+          render={() => (
+            <Button onClick={this.processLatLng}>
+              {search.goButton}
+            </Button>
+          )}
+          value={latLngText}
+        />
         <label>{search.selectLabel}</label>
         {selectL1}
         {selectL2}
-      </div>
+      </ToolPanel>
     );
   }
 }

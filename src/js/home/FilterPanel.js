@@ -1,6 +1,10 @@
 import React from "react";
 
-import {MainContext} from "./context";
+import ToolPanel from "../components/ToolPanel";
+import Button from "../components/Button";
+import Select from "../components/Select";
+
+import {MainContext} from "../components/PageLayout";
 
 export default class FilterPanel extends React.Component {
   constructor(props) {
@@ -13,7 +17,7 @@ export default class FilterPanel extends React.Component {
   componentDidUpdate(prevProps, prevState) {
     if ((prevProps.isHidden && !this.props.isHidden)
         || (!prevProps.imageDates.pMines && this.props.imageDates.pMines)) {
-      this.setState({newSelectedDates: this.context.selectedDates});
+      this.setState({newSelectedDates: this.props.selectedDates});
     }
   }
 
@@ -22,56 +26,42 @@ export default class FilterPanel extends React.Component {
   };
 
   render() {
-    const {isHidden, selectDates, imageDates: {nMines, pMines, cMines}} = this.props;
+    const {selectDates, imageDates: {nMines, pMines, cMines}} = this.props;
     const {newSelectedDates} = this.state;
     const {localeText: {filter, layers}} = this.context;
     return (
-      <div className={"popup-container filter-panel " + (isHidden ? "see-through" : "")}>
-        <h3>{filter.title.toUpperCase()}</h3>
+      <ToolPanel title={filter.title}>
         <span htmlFor="select-image-date">{filter.selectLabel}:</span>
-        <div style={{display: "flex", flexDirection: "column"}}>
-          <label htmlFor="select-image-date">{layers.cMines}</label>
-          <select
-            id="select-image-date"
+        <div className="flex flex-col">
+          <Select
+            id="selectcMine"
+            label={layers.cMines}
             onChange={e => this.setSelectedDate("cMines", e.target.value)}
+            options={cMines}
             value={newSelectedDates.cMines}
-          >
-            {(cMines || []).map(d => (
-              <option key={d} value={d}>{d}</option>
-            ))}
-          </select>
-          <label htmlFor="select-image-date">{layers.nMines}</label>
-          <select
-            id="select-image-date"
+          />
+          <Select
+            id="selectnMine"
+            label={layers.nMines}
             onChange={e => this.setSelectedDate("nMines", e.target.value)}
+            options={nMines}
             value={newSelectedDates.nMines}
-          >
-            {(nMines || []).map(d => (
-              <option key={d} value={d}>{d}</option>
-            ))}
-          </select>
-          <label htmlFor="select-image-date">{layers.pMines}</label>
-          <select
-            id="select-image-date"
+          />
+          <Select
+            id="selectpMine"
+            label={layers.pMines}
             onChange={e => this.setSelectedDate("pMines", e.target.value)}
+            options={pMines}
             value={newSelectedDates.pMines}
-          >
-            {(pMines || []).map(d => (
-              <option key={d} value={d}>{d}</option>
-            ))}
-          </select>
-        </div>
-        <div style={{textAlign: "center", width: "100%"}}>
-          <button
-            className="map-upd-btn"
+          />
+          <Button
+            className="mt-4"
             onClick={() => selectDates(newSelectedDates)}
-            style={{marginTop: ".5rem"}}
-            type="button"
           >
             {filter.updateMap}
-          </button>
+          </Button>
         </div>
-      </div>
+      </ToolPanel>
     );
   }
 }

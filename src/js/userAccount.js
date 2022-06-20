@@ -1,23 +1,36 @@
 import React from "react";
 import ReactDOM from "react-dom";
+import {ThemeProvider} from "@emotion/react";
 
-import LoadingModal from "./components/LoadingModal";
+import AccountForm from "./components/AccountForm";
+import Button from "./components/Button";
 import LanguageSelector from "./components/LanguageSelector";
+import LoadingModal from "./components/LoadingModal";
+import Select from "./components/Select";
+import TextInput from "./components/TextInput";
 
-import {getCookie} from "./utils";
+import {jsonRequest} from "./utils";
+import {THEME} from "./constants";
 
 class UserAccount extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      ...this.props,
+      username: "",
+      email: "",
+      fullName: "",
+      institution: "",
+      sector: "academic",
+      password: "",
+      passwordConfirmation: "",
       localeText: {},
+      defaultLang: "",
       showModal: false
     };
   }
 
   componentDidMount() {
-    this.getLocalText(this.state.defaultLang);
+    this.getUserInformation();
   }
 
   /// State Update ///
@@ -37,11 +50,7 @@ class UserAccount extends React.Component {
   /// API Calls ///
 
   getLocalText = lang => {
-    fetch(
-    `/static/locale/${lang}.json`,
-    {headers: {"Cache-Control": "no-cache", "Pragma": "no-cache", "Accept": "application/json"}}
-    )
-      .then(response => (response.ok ? response.json() : Promise.reject(response)))
+    jsonRequest(`/locale/${lang}.json`, null, "GET")
       .then(data => this.setState({localeText: data.users}))
       .catch(err => console.error(err));
   };
@@ -54,35 +63,44 @@ class UserAccount extends React.Component {
     ].filter(e => e);
   };
 
+  getUserInformation = () => {
+    this.processModal(() =>
+      jsonRequest("/user-information")
+        .then(data => {
+          if (data.username) {
+            this.setState({...data});
+            this.getLocalText(data.defaultLang);
+          } else {
+            console.error("userNotFound");
+            // FIXME, "userNotFound" is not in the locale
+            alert(this.state.localeText.userNotFound || this.state.localeText.errorUpdating);
+          }
+        })
+        .catch(err => console.error(err)));
+  };
+
   updateUser = () => {
     const errors = this.verifyInputs();
     if (errors.length > 0) {
       alert(errors.map(e => " - " + e).join("\n"));
     } else {
       this.processModal(() =>
-        fetch("/user-account/",
-              {
-                method: "POST",
-                headers: {
-                  Accept: "application/json",
-                  "Content-Type": "application/json",
-                  "X-CSRFToken": getCookie("csrftoken")
-                },
-                body: JSON.stringify({
-                  defaultLang: this.state.defaultLang,
-                  fullName: this.state.fullName,
-                  institution: this.state.institution,
-                  sector: this.state.sector
-                })
-              })
-          .then(response => Promise.all([response.ok, response.text()]))
-          .then(data => {
-            if (data[0] && data[1] === "") {
+        jsonRequest(
+          "/update-account",
+          {
+            defaultLang: this.state.defaultLang,
+            fullName: this.state.fullName,
+            institution: this.state.institution,
+            sector: this.state.sector
+          }
+        )
+          .then(resp => {
+            if (resp === "") {
               alert(this.state.localeText.updated);
               window.location = "/";
             } else {
-              console.error(data[1]);
-              alert(this.state.localeText[data[1]] || this.state.localeText.errorUpdating);
+              console.error(resp);
+              alert(this.state.localeText[resp] || this.state.localeText.errorUpdating);
             }
           })
           .catch(err => console.error(err)));
@@ -92,84 +110,78 @@ class UserAccount extends React.Component {
   /// Render Functions ///
 
   renderField = (label, type, stateKey, disabled = false) => (
-    <div className="d-flex flex-column">
-      <label htmlFor={stateKey}>{label}</label>
-      <input
-        className="p-2"
-        disabled={disabled}
-        id={stateKey}
-        onChange={e => this.setState({[stateKey]: e.target.value})}
-        placeholder={`Enter ${(label || "").toLowerCase()}`}
-        type={type}
-        value={this.state[stateKey]}
-      />
-    </div>
+    <TextInput
+      disabled={disabled}
+      id={stateKey}
+      label={label}
+      onChange={e => this.setState({[stateKey]: e.target.value})}
+      placeholder={`Enter ${(label || "").toLowerCase()}`}
+      type={type}
+      value={this.state[stateKey]}
+    />
   );
 
   renderSelect = (label, options, stateKey) => (
-    <div className="d-flex flex-column">
-      <label htmlFor={stateKey}>{label}</label>
-      <select
-        className="p-2"
-        id={stateKey}
-        onChange={e => this.setState({[stateKey]: e.target.value})}
-        value={this.state[stateKey]}
-      >
-        {options.map(({key, optLabel}) => (
-          <option key={key} value={key}>{optLabel}</option>
-        ))}
-      </select>
-    </div>
+    <Select
+      id={stateKey}
+      label={label}
+      onChange={e => this.setState({[stateKey]: e.target.value})}
+      options={options}
+      value={this.state[stateKey]}
+    />
   );
 
   render() {
     const {localeText, defaultLang} = this.state;
     return (
-      <div
-        className="d-flex justify-content-center"
-        style={{paddingTop: "2rem"}}
-      >
-        {this.state.showModal && <LoadingModal message={localeText.modalMessage}/>}
-        <div className="card">
-          <div className="card-header">{localeText.userAccountTitle}</div>
-          <div className="card-body">
-            <div className="d-flex">
-              <label className="mr-3">{localeText.language}</label>
-              <LanguageSelector
-                selectedLanguage={defaultLang}
-                selectLanguage={this.selectLanguage}
-              />
-            </div>
-            {this.renderField(localeText.username, "text", "username", true)}
-            {this.renderField(localeText.email, "email", "email", true)}
-            {this.renderField(localeText.fullName, "text", "fullName")}
-            {this.renderField(localeText.institution, "text", "institution")}
-            {this.renderSelect(
-              localeText.sector,
-              [
-                {key: "academic", optLabel: localeText.academic},
-                {key: "government", optLabel: localeText.government},
-                {key: "ngo", optLabel: localeText.ngo}
-              ],
-              "sector"
-            )}
-            <div className="d-flex justify-content-between align-items-center">
-              <span style={{color: "red"}}>{localeText.allRequired}</span>
-              <button
-                className="btn orange-btn mt-3"
-                onClick={this.updateUser}
-                type="button"
+      <ThemeProvider theme={THEME}>
+        {this.state.showModal && (<LoadingModal message={localeText.modalMessage}/>)}
+        <AccountForm
+          header={localeText.userAccountTitle}
+          submitFn={this.updateUser}
+        >
+          <div className="d-flex">
+            <label className="mr-3">{localeText.language}</label>
+            <LanguageSelector
+              selectedLanguage={defaultLang}
+              selectLanguage={this.selectLanguage}
+            />
+          </div>
+          {this.renderField(localeText.username, "text", "username", true)}
+          {this.renderField(localeText.email, "email", "email", true)}
+          {this.renderField(localeText.fullName, "text", "fullName")}
+          {this.renderField(localeText.institution, "text", "institution")}
+          {this.renderSelect(
+            localeText.sector,
+            [
+              {value: "academic", label: localeText.academic},
+              {value: "government", label: localeText.government},
+              {value: "ngo", label: localeText.ngo}
+            ],
+            "sector"
+          )}
+          <div className="d-flex justify-content-between align-items-center">
+            <span style={{color: "red"}}>{localeText.allRequired}</span>
+            <div className="mt-2 d-flex">
+              <Button
+                className="mr-2"
+                onClick={() => window.location.assign("/logout")}
+              >
+                Logout
+              </Button>
+              <Button
+                type="submit"
               >
                 {localeText.save}
-              </button>
+              </Button>
             </div>
           </div>
-        </div>
-      </div>
+        </AccountForm>
+      </ThemeProvider>
     );
   }
 }
 
 export function pageInit(args) {
-  ReactDOM.render(<UserAccount {...args}/>, document.getElementById("main-container"));
+  ReactDOM.render(<UserAccount/>, document.getElementById("main-container"));
 }

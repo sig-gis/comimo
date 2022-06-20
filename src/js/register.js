@@ -2,10 +2,16 @@ import React from "react";
 import ReactDOM from "react-dom";
 import EmailValidator from "email-validator";
 
+import {ThemeProvider} from "@emotion/react";
 import LoadingModal from "./components/LoadingModal";
 import LanguageSelector from "./components/LanguageSelector";
+import Button from "./components/Button";
+import AccountForm from "./components/AccountForm";
+import Select from "./components/Select";
+import TextInput from "./components/TextInput";
 
-import {getCookie, getLanguage, validatePassword} from "./utils";
+import {getLanguage, jsonRequest, validatePassword} from "./utils";
+import {THEME} from "./constants";
 
 class Register extends React.Component {
   constructor(props) {
@@ -19,15 +25,13 @@ class Register extends React.Component {
       password: "",
       passwordConfirmation: "",
       localeText: {},
-      defaultLang: "en",
+      defaultLang: getLanguage(["en", "es"]),
       showModal: false
     };
   }
 
   componentDidMount() {
-    const lang = getLanguage(["en", "es"]);
-    this.setState({defaultLang: lang});
-    this.getLocalText(lang);
+    this.getLocalText(this.state.defaultLang);
   }
 
   /// State Update ///
@@ -47,11 +51,7 @@ class Register extends React.Component {
   /// API Calls ///
 
   getLocalText = lang => {
-    fetch(
-    `/static/locale/${lang}.json`,
-    {headers: {"Cache-Control": "no-cache", "Pragma": "no-cache", "Accept": "application/json"}}
-    )
-      .then(response => (response.ok ? response.json() : Promise.reject(response)))
+    jsonRequest(`/locale/${lang}.json`, null, "GET")
       .then(data => this.setState({localeText: data.users}))
       .catch(err => console.error(err));
   };
@@ -74,32 +74,25 @@ class Register extends React.Component {
       alert(errors.map(e => " - " + e).join("\n"));
     } else {
       this.processModal(() =>
-        fetch("/register/",
-              {
-                method: "POST",
-                headers: {
-                  Accept: "application/json",
-                  "Content-Type": "application/json",
-                  "X-CSRFToken": getCookie("csrftoken")
-                },
-                body: JSON.stringify({
-                  defaultLang: this.state.defaultLang,
-                  username: this.state.username,
-                  email: this.state.email,
-                  fullName: this.state.fullName,
-                  institution: this.state.institution,
-                  sector: this.state.sector,
-                  password: this.state.password
-                })
-              })
-          .then(response => Promise.all([response.ok, response.text()]))
-          .then(data => {
-            if (data[0] && data[1] === "") {
+        jsonRequest(
+          "/register",
+          {
+            defaultLang: this.state.defaultLang,
+            email: this.state.email,
+            fullName: this.state.fullName,
+            institution: this.state.institution,
+            sector: this.state.sector,
+            password: this.state.password,
+            username: this.state.username
+          }
+        )
+          .then(resp => {
+            if (resp === "") {
               alert(this.state.localeText.registered);
               window.location = "/";
             } else {
-              console.error(data[1]);
-              alert(this.state.localeText[data[1]] || this.state.localeText.errorCreating);
+              console.error(resp);
+              alert(this.state.localeText[resp] || this.state.localeText.errorCreating);
             }
           })
           .catch(err => console.error(err)));
@@ -109,84 +102,71 @@ class Register extends React.Component {
   /// Render Functions ///
 
   renderField = (label, type, stateKey) => (
-    <div className="d-flex flex-column">
-      <label htmlFor={stateKey}>{label}</label>
-      <input
-        className="p-2"
-        id={stateKey}
-        onChange={e => this.setState({[stateKey]: e.target.value})}
-        onKeyPress={e => {
-          if (e.key === "Enter") this.registerUser();
-        }}
-        placeholder={`Enter ${(label || "").toLowerCase()}`}
-        type={type}
-        value={this.state[stateKey]}
-      />
-    </div>
+    <TextInput
+      id={stateKey}
+      label={label}
+      onChange={e => this.setState({[stateKey]: e.target.value})}
+      onKeyPress={e => {
+        if (e.key === "Enter") this.registerUser();
+      }}
+      placeholder={`Enter ${(label || "").toLowerCase()}`}
+      type={type}
+      value={this.state[stateKey]}
+    />
   );
 
   renderSelect = (label, options, stateKey) => (
-    <div className="d-flex flex-column">
-      <label htmlFor={stateKey}>{label}</label>
-      <select
-        className="p-2"
-        id={stateKey}
-        onChange={e => this.setState({[stateKey]: e.target.value})}
-        value={this.state[stateKey]}
-      >
-        {options.map(({key, optLabel}) => (
-          <option key={key} value={key}>{optLabel}</option>
-        ))}
-      </select>
-    </div>
+    <Select
+      id={stateKey}
+      label={label}
+      onChange={e => this.setState({[stateKey]: e.target.value})}
+      options={options}
+      value={this.state[stateKey]}
+    />
   );
 
   render() {
     const {localeText, defaultLang} = this.state;
     return (
-      <div
-        className="d-flex justify-content-center"
-        style={{paddingTop: "2rem"}}
-      >
+      <ThemeProvider theme={THEME}>
         {this.state.showModal && <LoadingModal message={localeText.modalMessage}/>}
-        <div className="card">
-          <div className="card-header">{localeText.registerTitle}</div>
-          <div className="card-body">
-            <div className="d-flex">
-              <label className="mr-3">{localeText.language}</label>
-              <LanguageSelector
-                selectedLanguage={defaultLang}
-                selectLanguage={this.selectLanguage}
-              />
-            </div>
-            {this.renderField(localeText.username, "text", "username")}
-            {this.renderField(localeText.email, "email", "email")}
-            {this.renderField(localeText.fullName, "text", "fullName")}
-            {this.renderField(localeText.institution, "text", "institution")}
-            {this.renderSelect(
-              localeText.sector,
-              [
-                {key: "academic", optLabel: localeText.academic},
-                {key: "government", optLabel: localeText.government},
-                {key: "ngo", optLabel: localeText.ngo}
-              ],
-              "sector"
-            )}
-            {this.renderField(localeText.password, "password", "password")}
-            {this.renderField(localeText.confirm, "password", "passwordConfirmation")}
-            <div className="d-flex justify-content-between align-items-center">
-              <span style={{color: "red"}}>{localeText.allRequired}</span>
-              <button
-                className="btn orange-btn mt-3"
-                onClick={this.registerUser}
-                type="button"
-              >
-                {localeText.register}
-              </button>
-            </div>
+        <AccountForm
+          header={localeText.registerTitle}
+          submitFn={this.registerUser}
+        >
+          <div className="d-flex">
+            <label className="mr-3">{localeText.language}</label>
+            <LanguageSelector
+              selectedLanguage={defaultLang}
+              selectLanguage={this.selectLanguage}
+            />
           </div>
-        </div>
-      </div>
+          {this.renderField(localeText.username, "text", "username")}
+          {this.renderField(localeText.email, "email", "email")}
+          {this.renderField(localeText.fullName, "text", "fullName")}
+          {this.renderField(localeText.institution, "text", "institution")}
+          {this.renderSelect(
+            localeText.sector,
+            [
+              {value: "academic", label: localeText.academic},
+              {value: "government", label: localeText.government},
+              {value: "ngo", label: localeText.ngo}
+            ],
+            "sector"
+          )}
+          {this.renderField(localeText.password, "password", "password")}
+          {this.renderField(localeText.confirm, "password", "passwordConfirmation")}
+          <div className="d-flex justify-content-between align-items-center">
+            <span style={{color: "red"}}>{localeText.allRequired}</span>
+            <Button
+              className="mt-2"
+              type="submit"
+            >
+              {localeText.register}
+            </Button>
+          </div>
+        </AccountForm>
+      </ThemeProvider>
     );
   }
 }

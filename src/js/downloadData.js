@@ -1,16 +1,14 @@
 import React from "react";
 import ReactDOM from "react-dom";
+import {ReactTabulator} from "react-tabulator";
+import {ThemeProvider} from "@emotion/react";
 
-const buttonStyle = disabled => (disabled
-  ? {
-    backgroundColor: "lightgray",
-    color: "gray",
-    cursor: "not-allowed"
-  } : {
-    backgroundColor: "gray",
-    color: "black",
-    cursor: "pointer"
-  });
+import Button from "./components/Button";
+import "react-tabulator/lib/styles.css"; // required styles
+import "react-tabulator/lib/css/tabulator_bootstrap4.min.css"; // theme
+
+import {URLS, THEME} from "./constants";
+import {jsonRequest} from "./utils";
 
 class DownloadData extends React.Component {
   constructor(props) {
@@ -35,8 +33,7 @@ class DownloadData extends React.Component {
 
   /// API Calls ///
 
-  loadDates = () => fetch("/subscribe/get-data-dates")
-    .then(response => response.json())
+  loadDates = () => jsonRequest(URLS.DATA_DATES)
     .then(data => {
       this.setState({availableDates: data});
     })
@@ -52,81 +49,70 @@ class DownloadData extends React.Component {
         width: "100%"
       }}
     >
-      <button
-        className="btn-primary"
+      <Button
+        className="mr-1"
         onClick={() => downloadData("csv")}
-        style={buttonStyle(false)}
-        type="button"
       >
         Download CSV
-      </button>
-      <button
-        className="btn-primary"
+      </Button>
+      <Button
         onClick={() => downloadData("json")}
-        style={buttonStyle(false)}
-        type="button"
       >
         Download JSON
-      </button>
+      </Button>
     </div>
   );
 
   render() {
     const {dataType, availableDates: {predictions, userMines}, collectedData} = this.state;
-    const {isAdmin} = this.props;
-    predictions.sort();
-    userMines.sort();
-    return isAdmin
-      ? (
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            padding: "1rem 4rem",
-            alignItems: "center",
-            height: "100%"
-          }}
-        >
-          <div className="d-flex">
-            <span style={{marginTop: ".25rem"}}>
-              <input
-                checked={dataType === "predictions"}
-                name="dataType"
-                onChange={() => this.setState({dataType: "predictions"})}
-                type="radio"
-              />
+    return (
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          padding: "1rem 4rem",
+          alignItems: "center",
+          height: "100%"
+        }}
+      >
+        <div className="d-flex">
+          <span style={{marginTop: ".25rem"}}>
+            <input
+              checked={dataType === "predictions"}
+              name="dataType"
+              onChange={() => this.setState({dataType: "predictions"})}
+              type="radio"
+            />
               Collected predictions
-            </span>
-            <span style={{marginTop: ".25rem"}}>
-              <input
-                checked={dataType === "userMines"}
-                name="dataType"
-                onChange={() => this.setState({dataType: "userMines"})}
-                type="radio"
-              />
+          </span>
+          <span style={{marginTop: ".25rem"}}>
+            <input
+              checked={dataType === "userMines"}
+              name="dataType"
+              onChange={() => this.setState({dataType: "userMines"})}
+              type="radio"
+            />
               User reported mines
-            </span>
-          </div>
-          {this.state.dataType === "predictions"
-            ? (
-              <Predictions
-                addCollectedData={this.addCollectedData}
-                collectedData={collectedData}
-                predictions={predictions}
-                renderButtons={this.renderButtons}
-              />
-            ) : (
-              <UserMines
-                addCollectedData={this.addCollectedData}
-                collectedData={collectedData}
-                renderButtons={this.renderButtons}
-                userMines={userMines}
-              />
-            )}
+          </span>
         </div>
-      ) : (
-        <div><label>No tienes permiso para ver esta página.</label></div>
-      );
+        {this.state.dataType === "predictions"
+          ? (
+            <Predictions
+              addCollectedData={this.addCollectedData}
+              collectedData={collectedData}
+              predictions={predictions}
+              renderButtons={this.renderButtons}
+            />
+          ) : (
+            <UserMines
+              addCollectedData={this.addCollectedData}
+              collectedData={collectedData}
+              renderButtons={this.renderButtons}
+              userMines={userMines}
+            />
+          )}
+      </div>
+    );
   }
 }
 
@@ -134,63 +120,16 @@ class Predictions extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      table: null,
-      selectedDate: -1
+      selectedDate: -1,
+      tableRef: null
     };
   }
-
-  componentDidMount() {
-    const table = new Tabulator("#prediction-table", {
-      layout: "fitColumns", // fit columns to width of table
-      responsiveLayout: "hide", // hide columns that dont fit on the table
-      tooltips: true, // show tool tips on cells
-      addRowPos: "top", // when adding a new row, add it to the top of the table
-      history: true, // allow undo and redo actions on the table
-      pagination: "local",
-      paginationSize: 100,
-      movableColumns: true, // allow column order to be changed
-      resizableRows: true, // allow row order to be changed
-      columns: [
-        // define the table columns
-        {title: "user", field: "username", headerFilter: "input"},
-        {title: "email", field: "email", headerFilter: "input"},
-        {title: "organization", field: "institution", headerFilter: "input"},
-        {title: "project name", field: "projectName", headerFilter: "input"},
-        {title: "longitude", field: "y", headerFilter: "input"},
-        {title: "latitude", field: "x", headerFilter: "input"},
-        {title: "dataLayer", field: "dataLayer", headerFilter: "input"},
-        {title: "mine", field: "classNum", headerFilter: "number"},
-        {title: "label", field: "className", headerFilter: "input"}
-      ]
-    });
-    this.setState({table});
-  }
-
-  componentDidUpdate(prevProps, prevState) {
-    if (prevProps.collectedData !== this.props.collectedData) {
-      const {table, selectedDate} = this.state;
-      const {collectedData} = this.props;
-      table.clearData();
-      table.setData(collectedData[selectedDate]);
-    }
-  }
-
-  /// Change State ///
-
-  changeDate = newDate => {
-    const {table} = this.state;
-    const {collectedData} = this.props;
-    table.clearData();
-    table.setData(collectedData[newDate]);
-    this.setState({selectedDate: newDate});
-  };
 
   /// API Calls ///
 
   loadDateData = dataLayer => {
     const {addCollectedData} = this.props;
-    fetch(`/subscribe/download-predictions?dataLayer=${dataLayer}`)
-      .then(response => response.json())
+    jsonRequest(URLS.PREDICTIONS, {dataLayer})
       .then(data => {
         addCollectedData(dataLayer, data);
       })
@@ -200,21 +139,20 @@ class Predictions extends React.Component {
   /// Helper Functions ///
 
   downloadData = type => {
-    const {table, selectedDate} = this.state;
-    table.download(type, `validated-predictions-${selectedDate}-data.${type}`);
+    const {tableRef, selectedDate} = this.state;
+    tableRef.current.download(type, `validated-predictions-${selectedDate}-data.${type}`);
   };
 
   render() {
     const {selectedDate} = this.state;
     const {predictions, collectedData, renderButtons} = this.props;
-    predictions.sort().reverse();
     return (
       <>
         <div>
           <label htmlFor="project-date">Prediction date</label>
           <select
             id="project-date"
-            onChange={e => this.changeDate(e.target.value)}
+            onChange={e => this.setState({selectedDate: e.target.value})}
             style={{padding: ".25rem", borderRadius: "3px", margin: ".75rem"}}
             value={selectedDate}
           >
@@ -225,16 +163,39 @@ class Predictions extends React.Component {
               <option key={d} value={d}>{d}</option>
             ))}
           </select>
-          <button
+          <Button
             disabled={selectedDate === -1}
             onClick={() => this.loadDateData(selectedDate)}
-            style={buttonStyle(selectedDate === -1)}
-            type="button"
           >
             {collectedData[selectedDate] ? "Reload" : "Load"}
-          </button>
+          </Button>
         </div>
-        <div id="prediction-table" style={{flex: 1}}/>
+        <ReactTabulator
+          columns={[
+          // define the table columns
+            {title: "user", field: "username", headerFilter: "input"},
+            {title: "email", field: "email", headerFilter: "input"},
+            {title: "organization", field: "institution", headerFilter: "input"},
+            {title: "project name", field: "projectName", headerFilter: "input"},
+            {title: "latitude", field: "lat", headerFilter: "input"},
+            {title: "longitude", field: "lon", headerFilter: "input"},
+            {title: "dataLayer", field: "dataLayer", headerFilter: "input"},
+            {title: "mine", field: "answer", headerFilter: "input"}
+          ]}
+          data={this.props.collectedData[selectedDate]}
+          onRef={ref => this.setState({tableRef: ref})}
+          options={{
+            layout: "fitColumns", // fit columns to width of table
+            responsiveLayout: "hide", // hide columns that dont fit on the table
+            tooltips: true, // show tool tips on cells
+            addRowPos: "top", // when adding a new row, add it to the top of the table
+            history: true, // allow undo and redo actions on the table
+            pagination: "local",
+            paginationSize: 100,
+            movableColumns: true, // allow column order to be changed
+            resizableRows: true // allow row order to be changed
+          }}
+        />
         {renderButtons(this.downloadData)}
       </>
     );
@@ -245,62 +206,18 @@ class UserMines extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      table: null,
-      selectedDate: -1
+      selectedDate: -1,
+      tableRef: null
     };
   }
 
-  componentDidMount() {
-    const table = new Tabulator("#prediction-table", {
-      layout: "fitColumns", // fit columns to width of table
-      responsiveLayout: "hide", // hide columns that dont fit on the table
-      tooltips: true, // show tool tips on cells
-      addRowPos: "top", // when adding a new row, add it to the top of the table
-      history: true, // allow undo and redo actions on the table
-      pagination: "local",
-      paginationSize: 100,
-      movableColumns: true, // allow column order to be changed
-      resizableRows: true, // allow row order to be changed
-      columns: [
-        // define the table columns
-        {title: "user", field: "username", headerFilter: "input"},
-        {title: "email", field: "email", headerFilter: "input"},
-        {title: "organization", field: "institution", headerFilter: "input"},
-        {title: "longitude", field: "y", headerFilter: "input"},
-        {title: "latitude", field: "x", headerFilter: "input"},
-        {title: "reportedDate", field: "reportedDate", headerFilter: "date"}
-      ]
-    });
-    this.setState({table});
-  }
-
-  componentDidUpdate(prevProps, prevState) {
-    if (prevProps.collectedData !== this.props.collectedData) {
-      const {table, selectedDate} = this.state;
-      const {collectedData} = this.props;
-      table.clearData();
-      table.setData(collectedData[selectedDate]);
-    }
-  }
-
-  /// Change State ///
-
-  changeDate = newDate => {
-    const {table} = this.state;
-    const {collectedData} = this.props;
-    table.clearData();
-    table.setData(collectedData[newDate]);
-    this.setState({selectedDate: newDate});
-  };
-
   /// API Calls ///
 
-  loadDateData = month => {
+  loadDateData = yearMonth => {
     const {addCollectedData} = this.props;
-    fetch(`/subscribe/download-user-mines?month=${month}`)
-      .then(response => response.json())
+    jsonRequest(URLS.USER_MINES, {yearMonth})
       .then(data => {
-        addCollectedData(month, data);
+        addCollectedData(yearMonth, data);
       })
       .catch(err => console.error(err));
   };
@@ -308,21 +225,20 @@ class UserMines extends React.Component {
   /// Helper Functions ///
 
   downloadData = type => {
-    const {table, selectedDate} = this.state;
-    table.download(type, `user-mines-${selectedDate}-data.${type}`);
+    const {tableRef, selectedDate} = this.state;
+    tableRef.current.download(type, `user-mines-${selectedDate}-data.${type}`);
   };
 
   render() {
     const {selectedDate} = this.state;
     const {userMines, collectedData, renderButtons} = this.props;
-    userMines.sort().reverse();
     return (
       <>
         <div>
           <label htmlFor="project-date">Reporting month</label>
           <select
             id="project-date"
-            onChange={e => this.changeDate(e.target.value)}
+            onChange={e => this.setState({selectedDate: e.target.value})}
             style={{padding: ".25rem", borderRadius: "3px", margin: ".75rem"}}
             value={selectedDate}
           >
@@ -333,16 +249,37 @@ class UserMines extends React.Component {
               <option key={d} value={d}>{d}</option>
             ))}
           </select>
-          <button
+          <Button
             disabled={selectedDate === -1}
             onClick={() => this.loadDateData(selectedDate)}
-            style={buttonStyle(selectedDate === -1)}
-            type="button"
           >
             {collectedData[selectedDate] ? "Reload" : "Load"}
-          </button>
+          </Button>
         </div>
-        <div id="prediction-table" style={{flex: 1}}/>
+        <ReactTabulator
+          columns={[
+            // define the table columns
+            {title: "user", field: "username", headerFilter: "input"},
+            {title: "email", field: "email", headerFilter: "input"},
+            {title: "organization", field: "institution", headerFilter: "input"},
+            {title: "longitude", field: "lat", headerFilter: "input"},
+            {title: "latitude", field: "lon", headerFilter: "input"},
+            {title: "reportedDate", field: "reportedDate", headerFilter: "input"}
+          ]}
+          data={this.props.collectedData[selectedDate]}
+          onRef={ref => this.setState({tableRef: ref})}
+          options={{
+            layout: "fitColumns", // fit columns to width of table
+            responsiveLayout: "hide", // hide columns that dont fit on the table
+            tooltips: true, // show tool tips on cells
+            addRowPos: "top", // when adding a new row, add it to the top of the table
+            history: true, // allow undo and redo actions on the table
+            pagination: "local",
+            paginationSize: 100,
+            movableColumns: true, // allow column order to be changed
+            resizableRows: true // allow row order to be changed
+          }}
+        />
         {renderButtons(this.downloadData)}
       </>
     );
@@ -351,7 +288,9 @@ class UserMines extends React.Component {
 
 export function pageInit(args) {
   ReactDOM.render(
-    <DownloadData isAdmin={args.isAdmin}/>,
+    <ThemeProvider theme={THEME}>
+      <DownloadData/>
+    </ThemeProvider>,
     document.getElementById("main-container")
   );
 }
