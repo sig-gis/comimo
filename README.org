@@ -174,7 +174,7 @@ For production it is recommended that you use a service account with a key file.
 
 *** Google Analytics
 
-To hook up Google Analytics to CoMiMo, simply add your Analtics ID as a string to the `:ga-id` field in your ~config.edn~ file.
+To hook up Google Analytics to CoMiMo, simply add your Analtics ID as a string to the ~:ga-id~ field in your ~config.edn~ file.
 
 *** Launching the Web Server
 
