@@ -1,35 +1,42 @@
 (ns comimo.views
-  (:require [clojure.data.json :as json]
-            [clojure.string    :as str]
-            [clojure.java.io   :as io]
-            [cognitect.transit :as transit]
-            [hiccup.page :refer [html5 include-js include-css]]
-            [triangulum.config  :refer [get-config]])
+  (:require [clojure.data.json   :as json]
+            [clojure.java.io     :as io]
+            [clojure.string      :as str]
+            [cognitect.transit   :as transit]
+            [hiccup.page         :refer [html5 include-js include-css]]
+            [triangulum.config   :refer [get-config]]
+            [triangulum.database :refer [call-sql]])
   (:import java.io.ByteArrayOutputStream))
 
 (defn kebab->camel [kebab]
   (let [pieces (str/split kebab #"-")]
     (apply str (first pieces) (map str/capitalize (rest pieces)))))
 
-(defn head [extra-js]
-  [:head
-   [:title "Colombian Mining Monitoring"]
-   [:meta {:charset "utf-8"}]
-   [:meta {:name "viewport" :content "width=device-width, user-scalable=no"}]
-   ;;  [:meta {:name "description" :content "Collect Earth Online is an Image Analysis Crowdsourcing Platform by OpenForis and Spatial Informatics Group"}]
-   ;;  [:meta {:name "keywords"    :content "collect earth online image analysis crowdsourcing platform openforis SIG spatial informatics group"}]
-   [:link {:rel "shortcut icon" :href "favicon.ico"}]
-   (when-let [ga-id (get-config :ga-id)]
-     (list [:script {:async true :src (str "https://www.googletagmanager.com/gtag/js?id=" ga-id)}]
-           [:script (str "window.dataLayer = window.dataLayer || []; function gtag(){dataLayer.push(arguments);} gtag('js', new Date()); gtag('config', '" ga-id "', {'page_location': location.host + location.pathname});")]))
-   (include-css "css/bootstrap-grid.min.4.3.1.css"
-                "css/gmw_global.css"
-                "css/gmw_main.css" ; only home
-                "css/tailwindOutput.css")
-   (apply include-js
-          "/js/google-charts.js"
-          "/js/jquery-3.4.1.min.js"
-          extra-js)])
+(defn head [extra-js lang]
+  (let [title       {:en "Colombian Mining Monitoring"
+                     :es "Monitoreo Minero Colombiano"}
+        description {:en "Colombian Mining Monitoring (CoMiMo) is an online mining monitoring application that uses machine learning and satellite imagery to alert government authorities, NGOs and concerned citizens about possible mining activities anywhere in Colombia, and enables them to assess the location, lawfulness and potential impacts to the environment of those mines."
+                     :es "Monitoreo Minero Colombiano (CoMiMo) es una aplicación de monitoreo minero en línea que utiliza aprendizaje automático e imágenes satelitales para alertar a las autoridades gubernamentales, ONGs y ciudadanos preocupados sobre posibles actividades mineras en cualquier lugar de Colombia, y les permite evaluar la ubicación, la legalidad y los posibles impactos al entorno de esas minas."}
+        keywords    {:en "colombian mining monitoring, comimo, satellite imagery, illegal mining, machine learning, image analysis, detection, crowdsourcing"
+                     :es "monitoreo minero colombiano, comimo, imágenes satelitales, minería ilegal, aprendizaje automático, análisis de imágenes, detección, crowdsourcing"}]
+    [:head
+     [:title (title lang)]
+     [:meta {:charset "utf-8"}]
+     [:meta {:name "viewport" :content "width=device-width, user-scalable=no"}]
+     [:meta {:name "description" :content (description lang)}]
+     [:meta {:name "keywords" :content (keywords lang)}]
+     [:link {:rel "shortcut icon" :href "favicon.ico"}]
+     (when-let [ga-id (get-config :ga-id)]
+       (list [:script {:async true :src (str "https://www.googletagmanager.com/gtag/js?id=" ga-id)}]
+             [:script (str "window.dataLayer = window.dataLayer || []; function gtag() {dataLayer.push(arguments);} gtag('js', new Date()); gtag('config', '" ga-id "', {'page_location': location.host + location.pathname});")]))
+     (include-css "/css/bootstrap-grid.min.4.3.1.css"
+                  "/css/gmw_global.css"
+                  "/css/gmw_main.css"       ; only home
+                  "/css/tailwindOutput.css")
+     (apply include-js
+            "/js/google-charts.js"
+            "/js/jquery-3.4.1.min.js"
+            extra-js)]))
 
 (defn uri->page [uri]
   (->> (str/split uri #"/")
@@ -93,11 +100,14 @@
 (defn render-page [uri]
   (fn [request]
     (let [page          (uri->page uri)
-          webpack-files (find-webpack-files page)]
+          webpack-files (find-webpack-files page)
+          user-id       (-> request :params :userId)
+          user          (first (call-sql "get_user_information" user-id))
+          lang          (:default-lang user :en)]
       {:status  200
        :headers {"Content-Type" "text/html"}
        :body    (html5
-                 (head webpack-files)
+                 (head webpack-files lang)
                  [:body
                   (if (seq webpack-files)
                     [:section
@@ -129,8 +139,8 @@
   ([body]
    (data-response body {}))
   ([body {:keys [status type session]
-          :or {status 200 type :json}
-          :as params}]
+          :or   {status 200 type :json}
+          :as   params}]
    (merge (when (contains? params :session) {:session session})
           {:status  status
            :headers {"Content-Type" (condp = type
