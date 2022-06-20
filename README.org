@@ -14,13 +14,13 @@
 
 ** Application Configuration
 
-On startup, the CoMiMo application reads a file called ~config.edn~ in the top level directory of this repository, which contains various user-configurable system parameters. A sample file called ~config.default.edn~ is provided with this repository to get you started. To begin, simply copy it to ~config.edn~. Then edit it according to the following sections.
+On startup, the CoMiMo application reads a file called ~config.edn~ in the top-level directory of this repository, which contains various user-configurable system parameters. A sample file called ~config.default.edn~ is provided with this repository to get you started. To begin, simply copy it to ~config.edn~. Then edit it according to the following sections.
 
 Please note that you must replace all values surrounded with angle brackets (e.g., "<api-key>") with actual values for the application to work correctly. Most of the fields should be self-explanatory.
 
 ** Postgresql Database Setup
 
-*Postgresql* needs to be installed on the machine that will be hosting this website. This installation task is system specific and is beyond the scope of this README, so please follow the instructions for your operating system and Postgresql version. However, please ensure that the database server's superuser account is named "postgres" and that you know its database connection password before proceeding.
+*Postgresql* needs to be installed on the machine that will be hosting this website. This installation task is system-specific and is beyond the scope of this README, so please follow the instructions for your operating system and Postgresql version. However, please ensure that the database server's superuser account is named "postgres" and that you know its database connection password before proceeding.
 
 Once the Postgresql database server is running on your machine, you should navigate to the toplevel directory (i.e., the directory containing this README) and run the database build command as follows:
 
@@ -30,16 +30,13 @@ clojure -M:build-db build-all [--dev-data]
 
 This will begin by creating a new database and role called ~comimo~ and then add the postgis and pgcrypto extensions to it. Next, the script will populate the database with the schemas, tables, and functions that are necessary for storing and processing CoMiMo's data. Finally, it will load some default data into these tables that is necessary for the website to function properly.
 
-*** FUTURE
-You can optionally load dev data with ~--dev-data~.  This will initialize the DB with 3 users, an imagery source, and a project.
-
-If you wish to use a live copy of the CoMiMo database isntead of the dev data, please see the documentation of the ~build-db~ command in the [[https://github.com/sig-gis/triangulum#triangulumbuild-db][Triangulum README]].
+You can optionally load dev data with ~--dev-data~.  This will initialize the DB with 3 users, an imagery source, and a project. If you wish to use a live copy of the CoMiMo database instead of the dev data, please see the documentation of the ~build-db~ command in the [[https://github.com/sig-gis/triangulum#triangulumbuild-db][Triangulum README]].
 
 *** Performance Settings
 
-If you want to improve the performance of your Postgresql server, one way is to visit the [[https://pgtune.leopard.in.ua/][pgtune]] website and input your system settings. This will generate a set of configuration options that you can add to the postgresql.conf file in your system-specific Postgresql data directory.
+If you want to improve the performance of your Postgresql server, one way is to visit the [[https://pgtune.leopard.in.ua/][pgtune]] website and input your system settings. This will generate a set of configuration options that you can add to the ~postgresql.conf~ file in your system-specific Postgresql data directory.
 
-If you would like to keep these settings separate for your own reference, you can add them to a file called "performance.conf" that you should place in your Postgresql data directory. You can then import these settings into postgresql.conf by adding this line to the end of that file:
+If you would like to keep these settings separate for your own reference, you can add them to a file called ~performance.conf~ that you should place in your Postgresql data directory. You can then import these settings into ~postgresql.conf~ by adding this line to the end of that file:
 
 #+begin_example
 include = 'performance.conf'
@@ -49,7 +46,7 @@ Note that the Postgresql server will need to be restarted for these changes to t
 
 ** Environment Variable Setup
 
-In order for your command line shell to find the programs installed above, you will need to update your environment variables. Under GNU/Linux, *BSD, or MacOS X, you can set these through your shell's .*rc or .*profile configuration files in your $HOME directory. In a Windows environment, you will need to set either the USER (for the current user only) or SYSTEM (for any user) environment variables under your system settings menu.
+In order for your command-line shell to find the programs installed above, you will need to update your environment variables. Under GNU/Linux, *BSD, or MacOS X, you can set these through your shell's .*rc or .*profile configuration files in your $HOME directory. In a Windows environment, you will need to set either the USER (for the current user only) or SYSTEM (for any user) environment variables under your system settings menu.
 
 *** Step 1: Add JAVA_HOME
 
@@ -105,7 +102,7 @@ Copy ~config.default.edn~ to ~config.edn~ and update any settings that you wish.
 
 ** Python dependencies
 
-Use ~pip~ to install dependencies.  The python / clj interop does not support virtual environments.
+Use ~pip~ to install dependencies.  The Python / Clojure interop does not support virtual environments.
 
 #+begin_src sh
 pip install earthengine-api --upgrade
@@ -125,11 +122,11 @@ This command will open a window in your browser containing a key that you should
 
 *** Create accounts
 
-To be able to crate accounts without having to send email for confirmation, set ~:auto-validate?~ of ~:mail~ to ~true~ in ~config.edn~.
+To be able to create accounts without having to send email for confirmation, set ~:auto-validate?~ of ~:mail~ to ~true~ in ~config.edn~.
 
 *** Compile and run
 
-To compile and run the web application, navigate to the top level project directory and run:
+To compile and run the web application, navigate to the top-level project directory and run:
 
 #+begin_src sh
 npm install
@@ -142,13 +139,13 @@ Now, in a separate terminal window (because webpack needs to be running in the b
 clojure -M:server start
 #+end_src
 
-The website will then be available at http://localhost:8080 unless a port is specified. These can also be configured using the ~:server~ section in your ~config.edn~ file. When using the ~clojure -M:server start~ command (which is what ~npm run server-dev~ is an alias for) an http port can be specified with -p and an https port can be specified with -P. In dev mode, server-side exceptions will be displayed in the browser and JavaScript source files will be reloaded whenever you refresh the page.
+The website will then be available at ~http://localhost:8080~ unless a port is specified. These can also be configured using the ~:server~ section in your ~config.edn~ file. When using the ~clojure -M:server start~ command (which is what ~npm run server-dev~ is an alias for) an http port can be specified with -p and an https port can be specified with -P. In dev-mode, server-side exceptions will be displayed in the browser and JavaScript source files will be reloaded whenever you refresh the page.
 
 Going forward you will usually only need to run ~npm run webpack-dev~ and ~clojure -M:server start~ (still in separate terminals) to get your dev environment set up.  Watch for updates to SQL files or ~package.json~ and run ~npm run build-db-functions~ or ~npm install~ respectively.
 
 *** Checking for Reflection Warnings
 
-From the top level project directory run:
+From the top-level project directory run:
 
 #+begin_src sh
 clojure -M:check-reflection
@@ -164,20 +161,24 @@ It is very important to change the default ~:session-key~ in ~config.edn~.  This
 
 *** Email Server
 
-To set up the email server for system emails, open the "config.edn" file in the root directory of the application. Edit the default EDN object containing server details to the file, replacing the values with your own.
+To set up the email server for system emails, open the ~config.edn~ file in the root directory of the application. Edit the default EDN object containing server details to the file, replacing the values with your own.
 
 *** Google Earth Engine service account
 
-For production it is recommended that you use a service account with a key file. You can obtain your key file by logging into your service account, navigating to the account menu, and clicking "Create key > JSON". Then, download that JSON key file and place it in the root directory of CoMiMo. Set the email for your service account and key path in the ~:gee~ section of config.edn.
+For production it is recommended that you use a service account with a key file. You can obtain your key file by logging into your service account, navigating to the account menu, and clicking "Create key > JSON". Then, download that JSON key file and place it in the root directory of CoMiMo. Set the email for your service account and key path in the ~:gee~ section of ~config.edn~.
 
 #+begin_src text
 :gee {:ee-account  "example@gmail.com"
       :ee-key-path "comimo-gee-key.json"}
 #+end_src
 
+*** Google Analytics
+
+To hook up Google Analytics to CoMiMo, simply add your Analtics ID as a string to the `:ga-id` field in your ~config.edn~ file.
+
 *** Launching the Web Server
 
-To compile and run the web application, navigate to the top level project directory and run:
+To compile and run the web application, navigate to the top-level project directory and run:
 
 #+begin_src sh
 npm install
@@ -186,7 +187,7 @@ clojure -M:build-db functions -d comimo
 clojure -M:server start -m [dev|prod] [-p 8080] [-P 8443] [-r]
 #+end_src
 
-The website will then be available at http://localhost:8080 unless a port is specified. These can also be configured using the ~:server~ section in your ~config.edn~ file. An http port can be specified with -p and an https port can be specified with -P. In dev mode, server-side exceptions will be displayed in the browser and Clojure source files will be reloaded whenever you refresh the page. These features are disabled in prod mode. If -m is unspecified, it will default to prod mode.
+The website will then be available at ~http://localhost:8080~ unless a port is specified. These can also be configured using the ~:server~ section in your ~config.edn~ file. An http port can be specified with -p and an https port can be specified with -P. In dev-mode, server-side exceptions will be displayed in the browser and Clojure source files will be reloaded whenever you refresh the page. These features are disabled in prod mode. If -m is unspecified, it will default to prod mode.
 
 *** Running the Web Server as a System Service
 
@@ -194,14 +195,14 @@ View the [[https://github.com/sig-gis/triangulum#triangulumsystemd][Triangulum S
 
 *** Maintaining Daily Logs
 
-By default the server will log to standard out. If you would like to have the system log to YYYY-DD-MM.log, use the "-o path" option to specify an output path. You can either specify a path relative to the toplevel directory of this repository or an absolute path on your filesystem. The logger will keep the 10 most recent logs.
+By default the server will log to standard out. If you would like to have the system log to YYYY-DD-MM.log, use the "-o path" option to specify an output path. You can either specify a path relative to the top-level directory of this repository or an absolute path on your filesystem. The logger will keep the 10 most recent logs.
 
 *** Using the Announcement Banner
 
-On each page load clojure will read the value of ~announcement.txt~. If text is found, the value will be inserted into a HTML element that displays as a red banner at the top of the page. To add a new announcement, edit ~announcement.txt~ and add a new message.  To remove the announcement, edit ~announcement.txt~ and remove all text.
+On each page load, Clojure will read the value of ~announcement.txt~. If text is found, the value will be inserted into a HTML element that displays as a red banner at the top of the page. To add a new announcement, edit ~announcement.txt~ and add a new message.  To remove the announcement, edit ~announcement.txt~ and remove all text.
 
 ** License and Distribution
 
-Copyright © 2016-2022 FAO.
+Copyright © 2016-2022 Spatial Informatics Group, LLC.
 
-Collect Earth Online is distributed by FAO under the terms of the MIT License. See LICENSE in this directory for more information.
+CoMiMo is distributed by Spatial Informatics Group, LLC. under the terms of the Eclipse Public License version 2.0 (EPLv2). See ~LICENSE.txt~ in this directory for more information.
