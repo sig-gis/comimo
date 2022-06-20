@@ -34,14 +34,14 @@ export default function Select({
         onChange={onChange}
         value={value}
       >
-        <Option disabled labelKey={labelKey} option={[-1, defaultOption]} valueKey={valueKey}/>
+        <Option key="defaultOption" disabled labelKey={labelKey} option={[-1, defaultOption]} valueKey={valueKey}/>
         {Array.isArray(options)
-          ? options.map(o =>
+          ? options.map((o, i) =>
           /* eslint-disable-next-line react/no-array-index-key */
-            <Option labelKey={labelKey} valueKey={valueKey} option={o}/>)
-          : Object.values(options).map(o =>
+            <Option key={i} labelKey={labelKey} option={o} valueKey={valueKey}/>)
+          : Object.values(options).map((o, i) =>
           /* eslint-disable-next-line react/no-array-index-key */
-            <Option labelKey={labelKey} valueKey={valueKey} option={o}/>)}
+            <Option key={i} labelKey={labelKey} option={o} valueKey={valueKey}/>)}
       </select>
     </div>
   );

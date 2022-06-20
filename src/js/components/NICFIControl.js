@@ -8,8 +8,8 @@ export default function NICFIControl({extraParams, setParams, nicfiLayers}) {
   const [selectedBand, setBand] = useState("");
   useEffect(() => {
     if (extraParams.NICFI) {
-      setTime(extraParams.NICFI.dataLayer);
-      setBand(extraParams.NICFI.band);
+      setTime(extraParams.NICFI.dataLayer || selectedTime);
+      setBand(extraParams.NICFI.band || selectedBand);
     }
   }, [extraParams]);
 

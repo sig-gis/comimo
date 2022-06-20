@@ -30,9 +30,9 @@
        (list [:script {:async true :src (str "https://www.googletagmanager.com/gtag/js?id=" ga-id)}]
              [:script (str "window.dataLayer = window.dataLayer || []; function gtag() {dataLayer.push(arguments);} gtag('js', new Date()); gtag('config', '" ga-id "', {'page_location': location.host + location.pathname});")]))
      (include-css "/css/bootstrap-grid.min.4.3.1.css"
-                  "/css/gmw_global.css"
-                  "/css/gmw_main.css"       ; only home
-                  "/css/tailwindOutput.css")
+                  "css/gmw_global.css"
+                  "css/gmw_main.css"       ; only home
+                  "css/tailwindOutput.css")
      (apply include-js
             "/js/google-charts.js"
             "/js/jquery-3.4.1.min.js"
