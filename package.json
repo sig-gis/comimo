@@ -60,7 +60,7 @@
     "scripts": {
         "lint": "./node_modules/.bin/eslint src/js/**/* --fix",
         "tailwind": "npx tailwindcss -i ./src/css/tailwindInput.css -o ./resources/public/css/tailwindOutput.css",
-        "webpack-dev": "npm run tailwind --watch && webpack --config webpack.config.js --env dev",
-        "webpack-prod": "npm run tailwind && webpack --config webpack.config.js --env prod"
+        "webpack-dev": "npm run tailwind --watch && npx webpack --config webpack.config.js --env dev",
+        "webpack-prod": "npm run tailwind && npx webpack --config webpack.config.js --env prod"
     }
 }
