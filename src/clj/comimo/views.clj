@@ -1,10 +1,10 @@
 (ns comimo.views
-  (:require [clojure.data.json :as json]
-            [clojure.java.io :as io]
-            [clojure.string :as str]
-            [cognitect.transit :as transit]
-            [hiccup.page :refer [html5 include-js include-css]]
-            [triangulum.config :refer [get-config]]
+  (:require [clojure.data.json   :as json]
+            [clojure.java.io     :as io]
+            [clojure.string      :as str]
+            [cognitect.transit   :as transit]
+            [hiccup.page         :refer [html5 include-js include-css]]
+            [triangulum.config   :refer [get-config]]
             [triangulum.database :refer [call-sql]])
   (:import java.io.ByteArrayOutputStream))
 
@@ -29,9 +29,9 @@
      (when-let [ga-id (get-config :ga-id)]
        (list [:script {:async true :src (str "https://www.googletagmanager.com/gtag/js?id=" ga-id)}]
              [:script (str "window.dataLayer = window.dataLayer || []; function gtag() {dataLayer.push(arguments);} gtag('js', new Date()); gtag('config', '" ga-id "', {'page_location': location.host + location.pathname});")]))
-     (include-css "css/bootstrap-grid.min.4.3.1.css"
-                  "css/gmw_global.css"
-                  "css/gmw_main.css")   ; only home
+     (include-css "/css/bootstrap-grid.min.4.3.1.css"
+                  "/css/gmw_global.css"
+                  "/css/gmw_main.css")   ; only home
      (apply include-js
             "/js/google-charts.js"
             "/js/jquery-3.4.1.min.js"
