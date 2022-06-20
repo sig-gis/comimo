@@ -132,23 +132,23 @@ function makeAdminTableComponent(dateDataURL, columnFields, tableRefDownloadURL)
 }
 
 const UserMines = makeAdminTableComponent(URLS.USER_MINES,
-                                          [{title: "user",          field: "username"},
-                                           {title: "email",         field: "email"},
-                                           {title: "organization",  field: "institution"},
-                                           {title: "latitude",      field: "lat"},
-                                           {title: "longitude",     field: "lon"},
+                                          [{title: "user", field: "username"},
+                                           {title: "email", field: "email"},
+                                           {title: "organization", field: "institution"},
+                                           {title: "latitude", field: "lat"},
+                                           {title: "longitude", field: "lon"},
                                            {title: "reported date", field: "reportedDate"}],
                                           "user-mines");
 
 const Predictions = makeAdminTableComponent(URLS.PREDICTIONS,
-                                            [{title: "user",         field: "username"},
-                                             {title: "email",        field: "email"},
+                                            [{title: "user", field: "username"},
+                                             {title: "email", field: "email"},
                                              {title: "organization", field: "institution"},
                                              {title: "project name", field: "projectName"},
-                                             {title: "latitude",     field: "lat"},
-                                             {title: "longitude",    field: "lon"},
-                                             {title: "data layer",   field: "dataLayer"},
-                                             {title: "mine",         field: "answer"}],
+                                             {title: "latitude", field: "lat"},
+                                             {title: "longitude", field: "lon"},
+                                             {title: "data layer", field: "dataLayer"},
+                                             {title: "mine", field: "answer"}],
                                             "validated-predictions");
 
 const Filter = styled.input`
@@ -221,20 +221,20 @@ function AdminContent() {
         <label className="col-4">{username}</label>
         <label className="col-5">{email}</label>
         {(userId === "Id")
-         ? <label className="col-2">{role}</label>
-         : (
-           <select
-             className="w-20"
-             id="role-selection"
-             onChange={e => {
-               setUsers([...(userList.slice(0, i)), {...user, role: e.target.value}, ...userList.slice(i + 1)]);
-               setRoleChanged(isEqual(userList, savedUserList));
-             }}
-             value={role}
-           >
-             {["admin", "user"].map(r => <option key={r} value={r}>{r}</option>)}
-           </select>
-         )}
+          ? <label className="col-2">{role}</label>
+          : (
+            <select
+              className="w-20"
+              id="role-selection"
+              onChange={e => {
+                setUsers([...(userList.slice(0, i)), {...user, role: e.target.value}, ...userList.slice(i + 1)]);
+                setRoleChanged(isEqual(userList, savedUserList));
+              }}
+              value={role}
+            >
+              {["admin", "user"].map(r => <option key={r} value={r}>{r}</option>)}
+            </select>
+          )}
       </GridRow>
     );
   };
@@ -331,6 +331,7 @@ function AdminContent() {
               </OptionRow>
               <OptionRow onClick={() => setPage("userMines")}>
                 <label>{admin?.userMines}</label>
+              </OptionRow>
               <OptionRow
                 onClick={() => {
                   setFilterStr("");
