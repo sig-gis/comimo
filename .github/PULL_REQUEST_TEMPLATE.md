@@ -1,0 +1,31 @@
+## Purpose
+<!-- Description of what has been added/changed -->
+
+## Related Issues
+Closes COM-###
+
+## Submission Checklist
+- [ ] Included Jira issue in the PR title (e.g. `COM-### Did something here`)
+- [ ] Code passes linter rules (`npx eslint "src/js/**"`)
+- [ ] No new reflection warnings (`clojure -M:check-reflection`)
+
+## Testing
+#### Module Impacted
+<!-- List the Module > Submodule impacted by this test (e.g. Validation > Project Boundary or Subscriptions > Add) -->
+<!-- The current list of all Modules is: Account, Home, Subscriptions, Stats, Validation, Reporting, and Admin. -->
+
+#### Role
+<!-- Admin, User, or Visitor -->
+
+#### Steps
+<!-- All steps needed to test this PR -->
+1.
+
+#### Desired Outcome
+
+---
+
+<!-- If needed, add more tests using the format above (Module Impacted, Role, Steps, Desired Outcome) here. -->
+
+## Screenshots
+<!-- Add a screen shot when UI changes are included -->
