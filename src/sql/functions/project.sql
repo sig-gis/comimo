@@ -31,7 +31,7 @@ $$ LANGUAGE SQL;
 
 
 -- Checks if a new project already exists maybe under a different name
-CREATE OR REPLACE FUNCTION project_exists(_data_layer text, _regions text)
+CREATE OR REPLACE FUNCTION project_exists(_data_layer text, _regions varchar[])
   RETURNS boolean AS $$
 
   SELECT EXISTS(SELECT 1

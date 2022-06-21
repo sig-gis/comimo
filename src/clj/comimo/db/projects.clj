@@ -51,7 +51,7 @@
 ;;;
 
 (defn create-project! [user-id proj-name regions data-layer]
-  (let [project-exists? (sql-primitive (call-sql "project_exists" data-layer (str/join "__" regions)))
+  (let [project-exists? (sql-primitive (call-sql "project_exists" data-layer regions))
         plots-strs      (when (not project-exists?) (get-points-within data-layer regions))]
     (cond project-exists?
           "projectExists"
@@ -63,11 +63,11 @@
                                                     proj-name
                                                     (into-array String regions)
                                                     data-layer))
-                plots (->> plots-strs
-                           (mapv (fn [{:strs [lat lon]}]
-                                   {:lat         lat
-                                    :lon         lon
-                                    :project_rid project-id})))]
+                plots      (->> plots-strs
+                                (mapv (fn [{:strs [lat lon]}]
+                                        {:lat         lat
+                                         :lon         lon
+                                         :project_rid project-id})))]
 
             (try
               ;; Create plots

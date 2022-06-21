@@ -1,11 +1,12 @@
 -- NAMESPACE: dev-data
 
+
 -- Adds an administrator and a user
 INSERT INTO users
-    (user_uid, email, password, administrator, token, verified)
+    (user_uid, username, email, password, token, verified, role, full_name, sector, institution, default_lang)
 VALUES
-(1, 'admin', 'admin@com.dev', crypt('admin', gen_salt('bf')), TRUE, '2022-04-22', 'admin', 'COM Admin', 'academic', 'dev', 'en'),
-(2, 'user', 'user@com.dev', crypt('user', gen_salt('bf')), TRUE, '2022-04-22', 'user', 'COM User', 'academic', 'dev', 'en');
+(1, 'admin', 'admin@com.dev', crypt('admin', gen_salt('bf')), '2022-04-22', TRUE, 'admin', 'COM Admin', 'academic', 'dev', 'en'),
+(2, 'user', 'user@com.dev', crypt('user', gen_salt('bf')), '2022-04-22', TRUE, 'user', 'COM User', 'academic', 'dev', 'en');
 
 SELECT setval(pg_get_serial_sequence('users', 'user_uid'), (SELECT MAX(user_uid) FROM users) + 1);
 
@@ -41,7 +42,7 @@ INSERT INTO projects (
   1,
   1,
   'Sample Project',
-  'mun_AMAZONAS_LA PEDRERA__mun_AMAZONAS_LA CHORRERA__mun_AMAZONAS_LETICIA',
+  '{"mun_AMAZONAS_LA PEDRERA", "mun_AMAZONAS_LA CHORRERA", "mun_AMAZONAS_LETICIA"}',
   '2022-01-01',
   ST_SetSRID(ST_GeomFromGeoJSON('{"type":"Polygon","coordinates":[[[95,10.5],[95,22.5],[107,22.5],[107,10.5],[95,10.5]]]}'), 4326),
   'active',
@@ -50,7 +51,7 @@ INSERT INTO projects (
   2,
   2,
   'Sample Project2',
-  'mun_ANTIOQUIA_SANTA BÁRBARA__mun_ANTIOQUIA_VIGIA DEL FUERTE__mun_ANTIOQUIA_YARUMAL',
+  '{"mun_ANTIOQUIA_SANTA BÁRBARA", "mun_ANTIOQUIA_VIGIA DEL FUERTE", "mun_ANTIOQUIA_YARUMAL"}',
   '2022-01-01',
   ST_SetSRID(ST_GeomFromGeoJSON('{"type":"Polygon","coordinates":[[[95,10.5],[95,22.5],[107,22.5],[107,10.5],[95,10.5]]]}'), 4326),
   'active',
