@@ -61,7 +61,7 @@ CREATE OR REPLACE FUNCTION get_unsent_subscriptions(_date text)
     user_id         integer,
     email           text,
     default_lang    text,
-    regions         varchar[]
+    regions         text[]
  ) AS $$
 
     SELECT user_uid,
