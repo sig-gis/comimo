@@ -10,7 +10,7 @@ export default function TextInput({
   id = "textinput",
   className = "",
   label = "",
-  maxLength = 12,
+  maxLength = 60,
   onChange = () => {},
   onKeyUp = () => {},
   value = "",

@@ -33,7 +33,9 @@ class Login extends React.Component {
           window.location = "/";
         } else {
           console.error(data);
-          alert(this.state.localeText[data] || this.state.localeText.errorCreating);
+          alert(
+            this.state.localeText[data] || this.state.localeText.errorCreating
+          );
         }
       })
       .catch(err => console.error(err));
@@ -62,20 +64,20 @@ class Login extends React.Component {
           {this.renderField(localeText.password, "password", "password")}
           <div className="d-flex justify-content-between align-items-center">
             <a href="/password-request">{localeText.forgot}</a>
-            <Button
-              className="mt-3"
-              type="submit"
-            >
+            <Button className="mt-3" type="submit">
               {localeText.login}
             </Button>
           </div>
           <div className="d-flex flex-column align-items-center">
             <h3 className="">{localeText.newUser}</h3>
             <div className="">
-              <div >
+              <div>
                 <Button
                   name="register"
-                  onClick={() => { window.location = "/register"; }}
+                  onClick={e => {
+                    e.preventDefault();
+                    window.location = "/register";
+                  }}
                 >
                   {localeText.register}
                 </Button>
