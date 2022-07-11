@@ -59,7 +59,7 @@ class Register extends React.Component {
   verifyInputs = () => {
     const {username, email, fullName, institution, password, passwordConfirmation, localeText} = this.state;
     return [
-      username.length < 6 && localeText.errorUsernameLen,
+      username.length < 3 && localeText.errorUsernameLen,
       !EmailValidator.validate(email) && localeText.errorInvalidEmail,
       fullName.length === 0 && localeText.errorNameReq,
       institution.length === 0 && localeText.errorInstitutionReq,
