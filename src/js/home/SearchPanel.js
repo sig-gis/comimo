@@ -24,8 +24,8 @@ export default class SearchPanel extends React.Component {
 
   searchGeocode = () => {
     const {searchText} = this.state;
-    const {featureNames, mapQuestKey} = this.props;
-    const url = URLS.MAPQUEST + "?key=" + mapQuestKey + "&county=" + searchText + "&country=colombia";
+    const {featureNames, mapquestKey} = this.props;
+    const url = URLS.MAPQUEST + "?key=" + mapquestKey + "&county=" + searchText + "&country=colombia";
     jsonRequest(url, null, "GET")
       .then(result => {
         this.setState({
