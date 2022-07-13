@@ -51,7 +51,8 @@
 ;;;
 
 (defn create-project! [user-id proj-name regions data-layer]
-  (let [project-exists? (sql-primitive (call-sql "project_exists" data-layer regions))
+  (let [regions         (into-array String regions)
+        project-exists? (sql-primitive (call-sql "project_exists" data-layer regions))
         plots-strs      (when (not project-exists?) (get-points-within data-layer regions))]
     (cond project-exists?
           "projectExists"
