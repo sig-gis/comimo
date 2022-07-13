@@ -1,16 +1,19 @@
 (ns comimo.server
-  (:require [cider.nrepl             :refer [cider-nrepl-handler]]
-            [clojure.java.io         :as io]
-            [comimo.db.subscriptions :refer [send-email-alerts]]
-            [comimo.handler          :refer [create-handler-stack]]
-            [nrepl.server            :as nrepl-server]
-            [ring.adapter.jetty      :refer [run-jetty]]
-            [triangulum.cli          :refer [get-cli-options]]
-            [triangulum.config       :refer [get-config]]
-            [triangulum.database     :refer [call-sql]]
-            [triangulum.logging      :refer [log-str set-log-path!]]
-            [triangulum.notify       :refer [available? ready!]]
-            [triangulum.sockets      :refer [send-to-server! socket-open?]]))
+  (:require
+   [cider.nrepl             :refer [cider-nrepl-handler]]
+   [clojure.java.io         :as io]
+   [comimo.db.subscriptions :refer [send-email-alerts]]
+   [comimo.handler          :refer [create-handler-stack]]
+   [nrepl.server            :as nrepl-server]
+   [ring.adapter.jetty      :refer [run-jetty]]
+   [triangulum.cli          :refer [get-cli-options]]
+   [triangulum.config       :refer [get-config]]
+   [triangulum.database     :refer [call-sql]]
+   [triangulum.logging      :refer [log-str set-log-path!]]
+   [triangulum.notify       :refer [available? ready!]]
+   [triangulum.sockets      :refer [send-to-server! socket-open?]])
+  (:import
+   [org.eclipse.jetty.server Server]))
 
 (defonce ^:private server             (atom nil))
 (defonce ^:private repl-server        (atom nil))
@@ -85,7 +88,7 @@
     (future-cancel @scheduling-service)
     (reset! scheduling-service nil))
   (when @server
-    (.stop @server)
+    (.stop ^Server @server)
     (reset! server nil)
     (System/exit 0)))
 
