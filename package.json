@@ -1,68 +1,68 @@
 {
-    "name": "CoMiMo",
-    "version": "1.0.0",
-    "description": "## Canonical source",
-    "main": "index.js",
-    "repository": {
-        "type": "git",
-        "url": "git+ssh://git@gitlab.com/sig-gis/gold-mine-watch.git"
-    },
-    "author": "",
-    "license": "ISC",
-    "bugs": {
-        "url": "https://github.com/sig-gis/comimo/issues"
-    },
-    "homepage": "https://github.com/sig-gis/comimo#readme",
-    "dependencies": {
-        "@emotion/react": "^11.9.0",
-        "@emotion/styled": "^11.8.1",
-        "email-validator": "^2.0.4",
-        "lodash": "^4.17.21",
-        "mapbox-gl": "^2.7.0",
-        "react": "^16.8.0",
-        "react-dom": "^16.8.0",
-        "react-tabulator": "^0.18.1",
-        "turf-extent": "^1.0.4"
-    },
-    "devDependencies": {
-        "@babel/core": "^7.17.5",
-        "@babel/eslint-parser": "^7.17.0",
-        "@babel/eslint-plugin": "^7.16.5",
-        "@babel/plugin-proposal-class-properties": "^7.16.7",
-        "@babel/plugin-transform-runtime": "^7.17.0",
-        "@babel/preset-env": "^7.16.11",
-        "@babel/preset-react": "^7.16.7",
-        "@emotion/babel-preset-css-prop": "^11.2.0",
-        "babel-eslint": "^10.1.0",
-        "babel-loader": "^8.2.3",
-        "babel-plugin-lodash": "^3.3.4",
-        "babel-plugin-macros": "^3.1.0",
-        "babel-plugin-twin": "^1.0.2",
-        "css-loader": "^4.3.0",
-        "eslint": "^7.32.0",
-        "eslint-config-airbnb": "^18.2.1",
-        "eslint-plugin-import": "^2.25.4",
-        "eslint-plugin-jsx-a11y": "^6.5.1",
-        "eslint-plugin-react": "^7.29.2",
-        "eslint-plugin-react-hooks": "^4.3.0",
-        "prettier": "2.7.1",
-        "quick-lint-js": "2.6.0",
-        "style-loader": "^1.3.0",
-        "tailwindcss": "^3.1.3",
-        "tern": "^0.23.0",
-        "twin.macro": "^2.7.0",
-        "webpack": "^5.69.1",
-        "webpack-cli": "^4.10.0"
-    },
-    "babelMacros": {
-        "twin": {
-            "preset": "emotion"
-        }
-    },
-    "scripts": {
-        "lint": "find src/js -type f -exec ./node_modules/.bin/quick-lint-js --snarky {} +",
-        "tailwind": "npx tailwindcss -i ./src/css/tailwindInput.css -o ./resources/public/css/tailwindOutput.css",
-        "webpack-dev": "npm run tailwind --watch && npx webpack --config webpack.config.js --env dev",
-        "webpack-prod": "npm run tailwind && npx webpack --config webpack.config.js --env prod"
+  "name": "CoMiMo",
+  "version": "1.0.0",
+  "description": "## Canonical source",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@gitlab.com/sig-gis/gold-mine-watch.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/sig-gis/comimo/issues"
+  },
+  "homepage": "https://github.com/sig-gis/comimo#readme",
+  "dependencies": {
+    "@emotion/react": "^11.9.0",
+    "@emotion/styled": "^11.8.1",
+    "email-validator": "^2.0.4",
+    "lodash": "^4.17.21",
+    "mapbox-gl": "^2.7.0",
+    "react": "^16.8.0",
+    "react-dom": "^16.8.0",
+    "react-tabulator": "^0.18.1",
+    "turf-extent": "^1.0.4"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.17.5",
+    "@babel/eslint-parser": "^7.17.0",
+    "@babel/eslint-plugin": "^7.16.5",
+    "@babel/plugin-proposal-class-properties": "^7.16.7",
+    "@babel/plugin-transform-runtime": "^7.17.0",
+    "@babel/preset-env": "^7.16.11",
+    "@babel/preset-react": "^7.16.7",
+    "@emotion/babel-preset-css-prop": "^11.2.0",
+    "babel-eslint": "^10.1.0",
+    "babel-loader": "^8.2.3",
+    "babel-plugin-lodash": "^3.3.4",
+    "babel-plugin-macros": "^3.1.0",
+    "babel-plugin-twin": "^1.0.2",
+    "css-loader": "^4.3.0",
+    "eslint": "^7.32.0",
+    "eslint-config-airbnb": "^18.2.1",
+    "eslint-plugin-import": "^2.25.4",
+    "eslint-plugin-jsx-a11y": "^6.5.1",
+    "eslint-plugin-react": "^7.29.2",
+    "eslint-plugin-react-hooks": "^4.3.0",
+    "prettier": "2.7.1",
+    "quick-lint-js": "2.6.0",
+    "style-loader": "^1.3.0",
+    "tailwindcss": "^3.1.3",
+    "tern": "^0.23.0",
+    "twin.macro": "^2.7.0",
+    "webpack": "^5.69.1",
+    "webpack-cli": "^4.10.0"
+  },
+  "babelMacros": {
+    "twin": {
+      "preset": "emotion"
     }
+  },
+  "scripts": {
+    "lint": "find src/js -type f -exec ./node_modules/.bin/quick-lint-js --snarky {} +",
+    "tailwind": "npx tailwindcss -i ./src/css/tailwindInput.css -o ./resources/public/css/tailwindOutput.css",
+    "webpack-dev": "npm run tailwind --watch && npx webpack --config webpack.config.js --env dev",
+    "webpack-prod": "npm run tailwind && npx webpack --config webpack.config.js --env prod"
+  }
 }

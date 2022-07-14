@@ -20,22 +20,16 @@ const CardHeader = styled.h2`
   padding: 1rem;
 `;
 
-export default function TitledForm({header, submitFn, children}) {
+export default function TitledForm({ header, submitFn, children }) {
   return (
     <Form
-      onSubmit={e => {
+      onSubmit={(e) => {
         e.preventDefault();
         submitFn();
       }}
     >
-      {header && (
-        <CardHeader>
-          {header}
-        </CardHeader>
-      )}
-      <FormContents>
-        {children}
-      </FormContents>
+      {header && <CardHeader>{header}</CardHeader>}
+      <FormContents>{children}</FormContents>
     </Form>
   );
 }

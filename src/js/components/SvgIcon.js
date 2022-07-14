@@ -1,12 +1,10 @@
 import React from "react";
 
 const envelopeIcon = (
-  <svg
-    viewBox="0 0 512 512"
-  >
-    <polygon points="339.392,258.624 512,367.744 512,144.896"/>
-    <polygon points="0,144.896 0,367.744 172.608,258.624"/>
-    <path d="M480,80H32C16.032,80,3.36,91.904,0.96,107.232L256,275.264l255.04-168.032C508.64,91.904,495.968,80,480,80z"/>
+  <svg viewBox="0 0 512 512">
+    <polygon points="339.392,258.624 512,367.744 512,144.896" />
+    <polygon points="0,144.896 0,367.744 172.608,258.624" />
+    <path d="M480,80H32C16.032,80,3.36,91.904,0.96,107.232L256,275.264l255.04-168.032C508.64,91.904,495.968,80,480,80z" />
     <path
       d="M310.08,277.952l-45.28,29.824c-2.688,1.76-5.728,2.624-8.8,2.624c-3.072,0-6.112-0.864-8.8-2.624l-45.28-29.856
         L1.024,404.992C3.488,420.192,16.096,432,32,432h448c15.904,0,28.512-11.808,30.976-27.008L310.08,277.952z"
@@ -58,7 +56,7 @@ const searchIcon = (
 );
 
 const plusIcon = (
-  <svg viewBox="0 0 448 448" >
+  <svg viewBox="0 0 448 448">
     <path
       d="m408 184h-136c-4.417969 0-8-3.582031-8-8v-136c0-22.089844-17.910156-40-40-40s-40 17.910156-40 40v136c0
         4.417969-3.582031 8-8 8h-136c-22.089844 0-40 17.910156-40 40s17.910156 40 40 40h136c4.417969 0 8 3.582031 8
@@ -70,7 +68,7 @@ const plusIcon = (
 
 const minusIcon = (
   <svg viewBox="0 0 124 124">
-    <path d="M112,50H12C5.4,50,0,55.4,0,62c0,6.6,5.4,12,12,12h100c6.6,0,12-5.4,12-12C124,55.4,118.6,50,112,50z"/>
+    <path d="M112,50H12C5.4,50,0,55.4,0,62c0,6.6,5.4,12,12,12h100c6.6,0,12-5.4,12-12C124,55.4,118.6,50,112,50z" />
   </svg>
 );
 
@@ -88,7 +86,6 @@ const statsIcon = (
       d="M460.9,136.55H358.5c-9.5,0-17.1,7.6-17.1,17.1v307.2c0,9.5,7.7,17.1,17.1,17.1h102.4c9.5,0,17.1-7.7,17.1-17.1v-307.2
         C478,144.15,470.3,136.55,460.9,136.55z"
     />
-
   </svg>
 );
 
@@ -114,7 +111,7 @@ const downloadIcon = (
         c-6.272,0-11.968,3.68-14.56,9.376c-2.624,5.728-1.6,12.416,2.528,17.152l112,128c3.04,3.488,7.424,5.472,12.032,5.472
         c4.608,0,8.992-2.016,12.032-5.472l112-128C384.192,245.824,385.152,239.104,382.56,233.376z"
     />
-    <path d="M432,352v96H80v-96H16v128c0,17.696,14.336,32,32,32h416c17.696,0,32-14.304,32-32V352H432z"/>
+    <path d="M432,352v96H80v-96H16v128c0,17.696,14.336,32,32,32h416c17.696,0,32-14.304,32-32V352H432z" />
   </svg>
 );
 
@@ -162,7 +159,7 @@ const downIcon = (
 
 const userIcon = (
   <svg viewBox="0 0 24 24">
-    <circle cx="9" cy="5" r="5"/>
+    <circle cx="9" cy="5" r="5" />
     <path
       d="m11.534 20.8c-.521-.902-.417-2.013.203-2.8-.62-.787-.724-1.897-.203-2.8l.809-1.4c.445-.771 1.275-1.25 2.166-1.25.122 0
         .242.009.361.026.033-.082.075-.159.116-.237-.54-.213-1.123-.339-1.736-.339h-8.5c-2.619 0-4.75 2.131-4.75 4.75v3.5c0
@@ -200,30 +197,35 @@ const mineIcon = (
 );
 
 const adminIcon = (
-  <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-    <path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z"/>
+  <svg
+    className="h-5 w-5"
+    fill="currentColor"
+    viewBox="0 0 20 20"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z" />
   </svg>
 );
 
 const iconMap = {
-  "envelope": envelopeIcon,
-  "check": checkIcon,
-  "close": closeIcon,
-  "search": searchIcon,
-  "plus": plusIcon,
-  "minus": minusIcon,
-  "stats": statsIcon,
-  "filter": filterIcon,
-  "download": downloadIcon,
-  "info": infoIcon,
-  "layer": layerIcon,
-  "down": downIcon,
-  "user": userIcon,
-  "mine": mineIcon,
-  "admin": adminIcon
+  envelope: envelopeIcon,
+  check: checkIcon,
+  close: closeIcon,
+  search: searchIcon,
+  plus: plusIcon,
+  minus: minusIcon,
+  stats: statsIcon,
+  filter: filterIcon,
+  download: downloadIcon,
+  info: infoIcon,
+  layer: layerIcon,
+  down: downIcon,
+  user: userIcon,
+  mine: mineIcon,
+  admin: adminIcon,
 };
 
-export default function SvgIcon({icon, color, size, extraStyle}) {
+export default function SvgIcon({ icon, color, size, extraStyle }) {
   return (
     <div
       style={{
@@ -234,7 +236,7 @@ export default function SvgIcon({icon, color, size, extraStyle}) {
         maxHeight: size,
         maxWidth: size,
         width: size,
-        ...(extraStyle || {})
+        ...(extraStyle || {}),
       }}
     >
       {iconMap[icon] || iconMap.check}

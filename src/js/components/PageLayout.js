@@ -1,11 +1,11 @@
 import React from "react";
 
-import {ThemeProvider} from "@emotion/react";
+import { ThemeProvider } from "@emotion/react";
 import AppInfo from "../home/AppInfo";
 import Header from "./Header";
 
-import {getLanguage, jsonRequest} from "../utils";
-import {THEME} from "../constants";
+import { getLanguage, jsonRequest } from "../utils";
+import { THEME } from "../constants";
 
 export const MainContext = React.createContext();
 export class PageLayout extends React.Component {
@@ -18,7 +18,7 @@ export class PageLayout extends React.Component {
         ? this.props.userLang
         : getLanguage(["en", "es"]),
       myHeight: 0,
-      showInfo: false
+      showInfo: false,
     };
   }
 
@@ -31,26 +31,28 @@ export class PageLayout extends React.Component {
 
   /// State Update ///
 
-  selectLanguage = newLang => {
-    this.setState({selectedLanguage: newLang});
+  selectLanguage = (newLang) => {
+    this.setState({ selectedLanguage: newLang });
     this.getLocalText(newLang);
   };
 
   updateWindow = () => {
     window.scrollTo(0, 0);
-    this.setState({myHeight: window.innerHeight});
+    this.setState({ myHeight: window.innerHeight });
   };
 
-  setShowInfo = showInfo => this.setState({showInfo});
+  setShowInfo = (showInfo) => this.setState({ showInfo });
 
   /// API Calls ///
 
-  getLocalText = lang => jsonRequest(`/locale/${lang}.json`, {}, "GET")
-    .then(data => this.setState({localeText: data}));
+  getLocalText = (lang) =>
+    jsonRequest(`/locale/${lang}.json`, {}, "GET").then((data) =>
+      this.setState({ localeText: data })
+    );
 
   render() {
-    const {myHeight, showInfo, localeText, selectedLanguage} = this.state;
-    const {role, username, children} = this.props;
+    const { myHeight, showInfo, localeText, selectedLanguage } = this.state;
+    const { role, username, children } = this.props;
     const isAdmin = role === "admin";
     return (
       <MainContext.Provider
@@ -59,7 +61,7 @@ export class PageLayout extends React.Component {
           username,
           localeText,
           myHeight,
-          setShowInfo: this.setShowInfo
+          setShowInfo: this.setShowInfo,
         }}
       >
         <ThemeProvider theme={THEME}>
@@ -79,7 +81,7 @@ export class PageLayout extends React.Component {
               padding: 0,
               position: "relative",
               display: "flex",
-              flexDirection: "column"
+              flexDirection: "column",
             }}
           >
             <Header
@@ -95,7 +97,7 @@ export class PageLayout extends React.Component {
                 margin: "0px",
                 padding: "0px",
                 position: "relative",
-                flex: "1"
+                flex: "1",
               }}
             />
             {children}

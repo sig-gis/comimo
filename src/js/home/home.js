@@ -12,11 +12,11 @@ import ReportMinesPanel from "./ReportMinesPanel";
 import ValidatePanel from "./ValidatePanel";
 import SideIcon from "../components/SideIcon";
 import MenuItem from "../components/MenuItem";
-import {PageLayout, MainContext} from "../components/PageLayout";
+import { PageLayout, MainContext } from "../components/PageLayout";
 import SideBar from "../components/SideBar";
 
-import {jsonRequest} from "../utils";
-import {URLS} from "../constants";
+import { jsonRequest } from "../utils";
+import { URLS } from "../constants";
 
 class HomeContents extends React.Component {
   // set up class flags so each component update doesn't do redundant JS tasks
@@ -37,18 +37,19 @@ class HomeContents extends React.Component {
       extraParams: {
         NICFI: {
           dataLayer: null,
-          band: "rgb"
-        }
+          band: "rgb",
+        },
       },
-      nicfiLayers: []
+      nicfiLayers: [],
     };
   }
 
   /// Lifecycle Functions ///
 
   componentDidMount() {
-    Promise.all([this.getFeatureNames(), this.getImageDates(), this.getNICFIDates()])
-      .catch(error => console.error(error));
+    Promise.all([this.getFeatureNames(), this.getImageDates(), this.getNICFIDates()]).catch(
+      (error) => console.error(error)
+    );
   }
 
   componentDidUpdate(prevProps, _prevState) {
@@ -59,64 +60,71 @@ class HomeContents extends React.Component {
 
   /// State Update ///
 
-  togglePanel = panelKey => {
-    const {visiblePanel} = this.state;
+  togglePanel = (panelKey) => {
+    const { visiblePanel } = this.state;
     this.setState({
-      visiblePanel: panelKey === visiblePanel ? null : panelKey
+      visiblePanel: panelKey === visiblePanel ? null : panelKey,
     });
   };
 
-  updateSubList = list => this.setState({subscribedList: list});
+  updateSubList = (list) => this.setState({ subscribedList: list });
 
-  selectDates = newDates => this.setState({selectedDates: {...this.state.selectedDates, ...newDates}});
+  selectDates = (newDates) =>
+    this.setState({ selectedDates: { ...this.state.selectedDates, ...newDates } });
 
-  selectRegion = region => this.setState({selectedRegion: region});
+  selectRegion = (region) => this.setState({ selectedRegion: region });
 
-  setMap = theMap => this.setState({theMap});
+  setMap = (theMap) => this.setState({ theMap });
 
-  setLatLon = latLon => this.setState({selectedLatLon: latLon});
+  setLatLon = (latLon) => this.setState({ selectedLatLon: latLon });
 
   setParams = (param, value) => {
     this.setState({
       extraParams: {
         ...this.state.extraParams,
-        [param]: value
-      }
+        [param]: value,
+      },
     });
   };
 
   /// API Calls ///
 
-  getImageDates = () => jsonRequest(URLS.IMG_DATES)
-    .then(result => {
-      const initialDates = Object.keys(result).reduce((acc, cur) =>
-        ({...acc, [cur]: result[cur][0]}), {});
+  getImageDates = () =>
+    jsonRequest(URLS.IMG_DATES).then((result) => {
+      const initialDates = Object.keys(result).reduce(
+        (acc, cur) => ({ ...acc, [cur]: result[cur][0] }),
+        {}
+      );
       this.setState({
         imageDates: result,
-        selectedDates: initialDates
+        selectedDates: initialDates,
       });
     });
 
-  getFeatureNames = () => jsonRequest(URLS.FEATURE_NAMES)
-    .then(features => { this.setState({featureNames: features}); });
+  getFeatureNames = () =>
+    jsonRequest(URLS.FEATURE_NAMES).then((features) => {
+      this.setState({ featureNames: features });
+    });
 
-  getNICFIDates = () => jsonRequest(URLS.NICFI_DATES)
-    .then(dates => {
-      this.setState({nicfiLayers: dates});
+  getNICFIDates = () =>
+    jsonRequest(URLS.NICFI_DATES).then((dates) => {
+      this.setState({ nicfiLayers: dates });
       this.setParams("NICFI", {
         ...this.state.extraParams.NICFI,
-        dataLayer: dates[0]
+        dataLayer: dates[0],
       });
     });
 
   /// Global Map Functions ///
 
   fitMap = (type, arg) => {
-    const {localeText: {home}} = this.context;
-    const {theMap} = this.state;
+    const {
+      localeText: { home },
+    } = this.context;
+    const { theMap } = this.state;
     if (type === "point") {
       try {
-        theMap.flyTo({center: arg, essential: true});
+        theMap.flyTo({ center: arg, essential: true });
       } catch (err) {
         console.error(home.errorCoordinates);
       }
@@ -130,7 +138,13 @@ class HomeContents extends React.Component {
   };
 
   render() {
-    const {setShowInfo, myHeight, username, localeText: {home}, isAdmin} = this.context;
+    const {
+      setShowInfo,
+      myHeight,
+      username,
+      localeText: { home },
+      isAdmin,
+    } = this.context;
     return (
       <>
         <HomeMap
@@ -214,8 +228,8 @@ class HomeContents extends React.Component {
                 clickHandler={() => {
                   this.setState(
                     this.state.advancedOptions
-                      ? {advancedOptions: false, ...this.advancedPanelState}
-                      : {advancedOptions: true}
+                      ? { advancedOptions: false, ...this.advancedPanelState }
+                      : { advancedOptions: true }
                   );
                 }}
                 icon={this.state.advancedOptions ? "minus" : "plus"}
@@ -281,7 +295,7 @@ class HomeContents extends React.Component {
                 </MenuItem>
               </>
             )}
-            <div style={{"flexGrow": 1}}/>
+            <div style={{ flexGrow: 1 }} />
             {isAdmin && (
               <SideIcon
                 clickHandler={() => window.location.assign("/admin")}
@@ -304,15 +318,8 @@ HomeContents.contextType = MainContext;
 
 export function pageInit(args) {
   ReactDOM.render(
-    <PageLayout
-      role={args.role}
-      userLang={args.userLang}
-      username={args.username}
-    >
-      <HomeContents
-        mapboxToken={args.mapboxToken}
-        mapquestKey={args.mapquestKey}
-      />
+    <PageLayout role={args.role} userLang={args.userLang} username={args.username}>
+      <HomeContents mapboxToken={args.mapboxToken} mapquestKey={args.mapquestKey} />
     </PageLayout>,
     document.getElementById("main-container")
   );

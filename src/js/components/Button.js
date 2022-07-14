@@ -1,6 +1,6 @@
 import styled from "@emotion/styled";
 
-const getBackground = ({theme, $type, disabled}) => {
+const getBackground = ({ theme, $type, disabled }) => {
   if (disabled) {
     return theme.disabled.background;
   } else if (theme[$type]?.background) {
@@ -10,7 +10,7 @@ const getBackground = ({theme, $type, disabled}) => {
   }
 };
 
-const getColor = ({theme, $type, disabled}) => {
+const getColor = ({ theme, $type, disabled }) => {
   if (disabled) {
     return theme.disabled.color;
   } else if (theme[$type]?.color) {
@@ -23,14 +23,15 @@ const getColor = ({theme, $type, disabled}) => {
 const Button = styled.button`
   background: ${getBackground};
   border: none;
-  border-radius: .25rem;
+  border-radius: 0.25rem;
   color: ${getColor};
   font-weight: 400;
   font-size: 1rem;
   line-height: 1.5;
   text-align: center;
-  transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out;
-  padding: .2rem .5rem;
+  transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out,
+    border-color 0.15s ease-in-out;
+  padding: 0.2rem 0.5rem;
   vertical-align: middle;
 
   &:hover {

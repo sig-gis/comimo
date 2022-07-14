@@ -1,24 +1,24 @@
 export const THEME = {
   disabled: {
     background: "#f8f8f8",
-    color: "#999"
+    color: "#999",
   },
   primary: {
     background: "#f8b556",
-    color: "#eee"
+    color: "#eee",
   },
   mina: {
     background: "#fb8072", // red
-    color: "#eee"
+    color: "#eee",
   },
   noMina: {
     background: "#8dd3c7", // green
-    color: "#eee"
+    color: "#eee",
   },
   map: {
     boundary: "#ffffb3", // yellow
-    unanswered: "#bebada" // blue
-  }
+    unanswered: "#bebada", // blue
+  },
 };
 
 export const URLS = {
@@ -45,7 +45,7 @@ export const URLS = {
   USER_MINES: "download-user-mines",
   USER_SUBS: "user-subscriptions",
   USER_PROJ: "user-projects",
-  USERS: "get-users-list"
+  USERS: "get-users-list",
 };
 
 export const availableLayers = [
@@ -58,14 +58,12 @@ export const availableLayers = [
   "tierrasDeCom",
   "resguardos",
   "protectedAreas",
-  "NICFI"
+  "NICFI",
 ];
 
-export const startVisible = [
-  "cMines",
-  "NICFI"
-];
+export const startVisible = ["cMines", "NICFI"];
 
 export const attributions = {
-  "NICFI": "<a target=\"_top\" rel=\"noopener\" href=\"https://www.planet.com/nicfi/\">Imagery ©2021 Planet Labs Inc</a>. <a target=\"_top\" rel=\"noopener\" href=\"https://assets.planet.com/docs/Planet_ParticipantLicenseAgreement_NICFI.pdf\">All use subject to the Participant License Agreement</a>"
+  NICFI:
+    '<a target="_top" rel="noopener" href="https://www.planet.com/nicfi/">Imagery ©2021 Planet Labs Inc</a>. <a target="_top" rel="noopener" href="https://assets.planet.com/docs/Planet_ParticipantLicenseAgreement_NICFI.pdf">All use subject to the Participant License Agreement</a>',
 };

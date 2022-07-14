@@ -1,8 +1,8 @@
-import React, {useState, useContext} from "react";
+import React, { useState, useContext } from "react";
 import styled from "@emotion/styled";
 
 import Button from "../components/Button";
-import {MainContext} from "../components/PageLayout";
+import { MainContext } from "../components/PageLayout";
 
 const ButtonRowOuter = styled.div`
   bottom: 32px;
@@ -30,12 +30,14 @@ const ButtonRowInner = styled.div`
 `;
 
 const PlotNumberInput = styled.input`
-   margin-left: 1rem;
-   width: 3em;
+  margin-left: 1rem;
+  width: 3em;
 `;
 
-export default function NavBar({currentPlotId, goToPlot, nextPlot, prevPlot, setPlotAnswer}) {
-  const {localeText: {collect}} = useContext(MainContext);
+export default function NavBar({ currentPlotId, goToPlot, nextPlot, prevPlot, setPlotAnswer }) {
+  const {
+    localeText: { collect },
+  } = useContext(MainContext);
   const [targetPlotNumber, setTargetPlotNumber] = useState(1);
 
   const renderGoToPlot = () => (
@@ -44,8 +46,10 @@ export default function NavBar({currentPlotId, goToPlot, nextPlot, prevPlot, set
         autoComplete="off"
         id="plotId"
         min="1"
-        onChange={e => setTargetPlotNumber(e.target.value)}
-        onKeyDown={e => { if (e.key === "Enter") goToPlot(targetPlotNumber); }}
+        onChange={(e) => setTargetPlotNumber(e.target.value)}
+        onKeyDown={(e) => {
+          if (e.key === "Enter") goToPlot(targetPlotNumber);
+        }}
         type="number"
         value={targetPlotNumber}
       />
@@ -62,34 +66,28 @@ export default function NavBar({currentPlotId, goToPlot, nextPlot, prevPlot, set
   return (
     <ButtonRowOuter>
       <ButtonRowInner>
-        {currentPlotId === -1
-          ? renderGoToPlot()
-          : (
-            <>
-              <Button onClick={prevPlot}>Prev</Button>
-              <Button
-                $type="mina"
-                onClick={() => setPlotAnswer("Mina")}
-              >
-                {collect?.mina}
-              </Button>
-              <Button
-                $type="noMina"
-                onClick={() => setPlotAnswer("No Mina")}
-              >
-                {collect?.noMina}
-              </Button>
-              <Button onClick={nextPlot}>{collect?.next}</Button>
-              {renderGoToPlot()}
-              <Button
-                onClick={() => {
-                  window.location.assign("/");
-                }}
-              >
-                {collect?.exit}
-              </Button>
-            </>
-          )}
+        {currentPlotId === -1 ? (
+          renderGoToPlot()
+        ) : (
+          <>
+            <Button onClick={prevPlot}>Prev</Button>
+            <Button $type="mina" onClick={() => setPlotAnswer("Mina")}>
+              {collect?.mina}
+            </Button>
+            <Button $type="noMina" onClick={() => setPlotAnswer("No Mina")}>
+              {collect?.noMina}
+            </Button>
+            <Button onClick={nextPlot}>{collect?.next}</Button>
+            {renderGoToPlot()}
+            <Button
+              onClick={() => {
+                window.location.assign("/");
+              }}
+            >
+              {collect?.exit}
+            </Button>
+          </>
+        )}
       </ButtonRowInner>
     </ButtonRowOuter>
   );

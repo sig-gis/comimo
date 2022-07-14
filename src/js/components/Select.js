@@ -1,15 +1,17 @@
 import React from "react";
 
-import {isString} from "lodash";
+import { isString } from "lodash";
 
-function Option({option, valueKey = "value", labelKey = "label", disabled}) {
+function Option({ option, valueKey = "value", labelKey = "label", disabled }) {
   const [value, label] = isString(option, "String")
     ? [option, option]
     : Array.isArray(option)
-      ? [option[0], option[1]]
-      : [option[valueKey], option[labelKey]];
+    ? [option[0], option[1]]
+    : [option[valueKey], option[labelKey]];
   return (
-    <option key={value} disabled={disabled} value={value}>{label}</option>
+    <option key={value} disabled={disabled} value={value}>
+      {label}
+    </option>
   );
 }
 
@@ -22,7 +24,7 @@ export default function Select({
   options = [],
   valueKey = "value",
   labelKey = "label",
-  defaultOption = ""
+  defaultOption = "",
 }) {
   return (
     <div className="w-100 mb-3">
@@ -34,14 +36,22 @@ export default function Select({
         onChange={onChange}
         value={value}
       >
-        <Option key="defaultOption" disabled labelKey={labelKey} option={[-1, defaultOption]} valueKey={valueKey}/>
+        <Option
+          key="defaultOption"
+          disabled
+          labelKey={labelKey}
+          option={[-1, defaultOption]}
+          valueKey={valueKey}
+        />
         {Array.isArray(options)
-          ? options.map((o, i) =>
-          /* eslint-disable-next-line react/no-array-index-key */
-            <Option key={i} labelKey={labelKey} option={o} valueKey={valueKey}/>)
-          : Object.values(options).map((o, i) =>
-          /* eslint-disable-next-line react/no-array-index-key */
-            <Option key={i} labelKey={labelKey} option={o} valueKey={valueKey}/>)}
+          ? options.map((o, i) => (
+              /* eslint-disable-next-line react/no-array-index-key */
+              <Option key={i} labelKey={labelKey} option={o} valueKey={valueKey} />
+            ))
+          : Object.values(options).map((o, i) => (
+              /* eslint-disable-next-line react/no-array-index-key */
+              <Option key={i} labelKey={labelKey} option={o} valueKey={valueKey} />
+            ))}
       </select>
     </div>
   );
