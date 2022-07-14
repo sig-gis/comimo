@@ -106,7 +106,7 @@
 
 (defn send-to-nrepl-server! [msg & {:keys [host port] :or {host "127.0.0.1" port 5555}}]
   (try
-    (with-open [conn (nrepl/connect :host host :port port)]
+    (with-open [conn ^nrepl.server.Server (nrepl/connect :host host :port port)]
       (-> (nrepl/client conn 1000)   ; message receive timeout required
           (nrepl/message {:op "eval" :code msg})
           nrepl/response-values))
