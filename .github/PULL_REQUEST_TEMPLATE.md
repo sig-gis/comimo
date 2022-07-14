@@ -4,7 +4,7 @@
 
 ## Related Issues
 
-Closes COM-###
+Closes SER-###
 
 ## Submission Checklist
 
