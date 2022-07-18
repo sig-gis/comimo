@@ -47,7 +47,6 @@ class HomeContents extends React.Component {
   /// Lifecycle Functions ///
 
   componentDidMount() {
-    const m = "3";
     Promise.all([this.getFeatureNames(), this.getImageDates(), this.getNICFIDates()]).catch(
       (error) => console.error(error)
     );
