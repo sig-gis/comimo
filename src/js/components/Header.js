@@ -10,6 +10,7 @@ export default function Header({
   username,
   setShowInfo,
   localeText,
+  version,
 }) {
   return (
     <div
@@ -37,7 +38,7 @@ export default function Header({
           fontSize: "0.6rem",
         }}
       >
-        Version: 2022-07-14
+        {version && `Version: ${version}`}
       </span>
       <div
         id="user-panel"

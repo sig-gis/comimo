@@ -47,6 +47,7 @@ class HomeContents extends React.Component {
   /// Lifecycle Functions ///
 
   componentDidMount() {
+    const m = "3";
     Promise.all([this.getFeatureNames(), this.getImageDates(), this.getNICFIDates()]).catch(
       (error) => console.error(error)
     );
@@ -318,7 +319,12 @@ HomeContents.contextType = MainContext;
 
 export function pageInit(args) {
   ReactDOM.render(
-    <PageLayout role={args.role} userLang={args.userLang} username={args.username}>
+    <PageLayout
+      role={args.role}
+      userLang={args.userLang}
+      username={args.username}
+      version={args.version}
+    >
       <HomeContents mapboxToken={args.mapboxToken} mapquestKey={args.mapquestKey} />
     </PageLayout>,
     document.getElementById("main-container")

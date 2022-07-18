@@ -1,12 +1,15 @@
 (ns comimo.views
-  (:require [clojure.data.json   :as json]
-            [clojure.java.io     :as io]
-            [clojure.string      :as str]
-            [cognitect.transit   :as transit]
-            [hiccup.page         :refer [html5 include-js include-css]]
-            [triangulum.config   :refer [get-config]]
-            [triangulum.database :refer [call-sql]])
-  (:import java.io.ByteArrayOutputStream))
+  (:require
+   [clojure.data.json   :as json]
+   [clojure.java.io     :as io]
+   [clojure.string      :as str]
+   [cognitect.transit   :as transit]
+   [comimo.git          :refer [current-version]]
+   [hiccup.page         :refer [html5 include-css include-js]]
+   [triangulum.config   :refer [get-config]]
+   [triangulum.database :refer [call-sql]])
+  (:import
+   java.io.ByteArrayOutputStream))
 
 (defn kebab->camel [kebab]
   (let [pieces (str/split kebab #"-")]
@@ -58,7 +61,8 @@
   (let [js-params (-> params
                       (assoc
                        :mapboxToken (get-config :mapbox-token)
-                       :mapquestKey (get-config :mapquest-key))
+                       :mapquestKey (get-config :mapquest-key)
+                       :version (current-version))
                       (json/write-str))]
     [:script {:type "text/javascript"}
      (str "window.onload = function () {" page ".pageInit(" js-params "); };")]))
