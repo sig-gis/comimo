@@ -3,7 +3,7 @@
 
 -- Adds an administrator and a user
 INSERT INTO users
-            (user_uid, username, email, password, token, verified, role, full_name, sector, institution, default_lang)
+    (user_uid, username, email, password, token, verified, role, full_name, sector, institution, default_lang)
 VALUES
 (1, 'admin', 'admin@com.dev', crypt('admin', gen_salt('bf')), '2022-04-22', TRUE, 'admin', 'COM Admin', 'academic', 'dev', 'en'),
 (2, 'user', 'user@com.dev', crypt('user', gen_salt('bf')), '2022-04-22', TRUE, 'user', 'COM User', 'academic', 'dev', 'en');
@@ -12,7 +12,7 @@ SELECT setval(pg_get_serial_sequence('users', 'user_uid'), (SELECT MAX(user_uid)
 
 -- Adds user_mines
 INSERT INTO user_mines
-            (user_mine_uid, user_rid, lat, lon, reported_date)
+    (user_mine_uid, user_rid, lat, lon, reported_date)
 VALUES
 (1, 1, 4.867040157318115, -71.9569320678711, '2022-04-19'),
 (2, 2, 4.867040157318115, -71.9569320678711, '2022-04-19');
@@ -21,7 +21,7 @@ SELECT setval(pg_get_serial_sequence('user_mines', 'user_mine_uid'), (SELECT MAX
 
 -- Adds subscriptions
 INSERT INTO subscriptions
-            (subscription_uid, user_rid, region, last_alert_for, created_date)
+    (subscription_uid, user_rid, region, last_alert_for, created_date)
 VALUES
 (1, 1, 'mun_NARIÑO_CONSACÁ', '2022-04-19', '2022-04-19'),
 (2, 2, 'mun_NARIÑO_CONSACÁ', '2022-04-19', '2022-04-19');
@@ -30,7 +30,7 @@ SELECT setval(pg_get_serial_sequence('subscriptions', 'subscription_uid'), (SELE
 
 -- Adds a project
 INSERT INTO projects 
-            (project_uid,user_rid,name,regions,data_layer,boundary,status,created_date,closed_date)
+    (project_uid,user_rid,name, regions,data_layer, boundary,status, created_date,closed_date)
 VALUES
 (1, 1, E'Demo 1', E'{mun_AMAZONAS_LETICIA,mun_ANTIOQUIA_ABRIAQUÍ,mun_ANTIOQUIA_AMALFI,mun_ANTIOQUIA_BELLO,mun_ANTIOQUIA_CAREPA}',E'2022-05-01-P', E'SRID=4326;POLYGON((-75.09868365417593 6.908474514731402,-75.09868365417593 7.157607349602598,-74.84930821127706 7.157607349602598,-74.84930821127706 6.908474514731402,-75.09868365417593 6.908474514731402))', E'active', E'2022-07-14', NULL);
 
@@ -38,7 +38,7 @@ SELECT setval(pg_get_serial_sequence('projects', 'project_uid'), (SELECT MAX(pro
 
 -- Add plots
 INSERT INTO plots
-            (plot_uid, project_rid, lat, lon, geom, answer)
+    (plot_uid, project_rid, lat, lon, geom, answer)
 VALUES
 (7,1,-74.89825112346918,6.962203029787672,E'SRID=4326;POLYGON((-74.90069544583751 6.959760619239656,-74.90069544583751 6.964645440084037,-74.89580680128998 6.964645440084037,-74.89580680128998 6.959760619239656,-74.90069544583751 6.959760619239656))',NULL),
 (8,1,-74.95691318525863,7.011061777962963,E'SRID=4326;POLYGON((-74.95935776452176 7.008619369283383,-74.95935776452176 7.013504186389193,-74.95446860607564 7.013504186389193,-74.95446860607564 7.008619369283383,-74.95935776452176 7.008619369283383))',NULL),
@@ -59,3 +59,15 @@ VALUES
 (23,1,-74.9520108183746,7.133183024132852,E'SRID=4326;POLYGON((-74.95445603971511 7.130740628393498,-74.95445603971511 7.135625419614534,-74.94956559712344 7.135625419614534,-74.94956559712344 7.130740628393498,-74.95445603971511 7.130740628393498))',NULL);
 
 SELECT setval(pg_get_serial_sequence('plots', 'plot_uid'), (SELECT MAX(plot_uid) FROM plots) + 1);
+
+-- Add subscriptions 
+INSERT INTO subscriptions
+    (subscription_uid, user_rid , region , last_alert_for, created_date)
+VALUES
+(1,1,E'mun_NARIÑO_CONSACÁ',E'2022-04-19',E'2022-04-19'),
+(2,1,E'mun_CAQUETÁ_MILÁN',E'2022-07-15',E'2022-07-15'),
+(3,1,E'mun_LA GUAJIRA_BARRANCAS',E'2022-07-15',E'2022-07-15'),
+(4,1,E'mun_META_ACACÍAS',E'2022-07-15',E'2022-07-15'),
+(5,1,E'mun_RISARALDA_BELÉN DE UMBRÍA',E'2022-07-15',E'2022-07-15');
+
+SELECT setval(pg_get_serial_sequence('subscriptions', 'subscription_uid'), (SELECT MAX(subscription_uid) FROM subscriptions) + 1);
