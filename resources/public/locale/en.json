@@ -62,8 +62,8 @@
         "updateMap": "Update map"
     },
     "layers": {
-        "title": "Select layers",
-        "nameLabel": "Layer name",
+        "title": "Select Layers",
+        "nameLabel": "Layer Name",
         "opacityLabel": "Opacity",
         "cMines": "Confirmed mines",
         "nMines": "New predictions",
