@@ -61,7 +61,7 @@
         }
     },
     "scripts": {
-        "onchange-lint": "npx onchange \"src/**\" -- npx quick-lint-js {{changed}}",
+        "onchange-lint": "npx onchange \"src/**/*.js\" -- npx quick-lint-js {{changed}}",
         "lint": "find src/js -name \"*.js\" -type f -exec ./node_modules/.bin/quick-lint-js --snarky {} +",
         "tailwind": "npx tailwindcss -i ./src/css/tailwindInput.css -o ./resources/public/css/tailwindOutput.css",
         "webpack-dev": "npm run tailwind --watch && npx webpack --config webpack.config.js --env dev",
