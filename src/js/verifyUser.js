@@ -17,13 +17,13 @@ class PasswordReset extends React.Component {
 
   componentDidMount() {
     Promise.all([this.getLocale(), this.verifyEmail()])
-      .then((data) => {
-        if (data[0] && data[1] === "") {
+      .then(([_, res]) => {
+        if (res === "") {
           alert(this.state.localeText.verified);
           window.location = "/login";
         } else {
-          console.error(data[1]);
-          alert(this.state.localeText[data[1]] || this.state.localeText.errorCreating);
+          console.error(res);
+          alert(this.state.localeText[res] || this.state.localeText.errorCreating);
           window.location = "/password-forgot";
         }
       })

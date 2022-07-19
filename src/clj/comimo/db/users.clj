@@ -139,7 +139,7 @@
     (if-let [error-msg (get-verify-errors user token)]
       (data-response error-msg)
       (do
-        (call-sql "user_verified" (:user_id user))
+        (call-sql "set_user_verified" (:user_id user))
         (data-response "")))))
 
 (defn get-users-list [_]
