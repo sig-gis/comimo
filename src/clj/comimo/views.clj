@@ -44,7 +44,6 @@
                   "css/gmw_main.css"       ; only home
                   "css/tailwindOutput.css")
      (apply include-js
-            "/js/google-charts.js"
             "/js/jquery-3.4.1.min.js"
             extra-js)]))
 

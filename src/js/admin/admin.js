@@ -183,11 +183,8 @@ function AdminContent() {
   const [filterStr, setFilterStr] = useState("");
 
   useEffect(() => {
-    // eslint-disable-next-line no-use-before-define
     getUsers();
-    // eslint-disable-next-line no-use-before-define
     getLogs();
-    // eslint-disable-next-line no-use-before-define
     loadDates();
   }, []);
 
