@@ -19,12 +19,15 @@ VALUES
 
 SELECT setval(pg_get_serial_sequence('user_mines', 'user_mine_uid'), (SELECT MAX(user_mine_uid) FROM user_mines) + 1);
 
--- Adds subscriptions
+-- Add subscriptions 
 INSERT INTO subscriptions
-    (subscription_uid, user_rid, region, last_alert_for, created_date)
+    (subscription_uid, user_rid , region , last_alert_for, created_date)
 VALUES
-(1, 1, 'mun_NARIÑO_CONSACÁ', '2022-04-19', '2022-04-19'),
-(2, 2, 'mun_NARIÑO_CONSACÁ', '2022-04-19', '2022-04-19');
+(1,1,E'mun_NARIÑO_CONSACÁ',E'2022-04-19',E'2022-04-19'),
+(2,1,E'mun_CAQUETÁ_MILÁN',E'2022-07-15',E'2022-07-15'),
+(3,1,E'mun_LA GUAJIRA_BARRANCAS',E'2022-07-15',E'2022-07-15'),
+(4,1,E'mun_META_ACACÍAS',E'2022-07-15',E'2022-07-15'),
+(5,1,E'mun_RISARALDA_BELÉN DE UMBRÍA',E'2022-07-15',E'2022-07-15');
 
 SELECT setval(pg_get_serial_sequence('subscriptions', 'subscription_uid'), (SELECT MAX(subscription_uid) FROM subscriptions) + 1);
 
@@ -59,15 +62,3 @@ VALUES
 (23,1,-74.9520108183746,7.133183024132852,E'SRID=4326;POLYGON((-74.95445603971511 7.130740628393498,-74.95445603971511 7.135625419614534,-74.94956559712344 7.135625419614534,-74.94956559712344 7.130740628393498,-74.95445603971511 7.130740628393498))',NULL);
 
 SELECT setval(pg_get_serial_sequence('plots', 'plot_uid'), (SELECT MAX(plot_uid) FROM plots) + 1);
-
--- Add subscriptions 
-INSERT INTO subscriptions
-    (subscription_uid, user_rid , region , last_alert_for, created_date)
-VALUES
-(1,1,E'mun_NARIÑO_CONSACÁ',E'2022-04-19',E'2022-04-19'),
-(2,1,E'mun_CAQUETÁ_MILÁN',E'2022-07-15',E'2022-07-15'),
-(3,1,E'mun_LA GUAJIRA_BARRANCAS',E'2022-07-15',E'2022-07-15'),
-(4,1,E'mun_META_ACACÍAS',E'2022-07-15',E'2022-07-15'),
-(5,1,E'mun_RISARALDA_BELÉN DE UMBRÍA',E'2022-07-15',E'2022-07-15');
-
-SELECT setval(pg_get_serial_sequence('subscriptions', 'subscription_uid'), (SELECT MAX(subscription_uid) FROM subscriptions) + 1);
