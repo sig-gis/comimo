@@ -226,7 +226,12 @@ CollectContent.contextType = MainContext;
 
 export function pageInit(args) {
   ReactDOM.render(
-    <PageLayout role={args.role} userLang={args.userLang} username={args.username}>
+    <PageLayout
+      role={args.role}
+      userLang={args.userLang}
+      username={args.username}
+      version={args.version}
+    >
       <CollectContent mapboxToken={args.mapboxToken} projectId={parseInt(args.projectId || 0)} />
     </PageLayout>,
     document.getElementById("main-container")
