@@ -45,10 +45,11 @@ export class PageLayout extends React.Component {
 
   /// API Calls ///
 
-  getLocalText = (lang) =>
-    jsonRequest(`/locale/${lang}.json`, {}, "GET").then((data) =>
-      this.setState({ localeText: data })
-    );
+  getLocalText = (lang) => {
+    jsonRequest(`/locale/${lang}.json`, null, "GET")
+      .then((data) => this.setState({ localeText: data }))
+      .catch((err) => console.error(err));
+  };
 
   render() {
     const { myHeight, showInfo, localeText, selectedLanguage } = this.state;
