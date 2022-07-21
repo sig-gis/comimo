@@ -52,7 +52,7 @@ export class PageLayout extends React.Component {
 
   render() {
     const { myHeight, showInfo, localeText, selectedLanguage } = this.state;
-    const { role, username, children } = this.props;
+    const { role, username, children, version } = this.props;
     const isAdmin = role === "admin";
     return (
       <MainContext.Provider
@@ -90,6 +90,7 @@ export class PageLayout extends React.Component {
               selectLanguage={this.selectLanguage}
               setShowInfo={this.setShowInfo}
               username={username}
+              version={version}
             />
             <div
               id="page-body"

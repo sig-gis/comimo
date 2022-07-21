@@ -27,12 +27,13 @@ class PasswordForgot extends React.Component {
   }
 
   processModal = (callBack) =>
-    new Promise(() =>
-      Promise.resolve(
-        this.setState({ showModal: true }, () =>
-          callBack().finally(() => this.setState({ showModal: false }))
+    new Promise(
+      () =>
+        new Promise(
+          this.setState({ showModal: true }, () =>
+            callBack().finally(() => this.setState({ showModal: false }))
+          )
         )
-      )
     );
 
   requestPassword = () =>

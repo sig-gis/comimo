@@ -10,6 +10,7 @@ export default function Header({
   username,
   setShowInfo,
   localeText,
+  version,
 }) {
   return (
     <div
@@ -28,6 +29,17 @@ export default function Header({
         src="/img/app-logo.png"
         style={{ height: "100%", cursor: "pointer" }}
       />
+      <span
+        style={{
+          position: "fixed",
+          left: "56px",
+          top: "35px",
+          color: "#7db0b0",
+          fontSize: "0.6rem",
+        }}
+      >
+        {version && `Version: ${version}`}
+      </span>
       <div
         id="user-panel"
         style={{
