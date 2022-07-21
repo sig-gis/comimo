@@ -1,5 +1,4 @@
 import React from "react";
-import { GoogleCharts } from "google-charts";
 
 import ToolPanel from "../components/ToolPanel";
 
@@ -19,8 +18,8 @@ export default class StatsPanel extends React.Component {
   }
 
   componentDidMount() {
-    GoogleCharts.charts.load("current", { packages: ["corechart"] });
-    GoogleCharts.charts.setOnLoadCallback(() => {
+    google.charts.load("current", { packages: ["corechart"] });
+    google.charts.setOnLoadCallback(() => {
       this.setState({
         chartsLoaded: true,
       });
@@ -55,7 +54,7 @@ export default class StatsPanel extends React.Component {
     jsonRequest(URLS.AREA_STATS, { dataLayer: selectedDate })
       .then((data) => {
         if (data.length > 0) {
-          const dataTable = new GoogleCharts.visualization.DataTable();
+          const dataTable = new google.visualization.DataTable();
           dataTable.addColumn("string", stats.munLabel);
           dataTable.addColumn("number", stats.countLabel);
 
@@ -69,7 +68,7 @@ export default class StatsPanel extends React.Component {
           };
 
           // Display the chart inside the <div> element with id="stats1"
-          new GoogleCharts.visualization.ColumnChart(document.getElementById("stats1")).draw(
+          new google.visualization.ColumnChart(document.getElementById("stats1")).draw(
             dataTable,
             options
           );
@@ -89,7 +88,7 @@ export default class StatsPanel extends React.Component {
       .then((data) => {
         const sum = data.reduce((acc, [_, c]) => acc + c, 0);
         if (sum > 0.0) {
-          const dataTable = new GoogleCharts.visualization.DataTable();
+          const dataTable = new google.visualization.DataTable();
           dataTable.addColumn("string", stats.dateLabel);
           dataTable.addColumn("number", stats.countLabel);
 
@@ -103,7 +102,7 @@ export default class StatsPanel extends React.Component {
           };
 
           // Display the chart inside the <div> element with id="stats2"
-          new GoogleCharts.visualization.ColumnChart(document.getElementById("stats2")).draw(
+          new google.visualization.ColumnChart(document.getElementById("stats2")).draw(
             dataTable,
             options
           );

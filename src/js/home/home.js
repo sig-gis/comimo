@@ -1,22 +1,25 @@
+import mapboxgl from "mapbox-gl";
 import React from "react";
 import ReactDOM from "react-dom";
 
 import DownloadPanel from "./DownloadPanel";
-import LayersPanel from "./LayersPanel";
 import FilterPanel from "./FilterPanel";
 import HomeMap from "./HomeMap";
+import InfoPopupContent from "./InfoPopupContent";
+import LayersPanel from "./LayersPanel";
+import MenuItem from "../components/MenuItem";
+import ReportMinesPanel from "./ReportMinesPanel";
+import ReportPopupContent from "./ReportPopupContent";
 import SearchPanel from "./SearchPanel";
+import SideBar from "../components/SideBar";
+import SideIcon from "../components/SideIcon";
 import StatsPanel from "./StatsPanel";
 import SubscribePanel from "./SubscribePanel";
-import ReportMinesPanel from "./ReportMinesPanel";
 import ValidatePanel from "./ValidatePanel";
-import SideIcon from "../components/SideIcon";
-import MenuItem from "../components/MenuItem";
 import { PageLayout, MainContext } from "../components/PageLayout";
-import SideBar from "../components/SideBar";
 
 import { jsonRequest } from "../utils";
-import { URLS } from "../constants";
+import { URLS, availableLayers } from "../constants";
 
 class HomeContents extends React.Component {
   // set up class flags so each component update doesn't do redundant JS tasks
@@ -137,6 +140,50 @@ class HomeContents extends React.Component {
     }
   };
 
+  isLayerVisible = (layer) => this.state.theMap.getLayer(layer).visibility === "visible";
+
+  addPopup = (lat, lon) => {
+    const { thePopup } = this.state;
+    const reportPopup = this.state.visiblePanel === "report";
+    const {
+      localeText: { home },
+      localeText,
+    } = this.context;
+
+    // Remove old popup
+    if (thePopup) thePopup.remove();
+
+    const divId = Date.now();
+    const popup = new mapboxgl.Popup()
+      .setLngLat([lon, lat])
+      .setHTML(`<div id="${divId}"></div>`)
+      .addTo(this.state.theMap);
+    this.setState({ thePopup: popup });
+
+    this.setLatLon([lat, lon]);
+
+    if (reportPopup) {
+      ReactDOM.render(
+        <ReportPopupContent lat={lat} localeText={localeText} lon={lon} />,
+        document.getElementById(divId)
+      );
+    } else {
+      const visibleLayers = availableLayers
+        .map((l) => this.isLayerVisible(l) && l)
+        .filter((l) => l);
+      ReactDOM.render(
+        <InfoPopupContent
+          lat={lat}
+          localeText={home}
+          lon={lon}
+          selectedDates={this.state.selectedDates}
+          visibleLayers={visibleLayers}
+        />,
+        document.getElementById(divId)
+      );
+    }
+  };
+
   render() {
     const {
       setShowInfo,
@@ -152,12 +199,11 @@ class HomeContents extends React.Component {
           localeText={this.context.localeText}
           mapboxToken={this.props.mapboxToken}
           myHeight={myHeight}
-          reportPopup={this.state.visiblePanel === "report"}
           selectDates={this.selectDates}
           selectedDates={this.state.selectedDates}
-          setLatLon={this.setLatLon}
           setMap={this.setMap}
           theMap={this.state.theMap}
+          addPopup={this.addPopup}
         />
         {home && (
           <SideBar>

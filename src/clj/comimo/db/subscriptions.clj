@@ -1,11 +1,10 @@
 (ns comimo.db.subscriptions
-  (:require [clojure.string :as str]
-            [clojure.set    :as set]
+  (:require [clojure.set                :as set]
             [triangulum.type-conversion :as tc]
-            [triangulum.database        :refer [call-sql sql-primitive]]
+            [triangulum.database        :refer [call-sql sql-primitive]] 
             [comimo.views               :refer [data-response]]
             [comimo.db.projects         :refer [create-project!]]
-            [comimo.email               :refer [send-alert-mail]]
+            [comimo.email               :refer [send-alert-mail get-base-url]]
             [comimo.py-interop          :refer [location-in-country get-image-list]]))
 
 ;;;
@@ -45,18 +44,22 @@
     (when-let [user-subs (call-sql "get_unsent_subscriptions" latest-time)]
       (doseq [{:keys [user_id email default_lang regions]} user-subs]
         (try
-          (let [{:keys [action message]} (create-project! user_id
+          (let [regions (into-array String regions)
+                {:keys [msg project-id]} (create-project! user_id
                                                           (str (if (= "en" default_lang) "Alert for " "Alerta para ")
                                                                latest-image)
-                                                          regions
-                                                          latest-image)]
+                                                          regions    
+                                                          latest-image) 
+                action (if project-id "Created" "Failed")
+                project-url (str (get-base-url) "/collect?projectId=" project-id)]
             (when (= action "Created")
-              (println "email sent to " email)
-              (send-alert-mail email default_lang))
-            (call-sql "set_last_alert_for" user_id latest-time)
-            (call-sql "log_email_alert" user_id action message (into-array String regions)))
+              (send-alert-mail email project-url default_lang) 
+              (println "email sent to " email))
+            (call-sql "log_email_alert" user_id action msg regions)              
+            (println "called log email alert sql")
+            (call-sql "set_last_alert_for" user_id latest-time))
           (catch Exception e
-            (call-sql "log_email_alert" user_id "Error" (ex-message e) "")))))))
+            (call-sql "log_email_alert" user_id "Error" (ex-message e) (into-array String []))))))))
 
 ;;;
 ;;; User Reported Mines

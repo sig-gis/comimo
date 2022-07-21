@@ -1,16 +1,13 @@
-import React from "react";
-import ReactDOM from "react-dom";
-import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
+import mapboxgl from "mapbox-gl";
+import React from "react";
 import styled from "@emotion/styled";
 
 import LngLatHud from "../components/LngLatHud";
-import InfoPopupContent from "./InfoPopupContent";
-import ReportPopupContent from "./ReportPopupContent";
 
-import { URLS, availableLayers, startVisible, attributions } from "../constants";
-import { toPrecision, jsonRequest } from "../utils";
 import { MainContext } from "../components/PageLayout";
+import { toPrecision, jsonRequest } from "../utils";
+import { URLS, availableLayers, startVisible, attributions } from "../constants";
 
 const MapBoxWrapper = styled.div`
   height: 100%;
@@ -139,7 +136,7 @@ export default class HomeMap extends React.Component {
   };
 
   initMap = () => {
-    const { selectedDates, mapboxToken } = this.props;
+    const { selectedDates, mapboxToken, addPopup } = this.props;
     mapboxgl.accessToken = mapboxToken;
     const theMap = new mapboxgl.Map({
       container: "mapbox",
@@ -162,7 +159,7 @@ export default class HomeMap extends React.Component {
       });
       theMap.on("click", (e) => {
         const { lng, lat } = e.lngLat;
-        this.addPopup(lat, lng);
+        addPopup(lat, lng);
       });
 
       this.props.setMap(theMap);
@@ -171,50 +168,6 @@ export default class HomeMap extends React.Component {
       if (Object.keys(selectedDates).length) this.getLayerUrl(Object.keys(selectedDates));
     });
   };
-
-  addPopup = (lat, lon) => {
-    const { thePopup } = this.state;
-    const { theMap, selectedDates, reportPopup, setLatLon } = this.props;
-    const {
-      localeText: { home },
-      localeText,
-    } = this.context;
-
-    // Remove old popup
-    if (thePopup) thePopup.remove();
-
-    const divId = Date.now();
-    const popup = new mapboxgl.Popup()
-      .setLngLat([lon, lat])
-      .setHTML(`<div id="${divId}"></div>`)
-      .addTo(theMap);
-    this.setState({ thePopup: popup });
-
-    setLatLon([lat, lon]);
-
-    if (reportPopup) {
-      ReactDOM.render(
-        <ReportPopupContent lat={lat} localeText={localeText} lon={lon} />,
-        document.getElementById(divId)
-      );
-    } else {
-      const visibleLayers = availableLayers
-        .map((l) => this.isLayerVisible(l) && l)
-        .filter((l) => l);
-      ReactDOM.render(
-        <InfoPopupContent
-          lat={lat}
-          localeText={home}
-          lon={lon}
-          selectedDates={selectedDates}
-          visibleLayers={visibleLayers}
-        />,
-        document.getElementById(divId)
-      );
-    }
-  };
-
-  isLayerVisible = (layer) => this.props.theMap.getLayer(layer).visibility === "visible";
 
   // Adds layers initially with no styling, URL is updated later.  This is to guarantee z order in mapbox
   addLayerSources = (theMap, list) => {

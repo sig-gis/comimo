@@ -23,11 +23,14 @@ SELECT setval(pg_get_serial_sequence('user_mines', 'user_mine_uid'), (SELECT MAX
 INSERT INTO subscriptions
     (subscription_uid, user_rid , region , last_alert_for, created_date)
 VALUES
-(1,1,E'mun_NARIÑO_CONSACÁ',E'2022-04-19',E'2022-04-19'),
-(2,1,E'mun_CAQUETÁ_MILÁN',E'2022-07-15',E'2022-07-15'),
-(3,1,E'mun_LA GUAJIRA_BARRANCAS',E'2022-07-15',E'2022-07-15'),
-(4,1,E'mun_META_ACACÍAS',E'2022-07-15',E'2022-07-15'),
-(5,1,E'mun_RISARALDA_BELÉN DE UMBRÍA',E'2022-07-15',E'2022-07-15');
+(1,1,E'mun_NARIÑO_CONSACÁ',E'2021-06-20',E'2022-04-19'),
+(4,1,E'mun_META_ACACÍAS',E'2021-06-20',E'2022-07-15'),
+(5,1,E'mun_RISARALDA_BELÉN DE UMBRÍA',E'2021-06-20',E'2022-07-15'),
+(7,1,E'mun_BOGOTÁ, D.C._BOGOTÁ, D.C.',E'2021-06-20',E'2022-07-25'),
+(8,1,E'mun_CASANARE_SACAMA',E'2021-06-20',E'2022-07-25'),
+(9,1,E'mun_CÓRDOBA_MOÑITOS',E'2021-06-20',E'2022-07-25'),
+(10,1,E'mun_CAQUETÁ_SOLANO',E'2021-06-20',E'2022-07-25'),
+(11,1,E'mun_CAUCA_INZA',E'2021-06-20',E'2022-07-25');
 
 SELECT setval(pg_get_serial_sequence('subscriptions', 'subscription_uid'), (SELECT MAX(subscription_uid) FROM subscriptions) + 1);
 
