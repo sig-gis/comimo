@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import Button from "./Button";
 import Select from "./Select";
 
-export default function NICFIControl({ extraParams, setParams, nicfiLayers }) {
+export default function NICFIControl({ extraParams, setParams, nicfiLayers, layers }) {
   const [selectedTime, setTime] = useState("");
   const [selectedBand, setBand] = useState("");
   useEffect(() => {
@@ -17,7 +17,7 @@ export default function NICFIControl({ extraParams, setParams, nicfiLayers }) {
     <div className="flex flex-col">
       <Select
         id="time"
-        label="Select Time"
+        label={layers.selectTime}
         onChange={(e) => setTime(e.target.value)}
         options={nicfiLayers.map((time) => ({
           value: time,
@@ -26,7 +26,7 @@ export default function NICFIControl({ extraParams, setParams, nicfiLayers }) {
         value={selectedTime}
       />
       <div className="flex flex-col">
-        <label className="ml-0">Select Band</label>
+        <label className="ml-0">{layers.selectBand}</label>
         <div className="flex">
           <div>
             <input
@@ -34,17 +34,23 @@ export default function NICFIControl({ extraParams, setParams, nicfiLayers }) {
               id="visible"
               onChange={() => setBand("rgb")}
               type="radio"
+              style={{ cursor: "pointer" }}
             />
-            <label htmlFor="visible">Visible</label>
+            <label htmlFor="visible" style={{ cursor: "pointer", margin: 0 }}>
+              {layers.visible}
+            </label>
           </div>
-          <div className="pl-2">
+          <div className="pl-3">
             <input
               checked={selectedBand === "cir"}
               id="infrared"
               onChange={() => setBand("cir")}
               type="radio"
+              style={{ cursor: "pointer" }}
             />
-            <label htmlFor="infrared">Infrared</label>
+            <label htmlFor="infrared" style={{ cursor: "pointer", margin: 0 }}>
+              {layers.infrared}
+            </label>
           </div>
         </div>
       </div>
@@ -57,7 +63,7 @@ export default function NICFIControl({ extraParams, setParams, nicfiLayers }) {
           })
         }
       >
-        Update NICFI Layer
+        {layers.updateNICFI}
       </Button>
     </div>
   );

@@ -56,8 +56,9 @@ export default class LayersPanel extends React.Component {
             id={"label-" + name}
             onChange={() => this.setVisible(name, !layerVisible)}
             type="checkbox"
+            style={{ cursor: "pointer" }}
           />
-          <label htmlFor={"label-" + name} style={{ margin: "0 0 3px 0" }}>
+          <label htmlFor={"label-" + name} style={{ cursor: "pointer", margin: "0 0 3px 0" }}>
             {layers[name]}
           </label>
         </div>
@@ -66,7 +67,7 @@ export default class LayersPanel extends React.Component {
           max="100"
           min="0"
           onChange={(e) => this.setOpacity(name, parseInt(e.target.value))}
-          style={{ width: "40%" }}
+          style={{ cursor: "pointer", width: "40%" }}
           type="range"
           value={opacity[name]}
         />
@@ -86,11 +87,9 @@ export default class LayersPanel extends React.Component {
     </>
   );
 
-  renderNICFISection = () => (
+  renderNICFISection = (layers) => (
     <>
-      <label style={{ fontWeight: "bold", margin: "0 .25rem 0 0" }}>
-        Updated Satellite Imagery
-      </label>
+      <label style={{ fontWeight: "bold", margin: "0 .25rem 0 0" }}>{layers.satelliteTitle}</label>
       <hr style={{ marginBottom: "0.5rem" }}></hr>
       <div className="d-flex flex-column">
         {this.renderControl("NICFI")}
@@ -98,6 +97,7 @@ export default class LayersPanel extends React.Component {
           extraParams={this.props.extraParams}
           nicfiLayers={this.props.nicfiLayers}
           setParams={this.props.setParams}
+          layers={layers}
         />
       </div>
     </>
@@ -117,7 +117,7 @@ export default class LayersPanel extends React.Component {
             layerName === "NICFI" ? "" : this.renderControl(layerName)
           )}
         <br></br>
-        {opacity && visible && this.renderNICFISection("NICFI")}
+        {opacity && visible && this.renderNICFISection(layers)}
       </ToolPanel>
     );
   }
