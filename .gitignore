@@ -18,4 +18,4 @@ classes/
 .nrepl-port
 .log/
 .DS_Store
-resources/public/css/tailwindOutput.css
+resources/public/css/
