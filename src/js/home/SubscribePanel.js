@@ -56,7 +56,7 @@ export default class SubscribePanel extends React.Component {
     const {
       localeText: { subscribe },
     } = this.context;
-    const arr = location.split("_");
+    const arr = region.split("_");
     const delConfirm = confirm(
       `${subscribe.delConfirm1} ${arr.reverse().join(", ")}? ${subscribe.delConfirm2}`
     );
