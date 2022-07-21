@@ -29,6 +29,11 @@
             [comimo.db.projects                 :refer [can-collect?]]
             [comimo.db.users                    :refer [is-admin?]]))
 
+(defmacro nil-on-error
+  [& body]
+  `(try ~@body (catch Exception e# nil)))
+
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Routing Handler
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -100,7 +105,7 @@
                  (binding [*print-length* 2] (print-str (edn/read-string body)))
 
                  (= content-type "application/json")
-                 (binding [*print-length* 2] (print-str (json/read-str body)))
+                 (binding [*print-length* 2] (print-str (nil-on-error (json/read-str body))))
 
                  :else
                  (str content-type " response")))
