@@ -47,6 +47,7 @@
                   "css/gmw_main.css"       ; only home
                   "css/tailwindOutput.css")
      (apply include-js
+            "https://www.gstatic.com/charts/loader.js"
             "/js/jquery-3.4.1.min.js"
             extra-js)]))
 
