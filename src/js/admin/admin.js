@@ -78,9 +78,9 @@ function makeAdminTableComponent(dateDataURL, columnFields, tableRefDownloadURL)
     } = useContext(MainContext);
 
     /// API ///
-    const loadDateData = (yearMonth) =>
-      jsonRequest(dateDataURL, { yearMonth })
-        .then((data) => addCollectedData(yearMonth, data))
+    const loadDateData = (dataLayer) =>
+      jsonRequest(dateDataURL, { dataLayer })
+        .then((data) => addCollectedData(dataLayer, data))
         .catch((err) => console.error(err));
 
     /// Helper Functions ///

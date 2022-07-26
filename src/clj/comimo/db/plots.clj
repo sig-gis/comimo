@@ -37,7 +37,7 @@
          (data-response))))
 
 (defn download-user-mines [{:keys [params]}]
-  (let [year-month (:yearMonth params)]
-    (->> (call-sql "get_user_mines" year-month)
+  (let [data-layer (:dataLayer params)]
+    (->> (call-sql "get_user_mines" data-layer)
          (mapv #(set/rename-keys % {:reported_date :reportedDate}))
          (data-response))))
