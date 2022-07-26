@@ -330,23 +330,13 @@ function AdminContent() {
         <div>
           <TitledForm header="Options">
             <div className="d-flex flex-column">
-              <OptionRow onClick={() => setPage("users")}>{admin?.users}</OptionRow>
-              <OptionRow onClick={() => setPage("logs")}>
-                <label>{admin?.logs}</label>
-              </OptionRow>
-              <OptionRow onClick={() => setPage("predictions")}>
-                <label>{admin?.predictions}</label>
-              </OptionRow>
-              <OptionRow onClick={() => setPage("userMines")}>
-                <label>{admin?.userMines}</label>
-              </OptionRow>
               <OptionRow
                 onClick={() => {
                   setFilterStr("");
                   setPage("users");
                 }}
               >
-                Users
+                {admin?.users}
               </OptionRow>
               <OptionRow
                 onClick={() => {
@@ -354,7 +344,13 @@ function AdminContent() {
                   setPage("logs");
                 }}
               >
-                <label>Logs</label>
+                <label>{admin?.logs}</label>
+              </OptionRow>
+              <OptionRow onClick={() => setPage("predictions")}>
+                <label>{admin?.predictions}</label>
+              </OptionRow>
+              <OptionRow onClick={() => setPage("userMines")}>
+                <label>{admin?.userMines}</label>
               </OptionRow>
             </div>
           </TitledForm>
