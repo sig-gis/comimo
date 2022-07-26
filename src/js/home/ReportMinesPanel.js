@@ -3,6 +3,7 @@ import React from "react";
 import Button from "../components/Button";
 import ToolPanel from "../components/ToolPanel";
 import TextInput from "../components/TextInput";
+import Modal from "../components/Modal";
 
 import { MainContext } from "../components/PageLayout";
 import { URLS } from "../constants";
@@ -14,10 +15,22 @@ export default class ReportMinesPanel extends React.Component {
 
     this.state = {
       latLonText: "",
+      messageBox: null,
       reportedLatLon: null,
       reportingMine: false,
     };
   }
+
+  showAlert = ({ body, closeText, confirmText, onConfirm, title }) =>
+    this.setState({
+      messageBox: {
+        body,
+        closeText,
+        confirmText,
+        onConfirm,
+        title,
+      },
+    });
 
   /// API Calls ///
 
@@ -33,13 +46,29 @@ export default class ReportMinesPanel extends React.Component {
         .then((result) => {
           if (result === "") {
             this.setState({ reportedLatLon: selectedLatLon });
-            alert(report.created);
+            this.showAlert({
+              body: report.created,
+              closeText: report.understand,
+              title: report.createdTitle,
+            });
           } else if (result === "Exists") {
-            alert(report.existing);
+            this.showAlert({
+              body: report.existing,
+              closeText: report.understand,
+              title: report.existingTitle,
+            });
           } else if (result === "Outside") {
-            alert(report.outside);
+            this.showAlert({
+              body: report.outside,
+              closeText: report.understand,
+              title: report.outsideTitle,
+            });
           } else {
-            alert(report.error);
+            this.showAlert({
+              body: report.error,
+              closeText: report.understand,
+              title: report.errorTitle,
+            });
           }
         })
         .catch((error) => console.error(error))
@@ -50,7 +79,6 @@ export default class ReportMinesPanel extends React.Component {
   };
 
   /// Helper functions ///
-
   processLatLng = () => {
     const { latLonText } = this.state;
     const { fitMap, addPopup } = this.props;
@@ -98,13 +126,29 @@ export default class ReportMinesPanel extends React.Component {
             </div>
 
             <div style={{ display: "flex", width: "100%", justifyContent: "flex-end" }}>
-              <Button disabled={reportingMine || reported} onClick={this.submitMine}>
+              <Button
+                disabled={reportingMine || reported}
+                onClick={() =>
+                  this.showAlert({
+                    body: report.areYouSure,
+                    closeText: report.cancel,
+                    confirmText: report.imSure,
+                    onConfirm: () => this.submitMine(),
+                    title: report.submit,
+                  })
+                }
+              >
                 {reported ? report.reported : report.submit}
               </Button>
             </div>
           </>
         ) : (
           <span style={{ fontStyle: "italic" }}>{report.noLocation}</span>
+        )}
+        {this.state.messageBox && (
+          <Modal {...this.state.messageBox} onClose={() => this.setState({ messageBox: null })}>
+            <p>{this.state.messageBox.body}</p>
+          </Modal>
         )}
       </ToolPanel>
     );

@@ -25,7 +25,7 @@ const Button = styled.button`
   border: none;
   border-radius: 0.25rem;
   color: ${getColor};
-  font-weight: 400;
+  font-weight: 700;
   font-size: 1rem;
   line-height: 1.5;
   text-align: center;
