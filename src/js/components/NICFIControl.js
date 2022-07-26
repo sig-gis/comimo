@@ -1,9 +1,9 @@
-import React, {useEffect, useState} from "react";
+import React, { useEffect, useState } from "react";
 
 import Button from "./Button";
 import Select from "./Select";
 
-export default function NICFIControl({extraParams, setParams, nicfiLayers}) {
+export default function NICFIControl({ extraParams, setParams, nicfiLayers, layers }) {
   const [selectedTime, setTime] = useState("");
   const [selectedBand, setBand] = useState("");
   useEffect(() => {
@@ -14,16 +14,19 @@ export default function NICFIControl({extraParams, setParams, nicfiLayers}) {
   }, [extraParams]);
 
   return (
-    <div className="flex flex-col pl-3">
+    <div className="flex flex-col">
       <Select
         id="time"
-        label="Select Time"
-        onChange={e => setTime(e.target.value)}
-        options={nicfiLayers.map(time => ({value: time, label: time.slice(34, time.length - 7)}))}
+        label={layers.selectTime}
+        onChange={(e) => setTime(e.target.value)}
+        options={nicfiLayers.map((time) => ({
+          value: time,
+          label: time.slice(34, time.length - 7),
+        }))}
         value={selectedTime}
       />
       <div className="flex flex-col">
-        <label className="mb-0 mr-3">Select Band</label>
+        <label className="ml-0">{layers.selectBand}</label>
         <div className="flex">
           <div>
             <input
@@ -31,35 +34,36 @@ export default function NICFIControl({extraParams, setParams, nicfiLayers}) {
               id="visible"
               onChange={() => setBand("rgb")}
               type="radio"
+              style={{ cursor: "pointer" }}
             />
-            <label htmlFor="visible">
-            Visible
+            <label htmlFor="visible" style={{ cursor: "pointer", margin: 0 }}>
+              {layers.visible}
             </label>
           </div>
-          <div className="pl-2">
+          <div className="pl-3">
             <input
               checked={selectedBand === "cir"}
               id="infrared"
               onChange={() => setBand("cir")}
               type="radio"
+              style={{ cursor: "pointer" }}
             />
-            <label htmlFor="infrared">
-            Infrared
+            <label htmlFor="infrared" style={{ cursor: "pointer", margin: 0 }}>
+              {layers.infrared}
             </label>
           </div>
         </div>
       </div>
       <Button
-        className="mt-4"
-        onClick={() => setParams(
-          "NICFI",
-          {
+        className="mt-2"
+        onClick={() =>
+          setParams("NICFI", {
             dataLayer: selectedTime,
-            band: selectedBand
-          }
-        )}
+            band: selectedBand,
+          })
+        }
       >
-          Update Map
+        {layers.updateNICFI}
       </Button>
     </div>
   );

@@ -62,8 +62,8 @@
         "updateMap": "Update map"
     },
     "layers": {
-        "title": "Select layers",
-        "nameLabel": "Layer name",
+        "title": "Select Layers",
+        "nameLabel": "Layer Name",
         "opacityLabel": "Opacity",
         "cMines": "Confirmed mines",
         "nMines": "New predictions",
@@ -75,7 +75,13 @@
         "tierrasDeCom": "Afrocolombian Communal Lands",
         "resguardos": "Indigenous Reservations",
         "protectedAreas": "Protected Areas",
-        "NICFI": "Planet NICFI"
+        "NICFI": "Planet NICFI",
+        "satelliteTitle": "Updated Satellite Imagery",
+        "updateNICFI": "Update NICFI Layer",
+        "selectBand": "Select Band",
+        "visible": "Visible",
+        "infrared": "Infrared",
+        "selectTime": "Select Date"
     },
     "report": {
         "title": "Report Mines",

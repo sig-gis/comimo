@@ -15,7 +15,8 @@ const PanelOuter = styled.div`
 
 const Title = styled.h2`
   border-bottom: 1px solid gray;
-  padding: .5rem;
+  font-weight: bold;
+  padding: 0.5rem;
 `;
 
 const Content = styled.div`
@@ -23,15 +24,11 @@ const Content = styled.div`
   padding: 1rem;
 `;
 
-export default function ToolPanel({title, children}) {
+export default function ToolPanel({ title, children }) {
   return (
     <PanelOuter>
-      <Title>
-        {title}
-      </Title>
-      <Content>
-        {children}
-      </Content>
+      <Title>{title}</Title>
+      <Content>{children}</Content>
     </PanelOuter>
   );
 }
