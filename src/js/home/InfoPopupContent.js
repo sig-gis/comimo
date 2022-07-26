@@ -53,7 +53,7 @@ export default class InfoPopupContent extends React.Component {
       pMines: (
         <PopupMapInfo key="pMines">
           <label>
-            <strong>{localeText.nMines}: </strong>
+            <strong>{localeText.pMines}: </strong>
           </label>
           <label>{pMines ? localeText.eeLayerDetected : localeText.eeLayerNotDetected}</label>
         </PopupMapInfo>
