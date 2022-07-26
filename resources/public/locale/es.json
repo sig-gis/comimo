@@ -25,9 +25,9 @@
         "filterTooltip": "Filtrar por fecha",
         "downloadTooltip": "Descargar datos",
         "appInfoTooltip": "Información de la aplicación",
-        "reportToolTip": "Reportar mina",
+        "reportTooltip": "Reportar mina",
         "loading": "Cargando",
-        "admin": "Administración"
+        "admin": "Administración",
         "noMorePlots": "No más parcelas"
     },
     "appInfo": {
@@ -90,14 +90,22 @@
         "selectedLocation": "Punto seleccionado",
         "latitude": "Latitud",
         "longitude": "Longitud",
-        "submit": "Reportar mina",
+        "submit": "Reportar Mina",
         "reported": "Reportado",
         "noLocation": "Seleccionar un punto para continuar.",
         "reportMine": "Reportar mina",
         "existing": "Ya ha informado de una mina aquí.",
+        "existingTitle": "La mina ya existe",
         "created": "Mina reportada con éxito.",
-        "outside": "Solo puede reportar sobre minas dentro de Colomdia.",
-        "error": "Error desconocido."
+        "createdTitle": "Mina creada",
+        "outside": "Solo puede reportar sobre minas dentro de Colombia.",
+        "outsideTitle": "Mina fuera de Colombia.",
+        "error": "Error desconocido.",
+        "errorTitle": "Error",
+        "understand": "OK, entiendo",
+        "areYouSure": "¿Estás segura de que quieres reportar esta mina?",
+        "cancel": "Cancelar",
+        "imSure": "Si estoy segura"
     },
     "search": {
         "noResults": "Sin resultados",
