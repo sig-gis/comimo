@@ -72,9 +72,15 @@
         "legalMines": "Títulos mineros",
         "otherAuthorizations": "Otras autorizaciones",
         "tierrasDeCom": "Consejos Comunitarios",
-        "resguardos": "Resguardos indígenas",
+        "resguardos": "Resguardos Indígenas",
         "protectedAreas": "Áreas Protegidas",
-        "NICFI": "Planet NICFI"
+        "NICFI": "Planet NICFI",
+        "satelliteTitle": "Imágenes Satelitales Actualizadas",
+        "updateNICFI": "Actualizar la capa NICFI",
+        "selectBand": "Seleccionar Banda",
+        "visible": "Visible",
+        "infrared": "Infrarroja",
+        "selectTime": "Seleccione Fecha"
     },
     "report": {
         "title": "Reportar minas",

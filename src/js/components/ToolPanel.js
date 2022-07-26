@@ -15,6 +15,7 @@ const PanelOuter = styled.div`
 
 const Title = styled.h2`
   border-bottom: 1px solid gray;
+  font-weight: bold;
   padding: 0.5rem;
 `;
 

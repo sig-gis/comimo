@@ -35,6 +35,7 @@ export default function Select({
         id={id}
         onChange={onChange}
         value={value}
+        style={{ cursor: "pointer" }}
       >
         <Option
           key="defaultOption"
@@ -45,9 +46,11 @@ export default function Select({
         />
         {Array.isArray(options)
           ? options.map((o, i) => (
+              /* eslint-disable-next-line react/no-array-index-key */
               <Option key={i} labelKey={labelKey} option={o} valueKey={valueKey} />
             ))
           : Object.values(options).map((o, i) => (
+              /* eslint-disable-next-line react/no-array-index-key */
               <Option key={i} labelKey={labelKey} option={o} valueKey={valueKey} />
             ))}
       </select>
