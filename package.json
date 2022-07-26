@@ -36,7 +36,6 @@
         "@babel/preset-react": "^7.16.7",
         "@babel/runtime": "^7.18.9",
         "@emotion/babel-preset-css-prop": "^11.2.0",
-        "babel-eslint": "^10.1.0",
         "babel-loader": "^8.2.3",
         "babel-plugin-lodash": "^3.3.4",
         "babel-plugin-macros": "^3.1.0",
@@ -68,11 +67,4 @@
         "webpack-dev": "npm run tailwind --watch && npx webpack --config webpack.config.js --env dev",
         "webpack-prod": "npm run tailwind && npx webpack --config webpack.config.js --env prod"
     }
-  },
-  "scripts": {
-    "lint": "find src/js -type f -exec ./node_modules/.bin/quick-lint-js --snarky {} +",
-    "tailwind": "npx tailwindcss -i ./src/css/tailwindInput.css -o ./resources/public/css/tailwindOutput.css",
-    "webpack-dev": "npm run tailwind --watch && npx webpack --config webpack.config.js --env dev",
-    "webpack-prod": "npm run tailwind && npx webpack --config webpack.config.js --env prod"
-  }
 }

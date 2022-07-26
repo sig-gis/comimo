@@ -87,9 +87,9 @@ export default class LayersPanel extends React.Component {
     </>
   );
 
-  renderNICFISection = (layers) => (
+  renderNICFISection = (title) => (
     <>
-      <label style={{ fontWeight: "bold", margin: "0 .25rem 0 0" }}>{layers.satelliteTitle}</label>
+      <label style={{ fontWeight: "bold", margin: "0 .25rem 0 0" }}>{title}</label>
       <hr style={{ marginBottom: "0.5rem" }}></hr>
       <div className="d-flex flex-column">
         {this.renderControl("NICFI")}
@@ -97,7 +97,6 @@ export default class LayersPanel extends React.Component {
           extraParams={this.props.extraParams}
           nicfiLayers={this.props.nicfiLayers}
           setParams={this.props.setParams}
-          layers={layers}
         />
       </div>
     </>
@@ -117,7 +116,7 @@ export default class LayersPanel extends React.Component {
             layerName === "NICFI" ? "" : this.renderControl(layerName)
           )}
         <br></br>
-        {opacity && visible && this.renderNICFISection(layers)}
+        {opacity && visible && this.renderNICFISection(layers.sateliteTitle)}
       </ToolPanel>
     );
   }

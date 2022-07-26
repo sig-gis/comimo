@@ -16,13 +16,10 @@ import SideIcon from "../components/SideIcon";
 import StatsPanel from "./StatsPanel";
 import SubscribePanel from "./SubscribePanel";
 import ValidatePanel from "./ValidatePanel";
-import SideIcon from "../components/SideIcon";
-import MenuItem from "../components/MenuItem";
 import { PageLayout, MainContext } from "../components/PageLayout";
-import SideBar from "../components/SideBar";
 
 import { jsonRequest } from "../utils";
-import { URLS } from "../constants";
+import { URLS, availableLayers } from "../constants";
 
 class HomeContents extends React.Component {
   // set up class flags so each component update doesn't do redundant JS tasks
