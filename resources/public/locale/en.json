@@ -25,7 +25,7 @@
         "filterTooltip": "Select date",
         "downloadTooltip": "Download data",
         "appInfoTooltip": "App info",
-        "reportToolTip": "Report mine",
+        "reportTooltip": "Report mine",
         "loading": "Loading",
         "admin": "Admin",
         "noMorePlots": "No more plots"
@@ -90,9 +90,17 @@
         "noLocation": "Select point to continue.",
         "reportMine": "Report Mine",
         "existing": "You have already reported a mine here.",
+        "existingTitle": "Mine already exists",
         "created": "Mine successfully reported.",
-        "outside": "You can only report mines inside Colomdia.",
-        "error": "Unknown error."
+        "createdTitle": "Mine created",
+        "outside": "You can only report mines inside Colombia.",
+        "outsideTitle": "Mine outside Colombia",
+        "error": "Unknown error.",
+        "errorTitle": "Error",
+        "understand": "OK, I understand",
+        "areYouSure": "Are you sure you want to report this mine?",
+        "cancel": "Cancel",
+        "imSure": "Yes, I'm sure"
     },
     "search": {
         "noResults": "No Results",
