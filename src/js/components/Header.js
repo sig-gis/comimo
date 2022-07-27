@@ -25,7 +25,7 @@ export default function Header({
     >
       <img
         alt="app-logo"
-        onClick={() => setShowInfo(true)}
+        onClick={() => (window.location = "/")}
         src="/img/app-logo.png"
         style={{ height: "100%", cursor: "pointer" }}
       />
