@@ -42,7 +42,7 @@
      (when-let [ga-id (get-config :ga-id)]
        (list [:script {:async true :src (str "https://www.googletagmanager.com/gtag/js?id=" ga-id)}]
              [:script (str "window.dataLayer = window.dataLayer || []; function gtag() {dataLayer.push(arguments);} gtag('js', new Date()); gtag('config', '" ga-id "', {'page_location': location.host + location.pathname});")]))
-     (include-css "/css/bootstrap-grid.min.4.3.1.css"
+     (include-css "https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css"
                   "css/gmw_global.css"
                   "css/gmw_main.css"       ; only home
                   "css/tailwindOutput.css")
