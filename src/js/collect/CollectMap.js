@@ -301,13 +301,6 @@ export default class CollectMap extends React.Component {
       theMap.setPaintProperty(id + "", "line-color", this.plotColor(answer));
       theMap.setPaintProperty(id + "sym", "text-color", this.plotColor(answer));
       theMap.setPaintProperty(id + "", "line-width", 6);
-      // Update visibility
-      projectPlots.forEach((p) => {
-        const lName = p.id + "";
-        if (theMap.getLayer(lName)) {
-          theMap.setLayoutProperty(lName, "visibility", id === p.id ? "visible" : "none");
-        }
-      });
       this.fitMap("bbox", extent(geom));
     }
   };
