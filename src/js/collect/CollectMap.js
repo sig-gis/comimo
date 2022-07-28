@@ -243,8 +243,10 @@ export default class CollectMap extends React.Component {
         filter: ["==", ["get", "id"], p.id],
         layout: {
           "text-field": "" + number,
-          "text-allow-overlap": true,
+          "text-allow-overlap": false,
           "text-size": 24,
+          "text-anchor": "center",
+          "text-ignore-placement": true,
         },
         paint: {
           "text-color": color,

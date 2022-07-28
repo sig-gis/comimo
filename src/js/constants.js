@@ -8,16 +8,16 @@ export const THEME = {
     color: "#eee",
   },
   mina: {
-    background: "#fb8072", // red
+    background: "#ff6654", // red
     color: "#eee",
   },
   noMina: {
-    background: "#8dd3c7", // green
+    background: "#00dca0", // green
     color: "#eee",
   },
   map: {
-    boundary: "#ffffb3", // yellow
-    unanswered: "#bebada", // blue
+    boundary: "#ffff7b", // yellow
+    unanswered: "#8175d2", // blue
   },
 };
 
