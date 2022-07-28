@@ -386,6 +386,7 @@ function AdminContent() {
                   setPage("users");
                 }}
               >
+                {admin?.users}
               </OptionRow>
               <OptionRow
                 onClick={() => {
