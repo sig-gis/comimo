@@ -238,6 +238,14 @@
         "selectDate": "Seleccione Fecha...",
         "loadingDates": "Fechas de carga...",
         "downloadJSON": "Descargar JSON",
-        "downloadCSV": "Descargar CSV"
+        "downloadCSV": "Descargar CSV",
+        "emptyLogs": "No hay registros disponibles en este momento.",
+        "emptyUsers": "No hay usuarios que se ajusten a los criterios de filtro proporcionados. Intente otra búsqueda de filtro.",
+        "id": "Id",
+        "username": "Nombre de usuario",
+        "email": "Email",
+        "role": "Posición",
+        "emptyTable": "Seleccione un mes de informe y haga clic en 'Carga' para ver los resultados.",
+        "noData": "No hay datos disponibles para este mes. Por favor, intente otro mes."
     }
 }

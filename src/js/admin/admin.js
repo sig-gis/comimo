@@ -32,7 +32,9 @@ const Content = styled.div`
 
 const DataArea = styled.div`
   flex: 1;
-  overflow-y: scroll;
+  height: 100%;
+  overflow-y: auto;
+  padding: 1rem 1rem;
 `;
 
 const GridSection = styled.div`
@@ -66,6 +68,14 @@ const OptionRow = styled.div`
   &:hover {
     filter: brightness(90%);
   }
+`;
+
+const EmptyMessage = styled.div`
+  border: 1px solid black;
+  border-radius: 0.5rem;
+  display: flex;
+  margin-bottom: 1rem;
+  padding: 1rem 1rem;
 `;
 
 function makeAdminTableComponent(dateDataURL, columnFields, tableRefDownloadURL) {
@@ -112,23 +122,32 @@ function makeAdminTableComponent(dateDataURL, columnFields, tableRefDownloadURL)
             {collectedData[selectedDate] ? admin.reload : admin.load}
           </Button>
         </div>
-        <ReactTabulator
-          columns={columnFields.map((m) => ({ ...m, headerFilter: "input" }))}
-          data={collectedData[selectedDate]}
-          onRef={(ref) => setTableRef(ref)}
-          options={{
-            layout: "fitColumns", // fit columns to width of table
-            responsiveLayout: "hide", // hide columns that dont fit on the table
-            tooltips: true, // show tool tips on cells
-            addRowPos: "top", // when adding a new row, add it to the top of the table
-            history: true, // allow undo and redo actions on the table
-            pagination: "local",
-            paginationSize: 100,
-            movableColumns: true, // allow column order to be changed
-            resizableRows: true, // allow row order to be changed
-          }}
-        />
-        {renderButtons(downloadData)}
+        <div>
+          {selectedDate === -1 && <EmptyMessage>{admin?.emptyTable}</EmptyMessage>}
+          {collectedData[selectedDate]?.length > 0 && (
+            <>
+              <ReactTabulator
+                columns={columnFields.map((m) => ({ ...m, headerFilter: "input" }))}
+                data={collectedData[selectedDate]}
+                onRef={(ref) => setTableRef(ref)}
+                options={{
+                  layout: "fitColumns", // fit columns to width of table
+                  responsiveLayout: "hide", // hide columns that dont fit on the table
+                  addRowPos: "top", // when adding a new row, add it to the top of the table
+                  history: true, // allow undo and redo actions on the table
+                  pagination: "local",
+                  paginationSize: 100,
+                  movableColumns: true, // allow column order to be changed
+                  resizableRows: true, // allow row order to be changed
+                }}
+              />
+              {renderButtons(downloadData)}
+            </>
+          )}
+          {selectedDate !== -1 && collectedData[selectedDate]?.length === 0 && (
+            <EmptyMessage>{admin?.noData}</EmptyMessage>
+          )}
+        </div>
       </>
     );
   };
@@ -164,6 +183,7 @@ const Predictions = makeAdminTableComponent(
 
 const Filter = styled.input`
   margin: 0 0 1rem 1rem;
+  padding-left: 0.5rem;
 `;
 
 function AdminContent() {
@@ -254,20 +274,40 @@ function AdminContent() {
     );
   };
 
-  const renderUsers = () => (
-    <>
-      <GridSection>
-        {renderUserRow({ userId: "Id", username: "Username", email: "Email", role: "Role" })}
-        {userList.filter((row) => isRowIncluded(row)).map(renderUserRow)}
-      </GridSection>
-      <div className="m-3 d-flex">
-        <div className="flex-grow-1" />
-        <Button disabled={!roleChanged} onClick={updateUserRoles}>
-          {admin?.save}
-        </Button>
-      </div>
-    </>
-  );
+  const renderUsers = () =>
+    userList.filter((row) => isRowIncluded(row)).map(renderUserRow).length ? (
+      <>
+        <Filter
+          onChange={(e) => setFilterStr(e.target.value)}
+          placeholder="Filter"
+          value={filterStr}
+        />
+        <GridSection>
+          {renderUserRow({
+            userId: admin?.id,
+            username: admin?.username,
+            email: admin?.email,
+            role: admin?.role,
+          })}
+          {userList.filter((row) => isRowIncluded(row)).map(renderUserRow)}
+        </GridSection>
+        <div className="m-3 d-flex">
+          <div className="flex-grow-1" />
+          <Button disabled={!roleChanged} onClick={updateUserRoles}>
+            {admin?.save}
+          </Button>
+        </div>
+      </>
+    ) : (
+      <>
+        <Filter
+          onChange={(e) => setFilterStr(e.target.value)}
+          placeholder="Filter"
+          value={filterStr}
+        />
+        <EmptyMessage>{admin?.emptyUsers}</EmptyMessage>
+      </>
+    );
 
   const renderLogRow = ({ jobTime, username, finishStatus, finishMessage }) => (
     <GridRow key={jobTime + username}>
@@ -278,17 +318,27 @@ function AdminContent() {
     </GridRow>
   );
 
-  const renderLogs = () => (
-    <GridSection>
-      {renderLogRow({
-        jobTime: "Time",
-        username: "Username",
-        finishStatus: "Status",
-        finishMessage: "Message",
-      })}
-      {logList.filter((row) => isRowIncluded(row)).map(renderLogRow)}
-    </GridSection>
-  );
+  const renderLogs = () =>
+    logList.length ? (
+      <>
+        <Filter
+          onChange={(e) => setFilterStr(e.target.value)}
+          placeholder="Filter"
+          value={filterStr}
+        />
+        <GridSection>
+          {renderLogRow({
+            jobTime: "Time",
+            username: "Username",
+            finishStatus: "Status",
+            finishMessage: "Message",
+          })}
+          {logList.filter((row) => isRowIncluded(row)).map(renderLogRow)}
+        </GridSection>
+      </>
+    ) : (
+      <EmptyMessage>{admin?.emptyLogs}</EmptyMessage>
+    );
 
   const renderButtons = (downloadData) => (
     <div
@@ -336,7 +386,6 @@ function AdminContent() {
                   setPage("users");
                 }}
               >
-                {admin?.users}
               </OptionRow>
               <OptionRow
                 onClick={() => {
@@ -344,37 +393,18 @@ function AdminContent() {
                   setPage("logs");
                 }}
               >
-                <label>{admin?.logs}</label>
+                {admin?.logs}
               </OptionRow>
-              <OptionRow onClick={() => setPage("predictions")}>
-                <label>{admin?.predictions}</label>
-              </OptionRow>
-              <OptionRow onClick={() => setPage("userMines")}>
-                <label>{admin?.userMines}</label>
-              </OptionRow>
+              <OptionRow onClick={() => setPage("predictions")}>{admin?.predictions}</OptionRow>
+              <OptionRow onClick={() => setPage("userMines")}>{admin?.userMines}</OptionRow>
             </div>
           </TitledForm>
         </div>
         <DataArea>
-          <Filter
-            onChange={(e) => setFilterStr(e.target.value)}
-            placeholder="Filter"
-            value={filterStr}
-          />
           {selectedPage === "users" && renderUsers()}
           {selectedPage === "logs" && renderLogs()}
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              padding: "1rem 4rem",
-              alignItems: "center",
-              height: "100%",
-            }}
-          >
-            {selectedPage === "predictions" && renderPredictions()}
-            {selectedPage === "userMines" && renderUserMines()}
-          </div>
+          {selectedPage === "predictions" && renderPredictions()}
+          {selectedPage === "userMines" && renderUserMines()}
         </DataArea>
       </Content>
     </PageContainer>
