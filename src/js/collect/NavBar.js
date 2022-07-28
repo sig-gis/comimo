@@ -34,11 +34,23 @@ const PlotNumberInput = styled.input`
   width: 3em;
 `;
 
-export default function NavBar({ currentPlotId, goToPlot, nextPlot, prevPlot, setPlotAnswer }) {
+export default function NavBar({
+  currentPlotId,
+  shiftPlotId,
+  goToPlot,
+  nextPlot,
+  prevPlot,
+  setPlotAnswer,
+}) {
   const {
     localeText: { collect },
   } = useContext(MainContext);
-  const [targetPlotNumber, setTargetPlotNumber] = useState(1);
+  const [plotNumberToGo, setPlotNumberToGo] = useState(null);
+
+  const currentPlotNumber = () => {
+    let num = plotNumberToGo || currentPlotId - shiftPlotId + 1;
+    return num < 0 ? 0 : num;
+  };
 
   const renderGoToPlot = () => (
     <>
@@ -46,16 +58,16 @@ export default function NavBar({ currentPlotId, goToPlot, nextPlot, prevPlot, se
         autoComplete="off"
         id="plotId"
         min="1"
-        onChange={(e) => setTargetPlotNumber(e.target.value)}
+        onChange={(e) => setPlotNumberToGo(e.target.value)}
         onKeyDown={(e) => {
-          if (e.key === "Enter") goToPlot(targetPlotNumber);
+          if (e.key === "Enter") goToPlot(currentPlotNumber());
         }}
         type="number"
-        value={targetPlotNumber}
+        value={currentPlotNumber()}
       />
       <Button
         onClick={() => {
-          goToPlot(targetPlotNumber);
+          goToPlot(currentPlotNumber());
         }}
       >
         {collect?.go}

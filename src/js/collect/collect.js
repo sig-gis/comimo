@@ -217,6 +217,7 @@ class CollectContent extends React.Component {
           nextPlot={this.nextPlot}
           prevPlot={this.prevPlot}
           setPlotAnswer={this.setPlotAnswer}
+          shiftPlotId={projectPlots[0]?.id}
         />
       </>
     );
