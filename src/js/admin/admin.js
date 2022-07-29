@@ -319,7 +319,7 @@ function AdminContent() {
   );
 
   const renderLogs = () =>
-    logList.length ? (
+    logList.filter((row) => isRowIncluded(row)).map(renderLogRow).length ? (
       <>
         <Filter
           onChange={(e) => setFilterStr(e.target.value)}
