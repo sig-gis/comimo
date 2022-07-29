@@ -60,7 +60,10 @@ export default function NavBar({
         min="1"
         onChange={(e) => setPlotNumberToGo(e.target.value)}
         onKeyDown={(e) => {
-          if (e.key === "Enter") goToPlot(currentPlotNumber());
+          if (e.key === "Enter") {
+            goToPlot(currentPlotNumber());
+            setPlotNumberToGo(null);
+          }
         }}
         type="number"
         value={currentPlotNumber()}
@@ -68,6 +71,7 @@ export default function NavBar({
       <Button
         onClick={() => {
           goToPlot(currentPlotNumber());
+          setPlotNumberToGo(null);
         }}
       >
         {collect?.go}
