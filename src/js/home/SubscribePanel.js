@@ -112,12 +112,8 @@ export default class SubscribePanel extends React.Component {
 
   render() {
     const { subsLoaded } = this.state;
-<<<<<<< HEAD
     const { featureNames, fitMap, mapquestKey, selectedRegion, selectRegion, subscribedList } =
       this.props;
-=======
-    const { selectedRegion, subscribedList } = this.props;
->>>>>>> development
     const {
       username,
       localeText: { subscribe },
