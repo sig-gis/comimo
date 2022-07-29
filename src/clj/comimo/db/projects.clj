@@ -51,19 +51,20 @@
 ;;;
 
 (defn create-project! [user-id proj-name regions data-layer]
-  (let [regions         (into-array String regions)
-        project-exists? (sql-primitive (call-sql "project_exists" data-layer regions))
+  (let [regions-arr     (into-array String regions)
+        project-exists? (sql-primitive (call-sql "project_exists" data-layer regions-arr))        
         plots-strs      (when (not project-exists?) (get-points-within data-layer regions))]
     (cond project-exists?
-          "projectExists"
-          (empty? plots-strs)
-          "projectWithNoPlots"
+          {:msg "projectExists"} 
+          (empty? plots-strs)          
+          {:msg "projectWithNoPlots"}             
           :else
           (let [project-id (sql-primitive (call-sql "create_project"
                                                     user-id
                                                     proj-name
-                                                    (into-array String regions)
+                                                    regions-arr
                                                     data-layer))
+                result     {:project-id project-id} 
                 plots      (->> plots-strs
                                 (mapv (fn [{:strs [lat lon]}]
                                         {:lat         lat
@@ -85,7 +86,7 @@
                                "SQL Error: Cannot create plot geometries.")
 
               ;; Return success message
-              ""
+              (assoc result :msg "")
 
               (catch Exception e
                 ;; Delete new project on error
@@ -100,14 +101,14 @@
                   ;; Return error stack to user
                   (if causes
                     (str "errorNewProject, -" (str/join "\n-" causes))
-                    "errorUnknown"))))))))
+                    (assoc result :msg "errorUnknown")))))))))
 
 (defn create-project [{:keys [params]}]
   (let [user-id    (:userId params -1)
         proj-name  (:name params)
         regions    (:regions params)
         data-layer (:dataLayer params)]
-    (data-response (create-project! user-id proj-name regions data-layer))))
+    (data-response (:msg (create-project! user-id proj-name regions data-layer)))))
 
 ;;;
 ;;; Update Project

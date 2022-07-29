@@ -97,7 +97,6 @@ export default class LayersPanel extends React.Component {
           extraParams={this.props.extraParams}
           nicfiLayers={this.props.nicfiLayers}
           setParams={this.props.setParams}
-          layers={layers}
         />
       </div>
     </>

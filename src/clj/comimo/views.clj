@@ -1,12 +1,15 @@
 (ns comimo.views
-  (:require [clojure.data.json   :as json]
-            [clojure.java.io     :as io]
-            [clojure.string      :as str]
-            [cognitect.transit   :as transit]
-            [hiccup.page         :refer [html5 include-js include-css]]
-            [triangulum.config   :refer [get-config]]
-            [triangulum.database :refer [call-sql]])
-  (:import java.io.ByteArrayOutputStream))
+  (:require
+   [clojure.data.json   :as json]
+   [clojure.java.io     :as io]
+   [clojure.string      :as str]
+   [cognitect.transit   :as transit]
+   [comimo.git          :refer [current-version]]
+   [hiccup.page         :refer [html5 include-css include-js]]
+   [triangulum.config   :refer [get-config]]
+   [triangulum.database :refer [call-sql]])
+  (:import
+   java.io.ByteArrayOutputStream))
 
 (defn kebab->camel [kebab]
   (let [pieces (str/split kebab #"-")]
@@ -39,12 +42,12 @@
      (when-let [ga-id (get-config :ga-id)]
        (list [:script {:async true :src (str "https://www.googletagmanager.com/gtag/js?id=" ga-id)}]
              [:script (str "window.dataLayer = window.dataLayer || []; function gtag() {dataLayer.push(arguments);} gtag('js', new Date()); gtag('config', '" ga-id "', {'page_location': location.host + location.pathname});")]))
-     (include-css "/css/bootstrap-grid.min.4.3.1.css"
+     (include-css "https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css"
                   "css/gmw_global.css"
                   "css/gmw_main.css"       ; only home
                   "css/tailwindOutput.css")
      (apply include-js
-            "/js/google-charts.js"
+            "https://www.gstatic.com/charts/loader.js"
             "/js/jquery-3.4.1.min.js"
             extra-js)]))
 
@@ -58,7 +61,8 @@
   (let [js-params (-> params
                       (assoc
                        :mapboxToken (get-config :mapbox-token)
-                       :mapquestKey (get-config :mapquest-key))
+                       :mapquestKey (get-config :mapquest-key)
+                       :version (current-version))
                       (json/write-str))]
     [:script {:type "text/javascript"}
      (str "window.onload = function () {" page ".pageInit(" js-params "); };")]))

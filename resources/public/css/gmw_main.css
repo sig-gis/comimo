@@ -62,10 +62,10 @@
   height: auto;
 }
 select[multiple] optgroup option:checked::before {
-  content: '\2713\0020';
+  content: "\2713\0020";
   font-weight: bold;
-  font-size: .75rem;
-  margin: .2rem;
+  font-size: 0.75rem;
+  margin: 0.2rem;
 }
 
 @media only screen and (orientation: portrait) {
@@ -87,16 +87,16 @@ select[multiple] optgroup option:checked::before {
   }
 
   /* Input styling */
-  input[type=range] {
+  input[type="range"] {
     width: 100%;
     margin: 8.5px 0;
     background-color: transparent;
     -webkit-appearance: none;
   }
-  input[type=range]:focus {
+  input[type="range"]:focus {
     outline: none;
   }
-  input[type=range]::-webkit-slider-runnable-track {
+  input[type="range"]::-webkit-slider-runnable-track {
     background: #dcdcdc;
     border: 0.2px solid rgba(1, 1, 1, 0);
     border-radius: 1px;
@@ -104,7 +104,7 @@ select[multiple] optgroup option:checked::before {
     height: 8px;
     cursor: pointer;
   }
-  input[type=range]::-webkit-slider-thumb {
+  input[type="range"]::-webkit-slider-thumb {
     margin-top: -8.7px;
     width: 25px;
     height: 25px;
@@ -114,10 +114,10 @@ select[multiple] optgroup option:checked::before {
     cursor: pointer;
     -webkit-appearance: none;
   }
-  input[type=range]:focus ::-webkit-slider-runnable-track {
+  input[type="range"]:focus ::-webkit-slider-runnable-track {
     background: #dcdcdc;
   }
-  input[type=range]::-moz-range-track {
+  input[type="range"]::-moz-range-track {
     background: #dcdcdc;
     border: 0.2px solid rgba(1, 1, 1, 0);
     border-radius: 1px;
@@ -125,7 +125,7 @@ select[multiple] optgroup option:checked::before {
     height: 8px;
     cursor: pointer;
   }
-  input[type=range]::-moz-range-thumb {
+  input[type="range"]::-moz-range-thumb {
     width: 25px;
     height: 25px;
     background: #a6a6ff;
@@ -133,7 +133,7 @@ select[multiple] optgroup option:checked::before {
     border-radius: 15px;
     cursor: pointer;
   }
-  input[type=range]::-ms-track {
+  input[type="range"]::-ms-track {
     background: transparent;
     border-color: transparent;
     border-width: 9.5px 0;
@@ -142,17 +142,17 @@ select[multiple] optgroup option:checked::before {
     height: 8px;
     cursor: pointer;
   }
-  input[type=range]::-ms-fill-lower {
+  input[type="range"]::-ms-fill-lower {
     background: #dcdcdc;
     border: 0.2px solid rgba(1, 1, 1, 0);
     border-radius: 2px;
   }
-  input[type=range]::-ms-fill-upper {
+  input[type="range"]::-ms-fill-upper {
     background: #dcdcdc;
     border: 0.2px solid rgba(1, 1, 1, 0);
     border-radius: 2px;
   }
-  input[type=range]::-ms-thumb {
+  input[type="range"]::-ms-thumb {
     width: 25px;
     height: 25px;
     background: #a6a6ff;
@@ -162,10 +162,10 @@ select[multiple] optgroup option:checked::before {
     margin-top: 0px;
     /*Needed to keep the Edge thumb centred*/
   }
-  input[type=range]:focus ::-ms-fill-lower {
+  input[type="range"]:focus ::-ms-fill-lower {
     background: #dcdcdc;
   }
-  input[type=range]:focus ::-ms-fill-upper {
+  input[type="range"]:focus ::-ms-fill-upper {
     background: #dcdcdc;
   }
 }

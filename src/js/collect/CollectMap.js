@@ -4,11 +4,11 @@ import extent from "turf-extent";
 import styled from "@emotion/styled";
 import "mapbox-gl/dist/mapbox-gl.css";
 
-import {get, isString} from "lodash";
+import { get, isString } from "lodash";
 import LngLatHud from "../components/LngLatHud";
 
-import {jsonRequest, toPrecision} from "../utils";
-import {attributions, THEME, URLS} from "../constants";
+import { jsonRequest, toPrecision } from "../utils";
+import { attributions, THEME, URLS } from "../constants";
 
 const MapBoxWrapper = styled.div`
   height: 100%;
@@ -18,7 +18,7 @@ const MapBoxWrapper = styled.div`
   width: 100%;
 
   .mapboxgl-ctrl-logo {
-    margin: 0px 54px !important
+    margin: 0px 54px !important;
   }
 
   @media only screen and (orientation: portrait) {
@@ -44,7 +44,7 @@ export default class CollectMap extends React.Component {
 
     this.state = {
       mouseCoords: null,
-      theMap: null
+      theMap: null,
     };
   }
 
@@ -56,9 +56,11 @@ export default class CollectMap extends React.Component {
 
   mapChange = (prevProps, prevState, key) => {
     const keys = isString(key) ? [key] : key;
-    return this.state.theMap && get(this.props, keys)
-      && (prevState.theMap !== this.state.theMap
-        || get(prevProps, keys) !== get(this.props, keys));
+    return (
+      this.state.theMap &&
+      get(this.props, keys) &&
+      (prevState.theMap !== this.state.theMap || get(prevProps, keys) !== get(this.props, keys))
+    );
   };
 
   componentDidUpdate(prevProps, prevState) {
@@ -78,9 +80,11 @@ export default class CollectMap extends React.Component {
       this.updateVisiblePlot();
     }
 
-    if (this.state.theMap && Object.keys(this.props.extraParams).length > 0
-        && (prevState.theMap !== this.state.theMap
-          || prevProps.extraParams !== this.props.extraParams)) {
+    if (
+      this.state.theMap &&
+      Object.keys(this.props.extraParams).length > 0 &&
+      (prevState.theMap !== this.state.theMap || prevProps.extraParams !== this.props.extraParams)
+    ) {
       this.getLayerUrl(Object.keys(this.props.extraParams));
     }
   }
@@ -89,15 +93,15 @@ export default class CollectMap extends React.Component {
 
   setLayerUrl = (layer, url) => {
     if (layer && url && url !== "") {
-      const {theMap} = this.state;
+      const { theMap } = this.state;
       const style = theMap.getStyle();
       const layers = style.layers;
-      const layerIdx = layers.findIndex(l => l.id === layer);
+      const layerIdx = layers.findIndex((l) => l.id === layer);
       const thisLayer = layers[layerIdx];
       style.sources[layer].tiles = [url];
       style.layers[layerIdx] = {
         ...thisLayer,
-        layout: {visibility: "visible"}
+        layout: { visibility: "visible" },
       };
       theMap.setStyle(style);
     } else {
@@ -105,20 +109,22 @@ export default class CollectMap extends React.Component {
     }
   };
 
-  getLayerUrl = list => {
-    list.forEach(layer => {
-      jsonRequest(URLS.GET_IMAGE_URL, {type: layer})
-        .then(url => {
+  getLayerUrl = (list) => {
+    list.forEach((layer) => {
+      jsonRequest(URLS.GET_IMAGE_URL, { type: layer })
+        .then((url) => {
           // As written the URL provided must already include ? and one param so &nextParam works.
           const params = this.props.extraParams[layer];
-          const fullUrl = params == null
-            ? url
-            : url + Object.entries(params)
-              .map(([k, v]) => `&${k}=${v}`)
-              .join("");
+          const fullUrl =
+            params == null
+              ? url
+              : url +
+                Object.entries(params)
+                  .map(([k, v]) => `&${k}=${v}`)
+                  .join("");
           this.setLayerUrl(layer, fullUrl);
         })
-        .catch(error => console.error(error));
+        .catch((error) => console.error(error));
     });
   };
 
@@ -128,7 +134,7 @@ export default class CollectMap extends React.Component {
       container: "mapbox",
       style: "mapbox://styles/mapbox/satellite-streets-v9",
       center: [-73.5609339, 4.6371205],
-      zoom: 5
+      zoom: 5,
     });
     setTimeout(() => theMap.resize(), 1);
 
@@ -136,54 +142,51 @@ export default class CollectMap extends React.Component {
       // Add layers first in the
       this.addLayerSources(theMap, ["NICFI"]);
 
-      theMap.addControl(new mapboxgl.NavigationControl({showCompass: false}));
-      theMap.on("mousemove", e => {
+      theMap.addControl(new mapboxgl.NavigationControl({ showCompass: false }));
+      theMap.on("mousemove", (e) => {
         const lat = toPrecision(e.lngLat.lat, 4);
         const lng = toPrecision(e.lngLat.lng, 4);
-        this.setState({mouseCoords: {lat, lng}});
+        this.setState({ mouseCoords: { lat, lng } });
       });
-      this.setState({theMap});
+      this.setState({ theMap });
       this.getLayerUrl(["NICFI"]);
     });
   };
 
-  isLayerVisible = layer => this.state.theMap.getLayer(layer).visibility === "visible";
+  isLayerVisible = (layer) => this.state.theMap.getLayer(layer).visibility === "visible";
 
   // Adds layers initially with no styling, URL is updated later.  This is to guarantee z order in mapbox
   addLayerSources = (theMap, list) => {
-    list.forEach(name => {
-      theMap.addSource(
-        name,
-        {
-          type: "raster",
-          tiles: [],
-          tileSize: 256,
-          vis: {palette: []},
-          ...attributions[name] && {attribution: attributions[name]}
-        }
-      );
+    list.forEach((name) => {
+      theMap.addSource(name, {
+        type: "raster",
+        tiles: [],
+        tileSize: 256,
+        vis: { palette: [] },
+        ...(attributions[name] && { attribution: attributions[name] }),
+      });
       theMap.addLayer({
         id: name,
         type: "raster",
         source: name,
         minzoom: 0,
         maxzoom: 22,
-        layout: {visibility: "none"}
+        layout: { visibility: "none" },
       });
     });
   };
 
   fitMap = (type, arg) => {
-    const {theMap} = this.state;
+    const { theMap } = this.state;
     if (type === "point") {
       try {
-        theMap.flyTo({center: arg, essential: true});
+        theMap.flyTo({ center: arg, essential: true });
       } catch (err) {
         console.error(err);
       }
     } else if (type === "bbox") {
       try {
-        theMap.fitBounds(arg, {padding: {top: 16, bottom: 94, left: 16, right: 16}});
+        theMap.fitBounds(arg, { padding: { top: 16, bottom: 94, left: 16, right: 16 } });
       } catch (error) {
         console.error(error);
       }
@@ -191,15 +194,15 @@ export default class CollectMap extends React.Component {
   };
 
   addBoundary = () => {
-    const {theMap} = this.state;
-    const {boundary} = this.props;
+    const { theMap } = this.state;
+    const { boundary } = this.props;
     const geoJSON = {
       type: "Feature",
-      geometry: boundary
+      geometry: boundary,
     };
     theMap.addSource("boundary", {
       type: "geojson",
-      data: geoJSON
+      data: geoJSON,
     });
     theMap.addLayer({
       id: "boundary",
@@ -207,28 +210,29 @@ export default class CollectMap extends React.Component {
       source: "boundary",
       layout: {
         "line-join": "round",
-        "line-cap": "round"
+        "line-cap": "round",
       },
       paint: {
         "line-color": THEME.map.boundary,
-        "line-width": 4
-      }
+        "line-width": 4,
+      },
     });
     this.fitMap("bbox", extent(geoJSON));
   };
 
-  plotColor = answer => (answer === "Mina"
-    ? THEME.mina.background
-    : answer === "No Mina"
+  plotColor = (answer) =>
+    answer === "Mina"
+      ? THEME.mina.background
+      : answer === "No Mina"
       ? THEME.noMina.background
-      : THEME.map.unanswered);
+      : THEME.map.unanswered;
 
-  addLayers = plots => {
-    const {goToPlot} = this.props;
-    const {theMap} = this.state;
+  addLayers = (plots) => {
+    const { goToPlot } = this.props;
+    const { theMap } = this.state;
     const shiftId = plots[0]?.id;
 
-    plots.forEach(p => {
+    plots.forEach((p) => {
       const number = p.id - shiftId + 1;
       const color = this.plotColor(p.answer);
 
@@ -239,12 +243,14 @@ export default class CollectMap extends React.Component {
         filter: ["==", ["get", "id"], p.id],
         layout: {
           "text-field": "" + number,
-          "text-allow-overlap": true,
-          "text-size": 24
+          "text-allow-overlap": false,
+          "text-size": 24,
+          "text-anchor": "center",
+          "text-ignore-placement": true,
         },
         paint: {
-          "text-color": color
-        }
+          "text-color": color,
+        },
       });
 
       theMap.addLayer({
@@ -254,79 +260,59 @@ export default class CollectMap extends React.Component {
         filter: ["==", ["get", "id"], p.id],
         layout: {
           "line-join": "round",
-          "line-cap": "round"
+          "line-cap": "round",
         },
         paint: {
           "line-color": color,
-          "line-width": 4
-        }
+          "line-width": 4,
+        },
       });
 
-      theMap.on("click", p.id + "sym", e => {
+      theMap.on("click", p.id + "sym", (e) => {
         goToPlot(number);
       });
     });
   };
 
   addPlots = () => {
-    const {theMap} = this.state;
-    const {projectPlots} = this.props;
+    const { theMap } = this.state;
+    const { projectPlots } = this.props;
     const geoJSON = {
       type: "FeatureCollection",
-      features: projectPlots.map(p => ({
+      features: projectPlots.map((p) => ({
         type: "Feature",
-        properties: {id: p.id},
-        geometry: p.geom
-      }))
+        properties: { id: p.id },
+        geometry: p.geom,
+      })),
     };
     theMap.addSource("plots", {
       type: "geojson",
-      data: geoJSON
+      data: geoJSON,
     });
     this.addLayers(projectPlots);
   };
 
   updateVisiblePlot = () => {
-    const {theMap} = this.state;
-    const {projectPlots, currentPlot: {geom, id, answer}} = this.props;
+    const { theMap } = this.state;
+    const {
+      projectPlots,
+      currentPlot: { geom, id, answer },
+    } = this.props;
     if (geom) {
       // Set new color
-      theMap.setPaintProperty(
-        id + "",
-        "line-color",
-        this.plotColor(answer)
-      );
-      theMap.setPaintProperty(
-        id + "sym",
-        "text-color",
-        this.plotColor(answer)
-      );
-      theMap.setPaintProperty(
-        id + "",
-        "line-width",
-        6
-      );
-      // Update visibility
-      projectPlots.forEach(p => {
-        const lName = p.id + "";
-        if (theMap.getLayer(lName)) {
-          theMap.setLayoutProperty(
-            lName,
-            "visibility",
-            id === p.id ? "visible" : "none"
-          );
-        }
-      });
+      theMap.setPaintProperty(id + "", "line-color", this.plotColor(answer));
+      theMap.setPaintProperty(id + "sym", "text-color", this.plotColor(answer));
+      theMap.setPaintProperty(id + "", "line-width", 6);
       this.fitMap("bbox", extent(geom));
     }
   };
 
   render() {
-    const {mouseCoords} = this.state;
+    const { mouseCoords } = this.state;
     return (
       <>
-        <MapBoxWrapper id="mapbox"/>
-        {mouseCoords && <LngLatHud mouseCoords={mouseCoords}/>}
+        <MapBoxWrapper id="mapbox" />
+        {mouseCoords && <LngLatHud mouseCoords={mouseCoords} />}
       </>
     );
   }

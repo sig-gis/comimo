@@ -11,7 +11,7 @@ const FormArea = styled.div`
 export default function AccountForm(props) {
   return (
     <FormArea>
-      <TitledForm {...props}/>
+      <TitledForm {...props} />
     </FormArea>
   );
 }

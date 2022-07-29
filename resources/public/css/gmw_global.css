@@ -4,7 +4,7 @@ body {
   width: 100%;
   margin: 0;
   padding: 0;
-  font-family: 'Roboto Condensed', sans-serif !important;
+  font-family: "Roboto Condensed", sans-serif !important;
   line-height: 1.5rem !important;
   font-size: 16px;
 }
@@ -28,8 +28,8 @@ h1,
 h2,
 h3 {
   font-weight: bold;
-  margin-top: .25rem;
-  margin-bottom: .5rem;
+  margin-top: 0.25rem;
+  margin-bottom: 0.5rem;
 }
 
 h1 {
@@ -45,7 +45,7 @@ h3 {
 }
 
 h4 {
-  font-size: .75rem;
+  font-size: 0.75rem;
 }
 
 a {
@@ -57,16 +57,15 @@ a {
 /**************/
 
 label {
-  margin: .5rem 0 0 3px;
+  margin: 0.5rem 0 0 3px;
   font-size: 1rem;
 }
-
 
 input,
 select {
   border-radius: 3px;
   border: solid 1px darkgray;
-  padding: .25rem;
+  padding: 0.25rem;
   font-size: 1rem;
 }
 
@@ -80,7 +79,7 @@ button:focus {
 
 input[type="radio"],
 input[type="checkbox"] {
-  margin-right: .5rem;
+  margin-right: 0.5rem;
 }
 
 input[type="range"] {
@@ -96,7 +95,6 @@ input[type="range"] {
 /******************/
 /* Style Classes  */
 /******************/
-
 
 .disabled-group {
   opacity: 0.4;

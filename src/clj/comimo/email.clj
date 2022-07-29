@@ -126,5 +126,8 @@
                       :es (format (str "<html><body>"
                                        "<h3>Restablecimiento de contraseña</h3>"
                                        "<p>Para restablecer su contraseña haga clic <a href='%s/password-reset?token=%s&email=%s'>aquí</a> e ingrese su nueva contraseña.</p>"
-                                       "</body></html>"))}}]
+                                       "</body></html>")
+                                  (get-base-url)
+                                  token
+                                  email)}}]
     (send-mail email nil nil (get title lang) (get-in body [type lang]) type)))

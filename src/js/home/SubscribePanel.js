@@ -4,16 +4,16 @@ import LoginMessage from "./LoginMessage";
 import Button from "../components/Button";
 import ToolPanel from "../components/ToolPanel";
 
-import {URLS} from "../constants";
-import {jsonRequest} from "../utils";
-import {MainContext} from "../components/PageLayout";
+import { URLS } from "../constants";
+import { jsonRequest } from "../utils";
+import { MainContext } from "../components/PageLayout";
 
 export default class SubscribePanel extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      subsLoaded: false
+      subsLoaded: false,
     };
   }
 
@@ -21,11 +21,13 @@ export default class SubscribePanel extends React.Component {
     this.getSubs();
   }
 
-  subsResult = result => {
-    const {updateSubList} = this.props;
-    const {localeText: {subscribe}} = this.context;
+  subsResult = (result) => {
+    const { updateSubList } = this.props;
+    const {
+      localeText: { subscribe },
+    } = this.context;
     if (Array.isArray(result)) {
-      this.setState({subsLoaded: true});
+      this.setState({ subsLoaded: true });
       updateSubList(result.sort());
     } else {
       alert(subscribe[result]);
@@ -34,40 +36,50 @@ export default class SubscribePanel extends React.Component {
 
   getSubs = () => {
     jsonRequest(URLS.USER_SUBS)
-      .then(result => { this.subsResult(result); })
-      .catch(err => console.error(err));
+      .then((result) => {
+        this.subsResult(result);
+      })
+      .catch((err) => console.error(err));
   };
 
-  addSubs = region => {
+  addSubs = (region) => {
     if (region !== "") {
-      jsonRequest(URLS.ADD_SUBS, {region})
-        .then(result => { this.subsResult(result); })
-        .catch(err => console.error(err));
+      jsonRequest(URLS.ADD_SUBS, { region })
+        .then((result) => {
+          this.subsResult(result);
+        })
+        .catch((err) => console.error(err));
     }
   };
 
-  delSubs = region => {
-    const {localeText: {subscribe}} = this.context;
-    const arr = location.split("_");
+  delSubs = (region) => {
+    const {
+      localeText: { subscribe },
+    } = this.context;
+    const arr = region.split("_");
     const delConfirm = confirm(
       `${subscribe.delConfirm1} ${arr.reverse().join(", ")}? ${subscribe.delConfirm2}`
     );
     if (delConfirm) {
-      jsonRequest(URLS.DEL_SUBS, {region})
-        .then(result => { this.subsResult(result); })
-        .catch(err => console.error(err));
+      jsonRequest(URLS.DEL_SUBS, { region })
+        .then((result) => {
+          this.subsResult(result);
+        })
+        .catch((err) => console.error(err));
     }
   };
 
   renderSubscribedTable(subscribedList) {
-    const {localeText: {subscribe}} = this.context;
+    const {
+      localeText: { subscribe },
+    } = this.context;
     return (
-      <table style={{width: "100%", textAlign: "left", fontSize: "1rem"}}>
+      <table style={{ width: "100%", textAlign: "left", fontSize: "1rem" }}>
         <thead>
           <tr>
-            <th style={{width: "20px"}}>#</th>
-            <th style={{width: "calc(100% - 50px)"}}>{subscribe.munLabel}</th>
-            <th style={{width: "30px"}}>{subscribe.shortDelete}</th>
+            <th style={{ width: "20px" }}>#</th>
+            <th style={{ width: "calc(100% - 50px)" }}>{subscribe.munLabel}</th>
+            <th style={{ width: "30px" }}>{subscribe.shortDelete}</th>
           </tr>
         </thead>
         <tbody>
@@ -75,12 +87,12 @@ export default class SubscribePanel extends React.Component {
             const arr = region.split("_");
             return (
               <tr key={region}>
-                <td style={{width: "20px"}}>{idx + 1}</td>
-                <td style={{width: "calc(100% - 50px)"}}>
+                <td style={{ width: "20px" }}>{idx + 1}</td>
+                <td style={{ width: "calc(100% - 50px)" }}>
                   {arr[2] + ", "}
                   <i>{arr[1]}</i>
                 </td>
-                <td style={{width: "30px"}}>
+                <td style={{ width: "30px" }}>
                   <input
                     className="del-btn"
                     onClick={() => this.delSubs(region)}
@@ -97,34 +109,36 @@ export default class SubscribePanel extends React.Component {
   }
 
   render() {
-    const {subsLoaded} = this.state;
-    const {selectedRegion, subscribedList} = this.props;
-    const {username, localeText: {subscribe}} = this.context;
+    const { subsLoaded } = this.state;
+    const { selectedRegion, subscribedList } = this.props;
+    const {
+      username,
+      localeText: { subscribe },
+    } = this.context;
     const parsedRegion = selectedRegion && selectedRegion.split("_");
     return (
       <ToolPanel title={subscribe.title}>
         {username ? (
           <div>
-            {subscribedList.length === 0
-              ? <p>{subsLoaded ? subscribe.noSubs : subscribe.loadingSubs}</p>
-              : (
-                <div>
-                  <span>{subscribe.subscribedTo}:</span>
-                  {this.renderSubscribedTable(subscribedList)}
-                </div>
-              )}
+            {subscribedList.length === 0 ? (
+              <p>{subsLoaded ? subscribe.noSubs : subscribe.loadingSubs}</p>
+            ) : (
+              <div>
+                <span>{subscribe.subscribedTo}:</span>
+                {this.renderSubscribedTable(subscribedList)}
+              </div>
+            )}
             {selectedRegion && !subscribedList.includes(selectedRegion) && (
-              <div style={{textAlign: "center", width: "100%"}}>
-                <Button
-                  onClick={() => this.addSubs(selectedRegion)}
-                >
-                  {`${subscribe.subscribeTo} ${parsedRegion[2]}, `}<i>{parsedRegion[1]}</i>
+              <div style={{ textAlign: "center", width: "100%" }}>
+                <Button onClick={() => this.addSubs(selectedRegion)}>
+                  {`${subscribe.subscribeTo} ${parsedRegion[2]}, `}
+                  <i>{parsedRegion[1]}</i>
                 </Button>
               </div>
             )}
           </div>
         ) : (
-          <LoginMessage actionText={subscribe.loginAction}/>
+          <LoginMessage actionText={subscribe.loginAction} />
         )}
       </ToolPanel>
     );

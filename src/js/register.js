@@ -2,7 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom";
 import EmailValidator from "email-validator";
 
-import {ThemeProvider} from "@emotion/react";
+import { ThemeProvider } from "@emotion/react";
 import LoadingModal from "./components/LoadingModal";
 import LanguageSelector from "./components/LanguageSelector";
 import Button from "./components/Button";
@@ -10,8 +10,8 @@ import AccountForm from "./components/AccountForm";
 import Select from "./components/Select";
 import TextInput from "./components/TextInput";
 
-import {getLanguage, jsonRequest, validatePassword} from "./utils";
-import {THEME} from "./constants";
+import { getLanguage, jsonRequest, validatePassword } from "./utils";
+import { THEME } from "./constants";
 
 class Register extends React.Component {
   constructor(props) {
@@ -26,7 +26,7 @@ class Register extends React.Component {
       passwordConfirmation: "",
       localeText: {},
       defaultLang: getLanguage(["en", "es"]),
-      showModal: false
+      showModal: false,
     };
   }
 
@@ -36,57 +36,57 @@ class Register extends React.Component {
 
   /// State Update ///
 
-  processModal = callBack => new Promise(() => Promise.resolve(
-    this.setState(
-      {showModal: true},
-      () => callBack().finally(() => this.setState({showModal: false}))
-    )
-  ));
+  processModal = (callBack) =>
+    new Promise(() =>
+      Promise.resolve(
+        this.setState({ showModal: true }, () =>
+          callBack().finally(() => this.setState({ showModal: false }))
+        )
+      )
+    );
 
-  selectLanguage = newLang => {
-    this.setState({defaultLang: newLang});
+  selectLanguage = (newLang) => {
+    this.setState({ defaultLang: newLang });
     this.getLocalText(newLang);
   };
 
   /// API Calls ///
 
-  getLocalText = lang => {
+  getLocalText = (lang) => {
     jsonRequest(`/locale/${lang}.json`, null, "GET")
-      .then(data => this.setState({localeText: data.users}))
-      .catch(err => console.error(err));
+      .then((data) => this.setState({ localeText: data.users }))
+      .catch((err) => console.error(err));
   };
 
   verifyInputs = () => {
-    const {username, email, fullName, institution, password, passwordConfirmation, localeText} = this.state;
+    const { username, email, fullName, institution, password, passwordConfirmation, localeText } =
+      this.state;
     return [
       username.length < 3 && localeText.errorUsernameLen,
       !EmailValidator.validate(email) && localeText.errorInvalidEmail,
       fullName.length === 0 && localeText.errorNameReq,
       institution.length === 0 && localeText.errorInstitutionReq,
       !validatePassword(password) && localeText.errorPassword,
-      password !== passwordConfirmation && localeText.errorPassMatch
-    ].filter(e => e);
+      password !== passwordConfirmation && localeText.errorPassMatch,
+    ].filter((e) => e);
   };
 
   registerUser = () => {
     const errors = this.verifyInputs();
     if (errors.length > 0) {
-      alert(errors.map(e => " - " + e).join("\n"));
+      alert(errors.map((e) => " - " + e).join("\n"));
     } else {
       this.processModal(() =>
-        jsonRequest(
-          "/register",
-          {
-            defaultLang: this.state.defaultLang,
-            email: this.state.email,
-            fullName: this.state.fullName,
-            institution: this.state.institution,
-            sector: this.state.sector,
-            password: this.state.password,
-            username: this.state.username
-          }
-        )
-          .then(resp => {
+        jsonRequest("/register", {
+          defaultLang: this.state.defaultLang,
+          email: this.state.email,
+          fullName: this.state.fullName,
+          institution: this.state.institution,
+          sector: this.state.sector,
+          password: this.state.password,
+          username: this.state.username,
+        })
+          .then((resp) => {
             if (resp === "") {
               alert(this.state.localeText.registered);
               window.location = "/";
@@ -95,7 +95,8 @@ class Register extends React.Component {
               alert(this.state.localeText[resp] || this.state.localeText.errorCreating);
             }
           })
-          .catch(err => console.error(err)));
+          .catch((err) => console.error(err))
+      );
     }
   };
 
@@ -105,8 +106,8 @@ class Register extends React.Component {
     <TextInput
       id={stateKey}
       label={label}
-      onChange={e => this.setState({[stateKey]: e.target.value})}
-      onKeyPress={e => {
+      onChange={(e) => this.setState({ [stateKey]: e.target.value })}
+      onKeyPress={(e) => {
         if (e.key === "Enter") this.registerUser();
       }}
       placeholder={`Enter ${(label || "").toLowerCase()}`}
@@ -119,27 +120,21 @@ class Register extends React.Component {
     <Select
       id={stateKey}
       label={label}
-      onChange={e => this.setState({[stateKey]: e.target.value})}
+      onChange={(e) => this.setState({ [stateKey]: e.target.value })}
       options={options}
       value={this.state[stateKey]}
     />
   );
 
   render() {
-    const {localeText, defaultLang} = this.state;
+    const { localeText, defaultLang } = this.state;
     return (
       <ThemeProvider theme={THEME}>
-        {this.state.showModal && <LoadingModal message={localeText.modalMessage}/>}
-        <AccountForm
-          header={localeText.registerTitle}
-          submitFn={this.registerUser}
-        >
+        {this.state.showModal && <LoadingModal message={localeText.modalMessage} />}
+        <AccountForm header={localeText.registerTitle} submitFn={this.registerUser}>
           <div className="d-flex">
             <label className="mr-3">{localeText.language}</label>
-            <LanguageSelector
-              selectedLanguage={defaultLang}
-              selectLanguage={this.selectLanguage}
-            />
+            <LanguageSelector selectedLanguage={defaultLang} selectLanguage={this.selectLanguage} />
           </div>
           {this.renderField(localeText.username, "text", "username")}
           {this.renderField(localeText.email, "email", "email")}
@@ -148,20 +143,17 @@ class Register extends React.Component {
           {this.renderSelect(
             localeText.sector,
             [
-              {value: "academic", label: localeText.academic},
-              {value: "government", label: localeText.government},
-              {value: "ngo", label: localeText.ngo}
+              { value: "academic", label: localeText.academic },
+              { value: "government", label: localeText.government },
+              { value: "ngo", label: localeText.ngo },
             ],
             "sector"
           )}
           {this.renderField(localeText.password, "password", "password")}
           {this.renderField(localeText.confirm, "password", "passwordConfirmation")}
           <div className="d-flex justify-content-between align-items-center">
-            <span style={{color: "red"}}>{localeText.allRequired}</span>
-            <Button
-              className="mt-2"
-              type="submit"
-            >
+            <span style={{ color: "red" }}>{localeText.allRequired}</span>
+            <Button className="mt-2" type="submit">
               {localeText.register}
             </Button>
           </div>
@@ -172,5 +164,5 @@ class Register extends React.Component {
 }
 
 export function pageInit(args) {
-  ReactDOM.render(<Register/>, document.getElementById("main-container"));
+  ReactDOM.render(<Register />, document.getElementById("main-container"));
 }
