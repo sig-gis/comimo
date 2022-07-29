@@ -1,11 +1,16 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
+import { MainContext } from "./PageLayout";
 
 import Button from "./Button";
 import Select from "./Select";
 
-export default function NICFIControl({ extraParams, setParams, nicfiLayers, layers }) {
+export default function NICFIControl({ extraParams, setParams, nicfiLayers }) {
   const [selectedTime, setTime] = useState("");
   const [selectedBand, setBand] = useState("");
+  const {
+    localeText: { layers },
+  } = useContext(MainContext);
+
   useEffect(() => {
     if (extraParams.NICFI) {
       setTime(extraParams.NICFI.dataLayer || selectedTime);
@@ -26,7 +31,7 @@ export default function NICFIControl({ extraParams, setParams, nicfiLayers, laye
         value={selectedTime}
       />
       <div className="flex flex-col">
-        <label className="ml-0">{layers.selectBand}</label>
+        <label className="mb-0">{layers.selectBand}</label>
         <div className="flex">
           <div>
             <input

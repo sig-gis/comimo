@@ -3,7 +3,7 @@ import styled from "@emotion/styled";
 
 const SideBarContainer = styled.div`
   background: #ffffee;
-  box-shadow: 0px 0px 0px 1px rgba(0,0,0,.1);
+  box-shadow: 0px 0px 0px 1px rgba(0, 0, 0, 0.1);
   height: calc(100% - 3.5rem);
   display: flex;
   flex-direction: column;
@@ -27,10 +27,6 @@ const SideBarContainer = styled.div`
   }
 `;
 
-export default function SideBar({children}) {
-  return (
-    <SideBarContainer>
-      {children}
-    </SideBarContainer>
-  );
+export default function SideBar({ children }) {
+  return <SideBarContainer>{children}</SideBarContainer>;
 }

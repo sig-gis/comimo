@@ -4,7 +4,7 @@
 
 ## Related Issues
 
-Closes COM-###
+Closes SER-###
 
 ## Submission Checklist
 
@@ -36,4 +36,5 @@ Closes COM-###
 <!-- If needed, add more tests using the format above (Module Impacted, Role, Steps, Desired Outcome) here. -->
 
 ## Screenshots
+
 <!-- Add a screen shot when UI changes are included -->

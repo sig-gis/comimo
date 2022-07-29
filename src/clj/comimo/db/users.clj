@@ -1,12 +1,12 @@
 (ns comimo.db.users
-  (:import java.util.UUID)
   (:require [clojure.set :as set]
             [ring.util.response :refer [redirect]]
             [triangulum.type-conversion :as tc]
             [triangulum.database        :refer [call-sql sql-primitive]]
             [triangulum.config          :refer [get-config]]
             [comimo.email               :refer [send-new-user-mail send-reset-mail]]
-            [comimo.views               :refer [data-response]]))
+            [comimo.views               :refer [data-response]])
+    (:import java.util.UUID))
 
 (defn is-admin? [user-id]
   (sql-primitive (call-sql "is_user_admin" {:log? false} user-id)))

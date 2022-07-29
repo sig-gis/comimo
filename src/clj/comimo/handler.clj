@@ -146,7 +146,7 @@
     (mw handler)
     handler))
 
-(defn- string-to-bytes [s] (.getBytes s))
+(defn- string-to-bytes [^String s] (.getBytes s))
 
 (defn create-handler-stack [ssl? reload?]
   (-> authenticated-routing-handler

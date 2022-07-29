@@ -61,13 +61,13 @@ CREATE OR REPLACE FUNCTION get_unsent_subscriptions(_date text)
     user_id         integer,
     email           text,
     default_lang    text,
-    regions         text[]
+    regions         varchar[]
  ) AS $$
 
     SELECT user_uid,
         email,
         default_lang,
-        array_agg(region)
+        array_agg(region)::varchar[]
     FROM subscriptions, users
     WHERE user_uid = user_rid
         AND last_alert_for < _date::date

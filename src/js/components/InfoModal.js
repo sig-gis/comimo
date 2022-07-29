@@ -40,17 +40,14 @@ const CloseRow = styled.div`
   justify-content: flex-end;
 `;
 
-export default function InfoModal({onClose, nextToClose, children}) {
+export default function InfoModal({ onClose, nextToClose, children }) {
   return (
     <OuterContainer onClick={onClose}>
       <InnerContainer>
         <CloseRow>
           {nextToClose}
-          <div
-            className="ml-2"
-            onClick={onClose}
-          >
-            <SvgIcon color="black" icon="close" size="1.5rem"/>
+          <div className="ml-2" onClick={onClose}>
+            <SvgIcon color="black" icon="close" size="1.5rem" />
           </div>
         </CloseRow>
         {children}
