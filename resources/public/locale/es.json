@@ -53,7 +53,8 @@
         "clickHere": "Haga clic aquí para descargar los",
         "completeData": " datos completos ",
         "munData": " datos dentro de ",
-        "prep": "del"
+        "prep": "del",
+        "selectMuni": "Seleccione un municipio"
     },
     "filter": {
         "title": "Filtrar datos",
@@ -143,7 +144,8 @@
         "loadingSubs": "Cargando suscripciones ...",
         "subscribedTo": "Estás suscrito a alertas para los siguientes municipios",
         "subscribeTo": "Suscribirse a",
-        "loginAction": "Suscripciones"
+        "loginAction": "Suscripciones",
+        "addNew": "Agregar nueva suscripción"
     },
     "validate": {
         "errorDate": "Seleccionar una fecha.",
