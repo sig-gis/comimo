@@ -101,7 +101,7 @@ export default class DownloadPanel extends React.Component {
             ></Search>
           </div>
           {selectedDates && (
-            <Button className="mt-4" disabled={fetching} onClick={this.getDownloadUrl}>
+            <Button className="mt-1" disabled={fetching} onClick={this.getDownloadUrl}>
               {download.getUrl} {selectedDates[mineType]}
             </Button>
           )}
