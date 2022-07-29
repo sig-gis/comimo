@@ -25,7 +25,7 @@
     "filterTooltip": "Select date",
     "downloadTooltip": "Download data",
     "appInfoTooltip": "App info",
-    "reportToolTip": "Report mine",
+    "reportTooltip": "Report mine",
     "loading": "Loading",
     "admin": "Admin",
     "noMorePlots": "No more plots"
@@ -96,9 +96,17 @@
     "noLocation": "Select point to continue.",
     "reportMine": "Report Mine",
     "existing": "You have already reported a mine here.",
+    "existingTitle": "Mine already exists",
     "created": "Mine successfully reported.",
-    "outside": "You can only report mines inside Colomdia.",
-    "error": "Unknown error."
+    "createdTitle": "Mine created",
+    "outside": "You can only report mines inside Colombia.",
+    "outsideTitle": "Mine outside Colombia",
+    "error": "Unknown error.",
+    "errorTitle": "Error",
+    "understand": "OK, I understand",
+    "areYouSure": "Are you sure you want to report this mine?",
+    "cancel": "Cancel",
+    "imSure": "Yes, I'm sure"
   },
   "search": {
     "noResults": "No Results",
@@ -209,7 +217,7 @@
     "errorCreating": "An error occurred while creating a new user. Contact support.",
     "errorLogin": "Invalid username and password combination.  If you have registered, check your email for a new user verification link.",
     "errorNotFound": "No users with the provided email / username is found.",
-    "errorToken": "Invalid reset token.  Please request another reset token.",
+    "errorToken": "Invalid reset token. Please request another reset token.",
     "errorUsernameLen": "Username must be 5 or more characters long.",
     "errorInvalidEmail": "Invalid email.",
     "errorNameReq": "A name is required.",
@@ -231,7 +239,15 @@
     "selectDate": "Select Date...",
     "loadingDates": "Loading Dates...",
     "downloadJSON": "Download JSON",
-    "downloadCSV": "Download CSV"
+    "downloadCSV": "Download CSV",
+    "emptyLogs": "There are no logs available at this time.",
+    "emptyUsers": "There are no users that fit the provided filter criteria. Please try another filter search.",
+    "id": "Id",
+    "username": "Username",
+    "email": "Email",
+    "role": "Role",
+    "emptyTable": "Please select a reporting month and click 'Load' to view results.",
+    "noData": "There is no data available for this month. Please try another month."
   },
   "collect": {
     "mina": "Mine",
