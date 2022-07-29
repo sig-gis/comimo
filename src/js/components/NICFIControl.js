@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
+import { MainContext } from "./PageLayout";
 
 import Button from "./Button";
-import { MainContext } from "./PageLayout";
 import Select from "./Select";
 
 export default function NICFIControl({ extraParams, setParams, nicfiLayers }) {
@@ -31,7 +31,7 @@ export default function NICFIControl({ extraParams, setParams, nicfiLayers }) {
         value={selectedTime}
       />
       <div className="flex flex-col">
-        <label className="ml-0">{layers.selectBand}</label>
+        <label className="mb-0">{layers.selectBand}</label>
         <div className="flex">
           <div>
             <input
