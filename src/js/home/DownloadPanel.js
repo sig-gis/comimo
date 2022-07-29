@@ -1,6 +1,8 @@
 import React from "react";
+import styled from "@emotion/styled";
 
 import Button from "../components/Button";
+import Search from "../components/Search";
 import Select from "../components/Select";
 import ToolPanel from "../components/ToolPanel";
 
@@ -49,13 +51,20 @@ export default class DownloadPanel extends React.Component {
 
   render() {
     const { clipOption, fetching, downloadURL, mineType } = this.state;
-    const { selectedRegion, selectedDates } = this.props;
+    const { featureNames, fitMap, mapquestKey, selectedDates, selectedRegion, selectRegion } =
+      this.props;
     const {
       localeText: { download, validate },
     } = this.context;
+    const Title = styled.h2`
+      border-bottom: 1px solid gray;
+      font-weight: bold;
+      padding: 0.5rem;
+    `;
     return (
       <ToolPanel title={download.title}>
         {this.state.showModal && <LoadingModal message="Getting URL" />}
+
         <div className="flex flex-col">
           <label>{`${validate.typeLabel}:`}</label>
           <Select
@@ -64,7 +73,6 @@ export default class DownloadPanel extends React.Component {
             options={["pMines", "nMines", "cMines"].map((k) => ({ value: k, label: validate[k] }))}
             value={mineType}
           />
-          <label>{download.regionLabel}</label>
           <div style={{ marginTop: ".25rem" }}>
             <input
               checked={clipOption === 1}
@@ -83,8 +91,17 @@ export default class DownloadPanel extends React.Component {
             />
             <span>{download.selectedRadio}</span>
           </div>
+          <div>
+            <Title>{download.selectMuni}</Title>
+            <Search
+              featureNames={featureNames}
+              fitMap={fitMap}
+              mapquestKey={mapquestKey}
+              selectRegion={selectRegion}
+            ></Search>
+          </div>
           {selectedDates && (
-            <Button className="mt-4" disabled={fetching} onClick={this.getDownloadUrl}>
+            <Button className="mt-1" disabled={fetching} onClick={this.getDownloadUrl}>
               {download.getUrl} {selectedDates[mineType]}
             </Button>
           )}

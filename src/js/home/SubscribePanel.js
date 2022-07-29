@@ -1,7 +1,9 @@
 import React from "react";
+import styled from "@emotion/styled";
 
 import LoginMessage from "./LoginMessage";
 import Button from "../components/Button";
+import Search from "../components/Search";
 import ToolPanel from "../components/ToolPanel";
 
 import { URLS } from "../constants";
@@ -110,33 +112,50 @@ export default class SubscribePanel extends React.Component {
 
   render() {
     const { subsLoaded } = this.state;
-    const { selectedRegion, subscribedList } = this.props;
+    const { featureNames, fitMap, mapquestKey, selectedRegion, selectRegion, subscribedList } =
+      this.props;
     const {
       username,
       localeText: { subscribe },
     } = this.context;
     const parsedRegion = selectedRegion && selectedRegion.split("_");
+    const Title = styled.h2`
+      border-bottom: 1px solid gray;
+      font-weight: bold;
+      padding: 0.5rem;
+    `;
     return (
       <ToolPanel title={subscribe.title}>
         {username ? (
-          <div>
-            {subscribedList.length === 0 ? (
-              <p>{subsLoaded ? subscribe.noSubs : subscribe.loadingSubs}</p>
-            ) : (
-              <div>
-                <span>{subscribe.subscribedTo}:</span>
-                {this.renderSubscribedTable(subscribedList)}
-              </div>
-            )}
-            {selectedRegion && !subscribedList.includes(selectedRegion) && (
-              <div style={{ textAlign: "center", width: "100%" }}>
-                <Button onClick={() => this.addSubs(selectedRegion)}>
-                  {`${subscribe.subscribeTo} ${parsedRegion[2]}, `}
-                  <i>{parsedRegion[1]}</i>
-                </Button>
-              </div>
-            )}
-          </div>
+          <>
+            <div>
+              {subscribedList.length === 0 ? (
+                <p>{subsLoaded ? subscribe.noSubs : subscribe.loadingSubs}</p>
+              ) : (
+                <div>
+                  <span>{subscribe.subscribedTo}:</span>
+                  {this.renderSubscribedTable(subscribedList)}
+                </div>
+              )}
+            </div>
+            <div>
+              <Title>{subscribe.addNew}</Title>
+              <Search
+                featureNames={featureNames}
+                fitMap={fitMap}
+                mapquestKey={mapquestKey}
+                selectRegion={selectRegion}
+              ></Search>
+              {selectedRegion && !subscribedList.includes(selectedRegion) && (
+                <div style={{ textAlign: "center", width: "100%" }}>
+                  <Button onClick={() => this.addSubs(selectedRegion)}>
+                    {`${subscribe.subscribeTo} ${parsedRegion[2]}, `}
+                    <i>{parsedRegion[1]}</i>
+                  </Button>
+                </div>
+              )}
+            </div>
+          </>
         ) : (
           <LoginMessage actionText={subscribe.loginAction} />
         )}

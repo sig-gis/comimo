@@ -10,7 +10,6 @@ import LayersPanel from "./LayersPanel";
 import MenuItem from "../components/MenuItem";
 import ReportMinesPanel from "./ReportMinesPanel";
 import ReportPopupContent from "./ReportPopupContent";
-import SearchPanel from "./SearchPanel";
 import SideBar from "../components/SideBar";
 import SideIcon from "../components/SideIcon";
 import StatsPanel from "./StatsPanel";
@@ -231,7 +230,11 @@ class HomeContents extends React.Component {
               tooltip={home.subscribeTooltip}
             >
               <SubscribePanel
+                featureNames={this.state.featureNames}
+                fitMap={this.fitMap}
+                mapquestKey={this.props.mapquestKey}
                 selectedRegion={this.state.selectedRegion}
+                selectRegion={this.selectRegion}
                 subscribedList={this.state.subscribedList}
                 updateSubList={this.updateSubList}
               />
@@ -249,22 +252,6 @@ class HomeContents extends React.Component {
                 featureNames={this.state.featureNames}
                 selectedDates={this.state.selectedDates}
                 subscribedList={this.state.subscribedList}
-              />
-            </MenuItem>
-
-            {/* Geo location Search */}
-            <MenuItem
-              itemName="search"
-              onClick={this.togglePanel}
-              selectedItem={this.state.visiblePanel}
-              tooltip={home.searchTooltip}
-            >
-              <SearchPanel
-                featureNames={this.state.featureNames}
-                fitMap={this.fitMap}
-                mapquestKey={this.props.mapquestKey}
-                selectedDates={this.state.selectedDates}
-                selectRegion={this.selectRegion}
               />
             </MenuItem>
 
@@ -336,8 +323,12 @@ class HomeContents extends React.Component {
                   tooltip={home.downloadTooltip}
                 >
                   <DownloadPanel
+                    featureNames={this.state.featureNames}
+                    fitMap={this.fitMap}
+                    mapquestKey={this.props.mapquestKey}
                     selectedDates={this.state.selectedDates}
                     selectedRegion={this.state.selectedRegion}
+                    selectRegion={this.selectRegion}
                   />
                 </MenuItem>
               </>

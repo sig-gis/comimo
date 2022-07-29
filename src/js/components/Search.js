@@ -1,15 +1,14 @@
 import React from "react";
 
-import ToolPanel from "../components/ToolPanel";
-import Button from "../components/Button";
-import Select from "../components/Select";
-import TextInput from "../components/TextInput";
+import Button from "./Button";
+import Select from "./Select";
+import TextInput from "./TextInput";
 
 import { jsonRequest } from "../utils";
-import { MainContext } from "../components/PageLayout";
+import { MainContext } from "./PageLayout";
 import { URLS } from "../constants";
 
-export default class SearchPanel extends React.Component {
+export default class Search extends React.Component {
   constructor(props) {
     super(props);
 
@@ -24,9 +23,9 @@ export default class SearchPanel extends React.Component {
 
   searchGeocode = () => {
     const { searchText } = this.state;
-    const { featureNames, mapQuestKey } = this.props;
+    const { featureNames, mapquestKey } = this.props;
     const url =
-      URLS.MAPQUEST + "?key=" + mapQuestKey + "&county=" + searchText + "&country=colombia";
+      URLS.MAPQUEST + "?key=" + mapquestKey + "&county=" + searchText + "&country=colombia";
     jsonRequest(url, null, "GET")
       .then((result) => {
         this.setState({
@@ -136,7 +135,7 @@ export default class SearchPanel extends React.Component {
       );
 
     return (
-      <ToolPanel title={search.title}>
+      <div>
         <TextInput
           id="inputGeocode"
           label={search.internetLabel}
@@ -161,8 +160,8 @@ export default class SearchPanel extends React.Component {
         <label>{search.selectLabel}</label>
         {selectL1}
         {selectL2}
-      </ToolPanel>
+      </div>
     );
   }
 }
-SearchPanel.contextType = MainContext;
+Search.contextType = MainContext;

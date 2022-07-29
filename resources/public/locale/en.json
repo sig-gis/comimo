@@ -54,7 +54,8 @@
     "completeData": " complete data ",
     "munData": " data within ",
     "prep": "for",
-    "note": "The above forms the sentence 'Click here to download the complete data for 2012-11-11.' (do not translate 'note'"
+    "note": "The above forms the sentence 'Click here to download the complete data for 2012-11-11.' (do not translate 'note'",
+    "selectMuni": "Select a municipality"
   },
   "filter": {
     "title": "Filter data",
@@ -144,7 +145,8 @@
     "loadingSubs": "Loading subscriptions...",
     "subscribedTo": "You are subscribed to alerts from following municipalities",
     "subscribeTo": "Subscribe to",
-    "loginAction": "subscriptions"
+    "loginAction": "subscriptions",
+    "addNew": "Add new subscription"
   },
   "validate": {
     "errorDate": "Please select a date.",
