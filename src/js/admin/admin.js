@@ -156,12 +156,12 @@ function makeAdminTableComponent(dateDataURL, columnFields, tableRefDownloadURL)
 const UserMines = makeAdminTableComponent(
   URLS.USER_MINES,
   [
-    { title: "user", field: "username" },
-    { title: "email", field: "email" },
-    { title: "organization", field: "institution" },
-    { title: "latitude", field: "lat" },
-    { title: "longitude", field: "lon" },
-    { title: "reported date", field: "reportedDate" },
+    { title: "Username", field: "username", headerFilterPlaceholder: "Filter" },
+    { title: "Email", field: "email", headerFilterPlaceholder: "Filter" },
+    { title: "Organization", field: "institution", headerFilterPlaceholder: "Filter" },
+    { title: "Latitude", field: "lat", headerFilterPlaceholder: "Filter" },
+    { title: "Longitude", field: "lon", headerFilterPlaceholder: "Filter" },
+    { title: "Reported date", field: "reportedDate", headerFilterPlaceholder: "Filter" },
   ],
   "user-mines"
 );
@@ -169,14 +169,14 @@ const UserMines = makeAdminTableComponent(
 const Predictions = makeAdminTableComponent(
   URLS.PREDICTIONS,
   [
-    { title: "user", field: "username" },
-    { title: "email", field: "email" },
-    { title: "organization", field: "institution" },
-    { title: "project name", field: "projectName" },
-    { title: "latitude", field: "lat" },
-    { title: "longitude", field: "lon" },
-    { title: "data layer", field: "dataLayer" },
-    { title: "mine", field: "answer" },
+    { title: "Username", field: "username", headerFilterPlaceholder: "Filter" },
+    { title: "Email", field: "email", headerFilterPlaceholder: "Filter" },
+    { title: "Organization", field: "institution", headerFilterPlaceholder: "Filter" },
+    { title: "Project name", field: "projectName", headerFilterPlaceholder: "Filter" },
+    { title: "Latitude", field: "lat", headerFilterPlaceholder: "Filter" },
+    { title: "Longitude", field: "lon", headerFilterPlaceholder: "Filter" },
+    { title: "Data layer", field: "dataLayer", headerFilterPlaceholder: "Filter" },
+    { title: "Mine", field: "answer", headerFilterPlaceholder: "Filter" },
   ],
   "validated-predictions"
 );
@@ -337,7 +337,14 @@ function AdminContent() {
         </GridSection>
       </>
     ) : (
-      <EmptyMessage>{admin?.emptyLogs}</EmptyMessage>
+      <>
+        <Filter
+          onChange={(e) => setFilterStr(e.target.value)}
+          placeholder="Filter"
+          value={filterStr}
+        />
+        <EmptyMessage>{admin?.emptyLogs}</EmptyMessage>
+      </>
     );
 
   const renderButtons = (downloadData) => (
