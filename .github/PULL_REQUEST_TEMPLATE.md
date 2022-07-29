@@ -2,11 +2,11 @@
 <!-- Description of what has been added/changed -->
 
 ## Related Issues
-Closes COM-###
+Closes SER-###
 
 ## Submission Checklist
-- [ ] Included Jira issue in the PR title (e.g. `COM-### Did something here`)
-- [ ] Code passes linter rules (`npx eslint "src/js/**"`)
+- [ ] Included Jira issue in the PR title (e.g. `SER-### Did something here`)
+- [ ] Code passes linter rules (`npm run lint`)
 - [ ] No new reflection warnings (`clojure -M:check-reflection`)
 
 ## Testing
