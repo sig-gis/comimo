@@ -14,9 +14,11 @@
 ;; Private Fns
 
 (defn- get-all-tags []
-  (let [{:keys [status body]} (client/get tags-url)]
-    (when (= 200 status)
-      (json/read-str body :key-fn keyword))))
+  (try
+    (let [{:keys [status body]} (client/get tags-url)]
+      (when (= 200 status)
+        (json/read-str body :key-fn keyword)))
+    (catch Exception _)))
 
 (defn- latest-prod-tag []
   (->> (get-all-tags)
