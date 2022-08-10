@@ -5,14 +5,15 @@ import InfoModal from "../components/InfoModal";
 import Modal from "../components/Modal";
 import { MainContext } from "../components/PageLayout";
 
-export default function AppInfo({ onClose, isAdmin, localeText: { appInfo } }) {
-  const { username } = useContext(MainContext);
+export default function AppInfo({ onClose, isAdmin }) {
+  const {
+    localeText: { users, appInfo },
+    username,
+  } = useContext(MainContext);
   const [messageBox, _setMessageBox] = useState(null);
 
   const showAlert = ({ body, closeText, confirmText, onConfirm, title }) => {
-    console.log("showalert");
     const newMessageBoxVal = { body, closeText, confirmText, onConfirm, title };
-    console.log("newMessageBoxVal", newMessageBoxVal);
     _setMessageBox({ ...newMessageBoxVal });
   };
 
@@ -25,21 +26,21 @@ export default function AppInfo({ onClose, isAdmin, localeText: { appInfo } }) {
           style={{ marginRight: "1rem" }}
           onClick={() => window.location.assign("/download-data")}
         >
-          {appInfo.download}
+          {users.download}
         </Button>
       )}
       <Button
         onClick={() => {
           showAlert({
-            body: "test body",
-            closeText: "test close",
-            confirmText: "Log out?",
+            body: users.logOutBody,
+            closeText: users.cancel,
+            confirmText: users.confirmText,
             onConfirm: () => window.location.assign("/logout"),
-            title: appInfo.logout,
+            title: users.logout,
           });
         }}
       >
-        {appInfo.logout}
+        {users.logout}
       </Button>
     </>
   );

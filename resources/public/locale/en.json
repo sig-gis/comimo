@@ -222,6 +222,7 @@
     "confirmText": "Yes",
     "logOutBody": "Are you sure you want to log out?",
     "updateBody": "Are you sure you want to update your account settings?",
+    "download": "Download validated data",
     "errorEmail": "Error sending reset email.",
     "errorUsername": "A user with this username already exists.",
     "errorCreating": "An error occurred while creating a new user. Contact support.",

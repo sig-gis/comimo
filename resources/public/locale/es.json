@@ -31,7 +31,6 @@
     "noMorePlots": "No más parcelas"
   },
   "appInfo": {
-    "download": "Descargar datos validados",
     "logout": "Cerrar Sesión",
     "title": "Información de la Applicación",
     "termsOfUse": "Condiciones de uso",
@@ -221,6 +220,7 @@
     "confirmText": "Sí",
     "logOutBody": "¿Estás segura de que quieres cerrar sesión?",
     "updateBody": "¿Está seguro de que desea actualizar la configuración de su cuenta?",
+    "download": "Descargar datos validados",
     "errorEmail": "Error al enviar el correo electrónico de restablecimiento.",
     "errorUsername": "Ya existe un usuario con este nombre.",
     "errorCreating": "Se produjo un error al crear nuevo usuario. Contactar con soporte.",
