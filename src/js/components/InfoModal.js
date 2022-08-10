@@ -42,7 +42,7 @@ const CloseRow = styled.div`
 
 export default function InfoModal({ onClose, nextToClose, children }) {
   return (
-    <OuterContainer onClick={onClose}>
+    <OuterContainer>
       <InnerContainer>
         <CloseRow>
           {nextToClose}
