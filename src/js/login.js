@@ -1,7 +1,9 @@
 import React from "react";
 import ReactDOM from "react-dom";
+import styled from "@emotion/styled";
 import { ThemeProvider } from "@emotion/react";
 
+import { PageLayout, MainContext } from "./components/PageLayout";
 import AccountForm from "./components/AccountForm";
 import Button from "./components/Button";
 import TextInput from "./components/TextInput";
@@ -9,20 +11,22 @@ import TextInput from "./components/TextInput";
 import { getLanguage, jsonRequest } from "./utils";
 import { THEME } from "./constants";
 
+const PageContainer = styled.div`
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+  width: 100%;
+`;
+
 class Login extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       username: "",
       password: "",
-      localeText: {},
     };
-  }
-
-  componentDidMount() {
-    jsonRequest(`/locale/${getLanguage(["en", "es"])}.json`, null, "GET")
-      .then((data) => this.setState({ localeText: data.users }))
-      .catch((error) => console.error(error));
   }
 
   requestLogin = () => {
@@ -33,7 +37,10 @@ class Login extends React.Component {
           window.location = "/";
         } else {
           console.error(data);
-          alert(this.state.localeText[data] || this.state.localeText.errorCreating);
+          const {
+            localeText: { users },
+          } = this.context;
+          alert(users?.errorCreating);
         }
       })
       .catch((err) => console.error(err));
@@ -51,40 +58,56 @@ class Login extends React.Component {
   );
 
   render() {
-    const { localeText } = this.state;
+    const {
+      localeText: { users },
+    } = this.context;
     return (
       <ThemeProvider theme={THEME}>
-        <AccountForm header={localeText.loginTitle} submitFn={this.requestLogin}>
-          {this.renderField(localeText.username, "text", "username")}
-          {this.renderField(localeText.password, "password", "password")}
-          <div className="d-flex justify-content-between align-items-center">
-            <a href="/password-request">{localeText.forgot}</a>
-            <Button className="mt-3" type="submit">
-              {localeText.login}
-            </Button>
-          </div>
-          <div className="d-flex flex-column align-items-center">
-            <h3 className="">{localeText.newUser}</h3>
-            <div className="">
-              <div>
-                <Button
-                  name="register"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    window.location = "/register";
-                  }}
-                >
-                  {localeText.register}
-                </Button>
+        <PageContainer>
+          <AccountForm header={users?.loginTitle} submitFn={this.requestLogin}>
+            {this.renderField(users?.username, "text", "username")}
+            {this.renderField(users?.password, "password", "password")}
+            <div className="d-flex justify-content-between align-items-center">
+              <a href="/password-request">{users?.forgot}</a>
+              <Button className="mt-3" type="submit">
+                {users?.login}
+              </Button>
+            </div>
+            <div className="d-flex flex-column align-items-center">
+              <h3 className="">{users?.newUser}</h3>
+              <div className="">
+                <div>
+                  <Button
+                    name="register"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      window.location = "/register";
+                    }}
+                  >
+                    {users?.register}
+                  </Button>
+                </div>
               </div>
             </div>
-          </div>
-        </AccountForm>
+          </AccountForm>
+        </PageContainer>
       </ThemeProvider>
     );
   }
 }
 
+Login.contextType = MainContext;
+
 export function pageInit(args) {
-  ReactDOM.render(<Login />, document.getElementById("main-container"));
+  ReactDOM.render(
+    <PageLayout
+      role={args.role}
+      userLang={args.userLang}
+      username={args.username}
+      version={args.version}
+    >
+      <Login />
+    </PageLayout>,
+    document.getElementById("main-container")
+  );
 }
