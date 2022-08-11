@@ -12,9 +12,8 @@ export default function AppInfo({ onClose, isAdmin }) {
   } = useContext(MainContext);
   const [messageBox, _setMessageBox] = useState(null);
 
-  const showAlert = ({ body, closeText, confirmText, onConfirm, title }) => {
-    const newMessageBoxVal = { body, closeText, confirmText, onConfirm, title };
-    _setMessageBox({ ...newMessageBoxVal });
+  const showAlert = (newMessageBox) => {
+    _setMessageBox({ ...newMessageBox });
   };
 
   const hideAlert = () => _setMessageBox(null);

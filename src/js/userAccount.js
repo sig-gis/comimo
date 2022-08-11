@@ -37,15 +37,9 @@ class UserAccount extends React.Component {
 
   /// State Update ///
 
-  showAlert = ({ body, closeText, confirmText, onConfirm, title }) =>
+  showAlert = (messageBox) =>
     this.setState({
-      messageBox: {
-        body,
-        closeText,
-        confirmText,
-        onConfirm,
-        title,
-      },
+      messageBox,
     });
 
   processModal = (callBack) =>
