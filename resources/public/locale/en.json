@@ -28,7 +28,8 @@
     "reportTooltip": "Report mine",
     "loading": "Loading",
     "admin": "Admin",
-    "noMorePlots": "No more plots"
+    "noMorePlots": "No more plots",
+    "pageNotFound": "404 - Page Not Found"
   },
   "appInfo": {
     "download": "Download validated data",

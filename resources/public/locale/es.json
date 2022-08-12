@@ -28,7 +28,8 @@
     "reportTooltip": "Reportar mina",
     "loading": "Cargando",
     "admin": "Administración",
-    "noMorePlots": "No más parcelas"
+    "noMorePlots": "No más parcelas",
+    "pageNotFound": "404 - Página No Encontrada"
   },
   "appInfo": {
     "download": "Descargar datos validados",
