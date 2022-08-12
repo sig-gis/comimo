@@ -8,6 +8,7 @@ import AccountForm from "./components/AccountForm";
 import Button from "./components/Button";
 import LanguageSelector from "./components/LanguageSelector";
 import LoadingModal from "./components/LoadingModal";
+import Modal from "./components/Modal";
 import Select from "./components/Select";
 import TextInput from "./components/TextInput";
 
@@ -35,6 +36,7 @@ class UserAccount extends React.Component {
       passwordConfirmation: "",
       defaultLang: "",
       showModal: false,
+      messageBox: null,
     };
   }
 
@@ -43,6 +45,11 @@ class UserAccount extends React.Component {
   }
 
   /// State Update ///
+
+  showAlert = (messageBox) =>
+    this.setState({
+      messageBox,
+    });
 
   processModal = (callBack) =>
     new Promise(() =>
@@ -106,11 +113,18 @@ class UserAccount extends React.Component {
         })
           .then((resp) => {
             if (resp === "") {
-              alert(users.updated);
-              window.location = "/";
+              this.showAlert({
+                body: users?.successUpdate,
+                closeText: users?.close,
+                title: users?.updateTitle,
+              });
             } else {
               console.error(resp);
-              alert(users.errorUpdating);
+              this.showAlert({
+                body: users?.errorUpdating,
+                closeText: users?.close,
+                title: users?.error,
+              });
             }
           })
           .catch((err) => console.error(err))
@@ -151,7 +165,8 @@ class UserAccount extends React.Component {
       <ThemeProvider theme={THEME}>
         <PageContainer>
           {this.state.showModal && <LoadingModal message={users?.modalMessage} />}
-          <AccountForm header={users?.userAccountTitle} submitFn={this.updateUser}>
+          {/* TODO: Make submitFn optional for AccountForm and TitledForm */}
+          <AccountForm header={users?.userAccountTitle} submitFn={() => {}}>
             <div className="d-flex">
               <label className="mr-3">{users?.language}</label>
               <LanguageSelector
@@ -175,13 +190,41 @@ class UserAccount extends React.Component {
             <div className="d-flex justify-content-between align-items-center">
               <span style={{ color: "red" }}>{users?.allRequired}</span>
               <div className="mt-2 d-flex">
-                <Button className="mr-2" onClick={() => window.location.assign("/logout")}>
+                <Button
+                  className="mr-2"
+                  onClick={() => {
+                    this.showAlert({
+                      body: users?.logOutBody,
+                      closeText: users?.cancel,
+                      confirmText: users?.confirmText,
+                      onConfirm: () => window.location.assign("/logout"),
+                      title: users?.logout,
+                    });
+                  }}
+                >
                   {users?.logout}
                 </Button>
-                <Button type="submit">{users?.save}</Button>
+                <Button
+                  onClick={() => {
+                    this.showAlert({
+                      body: users?.updateBody,
+                      closeText: users?.cancel,
+                      confirmText: users?.confirmText,
+                      onConfirm: () => this.updateUser(),
+                      title: users?.userAccountTitle,
+                    });
+                  }}
+                >
+                  {users?.save}
+                </Button>
               </div>
             </div>
           </AccountForm>
+          {this.state.messageBox && (
+            <Modal {...this.state.messageBox} onClose={() => this.setState({ messageBox: null })}>
+              <p>{this.state.messageBox.body}</p>
+            </Modal>
+          )}
         </PageContainer>
       </ThemeProvider>
     );
