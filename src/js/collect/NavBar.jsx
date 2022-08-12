@@ -49,7 +49,7 @@ export default function NavBar({
 
   const currentPlotNumber = () => {
     let num = plotNumberToGo || currentPlotId - shiftPlotId + 1;
-    return num <= 0 ? 1 : num;
+    return num <= 0 ? "1" : `${num}`;
   };
 
   const renderGoToPlot = () => (

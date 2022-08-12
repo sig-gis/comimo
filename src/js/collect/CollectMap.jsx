@@ -204,6 +204,7 @@ export default class CollectMap extends React.Component {
       type: "geojson",
       data: geoJSON,
     });
+    // Layer for the single large boundary that holds all individual plots
     theMap.addLayer({
       id: "boundary",
       type: "line",
@@ -227,19 +228,24 @@ export default class CollectMap extends React.Component {
       ? THEME.noMina.background
       : THEME.map.unanswered;
 
-  addLayers = (plots) => {
+  addIndividualPlotLayers = () => {
+    const { projectPlots } = this.props;
     const { goToPlot } = this.props;
     const { theMap } = this.state;
-    const shiftId = plots[0]?.id;
+    const shiftId = projectPlots[0]?.id;
 
-    plots.forEach((p) => {
+    // NOTE: We use a forEach loop here instead of just one call to addLayer so that
+    // we can update the color of each individual plot/plotLabel when we change the mine/no mine answer.
+    // See the updateVisiblePlot for where we do these updates
+    projectPlots.forEach((p) => {
       const number = p.id - shiftId + 1;
       const color = this.plotColor(p.answer);
 
+      // Add each individual plot label
       theMap.addLayer({
-        id: p.id + "sym", // mapbox needs a string
+        id: p.id + "plotLabel", // mapbox needs a string
         type: "symbol",
-        source: "plots",
+        source: "plotLabels",
         filter: ["==", ["get", "id"], p.id],
         layout: {
           "text-field": "" + number,
@@ -253,6 +259,7 @@ export default class CollectMap extends React.Component {
         },
       });
 
+      // Add each individual plot boundary
       theMap.addLayer({
         id: p.id + "", // mapbox needs a string
         type: "line",
@@ -274,10 +281,12 @@ export default class CollectMap extends React.Component {
     });
   };
 
-  addPlots = () => {
-    const { theMap } = this.state;
+  addIndividualPlotSources = (plots) => {
     const { projectPlots } = this.props;
-    const geoJSON = {
+    const { theMap } = this.state;
+
+    // MapBox data and source for the indivudal plots
+    const plotsGeoJSON = {
       type: "FeatureCollection",
       features: projectPlots.map((p) => ({
         type: "Feature",
@@ -287,9 +296,22 @@ export default class CollectMap extends React.Component {
     };
     theMap.addSource("plots", {
       type: "geojson",
-      data: geoJSON,
+      data: plotsGeoJSON,
     });
-    this.addLayers(projectPlots);
+
+    // MapBox data and source for the indivudal plotLabels
+    const plotLabelsGeoJSON = {
+      type: "FeatureCollection",
+      features: projectPlots.map((p) => ({
+        type: "Feature",
+        properties: { id: p.id },
+        geometry: { type: "Point", coordinates: [p.lat, p.lon] },
+      })),
+    };
+    theMap.addSource("plotLabels", {
+      type: "geojson",
+      data: plotLabelsGeoJSON,
+    });
   };
 
   updateVisiblePlot = () => {
@@ -301,10 +323,17 @@ export default class CollectMap extends React.Component {
     if (geom) {
       // Set new color
       theMap.setPaintProperty(id + "", "line-color", this.plotColor(answer));
-      theMap.setPaintProperty(id + "sym", "text-color", this.plotColor(answer));
+      theMap.setPaintProperty(id + "plotLabel", "text-color", this.plotColor(answer));
       theMap.setPaintProperty(id + "", "line-width", 6);
       this.fitMap("bbox", extent(geom));
     }
+  };
+
+  addPlots = () => {
+    // Helper function to add plot sources
+    this.addIndividualPlotSources();
+    // Helper function to add plot layers
+    this.addIndividualPlotLayers();
   };
 
   render() {
