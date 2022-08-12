@@ -43,43 +43,24 @@
     [:head
      [:title (title lang)]
      [:meta {:charset "utf-8"}]
-     [:meta {:name    "viewport"
-             :content "width=device-width, user-scalable=no"}]
-     [:meta {:name    "description"
-             :content (description lang)}]
-     [:meta {:name    "keywords"
-             :content (keywords lang)}]
+     [:meta {:name "viewport" :content "width=device-width, user-scalable=no"}]
+     [:meta {:name "description" :content (description lang)}]
+     [:meta {:name "keywords" :content (keywords lang)}]
      ; Favicon entries
-     [:link {:rel   "apple-touch-icon"
-             :sizes "180x180"
-             :href  "/favicon/apple-touch-icon.png"}]
-     [:link {:rel   "icon"
-             :type  "image/png"
-             :sizes "32x32"
-             :href  "/favicon/favicon-32x32.png"}]
-     [:link {:rel   "icon"
-             :type  "image/png"
-             :sizes "16x16"
-             :href  "/favicon/favicon-16x16.png"}]
-     [:link {:rel  "manifest"
-             :href "/favicon/site.webmanifest"}]
-     [:link {:rel   "mask-icon"
-             :color "#5bbad5"
-             :href  "/favicon/safari-pinned-tab.svg"}]
-     [:link {:rel  "shortcut icon"
-             :href "/favicon/favicon.ico"}]
-     [:meta {:name    "msapplication-TileColor"
-             :content "#ffc40d"}]
-     [:meta {:name    "msapplication-config"
-             :content "/favicon/browserconfig.xml"}]
-     [:meta {:name    "theme-color"
-             :content "#ffffff"}]
+     [:link {:rel "apple-touch-icon" :sizes "180x180" :href  "/favicon/apple-touch-icon.png"}]
+     [:link {:rel "icon" :type "image/png" :sizes "32x32" :href "/favicon/favicon-32x32.png"}]
+     [:link {:rel "icon" :type "image/png" :sizes "16x16" :href "/favicon/favicon-16x16.png"}]
+     [:link {:rel "manifest" :href "/favicon/site.webmanifest"}]
+     [:link {:rel "mask-icon" :color "#5bbad5" :href "/favicon/safari-pinned-tab.svg"}]
+     [:link {:rel "shortcut icon" :href "/favicon/favicon.ico"}]
+     [:meta {:name "msapplication-TileColor" :content "#ffc40d"}]
+     [:meta {:name "msapplication-config" :content "/favicon/browserconfig.xml"}]
+     [:meta {:name "theme-color" :content "#ffffff"}]
      ; end Favicon
      ;; TODO add  dev  loading handling (hot reload) config
 
      (when-let [ga-id (get-config :ga-id)]
-       (list [:script {:async true
-                       :src   (str "https://www.googletagmanager.com/gtag/js?id=" ga-id)}]
+       (list [:script {:async true :src (str "https://www.googletagmanager.com/gtag/js?id=" ga-id)}]
              [:script (str "window.dataLayer = window.dataLayer || []; function gtag() {dataLayer.push(arguments);} gtag('js', new Date()); gtag('config', '" ga-id "', {'page_location': location.host + location.pathname});")]))
 
      (apply include-css
@@ -89,11 +70,9 @@
             "/css/gmw_main.css"                         ; only home
             "/css/tailwindOutput.css"
             bundle-css-files)
-     (include-js
-      "https://www.gstatic.com/charts/loader.js"
-      "/js/jquery-3.4.1.min.js")
-     (map (fn [f] [:script {:type "module"
-                            :src  f}])
+     (include-js "https://www.gstatic.com/charts/loader.js"
+                 "/js/jquery-3.4.1.min.js")
+     (map (fn [f] [:script {:type "module" :src f}])
           bundle-js-files)]))
 
 (defn uri->page [uri]
@@ -109,9 +88,8 @@
                         :mapquestKey (get-config :mapquest-key)
                         :version (current-version))
                        (json/write-str))
-        script-str (str
-                    "import {pageInit} from \"." entry-file "\";"
-                    "window.onload = function () { pageInit(" js-params "); };")]
+        script-str (str "import {pageInit} from \"." entry-file "\";"
+                        "window.onload = function () { pageInit(" js-params "); };")]
     [:script {:type "module"}
      script-str]))
 
@@ -136,22 +114,21 @@
                   :font-weight "bold"
                   :margin      "0 30px 0 0"}}
       announcement]
-     [:button {:style   {:background-color "transparent"
-                         :border-color     "#ffffff"
-                         :border-radius    "50%"
-                         :border-style     "solid"
-                         :border-width     "2px"
-                         :cursor           "pointer"
-                         :display          "flex"
-                         :height           "25px"
-                         :padding          "0"
-                         :position         "fixed"
-                         :right            "10px"
-                         :top              "5px"
-                         :width            "25px"}
+     [:button {:style {:background-color "transparent"
+                       :border-color     "#ffffff"
+                       :border-radius    "50%"
+                       :border-style     "solid"
+                       :border-width     "2px"
+                       :cursor           "pointer"
+                       :display          "flex"
+                       :height           "25px"
+                       :padding          "0"
+                       :position         "fixed"
+                       :right            "10px"
+                       :top              "5px"
+                       :width            "25px"}
                :onClick "document.getElementById('banner').style.display='none'"}
-      [:svg {:viewBox "0 0 48 48"
-             :fill    "#ffffff"}
+      [:svg {:viewBox "0 0 48 48" :fill "#ffffff"}
        [:path {:d "M38 12.83l-2.83-2.83-11.17 11.17-11.17-11.17-2.83 2.83 11.17 11.17-11.17 11.17 2.83 2.83
                      11.17-11.17 11.17 11.17 2.83-2.83-11.17-11.17z"}]]]]))
 
@@ -198,8 +175,7 @@
   ([body]
    (data-response body {}))
   ([body {:keys [status type session]
-          :or   {status 200
-                 type   :json}
+          :or   {status 200 type :json}
           :as   params}]
    (merge (when (contains? params :session) {:session session})
           {:status  status
@@ -209,7 +185,7 @@
                                       :json "application/json"
                                       type)}
            :body    (condp = type
-                      :edn (pr-str body)
+                      :edn     (pr-str body)
                       :transit (body->transit body)
-                      :json (json/write-str body)
+                      :json    (json/write-str body)
                       body)})))

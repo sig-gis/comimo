@@ -393,7 +393,7 @@ function AdminContent() {
                   setPage("users");
                 }}
               >
-                Testing
+                {admin?.users}
               </OptionRow>
               <OptionRow
                 onClick={() => {
