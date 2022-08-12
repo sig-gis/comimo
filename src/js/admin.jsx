@@ -4,14 +4,14 @@ import styled from "@emotion/styled";
 import { ReactTabulator } from "react-tabulator";
 import { isEqual } from "lodash";
 
-import { PageLayout, MainContext } from "../components/PageLayout";
-import TitledForm from "../components/TitledForm";
-import Button from "../components/Button";
+import { PageLayout, MainContext } from "./components/PageLayout";
+import TitledForm from "./components/TitledForm";
+import Button from "./components/Button";
 import "react-tabulator/lib/styles.css"; // required styles
 import "react-tabulator/lib/css/tabulator_bootstrap4.min.css"; // theme
 
-import { URLS } from "../constants";
-import { jsonRequest } from "../utils";
+import { URLS } from "./constants";
+import { jsonRequest } from "./utils";
 
 const PageContainer = styled.div`
   align-items: center;

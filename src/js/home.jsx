@@ -1,24 +1,23 @@
 import mapboxgl from "mapbox-gl";
 import React from "react";
 import ReactDOM from "react-dom";
+import DownloadPanel from "./home/DownloadPanel";
+import FilterPanel from "./home/FilterPanel";
+import HomeMap from "./home/HomeMap";
+import InfoPopupContent from "./home/InfoPopupContent";
+import LayersPanel from "./home/LayersPanel";
+import MenuItem from "./components/MenuItem";
+import ReportMinesPanel from "./home/ReportMinesPanel";
+import ReportPopupContent from "./home/ReportPopupContent";
+import SideBar from "./components/SideBar";
+import SideIcon from "./components/SideIcon";
+import StatsPanel from "./home/StatsPanel";
+import SubscribePanel from "./home/SubscribePanel";
+import ValidatePanel from "./home/ValidatePanel";
+import { MainContext, PageLayout } from "./components/PageLayout";
 
-import DownloadPanel from "./DownloadPanel";
-import FilterPanel from "./FilterPanel";
-import HomeMap from "./HomeMap";
-import InfoPopupContent from "./InfoPopupContent";
-import LayersPanel from "./LayersPanel";
-import MenuItem from "../components/MenuItem";
-import ReportMinesPanel from "./ReportMinesPanel";
-import ReportPopupContent from "./ReportPopupContent";
-import SideBar from "../components/SideBar";
-import SideIcon from "../components/SideIcon";
-import StatsPanel from "./StatsPanel";
-import SubscribePanel from "./SubscribePanel";
-import ValidatePanel from "./ValidatePanel";
-import { PageLayout, MainContext } from "../components/PageLayout";
-
-import { jsonRequest } from "../utils";
-import { URLS, availableLayers } from "../constants";
+import { jsonRequest } from "./utils";
+import { availableLayers, URLS } from "./constants";
 
 class HomeContents extends React.Component {
   // set up class flags so each component update doesn't do redundant JS tasks
@@ -352,6 +351,7 @@ class HomeContents extends React.Component {
     );
   }
 }
+
 HomeContents.contextType = MainContext;
 
 export function pageInit(args) {
