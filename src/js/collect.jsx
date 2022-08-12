@@ -2,18 +2,18 @@ import { last } from "lodash";
 import React from "react";
 import ReactDOM from "react-dom";
 
-import MenuItem from "../components/MenuItem";
-import NICFIControl from "../components/NICFIControl";
-import { PageLayout, MainContext } from "../components/PageLayout";
-import SideBar from "../components/SideBar";
-import SideIcon from "../components/SideIcon";
-import ToolPanel from "../components/ToolPanel";
-import LoadingModal from "../components/LoadingModal";
+import MenuItem from "./components/MenuItem";
+import NICFIControl from "./components/NICFIControl";
+import { PageLayout, MainContext } from "./components/PageLayout";
+import SideBar from "./components/SideBar";
+import SideIcon from "./components/SideIcon";
+import ToolPanel from "./components/ToolPanel";
+import LoadingModal from "./components/LoadingModal";
 
-import { URLS } from "../constants";
-import { jsonRequest } from "../utils";
-import CollectMap from "./CollectMap";
-import NavBar from "./NavBar";
+import { URLS } from "./constants";
+import { jsonRequest } from "./utils";
+import CollectMap from "./collect/CollectMap";
+import NavBar from "./collect/NavBar";
 
 class CollectContent extends React.Component {
   constructor(props) {
