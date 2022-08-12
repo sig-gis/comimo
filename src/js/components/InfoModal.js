@@ -34,22 +34,19 @@ const InnerContainer = styled.div`
   width: 90%;
 `;
 
-const CloseRow = styled.div`
-  align-items: center;
+const CloseDiv = styled.div`
   display: flex;
   justify-content: flex-end;
+  margin-left: 1.5rem;
 `;
 
-export default function InfoModal({ onClose, nextToClose, children }) {
+export default function InfoModal({ onClose, children }) {
   return (
     <OuterContainer>
       <InnerContainer>
-        <CloseRow>
-          {nextToClose}
-          <div className="ml-2" onClick={onClose}>
-            <SvgIcon color="black" icon="close" size="1.5rem" />
-          </div>
-        </CloseRow>
+        <CloseDiv onClick={onClose}>
+          <SvgIcon color="black" icon="close" size="1.5rem" />
+        </CloseDiv>
         {children}
       </InnerContainer>
     </OuterContainer>

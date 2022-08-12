@@ -10,9 +10,6 @@
 (def routes
   {;; Page Routes
    [:get  "/"]                    {:handler     (render-page "/home")}
-   [:get  "/download-data"]       {:handler     (render-page "/download-data")
-                                   :auth-type   :admin
-                                   :auth-action :redirect}
    [:get  "/user-account"]        {:handler     (render-page "/user-account")
                                    :auth-type   :user
                                    :auth-action :redirect}

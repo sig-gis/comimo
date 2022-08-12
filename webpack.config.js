@@ -10,7 +10,6 @@ module.exports = (env) => ({
   entry: {
     admin: path.resolve(__dirname, "src/js/admin/admin.js"),
     collect: path.resolve(__dirname, "src/js/collect/collect.js"),
-    downloadData: path.resolve(__dirname, "src/js/downloadData.js"),
     home: path.resolve(__dirname, "src/js/home/home.js"),
     login: path.resolve(__dirname, "src/js/login.js"),
     passwordRequest: path.resolve(__dirname, "src/js/passwordRequest.js"),
