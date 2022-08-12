@@ -6,6 +6,7 @@ import AccountForm from "./components/AccountForm";
 import Button from "./components/Button";
 import LanguageSelector from "./components/LanguageSelector";
 import LoadingModal from "./components/LoadingModal";
+import Modal from "./components/Modal";
 import Select from "./components/Select";
 import TextInput from "./components/TextInput";
 
@@ -26,6 +27,7 @@ class UserAccount extends React.Component {
       localeText: {},
       defaultLang: "",
       showModal: false,
+      messageBox: null,
     };
   }
 
@@ -34,6 +36,11 @@ class UserAccount extends React.Component {
   }
 
   /// State Update ///
+
+  showAlert = (messageBox) =>
+    this.setState({
+      messageBox,
+    });
 
   processModal = (callBack) =>
     new Promise(() =>
@@ -96,11 +103,18 @@ class UserAccount extends React.Component {
         })
           .then((resp) => {
             if (resp === "") {
-              alert(this.state.localeText.updated);
-              window.location = "/";
+              this.showAlert({
+                body: this.state.localeText.successUpdate,
+                closeText: this.state.localeText.close,
+                title: this.state.localeText.updateTitle,
+              });
             } else {
               console.error(resp);
-              alert(this.state.localeText[resp] || this.state.localeText.errorUpdating);
+              this.showAlert({
+                body: this.state.localeText[resp] || this.state.localeText.errorUpdating,
+                closeText: this.state.localeText.close,
+                title: this.state.localeText.error,
+              });
             }
           })
           .catch((err) => console.error(err))
@@ -137,7 +151,8 @@ class UserAccount extends React.Component {
     return (
       <ThemeProvider theme={THEME}>
         {this.state.showModal && <LoadingModal message={localeText.modalMessage} />}
-        <AccountForm header={localeText.userAccountTitle} submitFn={this.updateUser}>
+        {/* TODO: Make submitFn optional for AccountForm and TitledForm */}
+        <AccountForm header={localeText.userAccountTitle} submitFn={() => {}}>
           <div className="d-flex">
             <label className="mr-3">{localeText.language}</label>
             <LanguageSelector selectedLanguage={defaultLang} selectLanguage={this.selectLanguage} />
@@ -158,13 +173,41 @@ class UserAccount extends React.Component {
           <div className="d-flex justify-content-between align-items-center">
             <span style={{ color: "red" }}>{localeText.allRequired}</span>
             <div className="mt-2 d-flex">
-              <Button className="mr-2" onClick={() => window.location.assign("/logout")}>
-                Logout
+              <Button
+                className="mr-2"
+                onClick={() => {
+                  this.showAlert({
+                    body: this.state.localeText.logOutBody,
+                    closeText: this.state.localeText.cancel,
+                    confirmText: this.state.localeText.confirmText,
+                    onConfirm: () => window.location.assign("/logout"),
+                    title: this.state.localeText.logout,
+                  });
+                }}
+              >
+                {localeText.logout}
               </Button>
-              <Button type="submit">{localeText.save}</Button>
+              <Button
+                onClick={() => {
+                  this.showAlert({
+                    body: this.state.localeText.updateBody,
+                    closeText: this.state.localeText.cancel,
+                    confirmText: this.state.localeText.confirmText,
+                    onConfirm: () => this.updateUser(),
+                    title: this.state.localeText.userAccountTitle,
+                  });
+                }}
+              >
+                {localeText.save}
+              </Button>
             </div>
           </div>
         </AccountForm>
+        {this.state.messageBox && (
+          <Modal {...this.state.messageBox} onClose={() => this.setState({ messageBox: null })}>
+            <p>{this.state.messageBox.body}</p>
+          </Modal>
+        )}
       </ThemeProvider>
     );
   }
