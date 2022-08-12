@@ -66,13 +66,7 @@ export class PageLayout extends React.Component {
         }}
       >
         <ThemeProvider theme={THEME}>
-          {showInfo && (
-            <AppInfo
-              isAdmin={isAdmin}
-              localeText={localeText}
-              onClose={() => this.setShowInfo(false)}
-            />
-          )}
+          {showInfo && <AppInfo isAdmin={isAdmin} onClose={() => this.setShowInfo(false)} />}
           <div
             id="root-component"
             style={{
