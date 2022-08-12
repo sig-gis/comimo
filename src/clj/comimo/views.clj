@@ -47,7 +47,7 @@
      [:meta {:name "description" :content (description lang)}]
      [:meta {:name "keywords" :content (keywords lang)}]
      ; Favicon entries
-     [:link {:rel "apple-touch-icon" :sizes "180x180" :href  "/favicon/apple-touch-icon.png"}]
+     [:link {:rel "apple-touch-icon" :sizes "180x180" :href "/favicon/apple-touch-icon.png"}]
      [:link {:rel "icon" :type "image/png" :sizes "32x32" :href "/favicon/favicon-32x32.png"}]
      [:link {:rel "icon" :type "image/png" :sizes "16x16" :href "/favicon/favicon-16x16.png"}]
      [:link {:rel "manifest" :href "/favicon/site.webmanifest"}]
@@ -58,11 +58,9 @@
      [:meta {:name "theme-color" :content "#ffffff"}]
      ; end Favicon
      ;; TODO add  dev  loading handling (hot reload) config
-
      (when-let [ga-id (get-config :ga-id)]
        (list [:script {:async true :src (str "https://www.googletagmanager.com/gtag/js?id=" ga-id)}]
              [:script (str "window.dataLayer = window.dataLayer || []; function gtag() {dataLayer.push(arguments);} gtag('js', new Date()); gtag('config', '" ga-id "', {'page_location': location.host + location.pathname});")]))
-
      (apply include-css
             "https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css"
             ;; TODO: all this to be gone
@@ -114,19 +112,19 @@
                   :font-weight "bold"
                   :margin      "0 30px 0 0"}}
       announcement]
-     [:button {:style {:background-color "transparent"
-                       :border-color     "#ffffff"
-                       :border-radius    "50%"
-                       :border-style     "solid"
-                       :border-width     "2px"
-                       :cursor           "pointer"
-                       :display          "flex"
-                       :height           "25px"
-                       :padding          "0"
-                       :position         "fixed"
-                       :right            "10px"
-                       :top              "5px"
-                       :width            "25px"}
+     [:button {:style  {:background-color "transparent"
+                        :border-color     "#ffffff"
+                        :border-radius    "50%"
+                        :border-style     "solid"
+                        :border-width     "2px"
+                        :cursor           "pointer"
+                        :display          "flex"
+                        :height           "25px"
+                        :padding          "0"
+                        :position         "fixed"
+                        :right            "10px"
+                        :top              "5px"
+                        :width            "25px"}
                :onClick "document.getElementById('banner').style.display='none'"}
       [:svg {:viewBox "0 0 48 48" :fill "#ffffff"}
        [:path {:d "M38 12.83l-2.83-2.83-11.17 11.17-11.17-11.17-2.83 2.83 11.17 11.17-11.17 11.17 2.83 2.83
@@ -180,9 +178,9 @@
    (merge (when (contains? params :session) {:session session})
           {:status  status
            :headers {"Content-Type" (condp = type
-                                      :edn "application/edn"
+                                      :edn     "application/edn"
                                       :transit "application/transit+json"
-                                      :json "application/json"
+                                      :json    "application/json"
                                       type)}
            :body    (condp = type
                       :edn     (pr-str body)
