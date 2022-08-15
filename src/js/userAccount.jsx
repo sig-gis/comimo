@@ -1,7 +1,9 @@
 import React from "react";
 import ReactDOM from "react-dom";
+import styled from "@emotion/styled";
 import { ThemeProvider } from "@emotion/react";
 
+import { PageLayout, MainContext } from "./components/PageLayout";
 import AccountForm from "./components/AccountForm";
 import Button from "./components/Button";
 import LanguageSelector from "./components/LanguageSelector";
@@ -13,6 +15,14 @@ import TextInput from "./components/TextInput";
 import { jsonRequest } from "./utils";
 import { THEME } from "./constants";
 
+const PageContainer = styled.div`
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+  width: 100%;
+`;
 class UserAccount extends React.Component {
   constructor(props) {
     super(props);
@@ -24,7 +34,6 @@ class UserAccount extends React.Component {
       sector: "academic",
       password: "",
       passwordConfirmation: "",
-      localeText: {},
       defaultLang: "",
       showModal: false,
       messageBox: null,
@@ -53,36 +62,34 @@ class UserAccount extends React.Component {
 
   selectLanguage = (newLang) => {
     this.setState({ defaultLang: newLang });
-    this.getLocalText(newLang);
   };
 
   /// API Calls ///
 
-  getLocalText = (lang) => {
-    jsonRequest(`/locale/${lang}.json`, null, "GET")
-      .then((data) => this.setState({ localeText: data.users }))
-      .catch((err) => console.error(err));
-  };
-
   verifyInputs = () => {
-    const { fullName, institution, localeText } = this.state;
+    const { fullName, institution } = this.state;
+    const {
+      localeText: { users },
+    } = this.context;
+
     return [
-      fullName.length === 0 && localeText.errorNameReq,
-      institution.length === 0 && localeText.errorInstitutionReq,
+      fullName.length === 0 && users.errorNameReq,
+      institution.length === 0 && users.errorInstitutionReq,
     ].filter((e) => e);
   };
 
   getUserInformation = () => {
+    const {
+      localeText: { users },
+    } = this.context;
     this.processModal(() =>
       jsonRequest("/user-information")
         .then((data) => {
           if (data.username) {
             this.setState({ ...data });
-            this.getLocalText(data.defaultLang);
           } else {
             console.error("userNotFound");
-            // FIXME, "userNotFound" is not in the locale
-            alert(this.state.localeText.userNotFound || this.state.localeText.errorUpdating);
+            alert(users?.userNotFound);
           }
         })
         .catch((err) => console.error(err))
@@ -91,6 +98,9 @@ class UserAccount extends React.Component {
 
   updateUser = () => {
     const errors = this.verifyInputs();
+    const {
+      localeText: { users },
+    } = this.context;
     if (errors.length > 0) {
       alert(errors.map((e) => " - " + e).join("\n"));
     } else {
@@ -104,16 +114,16 @@ class UserAccount extends React.Component {
           .then((resp) => {
             if (resp === "") {
               this.showAlert({
-                body: this.state.localeText.successUpdate,
-                closeText: this.state.localeText.close,
-                title: this.state.localeText.updateTitle,
+                body: users?.successUpdate,
+                closeText: users?.close,
+                title: users?.updateTitle,
               });
             } else {
               console.error(resp);
               this.showAlert({
-                body: this.state.localeText[resp] || this.state.localeText.errorUpdating,
-                closeText: this.state.localeText.close,
-                title: this.state.localeText.error,
+                body: users?.errorUpdating,
+                closeText: users?.close,
+                title: users?.error,
               });
             }
           })
@@ -147,72 +157,92 @@ class UserAccount extends React.Component {
   );
 
   render() {
-    const { localeText, defaultLang } = this.state;
+    const { defaultLang } = this.state;
+    const {
+      localeText: { users },
+    } = this.context;
     return (
       <ThemeProvider theme={THEME}>
-        {this.state.showModal && <LoadingModal message={localeText.modalMessage} />}
-        {/* TODO: Make submitFn optional for AccountForm and TitledForm */}
-        <AccountForm header={localeText.userAccountTitle} submitFn={() => {}}>
-          <div className="d-flex">
-            <label className="mr-3">{localeText.language}</label>
-            <LanguageSelector selectedLanguage={defaultLang} selectLanguage={this.selectLanguage} />
-          </div>
-          {this.renderField(localeText.username, "text", "username", true)}
-          {this.renderField(localeText.email, "email", "email", true)}
-          {this.renderField(localeText.fullName, "text", "fullName")}
-          {this.renderField(localeText.institution, "text", "institution")}
-          {this.renderSelect(
-            localeText.sector,
-            [
-              { value: "academic", label: localeText.academic },
-              { value: "government", label: localeText.government },
-              { value: "ngo", label: localeText.ngo },
-            ],
-            "sector"
-          )}
-          <div className="d-flex justify-content-between align-items-center">
-            <span style={{ color: "red" }}>{localeText.allRequired}</span>
-            <div className="mt-2 d-flex">
-              <Button
-                className="mr-2"
-                onClick={() => {
-                  this.showAlert({
-                    body: this.state.localeText.logOutBody,
-                    closeText: this.state.localeText.cancel,
-                    confirmText: this.state.localeText.confirmText,
-                    onConfirm: () => window.location.assign("/logout"),
-                    title: this.state.localeText.logout,
-                  });
-                }}
-              >
-                {localeText.logout}
-              </Button>
-              <Button
-                onClick={() => {
-                  this.showAlert({
-                    body: this.state.localeText.updateBody,
-                    closeText: this.state.localeText.cancel,
-                    confirmText: this.state.localeText.confirmText,
-                    onConfirm: () => this.updateUser(),
-                    title: this.state.localeText.userAccountTitle,
-                  });
-                }}
-              >
-                {localeText.save}
-              </Button>
+        <PageContainer>
+          {this.state.showModal && <LoadingModal message={users?.modalMessage} />}
+          {/* TODO: Make submitFn optional for AccountForm and TitledForm */}
+          <AccountForm header={users?.userAccountTitle} submitFn={() => {}}>
+            <div className="d-flex">
+              <label className="mr-3">{users?.language}</label>
+              <LanguageSelector
+                selectedLanguage={defaultLang}
+                selectLanguage={this.selectLanguage}
+              />
             </div>
-          </div>
-        </AccountForm>
-        {this.state.messageBox && (
-          <Modal {...this.state.messageBox} onClose={() => this.setState({ messageBox: null })}>
-            <p>{this.state.messageBox.body}</p>
-          </Modal>
-        )}
+            {this.renderField(users?.username, "text", "username", true)}
+            {this.renderField(users?.email, "email", "email", true)}
+            {this.renderField(users?.fullName, "text", "fullName")}
+            {this.renderField(users?.institution, "text", "institution")}
+            {this.renderSelect(
+              users?.sector,
+              [
+                { value: "academic", label: users?.academic },
+                { value: "government", label: users?.government },
+                { value: "ngo", label: users?.ngo },
+              ],
+              "sector"
+            )}
+            <div className="d-flex justify-content-between align-items-center">
+              <span style={{ color: "red" }}>{users?.allRequired}</span>
+              <div className="mt-2 d-flex">
+                <Button
+                  className="mr-2"
+                  onClick={() => {
+                    this.showAlert({
+                      body: users?.logOutBody,
+                      closeText: users?.cancel,
+                      confirmText: users?.confirmText,
+                      onConfirm: () => window.location.assign("/logout"),
+                      title: users?.logout,
+                    });
+                  }}
+                >
+                  {users?.logout}
+                </Button>
+                <Button
+                  onClick={() => {
+                    this.showAlert({
+                      body: users?.updateBody,
+                      closeText: users?.cancel,
+                      confirmText: users?.confirmText,
+                      onConfirm: () => this.updateUser(),
+                      title: users?.userAccountTitle,
+                    });
+                  }}
+                >
+                  {users?.save}
+                </Button>
+              </div>
+            </div>
+          </AccountForm>
+          {this.state.messageBox && (
+            <Modal {...this.state.messageBox} onClose={() => this.setState({ messageBox: null })}>
+              <p>{this.state.messageBox.body}</p>
+            </Modal>
+          )}
+        </PageContainer>
       </ThemeProvider>
     );
   }
 }
 
+UserAccount.contextType = MainContext;
+
 export function pageInit(args) {
-  ReactDOM.render(<UserAccount />, document.getElementById("main-container"));
+  ReactDOM.render(
+    <PageLayout
+      role={args.role}
+      userLang={args.userLang}
+      username={args.username}
+      version={args.version}
+    >
+      <UserAccount />
+    </PageLayout>,
+    document.getElementById("main-container")
+  );
 }

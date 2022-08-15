@@ -185,6 +185,7 @@
   "users": {
     "toView": "Login to view",
     "login": "Login",
+    "logout": "Log Out",
     "loginTitle": "Sign In",
     "enter": "Enter",
     "language": "Default Language",
@@ -237,6 +238,7 @@
     "errorPassword": "Your password must be a minimum eight characters and contain at least one uppercase letter, one lowercase letter, one number and one special character -or- be a minimum of 16 characters.",
     "errorPassMatch": "Your passwords must match.",
     "errorEmailReq": "Please enter your email.",
+    "userNotFound": "The user was not found. Contact support.",
     "errorUpdating": "An error occurred while updating account. Contact support."
   },
   "admin": {

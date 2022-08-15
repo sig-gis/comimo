@@ -183,6 +183,7 @@
   "users": {
     "toView": "Iniciar sesión para ver",
     "login": "Entrar",
+    "logout": "Cerrar Sesión",
     "loginTitle": "Iniciar sesión",
     "enter": "Anotar",
     "language": "Idioma predeterminado",
@@ -235,6 +236,7 @@
     "errorPassword": "Tu contraseña debe tener 8 o más caracteres y contener al menos una letra mayúscula, una letra minúscula, un número y un carácter especial (@!#$%&?*), o tener al menos 16 caracteres.",
     "errorPassMatch": "Tus contraseñas deben coincidir.",
     "errorEmailReq": "Por favor ingresa tu email.",
+    "userNotFound": "La usuaria no fue encontrada. Contactar con soporte.",
     "errorUpdating": "Se produjo un error al cuenta. Contactar con soporte."
   },
   "admin": {
