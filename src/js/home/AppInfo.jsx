@@ -18,32 +18,6 @@ export default function AppInfo({ onClose, isAdmin }) {
 
   const hideAlert = () => _setMessageBox(null);
 
-  const downloadLink = () => (
-    <>
-      {isAdmin && (
-        <Button
-          style={{ marginRight: "1rem" }}
-          onClick={() => window.location.assign("/download-data")}
-        >
-          {users.download}
-        </Button>
-      )}
-      <Button
-        onClick={() => {
-          showAlert({
-            body: users.logOutBody,
-            closeText: users.cancel,
-            confirmText: users.confirmText,
-            onConfirm: () => window.location.assign("/logout"),
-            title: users.logout,
-          });
-        }}
-      >
-        {users.logout}
-      </Button>
-    </>
-  );
-
   const extLink = (link, text) => (
     <a className="mt-2" href={link} rel="noopener noreferrer" target="_blank">
       {text}
@@ -51,7 +25,7 @@ export default function AppInfo({ onClose, isAdmin }) {
   );
 
   return (
-    <InfoModal nextToClose={username && downloadLink()} onClose={onClose}>
+    <InfoModal onClose={onClose}>
       <h2>{appInfo.title}</h2>
       <h3 style={{ margin: "1rem 0" }}>{appInfo.termsOfUse}</h3>
       <p>{appInfo.shortTerms}</p>

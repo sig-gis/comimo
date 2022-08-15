@@ -14,7 +14,6 @@ export default defineConfig({
       input: [
         "src/js/admin.jsx",
         "src/js/collect.jsx",
-        "src/js/downloadData.jsx",
         "src/js/home.jsx",
         "src/js/login.jsx",
         "src/js/pageNotFound.jsx",
