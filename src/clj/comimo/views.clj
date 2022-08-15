@@ -86,7 +86,7 @@
                         :mapquestKey (get-config :mapquest-key)
                         :version (current-version))
                        (json/write-str))
-        script-str (str "import {pageInit} from \"." entry-file "\";"
+        script-str (str "import {pageInit} from \"" entry-file "\";"
                         "window.onload = function () { pageInit(" js-params "); };")]
     [:script {:type "module"}
      script-str]))
@@ -141,7 +141,7 @@
       {:status  200
        :headers {"Content-Type" "text/html"}
        :body    (html5
-                 (head bundle-js-files bundle-css-files lang)
+                 (head (butlast bundle-js-files) bundle-css-files lang)
                  [:body
                   (if (seq bundle-js-files)
                     [:section
