@@ -25,6 +25,7 @@
                                    :auth-action :redirect}
    [:get  "/login"]               {:handler     (render-page "/login")}
    [:get  "/logout"]              {:handler     users/logout}
+   [:get  "/page-not-found"]      {:handler     (render-page "/page-not-found")}
    [:get  "/password-request"]    {:handler     (render-page "/password-request")}
    [:get  "/password-reset"]      {:handler     (render-page "/password-reset")}
    [:get  "/register"]            {:handler     (render-page "/register")}

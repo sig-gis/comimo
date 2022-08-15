@@ -17,6 +17,7 @@ export default defineConfig({
         "src/js/downloadData.jsx",
         "src/js/home.jsx",
         "src/js/login.jsx",
+        "src/js/pageNotFound.jsx",
         "src/js/passwordRequest.jsx",
         "src/js/passwordReset.jsx",
         "src/js/register.jsx",
