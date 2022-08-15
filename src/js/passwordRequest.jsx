@@ -71,8 +71,8 @@ class PasswordForgot extends React.Component {
         {this.state.showModal && <LoadingModal message={localeText.modalMessage} />}
         <AccountForm header={localeText.requestTitle} submitFn={this.requestPassword}>
           {this.renderField(localeText.email, "email", "email")}
-          <div className="d-flex justify-content-end">
-            <Button className="mt-3" type="submit">
+          <div style={{ display: "flex", justifyContent: "flex-end" }}>
+            <Button style={{ marginTop: "1rem" }} type="submit">
               {localeText.request}
             </Button>
           </div>

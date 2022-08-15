@@ -62,7 +62,6 @@
        (list [:script {:async true :src (str "https://www.googletagmanager.com/gtag/js?id=" ga-id)}]
              [:script (str "window.dataLayer = window.dataLayer || []; function gtag() {dataLayer.push(arguments);} gtag('js', new Date()); gtag('config', '" ga-id "', {'page_location': location.host + location.pathname});")]))
      (apply include-css
-            "https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css"
             ;; TODO: all this to be gone
             "/css/gmw_global.css"
             "/css/gmw_main.css"                         ; only home

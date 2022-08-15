@@ -24,10 +24,10 @@ export default function LoadingModal({ message }) {
           width: "fit-content",
         }}
       >
-        <div className="p-3">
+        <div style={{ padding: "1rem" }}>
           <div id="spinner" style={{ height: "2.5rem", position: "static", width: "2.5rem" }} />
         </div>
-        <label className="m-0 mr-3">{message}</label>
+        <label style={{ margin: "0rem", marginRight: "1rem" }}>{message}</label>
       </div>
     </div>
   );

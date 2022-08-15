@@ -19,7 +19,7 @@ export default function NICFIControl({ extraParams, setParams, nicfiLayers }) {
   }, [extraParams]);
 
   return (
-    <div className="flex flex-col">
+    <div style={{ display: "flex", flexDirection: "column" }}>
       <Select
         id="time"
         label={layers.selectTime}
@@ -30,9 +30,9 @@ export default function NICFIControl({ extraParams, setParams, nicfiLayers }) {
         }))}
         value={selectedTime}
       />
-      <div className="flex flex-col">
-        <label className="mb-0">{layers.selectBand}</label>
-        <div className="flex">
+      <div style={{ display: "flex", flexDirection: "column" }}>
+        <label style={{ margin: "0rem" }}>{layers.selectBand}</label>
+        <div style={{ display: "flex" }}>
           <div>
             <input
               checked={selectedBand === "rgb"}
@@ -45,7 +45,7 @@ export default function NICFIControl({ extraParams, setParams, nicfiLayers }) {
               {layers.visible}
             </label>
           </div>
-          <div className="pl-3">
+          <div style={{ paddingLeft: "1rem" }}>
             <input
               checked={selectedBand === "cir"}
               id="infrared"
@@ -59,16 +59,15 @@ export default function NICFIControl({ extraParams, setParams, nicfiLayers }) {
           </div>
         </div>
       </div>
-      <Button
-        className="mt-2"
-        onClick={() =>
+      <Button style={{ marginTop: "0.5rem" }}>
+        onClick=
+        {() =>
           setParams("NICFI", {
             dataLayer: selectedTime,
             band: selectedBand,
           })
         }
-      >
-        {layers.updateNICFI}
+        >{layers.updateNICFI}
       </Button>
     </div>
   );

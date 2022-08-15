@@ -49,7 +49,15 @@ export default class LayersPanel extends React.Component {
     } = this.context;
     const layerVisible = visible[name];
     return (
-      <div key={name} className="d-flex justify-content-between align-items-center mb-2">
+      <div
+        key={name}
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          marginBottom: "0.5rem",
+        }}
+      >
         <div>
           <input
             checked={layerVisible}
@@ -63,11 +71,10 @@ export default class LayersPanel extends React.Component {
           </label>
         </div>
         <input
-          className="p-0 m-0"
           max="100"
           min="0"
           onChange={(e) => this.setOpacity(name, parseInt(e.target.value))}
-          style={{ cursor: "pointer", width: "40%" }}
+          style={{ padding: "0rem", margin: "0rem", cursor: "pointer", width: "40%" }}
           type="range"
           value={opacity[name]}
         />
@@ -77,7 +84,7 @@ export default class LayersPanel extends React.Component {
 
   renderHeading = (layers) => (
     <>
-      <div className="d-flex justify-content-between mb-0">
+      <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "0rem" }}>
         <label style={{ fontWeight: "bold", margin: "0 .25rem 0 0" }}>{layers.nameLabel}</label>
         <label style={{ fontWeight: "bold", margin: "0 .25rem", width: "40%" }}>
           {layers.opacityLabel}
@@ -91,7 +98,7 @@ export default class LayersPanel extends React.Component {
     <>
       <label style={{ fontWeight: "bold", margin: "0 .25rem 0 0" }}>{layers.satelliteTitle}</label>
       <hr style={{ marginBottom: "0.5rem" }}></hr>
-      <div className="d-flex flex-column">
+      <div style={{ display: "flex", flexDirection: "column" }}>
         {this.renderControl("NICFI")}
         <NICFIControl
           extraParams={this.props.extraParams}

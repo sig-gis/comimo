@@ -65,7 +65,7 @@ export default class DownloadPanel extends React.Component {
       <ToolPanel title={download.title}>
         {this.state.showModal && <LoadingModal message="Getting URL" />}
 
-        <div className="flex flex-col">
+        <div style={{ display: "flex", flexDirection: "column" }}>
           <label>{`${validate.typeLabel}:`}</label>
           <Select
             id="selectMineType"
@@ -101,7 +101,11 @@ export default class DownloadPanel extends React.Component {
             ></Search>
           </div>
           {selectedDates && (
-            <Button className="mt-1" disabled={fetching} onClick={this.getDownloadUrl}>
+            <Button
+              style={{ marginTop: "0.25rem" }}
+              disabled={fetching}
+              onClick={this.getDownloadUrl}
+            >
               {download.getUrl} {selectedDates[mineType]}
             </Button>
           )}

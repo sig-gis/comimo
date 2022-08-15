@@ -27,15 +27,14 @@ export default function Select({
   defaultOption = "",
 }) {
   return (
-    <div className="w-100 mb-3">
+    <div style={{ marginBottom: "1rem" }}>
       <label htmlFor={id}>{label}</label>
       <select
-        className="col-12 p-1 mt-1"
+        style={{ width: "100%", cursor: "pointer", padding: "0.25rem", marginTop: "0.25rem" }}
         disabled={disabled}
         id={id}
         onChange={onChange}
         value={value}
-        style={{ cursor: "pointer" }}
       >
         <Option
           key="defaultOption"

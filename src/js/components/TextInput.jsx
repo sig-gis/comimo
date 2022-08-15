@@ -2,14 +2,14 @@ import React, { useState } from "react";
 import styled from "@emotion/styled";
 
 const InputContainer = styled.div`
-  display: flex; 
+  display: flex;
   margin-bottom: 0.75rem;
 `;
 
 const Input = styled.input`
-  padding: 0.25rem; 
-  margin: 0; 
-  margin-top: 0.25rem; 
+  padding: 0.25rem;
+  margin: 0;
+  margin-top: 0.25rem;
 `;
 
 // TODO: Add showing error like when in searching for invalide coordinates...
@@ -30,11 +30,11 @@ export default function TextInput({
   const [touched, setTouched] = useState(false);
   const error = required && touched && value.length === 0;
   return (
-    <div className="w-100">
+    <div>
       {label && <label htmlFor={id}>{label}</label>}
       {type === "textarea" ? (
         <textarea
-          className="col-12"
+          style={{ width: "100%" }}
           id={id}
           maxLength={maxLength}
           onBlur={() => setTouched(true)}

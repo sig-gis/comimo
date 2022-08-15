@@ -39,7 +39,7 @@ export default class FilterPanel extends React.Component {
     return (
       <ToolPanel title={filter.title}>
         <span htmlFor="select-image-date">{filter.selectLabel}:</span>
-        <div className="flex flex-col">
+        <div style={{ display: "flex", flexDirection: "column" }}>
           <Select
             id="selectcMine"
             label={layers.cMines}
@@ -61,7 +61,7 @@ export default class FilterPanel extends React.Component {
             options={pMines}
             value={newSelectedDates.pMines}
           />
-          <Button className="mt-4" onClick={() => selectDates(newSelectedDates)}>
+          <Button style={{ marginTop: "1.5rem" }} onClick={() => selectDates(newSelectedDates)}>
             {filter.updateMap}
           </Button>
         </div>

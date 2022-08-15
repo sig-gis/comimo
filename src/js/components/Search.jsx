@@ -63,7 +63,7 @@ export default class Search extends React.Component {
 
     const geoSearchResults =
       geoCodedSearch && geoCodedSearch.length === 0 ? (
-        <div className="ml-1">{search.noResults}</div>
+        <div style={{ marginLeft: "0.25rem" }}>{search.noResults}</div>
       ) : (
         geoCodedSearch && (
           <div>
