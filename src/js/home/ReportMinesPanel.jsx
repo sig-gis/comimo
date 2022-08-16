@@ -103,7 +103,7 @@ export default class ReportMinesPanel extends React.Component {
       <ToolPanel title={report.title}>
         {report.subTitle}
         <TextInput
-          className="mt-20"
+          style={{ marginTop: "3rem" }}
           id="inputCoords"
           label={report.coordLabel}
           onChange={(e) => this.setState({ latLonText: e.target.value })}
@@ -113,10 +113,10 @@ export default class ReportMinesPanel extends React.Component {
           render={() => <Button onClick={this.processLatLng}>{report.goButton}</Button>}
           value={latLonText}
         />
-        <h3 className="mt-3">{report.selectedLocation}</h3>
+        <h3 style={{ marginTop: "1rem" }}>{report.selectedLocation}</h3>
         {selectedLatLon ? (
           <>
-            <div className="d-flex flex-column">
+            <div style={{ display: "flex", flexDirection: "column" }}>
               <span>
                 <b>{report.latitude}:</b> {selectedLatLon[0]}
               </span>

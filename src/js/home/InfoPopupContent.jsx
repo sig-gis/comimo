@@ -125,7 +125,7 @@ export default class InfoPopupContent extends React.Component {
     };
 
     return Object.keys(layerInfo).length === visibleLayers.length ? (
-      <div className="d-flex flex-column mr-2">
+      <div style={{ display: "flex", flexDirection: "column", marginRight: "0.5rem" }}>
         <PopupMapInfo key="latLong">
           <label>
             <strong>Lat: </strong>

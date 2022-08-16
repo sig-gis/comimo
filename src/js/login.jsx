@@ -67,15 +67,15 @@ class Login extends React.Component {
           <AccountForm header={users?.loginTitle} submitFn={this.requestLogin}>
             {this.renderField(users?.username, "text", "username")}
             {this.renderField(users?.password, "password", "password")}
-            <div className="d-flex justify-content-between align-items-center">
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
               <a href="/password-request">{users?.forgot}</a>
-              <Button className="mt-3" type="submit">
+              <Button style={{ margineTop: "1rem" }} type="submit">
                 {users?.login}
               </Button>
             </div>
-            <div className="d-flex flex-column align-items-center">
-              <h3 className="">{users?.newUser}</h3>
-              <div className="">
+            <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+              <h3>{users?.newUser}</h3>
+              <div>
                 <div>
                   <Button
                     name="register"

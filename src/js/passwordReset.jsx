@@ -78,8 +78,8 @@ class PasswordReset extends React.Component {
           {this.renderField(localeText.email, "email", "email", true)}
           {this.renderField(localeText.password, "password", "password")}
           {this.renderField(localeText.confirm, "password", "passwordConfirmation")}
-          <div className="d-flex justify-content-end">
-            <Button className="mt-3" type="submit">
+          <div style={{ display: "flex", justifyContent: "end" }}>
+            <Button style={{ marginTop: "1rem" }} type="submit">
               {localeText.resetTitle}
             </Button>
           </div>

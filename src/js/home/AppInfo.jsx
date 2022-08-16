@@ -19,7 +19,7 @@ export default function AppInfo({ onClose, isAdmin }) {
   const hideAlert = () => _setMessageBox(null);
 
   const extLink = (link, text) => (
-    <a className="mt-2" href={link} rel="noopener noreferrer" target="_blank">
+    <a style={{ marginTop: "0.5rem" }} href={link} rel="noopener noreferrer" target="_blank">
       {text}
     </a>
   );

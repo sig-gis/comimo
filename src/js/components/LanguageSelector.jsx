@@ -61,7 +61,7 @@ export default function LanguageSelector({ selectedLanguage, selectLanguage }) {
           }}
         >
           {Object.keys(languageList).map((l) => (
-            <div key={l} className="pt-1">
+            <div key={l} style={{ paddingTop: "0.25rem" }}>
               {renderOption(l)}
             </div>
           ))}

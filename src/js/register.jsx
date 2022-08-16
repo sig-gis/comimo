@@ -132,8 +132,8 @@ class Register extends React.Component {
       <ThemeProvider theme={THEME}>
         {this.state.showModal && <LoadingModal message={localeText.modalMessage} />}
         <AccountForm header={localeText.registerTitle} submitFn={this.registerUser}>
-          <div className="d-flex">
-            <label className="mr-3">{localeText.language}</label>
+          <div style={{ display: "flex" }}>
+            <label style={{ marginRight: "1rem" }}>{localeText.language}</label>
             <LanguageSelector selectedLanguage={defaultLang} selectLanguage={this.selectLanguage} />
           </div>
           {this.renderField(localeText.username, "text", "username")}
@@ -151,9 +151,9 @@ class Register extends React.Component {
           )}
           {this.renderField(localeText.password, "password", "password")}
           {this.renderField(localeText.confirm, "password", "passwordConfirmation")}
-          <div className="d-flex justify-content-between align-items-center">
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
             <span style={{ color: "red" }}>{localeText.allRequired}</span>
-            <Button className="mt-2" type="submit">
+            <Button style={{ marginTop: "0.5rem" }} type="submit">
               {localeText.register}
             </Button>
           </div>

@@ -68,13 +68,13 @@ export default function Header({
               onClick={() => window.location.assign("/user-account")}
               style={{ display: "flex", alignItems: "center", cursor: "pointer" }}
             >
-              <span className="px-2">{username}</span>
+              <span style={{ padding: "0rem 0.5rem" }}>{username}</span>
               <SvgIcon icon="user" size="1.2rem" />
             </div>
           </button>
         ) : (
           <Button
-            className="mr-1"
+            style={{ margin: "0.25rem" }}
             onClick={() => {
               window.location.assign("/login");
             }}

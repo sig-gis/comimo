@@ -31,7 +31,11 @@ export default function SideIcon({ parentClass, clickHandler, tooltip, icon, sub
       <div style={{ padding: "6px", display: "flex", justifyContent: "center" }}>
         <SvgIcon color="#003333" icon={icon} size="38px" />
       </div>
-      {subtext && <span className="advanced-text mb-3">{subtext}</span>}
+      {subtext && (
+        <span style={{ marginBottom: "1rem" }} className="advanced-text">
+          {subtext}
+        </span>
+      )}
     </StyledButton>
   );
 }

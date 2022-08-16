@@ -243,15 +243,17 @@ function AdminContent() {
   const renderUserRow = (user, i) => {
     const { userId, username, email, role } = user;
     return (
-      <GridRow key={userId}>
-        <label className="col-1">{userId}</label>
-        <label className="col-4">{username}</label>
-        <label className="col-5">{email}</label>
+      <GridRow
+        style={{ display: "grid", justifyItems: "center", gridTemplateColumns: "1fr 4fr 5fr 2fr" }}
+        key={userId}
+      >
+        <label>{userId}</label>
+        <label>{username}</label>
+        <label>{email}</label>
         {userId === "Id" ? (
-          <label className="col-2">{role}</label>
+          <label>{role}</label>
         ) : (
           <select
-            className="w-20"
             id="role-selection"
             onChange={(e) => {
               setUsers([
@@ -291,8 +293,8 @@ function AdminContent() {
           })}
           {userList.filter((row) => isRowIncluded(row)).map(renderUserRow)}
         </GridSection>
-        <div className="m-3 d-flex">
-          <div className="flex-grow-1" />
+        <div style={{ margin: "1rem", display: "flex" }}>
+          <div style={{ display: "flex", flexGrow: "1" }} />
           <Button disabled={!roleChanged} onClick={updateUserRoles}>
             {admin?.save}
           </Button>
@@ -310,11 +312,14 @@ function AdminContent() {
     );
 
   const renderLogRow = ({ jobTime, username, finishStatus, finishMessage }) => (
-    <GridRow key={jobTime + username}>
-      <label className="col-3">{jobTime}</label>
-      <label className="col-3">{username}</label>
-      <label className="col-3">{finishStatus}</label>
-      <label className="col-3">{finishMessage}</label>
+    <GridRow
+      style={{ display: "grid", justifyItems: "center", gridTemplateColumns: "repeat(4, 3fr)" }}
+      key={jobTime + username}
+    >
+      <label>{jobTime}</label>
+      <label>{username}</label>
+      <label>{finishStatus}</label>
+      <label>{finishMessage}</label>
     </GridRow>
   );
 
@@ -355,7 +360,7 @@ function AdminContent() {
         width: "100%",
       }}
     >
-      <Button className="mr-1" onClick={() => downloadData("csv")}>
+      <Button style={{ marginRight: "0.5rem" }} onClick={() => downloadData("csv")}>
         {admin.downloadCSV}
       </Button>
       <Button onClick={() => downloadData("json")}>{admin.downloadJSON}</Button>
@@ -386,7 +391,7 @@ function AdminContent() {
         {/* An empty div keeps the form from filling up the entire height. */}
         <div>
           <TitledForm header="Options">
-            <div className="d-flex flex-column">
+            <div style={{ display: "flex", flexDirection: "column" }}>
               <OptionRow
                 onClick={() => {
                   setFilterStr("");

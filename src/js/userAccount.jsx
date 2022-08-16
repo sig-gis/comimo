@@ -167,8 +167,8 @@ class UserAccount extends React.Component {
           {this.state.showModal && <LoadingModal message={users?.modalMessage} />}
           {/* TODO: Make submitFn optional for AccountForm and TitledForm */}
           <AccountForm header={users?.userAccountTitle} submitFn={() => {}}>
-            <div className="d-flex">
-              <label className="mr-3">{users?.language}</label>
+            <div style={{ display: "flex", marginBottom: "0.5rem" }}>
+              <label style={{ marginRight: "1rem" }}>{users?.language}</label>
               <LanguageSelector
                 selectedLanguage={defaultLang}
                 selectLanguage={this.selectLanguage}
@@ -187,11 +187,11 @@ class UserAccount extends React.Component {
               ],
               "sector"
             )}
-            <div className="d-flex justify-content-between align-items-center">
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
               <span style={{ color: "red" }}>{users?.allRequired}</span>
-              <div className="mt-2 d-flex">
+              <div style={{ display: "flex", marginTop: "0.5rem" }}>
                 <Button
-                  className="mr-2"
+                  style={{ marginRight: "0.5rem" }}
                   onClick={() => {
                     this.showAlert({
                       body: users?.logOutBody,
