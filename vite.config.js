@@ -35,6 +35,7 @@ export default defineConfig({
         "@babel/plugin-proposal-class-properties",
         "@babel/plugin-transform-runtime",
         "babel-plugin-macros",
+        "styled-jsx/babel",
       ],
     }),
   ],
