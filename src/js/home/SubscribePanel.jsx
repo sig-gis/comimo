@@ -10,7 +10,7 @@ import { URLS } from "../constants";
 import { jsonRequest } from "../utils";
 import { MainContext } from "../components/PageLayout";
 
-const DeleletButton = styled.input`
+const DeleteButton = styled.input`
   border-radius: 50%;
   height: 1.75rem;
   width: 1.75rem;
@@ -122,7 +122,7 @@ export default class SubscribePanel extends React.Component {
                   <i>{arr[1]}</i>
                 </td>
                 <td style={{ width: "30px" }}>
-                  <DeleletButton onClick={() => this.delSubs(region)} type="submit" value="X" />
+                  <DeleteButton onClick={() => this.delSubs(region)} type="submit" value="X" />
                 </td>
               </tr>
             );
