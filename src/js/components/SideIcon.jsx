@@ -32,7 +32,17 @@ export default function SideIcon({ parentClass, clickHandler, tooltip, icon, sub
         <SvgIcon color="#003333" icon={icon} size="38px" />
       </div>
       {subtext && (
-        <span style={{ marginBottom: "1rem" }} className="advanced-text">
+        <span
+          style={{
+            fontSize: "10px",
+            padding: 0,
+            textDecoration: "underline",
+            display: "block",
+            lineHeight: "10px",
+            height: "auto",
+            marginBottom: "1rem",
+          }}
+        >
           {subtext}
         </span>
       )}

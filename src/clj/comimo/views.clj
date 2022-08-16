@@ -62,10 +62,6 @@
        (list [:script {:async true :src (str "https://www.googletagmanager.com/gtag/js?id=" ga-id)}]
              [:script (str "window.dataLayer = window.dataLayer || []; function gtag() {dataLayer.push(arguments);} gtag('js', new Date()); gtag('config', '" ga-id "', {'page_location': location.host + location.pathname});")]))
      (apply include-css
-            ;; TODO: all this to be gone
-            "/css/gmw_global.css"
-            "/css/gmw_main.css"                         ; only home
-            "/css/tailwindOutput.css"
             bundle-css-files)
      (include-js "https://www.gstatic.com/charts/loader.js"
                  "/js/jquery-3.4.1.min.js")
