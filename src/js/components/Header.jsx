@@ -1,8 +1,17 @@
 import React from "react";
 import Button from "./Button";
+import styled from "@emotion/styled";
 
 import LanguageSelector from "./LanguageSelector";
 import SvgIcon from "./SvgIcon";
+
+const TitleDiv = styled.div`
+  width: 100%;
+  background: var(--gray-1);
+  text-align: center;
+  padding: 5px;
+  height: 3.5rem;
+`;
 
 export default function Header({
   selectLanguage,
@@ -13,16 +22,7 @@ export default function Header({
   version,
 }) {
   return (
-    <div
-      id="title-bar"
-      style={{
-        width: "100%",
-        background: "#003333",
-        textAlign: "center",
-        padding: "5px",
-        height: "3.5rem",
-      }}
-    >
+    <TitleDiv id="title-bar">
       <img
         alt="app-logo"
         onClick={() => window.location.assign("/")}
@@ -84,6 +84,6 @@ export default function Header({
         )}
         <LanguageSelector selectedLanguage={selectedLanguage} selectLanguage={selectLanguage} />
       </div>
-    </div>
+    </TitleDiv>
   );
 }
