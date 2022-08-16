@@ -82,6 +82,7 @@ export default class DownloadPanel extends React.Component {
             />
             <span>{download.allRadio}</span>
           </div>
+          {/* TODO: disabled-group is not defined yet */}
           <div className={selectedRegion ? "" : "disabled-group"} style={{ marginTop: ".25rem" }}>
             <input
               checked={clipOption === 2}

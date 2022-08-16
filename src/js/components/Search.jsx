@@ -1,4 +1,5 @@
 import React from "react";
+import styled from "@emotion/styled";
 
 import Button from "./Button";
 import Select from "./Select";
@@ -8,6 +9,17 @@ import { jsonRequest } from "../utils";
 import { MainContext } from "./PageLayout";
 import { URLS } from "../constants";
 
+const searchResults = styled.div`
+  &:active {
+    background: #ddd;
+    cursor: pointer;
+  }
+
+  &:hover {
+    background: #eee;
+    cursor: pointer;
+  }
+`;
 export default class Search extends React.Component {
   constructor(props) {
     super(props);
@@ -68,9 +80,8 @@ export default class Search extends React.Component {
         geoCodedSearch && (
           <div>
             {geoCodedSearch.slice(0, 3).map((item) => (
-              <div
+              <searchResults
                 key={item.adminArea3}
-                className="search-results"
                 onClick={() => {
                   const state = item.adminArea3.toUpperCase();
                   const mun = item.adminArea4.toUpperCase();
@@ -91,7 +102,7 @@ export default class Search extends React.Component {
                 <span>
                   {item.latLng.lat},{item.latLng.lng}
                 </span>
-              </div>
+              </searchResults>
             ))}
           </div>
         )

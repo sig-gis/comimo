@@ -10,6 +10,33 @@ import { URLS } from "../constants";
 import { jsonRequest } from "../utils";
 import { MainContext } from "../components/PageLayout";
 
+const DeleteButton = styled.input`
+  border-radius: 50%;
+  height: 1.75rem;
+  width: 1.75rem;
+  font-size: 1.25rem;
+  font-weight: bolder;
+  border: none;
+  color: red;
+
+  &:hover {
+    background: #ff40409e;
+  }
+
+  &:active {
+    background: #ff0000;
+    color: white;
+  }
+
+  &:focus {
+    outline: none;
+  }
+
+  &:disabled {
+    background: #ddd;
+    color: #aaa;
+  }
+`;
 export default class SubscribePanel extends React.Component {
   constructor(props) {
     super(props);
@@ -95,12 +122,7 @@ export default class SubscribePanel extends React.Component {
                   <i>{arr[1]}</i>
                 </td>
                 <td style={{ width: "30px" }}>
-                  <input
-                    className="del-btn"
-                    onClick={() => this.delSubs(region)}
-                    type="submit"
-                    value="X"
-                  />
+                  <DeleteButton onClick={() => this.delSubs(region)} type="submit" value="X" />
                 </td>
               </tr>
             );
