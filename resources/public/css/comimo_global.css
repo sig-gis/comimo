@@ -1,11 +1,7 @@
-*,
-::before,
-::after {
-  box-sizing: border-box;
-  border-width: 0;
-  border-style: solid;
-  border-color: #e5e7eb;
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Condensed&family=Roboto:wght@400;500&display=swap');
 
+:root {
+  /* Colors: */
   --links: #3c86eb;
   --success-green: #60be04;
   --error-red: #ff0000;
@@ -33,6 +29,148 @@
   --blue2: #4b5cdd;
   --blue-1: #acc8ff;
   --teal-1: #159ebf;
+
+  /* Font/text values */
+  --unnamed-font-family-roboto: Roboto;
+  --unnamed-font-family-roboto-condensed: Roboto Condensed;
+  --unnamed-font-style-normal: normal;
+  --unnamed-font-weight-normal: 400;
+  --unnamed-font-weight-medium: 500;
+  --unnamed-font-weight-bold: 700;
+  --unnamed-font-size-14: 14px;
+  --unnamed-font-size-16: 16px;
+  --unnamed-font-size-18: 18px;
+  --unnamed-font-size-20: 20px;
+  --unnamed-font-size-32: 32px;
+  --unnamed-character-spacing-0: 0px;
+  --unnamed-line-spacing-16: 16px;
+  --unnamed-line-spacing-18: 18px;
+  --unnamed-line-spacing-19: 19px;
+  --unnamed-line-spacing-20: 20px;
+  --unnamed-line-spacing-21: 21px;
+  --unnamed-line-spacing-28: 28px;
+  --unnamed-line-spacing-32: 32px;
+  --unnamed-text-transform-uppercase: uppercase;
+}
+
+/* Character Styles */
+.standard-label {
+  font-family: var(--unnamed-font-family-roboto);
+  font-style: var(--unnamed-font-style-normal);
+  font-weight: var(--unnamed-font-weight-normal);
+  font-size: var(--unnamed-font-size-18);
+  line-height: var(--unnamed-line-spacing-18);
+  letter-spacing: var(--unnamed-character-spacing-0);
+  color: var(--black);
+}
+.strong-label {
+  font-family: var(--unnamed-font-family-roboto);
+  font-style: var(--unnamed-font-style-normal);
+  font-weight: var(--unnamed-font-weight-medium);
+  font-size: var(--unnamed-font-size-20);
+  line-height: var(--unnamed-line-spacing-20);
+  letter-spacing: var(--unnamed-character-spacing-0);
+  color: var(--gray-1);
+}
+.main-message-h1 {
+  font-family: var(--unnamed-font-family-roboto);
+  font-style: var(--unnamed-font-style-normal);
+  font-weight: var(--unnamed-font-weight-bold);
+  font-size: var(--unnamed-font-size-32);
+  line-height: var(--unnamed-line-spacing-32);
+  letter-spacing: var(--unnamed-character-spacing-0);
+  color: var(--yellow-brand);
+  text-transform: var(--unnamed-text-transform-uppercase);
+}
+.regular-paragraph {
+  font-family: var(--unnamed-font-family-roboto);
+  font-style: var(--unnamed-font-style-normal);
+  font-weight: var(--unnamed-font-weight-normal);
+  font-size: var(--unnamed-font-size-16);
+  line-height: var(--unnamed-line-spacing-28);
+  letter-spacing: var(--unnamed-character-spacing-0);
+  color: var(--black);
+}
+.white-paragraph {
+  font-family: var(--unnamed-font-family-roboto);
+  font-style: var(--unnamed-font-style-normal);
+  font-weight: var(--unnamed-font-weight-normal);
+  font-size: var(--unnamed-font-size-16);
+  line-height: var(--unnamed-line-spacing-28);
+  letter-spacing: var(--unnamed-character-spacing-0);
+  color: var(--white);
+}
+.small-texts {
+  font-family: var(--unnamed-font-family-roboto);
+  font-style: var(--unnamed-font-style-normal);
+  font-weight: var(--unnamed-font-weight-normal);
+  font-size: var(--unnamed-font-size-14);
+  line-height: var(--unnamed-line-spacing-16);
+  letter-spacing: var(--unnamed-character-spacing-0);
+  color: var(--gray-2);
+}
+.narrow-strong {
+  font-family: var(--unnamed-font-family-roboto-condensed);
+  font-style: var(--unnamed-font-style-normal);
+  font-weight: var(--unnamed-font-weight-bold);
+  font-size: var(--unnamed-font-size-18);
+  line-height: var(--unnamed-line-spacing-21);
+  letter-spacing: var(--unnamed-character-spacing-0);
+  color: var(--black);
+}
+.selectors {
+  font-family: var(--unnamed-font-family-roboto);
+  font-style: var(--unnamed-font-style-normal);
+  font-weight: var(--unnamed-font-weight-normal);
+  font-size: var(--unnamed-font-size-16);
+  line-height: var(--unnamed-line-spacing-19);
+  letter-spacing: var(--unnamed-character-spacing-0);
+  color: var(--black);
+}
+.layer-type {
+  font-family: var(--unnamed-font-family-roboto);
+  font-style: var(--unnamed-font-style-normal);
+  font-weight: var(--unnamed-font-weight-medium);
+  font-size: var(--unnamed-font-size-14);
+  line-height: var(--unnamed-line-spacing-16);
+  letter-spacing: var(--unnamed-character-spacing-0);
+  color: var(--gray-1);
+}
+.layers-h2 {
+  font-family: var(--unnamed-font-family-roboto);
+  font-style: var(--unnamed-font-style-normal);
+  font-weight: var(--unnamed-font-weight-bold);
+  font-size: var(--unnamed-font-size-16);
+  line-height: var(--unnamed-line-spacing-19);
+  letter-spacing: var(--unnamed-character-spacing-0);
+  color: var(--gray-1);
+}
+.menus-parent-link {
+  font-family: var(--unnamed-font-family-roboto);
+  font-style: var(--unnamed-font-style-normal);
+  font-weight: var(--unnamed-font-weight-medium);
+  font-size: var(--unnamed-font-size-18);
+  line-height: var(--unnamed-line-spacing-18);
+  letter-spacing: var(--unnamed-character-spacing-0);
+  color: var(--white);
+}
+.menus-child-link {
+  font-family: var(--unnamed-font-family-roboto);
+  font-style: var(--unnamed-font-style-normal);
+  font-weight: var(--unnamed-font-weight-medium);
+  font-size: var(--unnamed-font-size-16);
+  line-height: var(--unnamed-line-spacing-16);
+  letter-spacing: var(--unnamed-character-spacing-0);
+  color: var(--white);
+}
+
+*,
+::before,
+::after {
+  box-sizing: border-box;
+  border-width: 0;
+  border-style: solid;
+  border-color: #e5e7eb;
 }
 
 html,
@@ -41,8 +179,8 @@ body {
   width: 100%;
   margin: 0;
   padding: 0;
-  font-family: "Roboto Condensed", sans-serif !important;
   line-height: 1.5rem !important;
+  font-family: var(--unnamed-font-family-roboto), sans-serif !important;
   font-size: 16px;
   -webkit-text-size-adjust: 100%;
   -moz-tab-size: 4;

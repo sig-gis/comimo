@@ -5,12 +5,64 @@ import styled from "@emotion/styled";
 import LanguageSelector from "./LanguageSelector";
 import SvgIcon from "./SvgIcon";
 
-const TitleDiv = styled.div`
+const TitleBar = styled.div`
   width: 100%;
   background: var(--gray-1);
   text-align: center;
   padding: 5px;
   height: 3.5rem;
+  display: flex;
+  justify-content: space-between;
+`;
+
+const Search = styled.div`
+  flex: 1;
+`;
+
+const Logo = styled.div`
+  display: relative;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  flex: 1;
+`;
+
+const LogoImg = styled.img`
+  width: 130px;
+  height: 43px;
+  cursor: pointer;
+`;
+
+const LogoGitVersion = styled.span`
+  position: relative;
+  left: -90px;
+  bottom: 0px;
+  color: var(--white);
+  text-align: left;
+  font-size: 12px;
+  letter-spacing: 0px;
+`;
+
+const UserSettings = styled.div`
+  flex: 1;
+`;
+
+const LoggedInUserPanel = styled.div`
+  display: flex;
+  cursor: pointer;
+`;
+
+const LoggedInUsername = styled.span`
+  text-align: left;
+  font-size: 18px;
+  font-weight: var(--unnamed-font-weight-medium);
+  letter-spacing: 0px;
+  color: var(--white);
+  padding: 0 0.5rem;
+
+  &:hover {
+    text-decoration: underline;
+  }
 `;
 
 export default function Header({
@@ -22,68 +74,52 @@ export default function Header({
   version,
 }) {
   return (
-    <TitleDiv id="title-bar">
-      <img
-        alt="app-logo"
-        onClick={() => window.location.assign("/")}
-        src="/img/app-logo.png"
-        style={{ height: "100%", cursor: "pointer" }}
-      />
-      <span
-        style={{
-          position: "fixed",
-          left: "56px",
-          top: "35px",
-          color: "#7db0b0",
-          fontSize: "0.6rem",
-        }}
-      >
-        {version && `Version: ${version}`}
-      </span>
-      <div
-        id="user-panel"
-        style={{
-          alignItems: "center",
-          display: "flex",
-          position: "fixed",
-          right: "56px",
-          top: "10px",
-          zIndex: 1000,
-        }}
-      >
-        {username ? (
-          <button
-            style={{
-              alignItems: "center",
-              border: "2px solid",
-              background: "white",
-              borderRadius: "8px",
-              display: "flex",
-              padding: "2px",
-              marginRight: ".5rem",
-            }}
-            type="button"
-          >
-            <div
-              onClick={() => window.location.assign("/user-account")}
-              style={{ display: "flex", alignItems: "center", cursor: "pointer" }}
+    <TitleBar id="title-bar">
+      <Search>
+        <button>test</button>
+      </Search>
+      <Logo>
+        <LogoImg
+          alt="app-logo"
+          onClick={() => window.location.assign("/")}
+          src="/img/app-logo.png"
+          style={{ height: "100%", cursor: "pointer" }}
+        />
+        <LogoGitVersion>prod-2022-08-01</LogoGitVersion>
+        {/* <LogoGitVersion>{version && `Version: ${version}`}</LogoGitVersion> */}
+      </Logo>
+      <UserSettings>
+        <div
+          id="user-panel"
+          style={{
+            alignItems: "center",
+            display: "flex",
+            position: "fixed",
+            right: "56px",
+            top: "10px",
+            zIndex: 1000,
+          }}
+        >
+          {username ? (
+            // TODO: onClick should open up the menu with the Account Settings, Notifications, and Subscribed Muncipalities buttons
+            <LoggedInUserPanel onClick={() => window.location.assign("/user-account")}>
+              <SvgIcon icon="user" size="1.2rem" color="white" />
+              <LoggedInUsername>{username}</LoggedInUsername>
+            </LoggedInUserPanel>
+          ) : (
+            // TODO: Make this a styled component
+            <Button
+              style={{ margin: "0.25rem" }}
+              onClick={() => {
+                window.location.assign("/login");
+              }}
             >
-              <span style={{ padding: "0rem 0.5rem" }}>{username}</span>
-              <SvgIcon icon="user" size="1.2rem" />
-            </div>
-          </button>
-        ) : (
-          <Button
-            style={{ margin: "0.25rem" }}
-            onClick={() => {
-              window.location.assign("/login");
-            }}
-          >
-            {localeText.users?.login}
-          </Button>
-        )}
-        <LanguageSelector selectedLanguage={selectedLanguage} selectLanguage={selectLanguage} />
-      </div>
-    </TitleDiv>
+              {localeText.users?.login}
+            </Button>
+          )}
+          <LanguageSelector selectedLanguage={selectedLanguage} selectLanguage={selectLanguage} />
+        </div>
+      </UserSettings>
+    </TitleBar>
   );
 }
