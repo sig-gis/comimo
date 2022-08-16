@@ -2,15 +2,7 @@
   display: none;
 }
 
-.search-results:hover {
-  background: #eee;
-  cursor: pointer;
-}
 
-.search-results:active {
-  background: #ddd;
-  cursor: pointer;
-}
 
 /* These are the little round action buttons */
 .del-btn {
