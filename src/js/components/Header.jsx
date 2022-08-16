@@ -74,7 +74,7 @@ export default function Header({
           </button>
         ) : (
           <Button
-            style={{ margin: "0.25 rem" }}
+            style={{ margin: "0.25rem" }}
             onClick={() => {
               window.location.assign("/login");
             }}
