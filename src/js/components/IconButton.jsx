@@ -5,11 +5,11 @@ import { THEME } from "../constants";
 
 import SvgIcon from "./SvgIcon";
 
-// TODO: Incorporate selected state in order to use THEME.iconButtonSelected colors
-
 const StyledButton = styled.button`
-  background-color: ${THEME.iconButtonDefault.backgroundColor};
-  border-color: ${THEME.iconButtonDefault.borderColor};
+  background-color: ${({ $active }) =>
+    $active ? THEME.iconButtonSelected.backgroundColor : THEME.iconButtonDefault.backgroundColor};
+  border-color: ${({ $active }) =>
+    $active ? THEME.iconButtonSelected.borderColor : THEME.iconButtonDefault.borderColor};
   border-radius: 50%;
   border-style: solid;
   border-width: 1px;
