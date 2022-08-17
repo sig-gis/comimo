@@ -3,7 +3,7 @@ import Button from "./Button";
 import styled from "@emotion/styled";
 
 import LanguageSelector from "./LanguageSelector";
-import SvgIcon from "./SvgIcon";
+import IconButton from "./IconButton";
 
 const TitleBar = styled.div`
   width: 100%;
@@ -48,6 +48,7 @@ const UserSettings = styled.div`
 `;
 
 const LoggedInUserPanel = styled.div`
+  align-items: center;
   display: flex;
   cursor: pointer;
 `;
@@ -103,7 +104,7 @@ export default function Header({
           {username ? (
             // TODO: onClick should open up the menu with the Account Settings, Notifications, and Subscribed Muncipalities buttons
             <LoggedInUserPanel onClick={() => window.location.assign("/user-account")}>
-              <SvgIcon icon="user" size="1.2rem" color="white" />
+              <IconButton icon="user" size="26px" tooltip="place holder tooltip" />
               <LoggedInUsername>{username}</LoggedInUsername>
             </LoggedInUserPanel>
           ) : (

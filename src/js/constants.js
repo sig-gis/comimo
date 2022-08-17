@@ -1,4 +1,19 @@
 export const THEME = {
+  iconButtonDefault: {
+    backgroundColor: "var(--white)",
+    borderColor: "var(--orange-2)",
+    fillColor: "var(--gray-1)",
+  },
+  iconButtonHover: {
+    backgroundColor: "var(--orange-2)",
+    borderColor: "var(--white)",
+    fillColor: "var(--gray-1)",
+  },
+  iconButtonSelected: {
+    backgroundColor: "var(--orange-2)",
+    borderColor: "var(--white)",
+    fillColor: "var(--gray-1)",
+  },
   disabled: {
     background: "#f8f8f8",
     color: "#999",
