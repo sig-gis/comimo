@@ -1,4 +1,39 @@
 export const THEME = {
+  buttonDisabled: {
+    backgroundColor: "var(--white)",
+    borderColor: "var(--gray-3)",
+    fillColor: "var(--gray-3)",
+  },
+  primaryButtonDefault: {
+    backgroundColor: "var(--orange-4)",
+    borderColor: "var(--black)",
+    fillColor: "var(--black)",
+  },
+  primaryButtonHover: {
+    backgroundColor: "var(--gray-2)",
+    borderColor: "var(--white)",
+    fillColor: "var(--white)",
+  },
+  primaryButtonSelected: {
+    backgroundColor: "var(--gray-2)",
+    borderColor: "var(--white)",
+    fillColor: "var(--white)",
+  },
+  secondaryButtonDefault: {
+    backgroundColor: "var(--gray-2)",
+    borderColor: "var(--white)",
+    fillColor: "var(--white)",
+  },
+  secondaryButtonHover: {
+    backgroundColor: "var(--orange-4)",
+    borderColor: "var(--black)",
+    fillColor: "var(--black)",
+  },
+  secondaryButtonSelected: {
+    backgroundColor: "var(--orange-4)",
+    borderColor: "var(--black)",
+    fillColor: "var(--black)",
+  },
   iconButtonDefault: {
     backgroundColor: "var(--white)",
     borderColor: "var(--orange-2)",

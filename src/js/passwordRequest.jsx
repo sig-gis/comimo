@@ -72,9 +72,7 @@ class PasswordForgot extends React.Component {
         <AccountForm header={localeText.requestTitle} submitFn={this.requestPassword}>
           {this.renderField(localeText.email, "email", "email")}
           <div style={{ display: "flex", justifyContent: "flex-end" }}>
-            <Button style={{ marginTop: "1rem" }} type="submit">
-              {localeText.request}
-            </Button>
+            <Button buttonText={localeText.request} />
           </div>
         </AccountForm>
       </ThemeProvider>

@@ -154,7 +154,13 @@ export default class Search extends React.Component {
           onKeyUp={(e) => {
             if (e.key === "Enter") this.searchGeocode();
           }}
-          render={() => <Button onClick={this.searchGeocode}>{search.goButton}</Button>}
+          render={() => (
+            <Button
+              buttonText={search.goButton}
+              clickHandler={this.searchGeocode}
+              extraStyle={{ marginLeft: "0.25rem" }}
+            />
+          )}
           value={searchText}
         />
         {geoSearchResults}
@@ -165,7 +171,13 @@ export default class Search extends React.Component {
           onKeyUp={(e) => {
             if (e.key === "Enter") this.processLatLng();
           }}
-          render={() => <Button onClick={this.processLatLng}>{search.goButton}</Button>}
+          render={() => (
+            <Button
+              buttonText={search.goButton}
+              clickHandler={this.processLatLng}
+              extraStyle={{ marginLeft: "0.25rem" }}
+            />
+          )}
           value={latLngText}
         />
         <label>{search.selectLabel}</label>

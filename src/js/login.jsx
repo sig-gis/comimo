@@ -69,23 +69,19 @@ class Login extends React.Component {
             {this.renderField(users?.password, "password", "password")}
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
               <a href="/password-request">{users?.forgot}</a>
-              <Button style={{ margineTop: "1rem" }} type="submit">
-                {users?.login}
-              </Button>
+              <Button buttonText={users?.login} extraStyle={{ marginTop: "1rem" }} />
             </div>
             <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
               <h3>{users?.newUser}</h3>
               <div>
                 <div>
                   <Button
-                    name="register"
-                    onClick={(e) => {
+                    buttonText={users?.register}
+                    clickHandler={(e) => {
                       e.preventDefault();
                       window.location = "/register";
                     }}
-                  >
-                    {users?.register}
-                  </Button>
+                  />
                 </div>
               </div>
             </div>

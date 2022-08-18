@@ -241,11 +241,10 @@ export default class ValidatePanel extends React.Component {
             </span>
             {regionType === 2 && this.renderCustomRegions()}
             <Button
-              style={{ marginTop: "1.5rem" }}
-              onClick={() => this.createProject(selectedDates[mineType] || "2022-01-01-N")}
-            >
-              {`${validate.createButton} ${selectedDates[mineType]}`}
-            </Button>
+              buttonText={`${validate.createButton} ${selectedDates[mineType]}`}
+              extraStyle={{ marginTop: "1rem" }}
+              clickHandler={() => this.createProject(selectedDates[mineType] || "2022-01-01-N")}
+            />
             <p>{errorMsg}</p>
           </div>
         ) : (

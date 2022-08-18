@@ -191,8 +191,8 @@ class UserAccount extends React.Component {
               <span style={{ color: "red" }}>{users?.allRequired}</span>
               <div style={{ display: "flex", marginTop: "0.5rem" }}>
                 <Button
-                  style={{ marginRight: "0.5rem" }}
-                  onClick={() => {
+                  buttonText={users?.logout}
+                  clickHandler={() => {
                     this.showAlert({
                       body: users?.logOutBody,
                       closeText: users?.cancel,
@@ -201,11 +201,11 @@ class UserAccount extends React.Component {
                       title: users?.logout,
                     });
                   }}
-                >
-                  {users?.logout}
-                </Button>
+                  extraStyle={{ marginRight: "0.5rem" }}
+                />
                 <Button
-                  onClick={() => {
+                  buttonText={users?.save}
+                  clickHandler={() => {
                     this.showAlert({
                       body: users?.updateBody,
                       closeText: users?.cancel,
@@ -214,9 +214,7 @@ class UserAccount extends React.Component {
                       title: users?.userAccountTitle,
                     });
                   }}
-                >
-                  {users?.save}
-                </Button>
+                />
               </div>
             </div>
           </AccountForm>

@@ -110,7 +110,7 @@ export default class ReportMinesPanel extends React.Component {
           onKeyUp={(e) => {
             if (e.key === "Enter") this.processLatLng();
           }}
-          render={() => <Button onClick={this.processLatLng}>{report.goButton}</Button>}
+          render={() => <Button buttonText={report.goButton} clickHandler={this.processLatLng} />}
           value={latLonText}
         />
         <h3 style={{ marginTop: "1rem" }}>{report.selectedLocation}</h3>
@@ -127,8 +127,8 @@ export default class ReportMinesPanel extends React.Component {
 
             <div style={{ display: "flex", width: "100%", justifyContent: "flex-end" }}>
               <Button
-                disabled={reportingMine || reported}
-                onClick={() =>
+                buttonText={reported ? report.reported : report.submit}
+                clickHandler={() =>
                   this.showAlert({
                     body: report.areYouSure,
                     closeText: report.cancel,
@@ -137,9 +137,8 @@ export default class ReportMinesPanel extends React.Component {
                     title: report.submit,
                   })
                 }
-              >
-                {reported ? report.reported : report.submit}
-              </Button>
+                isDisabled={reportingMine || reported}
+              />
             </div>
           </>
         ) : (

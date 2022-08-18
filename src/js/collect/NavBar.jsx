@@ -69,13 +69,12 @@ export default function NavBar({
         value={currentPlotNumber()}
       />
       <Button
-        onClick={() => {
+        buttonText={collect?.go}
+        clickHandler={() => {
           goToPlot(currentPlotNumber());
           setPlotNumberToGo(null);
         }}
-      >
-        {collect?.go}
-      </Button>
+      />
     </>
   );
 
@@ -86,22 +85,25 @@ export default function NavBar({
           renderGoToPlot()
         ) : (
           <>
-            <Button onClick={prevPlot}>Prev</Button>
-            <Button $type="mina" onClick={() => setPlotAnswer("Mina")}>
-              {collect?.mina}
-            </Button>
-            <Button $type="noMina" onClick={() => setPlotAnswer("No Mina")}>
-              {collect?.noMina}
-            </Button>
-            <Button onClick={nextPlot}>{collect?.next}</Button>
+            <Button buttonText={collect?.prev} clickHandler={prevPlot} />
+            <Button
+              buttonText={collect?.mina}
+              clickHandler={() => setPlotAnswer("Mina")}
+              extraStyle={{ backgroundColor: "#ff6654" }}
+            />
+            <Button
+              buttonText={collect?.noMina}
+              clickHandler={() => setPlotAnswer("No Mina")}
+              extraStyle={{ backgroundColor: "#00dca0" }}
+            />
+            <Button buttonText={collect?.next} clickHandler={nextPlot} />
             {renderGoToPlot()}
             <Button
-              onClick={() => {
+              buttonText={collect?.exit}
+              clickHandler={() => {
                 window.location.assign("/");
               }}
-            >
-              {collect?.exit}
-            </Button>
+            />
           </>
         )}
       </ButtonRowInner>

@@ -153,9 +153,7 @@ class Register extends React.Component {
           {this.renderField(localeText.confirm, "password", "passwordConfirmation")}
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
             <span style={{ color: "red" }}>{localeText.allRequired}</span>
-            <Button style={{ marginTop: "0.5rem" }} type="submit">
-              {localeText.register}
-            </Button>
+            <Button buttonText={localeText.register} extraStyle={{ marginTop: "0.5rem" }} />
           </div>
         </AccountForm>
       </ThemeProvider>
