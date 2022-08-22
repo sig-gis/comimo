@@ -127,7 +127,7 @@ export default class ReportMinesPanel extends React.Component {
 
             <div style={{ display: "flex", width: "100%", justifyContent: "flex-end" }}>
               <Button
-                onClickF={() =>
+                onClick={() =>
                   this.showAlert({
                     body: report.areYouSure,
                     closeText: report.cancel,
