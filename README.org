@@ -4,12 +4,12 @@
 
 *** Required
 
-- [[https://jdk.java.net][Java Development Kit (version 17)]]
+- [[https://jdk.java.net][Java Development Kit (version 17)]] (OpenJDK 17 is recommended)
 - [[https://clojure.org/guides/getting_started][Clojure CLI tools 1.10]]
 - [[https://www.postgresql.org/download][Postgresql (version 12)]]
 - [[https://postgis.net/install/][PostGIS (version 3)]]
 - [[https://www.7-zip.org/][p7zip]]
-- [[https://nodejs.org/en/][node 10]]
+- [[https://nodejs.org/en/][node 18]]
 - [[https://www.python.org/downloads/][Python 3]]
 
 ** Application Configuration
@@ -112,7 +112,7 @@ pip install earthengine-api --upgrade
 
 *** Google Earth Engine authentication
 
-You will need a Google Earth Engine account to use the GeoDash. To apply for a GEE account, visit https://signup.earthengine.google.com/#!/. Once you receive an account, you can store local authentication information with:
+You will need a Google Earth Engine account to use the GeoDash. To apply for a GEE account, visit https://signup.earthengine.google.com/#!/. Once you receive an account and [[https://cloud.google.com/sdk/docs/install][installed the gcloud CLI]], you can [[https://developers.google.com/earth-engine/guides/python_install#expandable-2][store local authentication information]] with:
 
 #+begin_src sh
 earthengine authenticate
@@ -130,7 +130,7 @@ To compile and run the web application, navigate to the top-level project direct
 
 #+begin_src sh
 npm install
-npm run webpack-dev
+npm run bundle-dev # (outputs to ~dist/public~ and starts ~vite~ dev server on ~http://localhost:5173~)
 #+end_src
 
 Now, in a separate terminal window (because webpack needs to be running in the background), run the following commands:
@@ -141,7 +141,7 @@ clojure -M:server start
 
 The website will then be available at ~http://localhost:8080~ unless a port is specified. These can also be configured using the ~:server~ section in your ~config.edn~ file. When using the ~clojure -M:server start~ command (which is what ~npm run server-dev~ is an alias for) an http port can be specified with -p and an https port can be specified with -P. In dev-mode, server-side exceptions will be displayed in the browser and JavaScript source files will be reloaded whenever you refresh the page.
 
-Going forward you will usually only need to run ~npm run webpack-dev~ and ~clojure -M:server start~ (still in separate terminals) to get your dev environment set up.  Watch for updates to SQL files or ~package.json~ and run ~npm run build-db-functions~ or ~npm install~ respectively.
+Going forward you will usually only need to run ~npm run bundle-dev~ and ~clojure -M:server start~ (still in separate terminals) to get your dev environment set up.  Watch for updates to SQL files or ~package.json~ and run ~npm run build-db-functions~ or ~npm install~ respectively.
 
 *** Checking for Reflection Warnings
 
@@ -182,7 +182,7 @@ To compile and run the web application, navigate to the top-level project direct
 
 #+begin_src sh
 npm install
-npm run webpack-prod
+npm run bundle-prod # (outputs to ~dist/public~)
 clojure -M:build-db functions -d comimo
 clojure -M:server start -m [dev|prod] [-p 8080] [-P 8443] [-r]
 #+end_src
