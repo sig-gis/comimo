@@ -133,7 +133,7 @@ npm install
 npm run bundle-dev # (outputs to ~dist/public~ and starts ~vite~ dev server on ~http://localhost:5173~)
 #+end_src
 
-Now, in a separate terminal window (because webpack needs to be running in the background), run the following commands:
+Now, in a separate terminal window (because Vite needs to be running in the background), run the following commands:
 
 #+begin_src sh
 clojure -M:server start
