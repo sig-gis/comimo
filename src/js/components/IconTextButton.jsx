@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "@emotion/styled";
 import { THEME } from "../constants";
 
@@ -16,9 +16,11 @@ const Container = styled.button`
   height: 100%;
   justify-content: space-between;
   text-decoration: ${({ $active }) => ($active ? "underline" : "none")};
+  transition: text-decoration 0.15s ease-in-out;
 
   &:hover {
     text-decoration: underline;
+  }
 `;
 
 const Label = styled.span`
@@ -40,16 +42,19 @@ function IconTextButton({
   text,
   tooltip,
 }) {
+  const [hover, setHover] = useState(false);
+
   return (
     <Container
       $background={hasBackground}
       $invertBorderRadius={invertBorderRadius || false}
       onClick={clickHandler}
+      onMouseEnter={() => setHover(true)}
+      onMouseLeave={() => setHover(false)}
       title={tooltip}
     >
-      {/* TODO: The active state is not working when passing it here to IconButton, not sure why */}
-      <IconButton $active={active} icon={icon} size={iconSize} />
-      <Label $active={active}>{text}</Label>
+      <IconButton active={hover || active} icon={icon} size={iconSize} />
+      <Label $active={hover}>{text}</Label>
     </Container>
   );
 }
