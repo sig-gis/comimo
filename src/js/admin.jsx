@@ -118,11 +118,9 @@ function makeAdminTableComponent(dateDataURL, columnFields, tableRefDownloadURL)
               </option>
             ))}
           </select>
-          <Button
-            buttonText={collectedData[selectedDate] ? admin.reload : admin.load}
-            clickHandler={() => loadDateData(selectedDate)}
-            isDisabled={selectedDate === -1}
-          />
+          <Button onClick={() => loadDateData(selectedDate)} isDisabled={selectedDate === -1}>
+            {collectedData[selectedDate] ? admin.reload : admin.load}
+          </Button>
         </div>
         <div>
           {selectedDate === -1 && <EmptyMessage>{admin?.emptyTable}</EmptyMessage>}
@@ -297,11 +295,9 @@ function AdminContent() {
         </GridSection>
         <div style={{ margin: "1rem", display: "flex" }}>
           <div style={{ display: "flex", flexGrow: "1" }} />
-          <Button
-            buttonText={admin?.save}
-            clickHandler={updateUserRoles}
-            isDisabled={!roleChanged}
-          />
+          <Button onClick={updateUserRoles} isDisabled={!roleChanged}>
+            {admin?.save}
+          </Button>
         </div>
       </>
     ) : (
@@ -364,12 +360,10 @@ function AdminContent() {
         width: "100%",
       }}
     >
-      <Button
-        buttonText={admin.downloadCSV}
-        clickHandler={() => downloadData("csv")}
-        extraStyle={{ marginRight: "0.5rem" }}
-      />
-      <Button buttonText={admin.downloadJSON} clickHandler={() => downloadData("json")} />
+      <Button onClick={() => downloadData("csv")} extraStyle={{ marginRight: "0.5rem" }}>
+        {admin.downloadCSV}
+      </Button>
+      <Button onClick={() => downloadData("json")}>{admin.downloadJSON}</Button>
     </div>
   );
 

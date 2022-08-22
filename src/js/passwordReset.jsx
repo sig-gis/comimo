@@ -79,7 +79,7 @@ class PasswordReset extends React.Component {
           {this.renderField(localeText.password, "password", "password")}
           {this.renderField(localeText.confirm, "password", "passwordConfirmation")}
           <div style={{ display: "flex", justifyContent: "end" }}>
-            <Button buttonText={localeText.resetTitle} />
+            <Button>buttonText={localeText.resetTitle}</Button>
           </div>
         </AccountForm>
       </ThemeProvider>

@@ -61,11 +61,9 @@ export default class FilterPanel extends React.Component {
             options={pMines}
             value={newSelectedDates.pMines}
           />
-          <Button
-            buttonText={filter.updateMap}
-            clickHandler={() => selectDates(newSelectedDates)}
-            extraStyle={{ marginTop: "1rem" }}
-          />
+          <Button onClick={() => selectDates(newSelectedDates)} extraStyle={{ marginTop: "1rem" }}>
+            {filter.updateMap}
+          </Button>
         </div>
       </ToolPanel>
     );

@@ -103,11 +103,10 @@ export default class DownloadPanel extends React.Component {
           </div>
           {selectedDates && (
             <Button
-              buttonText={`${download.getUrl} ${selectedDates[mineType]}`}
-              clickHandler={this.getDownloadUrl}
+              onClick={this.getDownloadUrl}
               extraStyle={{ marginTop: "0.25rem" }}
               isDisabled={fetching}
-            />
+            >{`${download.getUrl} ${selectedDates[mineType]}`}</Button>
           )}
           {fetching ? (
             <p>{`${download.fetching}...`}</p>

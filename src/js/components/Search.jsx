@@ -155,11 +155,9 @@ export default class Search extends React.Component {
             if (e.key === "Enter") this.searchGeocode();
           }}
           render={() => (
-            <Button
-              buttonText={search.goButton}
-              clickHandler={this.searchGeocode}
-              extraStyle={{ marginLeft: "0.25rem" }}
-            />
+            <Button onClick={this.searchGeocode} extraStyle={{ marginLeft: "0.25rem" }}>
+              {search.goButton}
+            </Button>
           )}
           value={searchText}
         />
@@ -172,11 +170,9 @@ export default class Search extends React.Component {
             if (e.key === "Enter") this.processLatLng();
           }}
           render={() => (
-            <Button
-              buttonText={search.goButton}
-              clickHandler={this.processLatLng}
-              extraStyle={{ marginLeft: "0.25rem" }}
-            />
+            <Button onClick={this.processLatLng} extraStyle={{ marginLeft: "0.25rem" }}>
+              {search.goButton}
+            </Button>
           )}
           value={latLngText}
         />

@@ -122,11 +122,12 @@ export default function Header({
           </LoggedInUserPanel>
         ) : (
           <Button
-            buttonText={localeText.users?.login}
-            clickHandler={() => {
+            onClick={() => {
               window.location.assign("/login");
             }}
-          />
+          >
+            {localeText.users?.login}
+          </Button>
         )}
         <LanguageSelector selectedLanguage={selectedLanguage} selectLanguage={selectLanguage} />
       </UserSettings>

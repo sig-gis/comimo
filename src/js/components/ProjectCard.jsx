@@ -62,11 +62,9 @@ export default function ProjectCard({
         </div>
       </Info>
       <ButtonRow>
-        <Button
-          buttonText="Close"
-          clickHandler={() => closeProject(id)}
-          tooltip={"Close " + name}
-        />
+        <Button onClick={() => closeProject(id)} tooltip={"Close " + name}>
+          Close
+        </Button>
       </ButtonRow>
     </CardOuter>
   );

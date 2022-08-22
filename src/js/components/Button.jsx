@@ -50,7 +50,6 @@ const ButtonStyled = styled.button`
   line-height: 1.5;
   max-height: 37px;
   padding: 0.2rem 0.5rem;
-  pointer-events: ${({ $disabled }) => ($disabled ? "none" : "all")}
   text-align: center;
   transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out,
     border-color 0.15s ease-in-out;
@@ -87,15 +86,7 @@ const ButtonStyled = styled.button`
   }
 `;
 
-function Button({
-  active,
-  buttonText,
-  clickHandler,
-  extraStyle,
-  isDisabled,
-  secondaryButton,
-  tooltip,
-}) {
+function Button({ active, children, extraStyle, isDisabled, onClick, secondaryButton, tooltip }) {
   return (
     <ButtonStyled
       style={extraStyle}
@@ -103,10 +94,10 @@ function Button({
       $disabled={isDisabled}
       disabled={isDisabled}
       $secondaryButton={secondaryButton || false}
-      onClick={clickHandler}
+      onClick={onClick}
       title={tooltip}
     >
-      {buttonText}
+      {children}
     </ButtonStyled>
   );
 }

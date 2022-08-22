@@ -171,9 +171,8 @@ export default class SubscribePanel extends React.Component {
               {selectedRegion && !subscribedList.includes(selectedRegion) && (
                 <div style={{ textAlign: "center", width: "100%" }}>
                   <Button
-                    buttonText={`${subscribe.subscribeTo} ${parsedRegion[2]}, ${parsedRegion[1]}`}
-                    clickHandler={() => this.addSubs(selectedRegion)}
-                  />
+                    onClick={() => this.addSubs(selectedRegion)}
+                  >{`${subscribe.subscribeTo} ${parsedRegion[2]}, ${parsedRegion[1]}`}</Button>
                 </div>
               )}
             </div>

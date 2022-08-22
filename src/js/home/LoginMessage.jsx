@@ -12,11 +12,12 @@ export default function LoginMessage({ actionText }) {
     <div style={{ textAlign: "center", width: "100%" }}>
       <p>{`${users.toView} ${actionText}.`}</p>
       <Button
-        buttonText={users.login}
-        clickHandler={() => {
+        onClick={() => {
           location.href = "login";
         }}
-      />
+      >
+        {users.login}
+      </Button>
     </div>
   );
 }
