@@ -24,7 +24,6 @@
     "react": "^16.8.0",
     "react-dom": "^16.8.0",
     "react-tabulator": "^0.18.1",
-    "styled-jsx": "^5.0.4",
     "turf-extent": "^1.0.4"
   },
   "devDependencies": {
@@ -34,6 +33,7 @@
     "@babel/preset-env": "^7.16.11",
     "@babel/preset-react": "^7.16.7",
     "@babel/runtime": "^7.18.9",
+    "@emotion/babel-plugin": "^11.10.0",
     "@emotion/babel-preset-css-prop": "^11.2.0",
     "@rollup/plugin-babel": "^5.3.1",
     "@rollup/plugin-node-resolve": "^13.3.0",

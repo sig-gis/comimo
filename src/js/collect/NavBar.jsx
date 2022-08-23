@@ -86,14 +86,20 @@ export default function NavBar({
           renderGoToPlot()
         ) : (
           <>
-            <Button onClick={prevPlot}>Prev</Button>
-            <Button $type="mina" onClick={() => setPlotAnswer("Mina")}>
+            <Button onClick={prevPlot}>{collect?.prev}</Button>
+            <Button
+              onClick={() => setPlotAnswer("Mina")}
+              extraStyle={{ backgroundColor: "#ff6654" }}
+            >
               {collect?.mina}
             </Button>
-            <Button $type="noMina" onClick={() => setPlotAnswer("No Mina")}>
+            <Button
+              onClick={() => setPlotAnswer("No Mina")}
+              extraStyle={{ backgroundColor: "#00dca0" }}
+            >
               {collect?.noMina}
             </Button>
-            <Button onClick={nextPlot}>{collect?.next}</Button>
+            <Button buttonText={collect?.next} clickHandler={nextPlot} />
             {renderGoToPlot()}
             <Button
               onClick={() => {
