@@ -13,6 +13,7 @@ const StyledButton = styled.button`
   border-radius: 50%;
   border-style: solid;
   border-width: 1px;
+  cursor: pointer;
   height: fit-content;
   margin: 5px 0;
   padding: 0;
@@ -31,7 +32,7 @@ const SvgContainer = styled.div`
   padding: 6px;
 `;
 
-function IconButton({ icon, parentClass, clickHandler, tooltip, active, size }) {
+function IconButton({ active, icon, parentClass, clickHandler, size, tooltip }) {
   return (
     <StyledButton
       $active={active}
