@@ -7,9 +7,9 @@ import SvgIcon from "./SvgIcon";
 
 const StyledButton = styled.button`
   background-color: ${({ $active }) =>
-    $active ? THEME.iconButtonSelected.backgroundColor : THEME.iconButtonDefault.backgroundColor};
+    $active ? THEME.active.iconButton.backgroundColor : THEME.default.iconButton.backgroundColor};
   border-color: ${({ $active }) =>
-    $active ? THEME.iconButtonSelected.borderColor : THEME.iconButtonDefault.borderColor};
+    $active ? THEME.active.iconButton.borderColor : THEME.default.iconButton.borderColor};
   border-radius: 50%;
   border-style: solid;
   border-width: 1px;
@@ -21,8 +21,8 @@ const StyledButton = styled.button`
     border-color 0.15s ease-in-out;
 
   &:hover {
-    background-color: ${THEME.iconButtonHover.backgroundColor};
-    border-color: ${THEME.iconButtonHover.borderColor};
+    background-color: ${THEME.hover.iconButton.backgroundColor};
+    border-color: ${THEME.hover.iconButton.borderColor};
   }
 `;
 
@@ -41,7 +41,7 @@ function IconButton({ active, icon, parentClass, clickHandler, size, tooltip }) 
       title={tooltip}
     >
       <SvgContainer>
-        <SvgIcon color={THEME.iconButtonDefault.fillColor} icon={icon} size={size || "32px"} />
+        <SvgIcon color={THEME.default.iconButton.fillColor} icon={icon} size={size || "32px"} />
       </SvgContainer>
     </StyledButton>
   );

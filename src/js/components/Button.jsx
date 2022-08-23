@@ -2,73 +2,79 @@ import React from "react";
 import styled from "@emotion/styled";
 import { THEME } from "../constants";
 
+// Background color
+
 const getBackgroundColor = ({ $active, $disabled, $secondaryButton }) => {
   if ($disabled) {
-    return THEME.buttonDisabled.backgroundColor;
+    return THEME.disabled.backgroundColor;
   } else if ($secondaryButton) {
     return $active
-      ? THEME.secondaryButtonSelected.backgroundColor
-      : THEME.secondaryButtonDefault.backgroundColor;
+      ? THEME.active.secondaryButton.backgroundColor
+      : THEME.default.secondaryButton.backgroundColor;
   } else {
     return $active
-      ? THEME.primaryButtonSelected.backgroundColor
-      : THEME.primaryButtonDefault.backgroundColor;
+      ? THEME.active.standardButton.backgroundColor
+      : THEME.default.standardButton.backgroundColor;
   }
 };
 
 const getBackgroundColorHover = ({ $disabled, $secondaryButton }) => {
   if ($disabled) {
-    return THEME.buttonDisabled.backgroundColor;
+    return THEME.disabled.backgroundColor;
   } else if ($secondaryButton) {
-    return THEME.secondaryButtonHover.backgroundColor;
+    return THEME.hover.secondaryButton.backgroundColor;
   } else {
-    return THEME.primaryButtonHover.backgroundColor;
+    return THEME.hover.standardButton.backgroundColor;
   }
 };
 
+// Border color
+
 const getBorderColor = ({ $active, $disabled, $secondaryButton }) => {
   if ($disabled) {
-    return THEME.buttonDisabled.borderColor;
+    return THEME.disabled.borderColor;
   } else if ($secondaryButton) {
     return $active
-      ? THEME.secondaryButtonSelected.borderColor
-      : THEME.secondaryButtonDefault.borderColor;
+      ? THEME.active.secondaryButton.borderColor
+      : THEME.default.secondaryButton.borderColor;
   } else {
     return $active
-      ? THEME.primaryButtonSelected.borderColor
-      : THEME.primaryButtonDefault.borderColor;
+      ? THEME.active.standardButton.borderColor
+      : THEME.default.standardButton.borderColor;
   }
 };
 
 const getBorderColorHover = ({ $disabled, $secondaryButton }) => {
   if ($disabled) {
-    return THEME.buttonDisabled.borderColor;
+    return THEME.disabled.borderColor;
   } else if ($secondaryButton) {
-    return THEME.secondaryButtonHover.borderColor;
+    return THEME.hover.secondaryButton.borderColor;
   } else {
-    return THEME.primaryButtonHover.borderColor;
+    return THEME.hover.standardButton.borderColor;
   }
 };
 
+// Fill color
+
 const getFillColor = ({ $active, $disabled, $secondaryButton }) => {
   if ($disabled) {
-    return THEME.buttonDisabled.fillColor;
+    return THEME.disabled.fillColor;
   } else if ($secondaryButton) {
     return $active
-      ? THEME.secondaryButtonSelected.fillColor
-      : THEME.secondaryButtonDefault.fillColor;
+      ? THEME.active.secondaryButton.fillColor
+      : THEME.default.secondaryButton.fillColor;
   } else {
-    return $active ? THEME.primaryButtonSelected.fillColor : THEME.primaryButtonDefault.fillColor;
+    return $active ? THEME.active.standardButton.fillColor : THEME.default.standardButton.fillColor;
   }
 };
 
 const getFillColorHover = ({ $disabled, $secondaryButton }) => {
   if ($disabled) {
-    return THEME.buttonDisabled.fillColor;
+    return THEME.disabled.fillColor;
   } else if ($secondaryButton) {
-    return THEME.secondaryButtonHover.fillColor;
+    return THEME.hover.secondaryButton.fillColor;
   } else {
-    return THEME.primaryButtonHover.fillColor;
+    return THEME.hover.standardButton.fillColor;
   }
 };
 
@@ -76,7 +82,9 @@ const ButtonStyled = styled.button`
   background-color: ${getBackgroundColor};
   border-color: ${getBorderColor};
   border: 1px solid;
-  border-radius: 0.25rem;
+  border-radius: 4px;
+  box-shadow: ${({ $active, $disabled }) =>
+    $active || $disabled ? "none" : "0px 2px 4px #00000050"};
   color: ${getFillColor};
   cursor: ${({ $disabled }) => ($disabled ? "not-allowed" : "pointer")};
   font-style: var(--unnamed-font-family-roboto);
@@ -94,6 +102,7 @@ const ButtonStyled = styled.button`
   &:hover {
     background-color: ${getBackgroundColorHover};
     border-color: ${getBorderColorHover};
+    box-shadow: none;
     color: ${getFillColorHover};
   }
 `;
