@@ -60,13 +60,13 @@ export default function NICFIControl({ extraParams, setParams, nicfiLayers }) {
         </div>
       </div>
       <Button
-        style={{ marginTop: "0.5rem" }}
         onClick={() =>
           setParams("NICFI", {
             dataLayer: selectedTime,
             band: selectedBand,
           })
         }
+        extraStyle={{ marginTop: "0.5rem" }}
       >
         {layers.updateNICFI}
       </Button>

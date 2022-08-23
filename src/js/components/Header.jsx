@@ -46,6 +46,7 @@ const LogoGitVersion = styled.span`
 `;
 
 const UserSettings = styled.div`
+  align-items: center;
   display: flex;
   flex: 1;
   justify-content: space-around;
@@ -120,9 +121,7 @@ export default function Header({
             />
           </LoggedInUserPanel>
         ) : (
-          // TODO: Updte the Button component to use the new styles
           <Button
-            style={{ margin: "0.25rem" }}
             onClick={() => {
               window.location.assign("/login");
             }}

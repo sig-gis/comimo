@@ -260,5 +260,13 @@
     "role": "Posición",
     "emptyTable": "Seleccione un mes de informe y haga clic en 'Carga' para ver los resultados.",
     "noData": "No hay datos disponibles para este mes. Por favor, intente otro mes."
+  },
+  "collect": {
+    "mina": "Mina",
+    "noMina": "No Mina",
+    "go": "Vamos",
+    "exit": "Salida",
+    "next": "Próxima",
+    "prev": "Previa"
   }
 }
