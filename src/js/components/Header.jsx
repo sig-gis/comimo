@@ -3,53 +3,59 @@ import Button from "./Button";
 import styled from "@emotion/styled";
 
 import LanguageSelector from "./LanguageSelector";
-import SvgIcon from "./SvgIcon";
+import IconTextButton from "./IconTextButton";
 
 const TitleBar = styled.div`
-  width: 100%;
   background: var(--gray-1);
-  text-align: center;
-  padding: 5px;
-  height: 3.5rem;
   display: flex;
+  height: 60px;
   justify-content: space-between;
+  text-align: center;
+  width: 100%;
 `;
 
 const Search = styled.div`
+  display: flex;
+  justify-content: center;
   flex: 1;
 `;
 
 const Logo = styled.div`
-  display: relative;
   align-items: center;
-  justify-content: center;
-  flex-direction: column;
+  display: relative;
   flex: 1;
+  flex-direction: column;
+  justify-content: center;
+  padding: 5px 0;
 `;
 
 const LogoImg = styled.img`
-  width: 130px;
-  height: 43px;
   cursor: pointer;
+  height: 43px;
+  width: 130px;
 `;
 
 const LogoGitVersion = styled.span`
-  position: relative;
-  left: -90px;
   bottom: 0px;
   color: var(--white);
-  text-align: left;
   font-size: 12px;
+  left: -90px;
   letter-spacing: 0px;
+  position: relative;
+  text-align: left;
 `;
 
 const UserSettings = styled.div`
+  align-items: center;
+  display: flex;
   flex: 1;
+  justify-content: space-around;
 `;
 
 const LoggedInUserPanel = styled.div`
-  display: flex;
+  align-items: center;
   cursor: pointer;
+  display: flex;
 `;
 
 const LoggedInUsername = styled.span`
@@ -75,10 +81,21 @@ export default function Header({
 }) {
   return (
     <TitleBar id="title-bar">
-      <Search>
-        <button>test</button>
+      <Search id="header-search">
+        {/* TODO: onClick should open up the Search functionality
+        TODO: have an active state that we can pass to IconTextButton */}
+        <IconTextButton
+          active={false}
+          clickHandler={() => window.alert("place holder for search functionality")}
+          hasBackground={true}
+          icon="search"
+          iconSize="26px"
+          invertBorderRadius={true}
+          text="Search"
+          tooltip="Placeholder Search ToolTip"
+        />
       </Search>
-      <Logo>
+      <Logo id="header-logo">
         <LogoImg
           alt="app-logo"
           onClick={() => window.location.assign("/")}
@@ -88,37 +105,31 @@ export default function Header({
         <LogoGitVersion>prod-2022-08-01</LogoGitVersion>
         {/* <LogoGitVersion>{version && `Version: ${version}`}</LogoGitVersion> */}
       </Logo>
-      <UserSettings>
-        <div
-          id="user-panel"
-          style={{
-            alignItems: "center",
-            display: "flex",
-            position: "fixed",
-            right: "56px",
-            top: "10px",
-            zIndex: 1000,
-          }}
-        >
-          {username ? (
-            // TODO: onClick should open up the menu with the Account Settings, Notifications, and Subscribed Muncipalities buttons
-            <LoggedInUserPanel onClick={() => window.location.assign("/user-account")}>
-              <SvgIcon icon="user" size="1.2rem" color="white" />
-              <LoggedInUsername>{username}</LoggedInUsername>
-            </LoggedInUserPanel>
-          ) : (
-            // TODO: Make this a styled component
-            <Button
-              style={{ margin: "0.25rem" }}
-              onClick={() => {
-                window.location.assign("/login");
-              }}
-            >
-              {localeText.users?.login}
-            </Button>
-          )}
-          <LanguageSelector selectedLanguage={selectedLanguage} selectLanguage={selectLanguage} />
-        </div>
+      <UserSettings id="user-settings">
+        {username ? (
+          // TODO: onClick should open up the menu with the Account Settings, Notifications, and Subscribed Muncipalities buttons
+          // TODO: have an active state that we can pass to IconTextButton
+          <LoggedInUserPanel>
+            <IconTextButton
+              active={false}
+              clickHandler={() => window.location.assign("/user-account")}
+              hasBackground={false}
+              icon="user"
+              iconSize="26px"
+              text={username}
+              tooltip="Placeholder ToolTip"
+            />
+          </LoggedInUserPanel>
+        ) : (
+          <Button
+            onClick={() => {
+              window.location.assign("/login");
+            }}
+          >
+            {localeText.users?.login}
+          </Button>
+        )}
+        <LanguageSelector selectedLanguage={selectedLanguage} selectLanguage={selectLanguage} />
       </UserSettings>
     </TitleBar>
   );

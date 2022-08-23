@@ -6,7 +6,7 @@ import MenuItem from "./components/MenuItem";
 import NICFIControl from "./components/NICFIControl";
 import { PageLayout, MainContext } from "./components/PageLayout";
 import SideBar from "./components/SideBar";
-import SideIcon from "./components/SideIcon";
+import IconButton from "./components/IconButton";
 import ToolPanel from "./components/ToolPanel";
 import LoadingModal from "./components/LoadingModal";
 
@@ -203,7 +203,7 @@ class CollectContent extends React.Component {
                 </div>
               </ToolPanel>
             </MenuItem>
-            <SideIcon
+            <IconButton
               clickHandler={() => setShowInfo(true)}
               icon="info"
               parentClass="disclaimer"

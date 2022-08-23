@@ -109,11 +109,11 @@ export default function Modal({ title, children, closeText, confirmText, onClose
           </ModalTitle>
           <ModalBody>{children}</ModalBody>
           <ButtonContainer>
-            <Button onClick={onClose} type="button" style={{ backgroundColor: "#6c757d" }}>
+            <Button onClick={onClose} secondaryButton={true}>
               {closeText}
             </Button>
             {typeof onConfirm === "function" && (
-              <Button onClick={onConfirm} type="button" style={{ marginLeft: "1rem" }}>
+              <Button onClick={onConfirm} extraStyle={{ marginLeft: "1rem" }}>
                 {confirmText}
               </Button>
             )}

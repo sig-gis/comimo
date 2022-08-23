@@ -6,7 +6,7 @@ const PanelOuter = styled.div`
   display: flex;
   flex-direction: column;
   height: 100%;
-  left: 50px;
+  left: 60px;
   position: absolute;
   top: 0;
   width: 33vw;
@@ -26,7 +26,7 @@ const Content = styled.div`
 
 export default function ToolPanel({ title, children }) {
   return (
-    <PanelOuter>
+    <PanelOuter id={`tool-panel-${title.replaceAll(' ', '-').toLowerCase()}`}>
       <Title>{title}</Title>
       <Content>{children}</Content>
     </PanelOuter>

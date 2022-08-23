@@ -191,7 +191,6 @@ class UserAccount extends React.Component {
               <span style={{ color: "red" }}>{users?.allRequired}</span>
               <div style={{ display: "flex", marginTop: "0.5rem" }}>
                 <Button
-                  style={{ marginRight: "0.5rem" }}
                   onClick={() => {
                     this.showAlert({
                       body: users?.logOutBody,
@@ -201,6 +200,7 @@ class UserAccount extends React.Component {
                       title: users?.logout,
                     });
                   }}
+                  extraStyle={{ marginRight: "0.5rem" }}
                 >
                   {users?.logout}
                 </Button>

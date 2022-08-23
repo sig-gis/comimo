@@ -1,11 +1,64 @@
 export const THEME = {
-  disabled: {
-    background: "#f8f8f8",
-    color: "#999",
+  default: {
+    standardButton: {
+      backgroundColor: "var(--orange-4)",
+      borderColor: "var(--black)",
+      fillColor: "var(--black)",
+    },
+    secondaryButton: {
+      backgroundColor: "var(--gray-2)",
+      borderColor: "var(--white)",
+      fillColor: "var(--white)",
+    },
+    iconButton: {
+      backgroundColor: "var(--white)",
+      borderColor: "var(--orange-2)",
+      fillColor: "var(--gray-1)",
+    },
   },
-  primary: {
-    background: "#f8b556",
-    color: "#eee",
+  hover: {
+    standardButton: {
+      backgroundColor: "var(--gray-2)",
+      borderColor: "var(--white)",
+      fillColor: "var(--white)",
+    },
+    secondaryButton: {
+      backgroundColor: "var(--orange-4)",
+      borderColor: "var(--black)",
+      fillColor: "var(--black)",
+    },
+    iconButton: {
+      backgroundColor: "var(--orange-2)",
+      borderColor: "var(--white)",
+      fillColor: "var(--gray-1)",
+    },
+  },
+  active: {
+    standardButton: {
+      backgroundColor: "var(--gray-2)",
+      borderColor: "var(--white)",
+      fillColor: "var(--white)",
+    },
+    secondaryButton: {
+      backgroundColor: "var(--orange-4)",
+      borderColor: "var(--black)",
+      fillColor: "var(--black)",
+    },
+    iconButton: {
+      backgroundColor: "var(--orange-2)",
+      borderColor: "var(--white)",
+      fillColor: "var(--gray-1)",
+    },
+  },
+  disabled: {
+    backgroundColor: "var(--white)",
+    borderColor: "var(--gray-3)",
+    fillColor: "var(--gray-3)",
+  },
+  error: {
+    backgroundColor: "var(--white)",
+    borderColor: "var(--error-red)",
+    fillColor: "var(--error-red)",
   },
   mina: {
     background: "#ff6654", // red

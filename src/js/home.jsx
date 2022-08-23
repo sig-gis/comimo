@@ -10,7 +10,7 @@ import MenuItem from "./components/MenuItem";
 import ReportMinesPanel from "./home/ReportMinesPanel";
 import ReportPopupContent from "./home/ReportPopupContent";
 import SideBar from "./components/SideBar";
-import SideIcon from "./components/SideIcon";
+import IconButton from "./components/IconButton";
 import StatsPanel from "./home/StatsPanel";
 import SubscribePanel from "./home/SubscribePanel";
 import ValidatePanel from "./home/ValidatePanel";
@@ -256,7 +256,7 @@ class HomeContents extends React.Component {
 
             {/* Advanced Button */}
             {username && (
-              <SideIcon
+              <IconButton
                 clickHandler={() => {
                   this.setState(
                     this.state.advancedOptions
@@ -265,7 +265,6 @@ class HomeContents extends React.Component {
                   );
                 }}
                 icon={this.state.advancedOptions ? "minus" : "plus"}
-                subtext={home.advancedTooltip}
                 tooltip={home.advancedTooltip}
               />
             )}
@@ -334,13 +333,13 @@ class HomeContents extends React.Component {
             )}
             <div style={{ flexGrow: 1 }} />
             {isAdmin && (
-              <SideIcon
+              <IconButton
                 clickHandler={() => window.location.assign("/admin")}
                 icon="admin"
                 tooltip={home.admin}
               />
             )}
-            <SideIcon
+            <IconButton
               clickHandler={() => setShowInfo(true)}
               icon="info"
               tooltip={home.appInfoTooltip}
