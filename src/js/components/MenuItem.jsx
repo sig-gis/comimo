@@ -13,8 +13,8 @@ export default function MenuItem({ icon, selectedItem, itemName, onClick, toolti
     <>
       <IconButton
         active={selectedItem === itemName}
-        clickHandler={() => onClick(itemName)}
         icon={icon || itemName}
+        onClick={() => onClick(itemName)}
         tooltip={tooltip}
       />
       <Hidable active={active}>{children}</Hidable>

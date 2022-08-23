@@ -257,14 +257,14 @@ class HomeContents extends React.Component {
             {/* Advanced Button */}
             {username && (
               <IconButton
-                clickHandler={() => {
+                icon={this.state.advancedOptions ? "minus" : "plus"}
+                onClick={() => {
                   this.setState(
                     this.state.advancedOptions
                       ? { advancedOptions: false, ...this.advancedPanelState }
                       : { advancedOptions: true }
                   );
                 }}
-                icon={this.state.advancedOptions ? "minus" : "plus"}
                 tooltip={home.advancedTooltip}
               />
             )}
@@ -331,19 +331,6 @@ class HomeContents extends React.Component {
                 </MenuItem>
               </>
             )}
-            <div style={{ flexGrow: 1 }} />
-            {isAdmin && (
-              <IconButton
-                clickHandler={() => window.location.assign("/admin")}
-                icon="admin"
-                tooltip={home.admin}
-              />
-            )}
-            <IconButton
-              clickHandler={() => setShowInfo(true)}
-              icon="info"
-              tooltip={home.appInfoTooltip}
-            />
           </SideBar>
         )}
       </>

@@ -204,8 +204,8 @@ class CollectContent extends React.Component {
               </ToolPanel>
             </MenuItem>
             <IconButton
-              clickHandler={() => setShowInfo(true)}
               icon="info"
+              onClick={() => setShowInfo(true)}
               parentClass="disclaimer"
               tooltip={home.appInfoTooltip}
             />

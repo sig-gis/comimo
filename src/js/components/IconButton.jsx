@@ -32,12 +32,13 @@ const SvgContainer = styled.div`
   padding: 6px;
 `;
 
-function IconButton({ active, icon, parentClass, clickHandler, size, tooltip }) {
+function IconButton({ active, icon, extraStyle, onClick, parentClass, size, tooltip }) {
   return (
     <StyledButton
+      style={extraStyle}
       $active={active}
       className={parentClass || ""}
-      onClick={clickHandler}
+      onClick={onClick}
       title={tooltip}
     >
       <SvgContainer>

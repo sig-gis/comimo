@@ -3,7 +3,7 @@ import styled from "@emotion/styled";
 
 const LngLatHudLabel = styled.div`
   background: rgba(255, 255, 255, 0.7);
-  bottom: 32px;
+  bottom: 80px;
   right: 8px;
   border-radius: 2px;
   height: 20px;

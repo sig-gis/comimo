@@ -7,6 +7,7 @@ import IconTextButton from "./IconTextButton";
 
 const TitleBar = styled.div`
   background: var(--gray-1);
+  box-shadow: 0px 3px 6px #0000008d;
   display: flex;
   height: 60px;
   justify-content: space-between;
@@ -21,28 +22,14 @@ const Search = styled.div`
 `;
 
 const Logo = styled.div`
-  align-items: center;
-  display: relative;
   flex: 1;
-  flex-direction: column;
-  justify-content: center;
   padding: 5px 0;
 `;
 
 const LogoImg = styled.img`
   cursor: pointer;
-  height: 43px;
+  height: 100%;
   width: 130px;
-`;
-
-const LogoGitVersion = styled.span`
-  bottom: 0px;
-  color: var(--white);
-  font-size: 12px;
-  left: -90px;
-  letter-spacing: 0px;
-  position: relative;
-  text-align: left;
 `;
 
 const UserSettings = styled.div`
@@ -100,10 +87,7 @@ export default function Header({
           alt="app-logo"
           onClick={() => window.location.assign("/")}
           src="/img/app-logo.png"
-          style={{ height: "100%", cursor: "pointer" }}
         />
-        <LogoGitVersion>prod-2022-08-01</LogoGitVersion>
-        {/* <LogoGitVersion>{version && `Version: ${version}`}</LogoGitVersion> */}
       </Logo>
       <UserSettings id="user-settings">
         {username ? (

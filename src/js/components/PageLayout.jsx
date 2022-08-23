@@ -3,6 +3,7 @@ import React from "react";
 import { ThemeProvider } from "@emotion/react";
 import AppInfo from "../home/AppInfo";
 import Header from "./Header";
+import Footer from "./Footer";
 
 import { getLanguage, jsonRequest } from "../utils";
 import { THEME } from "../constants";
@@ -97,6 +98,7 @@ export class PageLayout extends React.Component {
               }}
             />
             {children}
+            <Footer isAdmin={isAdmin} setShowInfo={this.setShowInfo} version={version} />
           </div>
         </ThemeProvider>
       </MainContext.Provider>
