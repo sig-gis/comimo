@@ -2,20 +2,22 @@ import React from "react";
 import styled from "@emotion/styled";
 
 const SideBarContainer = styled.div`
-  background: #ffffee;
+  align-items: center;
+  background: var(--gray-1);
   box-shadow: 0px 0px 0px 1px rgba(0, 0, 0, 0.1);
-  height: calc(100% - 3.5rem);
   display: flex;
   flex-direction: column;
+  height: calc(100% - 3.5rem);
   margin: 0;
   padding: 0;
   position: absolute;
   top: 3.5rem;
-  width: 50px;
+  width: 60px;
   z-index: 99;
 
   @media only screen and (orientation: portrait) {
     bottom: 0;
+    flex-direction: row;
     height: 75px;
     left: 0;
     position: absolute;
@@ -28,5 +30,5 @@ const SideBarContainer = styled.div`
 `;
 
 export default function SideBar({ children }) {
-  return <SideBarContainer>{children}</SideBarContainer>;
+  return <SideBarContainer id="side-bar">{children}</SideBarContainer>;
 }

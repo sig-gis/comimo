@@ -127,7 +127,6 @@ export default class ReportMinesPanel extends React.Component {
 
             <div style={{ display: "flex", width: "100%", justifyContent: "flex-end" }}>
               <Button
-                disabled={reportingMine || reported}
                 onClick={() =>
                   this.showAlert({
                     body: report.areYouSure,
@@ -137,6 +136,7 @@ export default class ReportMinesPanel extends React.Component {
                     title: report.submit,
                   })
                 }
+                isDisabled={reportingMine || reported}
               >
                 {reported ? report.reported : report.submit}
               </Button>

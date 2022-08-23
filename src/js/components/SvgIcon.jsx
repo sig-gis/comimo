@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 
 const envelopeIcon = (
   <svg viewBox="0 0 512 512">
@@ -220,21 +221,40 @@ const iconMap = {
   admin: adminIcon,
 };
 
-export default function SvgIcon({ icon, color, size, extraStyle }) {
+function SvgIcon({ color, cursor,  extraStyles, icon,  size, verticalAlign }) {
   return (
     <div
       style={{
-        color: color || "black",
-        cursor: "pointer",
-        fill: color || "black",
+        color: color,
+        cursor: cursor,
+        fill: color,
         height: size,
         maxHeight: size,
         maxWidth: size,
         width: size,
-        ...(extraStyle || {}),
+        verticalAlign: verticalAlign,
+        ...extraStyles,
       }}
     >
-      {iconMap[icon] || iconMap.check}
+      {iconMap[icon]}
     </div>
   );
 }
+
+SvgIcon.propTypes = {
+  color: PropTypes.string,
+  cursor: PropTypes.string,
+  extraStyles: PropTypes.object,
+  icon: PropTypes.oneOf(Object.keys(iconMap)).isRequired,
+  size: PropTypes.string.isRequired,
+  verticalAlign: PropTypes.string
+};
+
+SvgIcon.defaultProps = {
+  color: "currentColor",
+  cursor: "pointer",
+  extraStyles: {},
+  verticalAlign: "middle"
+};
+
+export default SvgIcon;

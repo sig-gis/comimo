@@ -1,6 +1,8 @@
 import React, { useState } from "react";
+import styled from "@emotion/styled";
 
 import SvgIcon from "./SvgIcon";
+
 
 export default function LanguageSelector({ selectedLanguage, selectLanguage }) {
   const [show, setShow] = useState(false);
@@ -9,6 +11,57 @@ export default function LanguageSelector({ selectedLanguage, selectLanguage }) {
     es: "colombia.png",
     en: "united-states.png",
   };
+
+  // const languageSelector = styled.div`
+  //   text-align: left;
+  //   font-size: 18px;
+  //   font-weight: var(--unnamed-font-weight-medium);
+  //   letter-spacing: 0px;
+  //   color: var(--white);
+  //   padding: 0 0.5rem;
+
+  //   &:hover {
+  //     text-decoration: underline;
+  //   }
+  // `;
+
+  const LanguageSelector = styled.div`
+    display: flex;
+    text-align: left;
+  `;
+  const languageIcon = styled.div`
+    color: var(--red);
+  `
+  const LanguageText = styled.div`
+    font-size: 18px
+    letter-spacing: 0px;
+    text-decoration: underline;
+  `;
+
+  const LanguageOption = styled.div`
+    /* text-align: left; */
+    font-size:16px
+    /* letter-spacing: 0px; */
+    /* color: #ffffff; */
+  `;
+
+  const showLanguageOption = (language) => (
+    <div
+      onClick={() => {
+        // selectLanguage(language);
+        // setShow(false);
+      }}
+      style={{ height: "30px", maxHeight: "30px" }}
+    >
+      <img
+        alt={language}
+        src={`/img/${languageList[language]}`}
+        style={{ maxWidth: "100%", maxHeight: "100%" }}
+      />
+    </div>
+  );
+
+
 
   const renderOption = (language) => (
     <div

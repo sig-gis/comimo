@@ -130,7 +130,7 @@ To compile and run the web application, navigate to the top-level project direct
 
 #+begin_src sh
 npm install
-npm run bundle-dev # (outputs to ~dist/public~ and starts ~vite~ dev server on ~http://localhost:5173~)
+npm run bundle-dev # outputs to dist/public and starts Vite dev server on http://localhost:5173
 #+end_src
 
 Now, in a separate terminal window (because Vite needs to be running in the background), run the following commands:
@@ -182,7 +182,7 @@ To compile and run the web application, navigate to the top-level project direct
 
 #+begin_src sh
 npm install
-npm run bundle-prod # (outputs to ~dist/public~)
+npm run bundle-prod # outputs to dist/public
 clojure -M:build-db functions -d comimo
 clojure -M:server start -m [dev|prod] [-p 8080] [-P 8443] [-r]
 #+end_src

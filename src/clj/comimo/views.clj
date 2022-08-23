@@ -73,6 +73,7 @@
        (list [:script {:async true :src (str "https://www.googletagmanager.com/gtag/js?id=" ga-id)}]
              [:script (str "window.dataLayer = window.dataLayer || []; function gtag() {dataLayer.push(arguments);} gtag('js', new Date()); gtag('config', '" ga-id "', {'page_location': location.host + location.pathname});")]))
      (apply include-css
+            "/css/comimo_global.css"
             bundle-css-files)
      (include-js "https://www.gstatic.com/charts/loader.js"
                  "/js/jquery-3.4.1.min.js")
