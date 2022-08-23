@@ -17,9 +17,20 @@
 
 (defn find-bundle-js-files [page]
   (let [src-file        (format "src/js/%s.jsx" page)
-        manifest        (-> (slurp "dist/public/manifest.json")
-                            (json/read-str)
-                            (get src-file))
+        manifest      (loop [manifest-file (io/file "dist/public/manifest.json")
+                             counter       0]
+                        (cond
+                          (.exists manifest-file)
+                          (-> (slurp "dist/public/manifest.json")
+                              (json/read-str)
+                              (get src-file))
+
+                          (> counter 25)
+                          (throw (ex-info "can't find manifest.json" {}))
+
+                          :else
+                          (do (Thread/sleep 100)
+                              (recur manifest-file (inc counter)))))
         entrypoint-file (str "/" (get manifest "file"))
         asset-files     (mapv #(str/replace % #"^_" "/assets/")
                               (get manifest "imports"))]
@@ -66,8 +77,19 @@
             bundle-css-files)
      (include-js "https://www.gstatic.com/charts/loader.js"
                  "/js/jquery-3.4.1.min.js")
-     (map (fn [f] [:script {:type "module" :src f}])
-          bundle-js-files)]))
+     (if (= "dev" (get-config :server :mode))
+       (list
+        [:script {:type "module"}
+         "import RefreshRuntime from 'http://localhost:5173/@react-refresh'
+         RefreshRuntime.injectIntoGlobalHook(window)
+         window.$RefreshReg$ = () => {}
+         window.$RefreshSig$ = () => (type) => type
+         window.__vite_plugin_react_preamble_installed__ = true"]
+        [:script {:type "module" :src "http://localhost:5173/@vite/client"}]
+        (map (fn [f] [:script {:type "module" :src (str "http://localhost:5173" f)}])
+             bundle-js-files))
+       (map (fn [f] [:script {:type "module" :src f}])
+            bundle-js-files))]))
 
 (defn uri->page [uri]
   (->> (str/split uri #"/")
@@ -143,6 +165,7 @@
                     [:section
                       ;; TODO These will be moved to the front end for better UX.
                      (when-let [flash-message (get-in request [:params :flash_message])]
+                       ;; TODO: we don't depend on class definition anymore
                        [:p {:class "alert"} flash-message])
                      (when (.exists (io/as-file "announcement.txt"))
                        (announcement-banner))
