@@ -99,7 +99,7 @@ export default function NavBar({
             >
               {collect?.noMina}
             </Button>
-            <Button buttonText={collect?.next} clickHandler={nextPlot} />
+            <Button onClick={nextPlot}>{collect?.next}</Button>
             {renderGoToPlot()}
             <Button
               onClick={() => {

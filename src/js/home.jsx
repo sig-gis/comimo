@@ -1,5 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import ReactDOM from "react-dom";
+import { atom, useAtom } from "jotai";
 import mapboxgl from "mapbox-gl";
 
 import DownloadPanel from "./home/DownloadPanel";
@@ -19,6 +20,8 @@ import { MainContext, PageLayout } from "./components/PageLayout";
 import { jsonRequest } from "./utils";
 import { availableLayers, URLS } from "./constants";
 
+export const theMapAtom = atom(null);
+
 function HomeContents({ mapquestKey, mapboxToken }) {
   // Initial state
   const [visiblePanel, setVisiblePanel] = useState(null);
@@ -27,7 +30,6 @@ function HomeContents({ mapquestKey, mapboxToken }) {
   const [selectedRegion, setSelectedRegion] = useState(null);
   const [featureNames, setFeatureNames] = useState({});
   const [subscribedList, setSubsribedList] = useState([]);
-  const [theMap, setTheMap] = useState(null);
   const [thePopup, setThePopup] = useState(null);
   const [selectedLatLon, setSelectedLatLon] = useState(null);
   const [extraParams, setExtraParams] = useState({
@@ -36,11 +38,11 @@ function HomeContents({ mapquestKey, mapboxToken }) {
       band: "rgb",
     },
   });
+  const [theMap, setTheMap] = useAtom(theMapAtom);
   const [nicfiLayers, setNicfiLayers] = useState([]);
   const {
     localeText,
     localeText: { home },
-    myHeight,
     username,
   } = useContext(MainContext);
 
@@ -51,13 +53,60 @@ function HomeContents({ mapquestKey, mapboxToken }) {
     );
   }, []);
 
-  useEffect(() => {
-    setTimeout(() => theMap.resize(), 50);
-  }, [myHeight]);
+  /// Global Map Functions ///
 
-  useEffect(() => {
-    console.log("themap", theMap);
-  }, [theMap]);
+  const addPopup = (map, lat, lon) => {
+    // Remove old popup
+    if (thePopup) thePopup.remove();
+
+    const divId = Date.now();
+    const popup = new mapboxgl.Popup()
+      .setLngLat([lon, lat])
+      .setHTML(`<div id="${divId}"></div>`)
+      .addTo(map);
+
+    setThePopup(popup);
+    setSelectedLatLon([lat, lon]);
+
+    if (visiblePanel === "report") {
+      ReactDOM.render(
+        <ReportPopupContent lat={lat} localeText={localeText} lon={lon} />,
+        document.getElementById(divId)
+      );
+    } else {
+      const visibleLayers = availableLayers
+        .map((l) => isLayerVisible(map, l) && l)
+        .filter((l) => l);
+      ReactDOM.render(
+        <InfoPopupContent
+          lat={lat}
+          // localeText={home}
+          lon={lon}
+          selectedDates={selectedDates}
+          visibleLayers={visibleLayers}
+        />,
+        document.getElementById(divId)
+      );
+    }
+  };
+
+  const fitMap = (type, arg) => {
+    if (type === "point") {
+      try {
+        theMap.flyTo({ center: arg, essential: true });
+      } catch (err) {
+        console.error(home.errorCoordinates);
+      }
+    } else if (type === "bbox") {
+      try {
+        theMap.fitBounds(arg);
+      } catch (error) {
+        console.error(home.errorBounds);
+      }
+    }
+  };
+
+  const isLayerVisible = (map, layer) => map.getLayer(layer).visibility === "visible";
 
   // State update
   const togglePanel = (panelKey) => {
@@ -82,7 +131,7 @@ function HomeContents({ mapquestKey, mapboxToken }) {
       );
 
       setImageDates(result);
-      setSelectedDates(initialDates);
+      selectDates(initialDates);
     });
 
   const getFeatureNames = () => {
@@ -94,75 +143,20 @@ function HomeContents({ mapquestKey, mapboxToken }) {
   const getNICFIDates = () => {
     jsonRequest(URLS.NICFI_DATES).then((dates) => {
       setNicfiLayers(dates);
-      setParams("NICFI", { dataLayer: dates[0] });
+      setParams("NICFI", { ...extraParams.NICFI, dataLayer: dates[0] });
     });
   };
-
-  /// Global Map Functions ///
-  const fitMap = (type, arg) => {
-    if (type === "point") {
-      try {
-        theMap.flyTo({ center: arg, essential: true });
-      } catch (err) {
-        console.error(home.errorCoordinates);
-      }
-    } else if (type === "bbox") {
-      try {
-        theMap.fitBounds(arg);
-      } catch (error) {
-        console.error(home.errorBounds);
-      }
-    }
-  };
-
-  const isLayerVisible = (layer) => theMap.getLayer(layer).visibility === "visible";
-
-  const addPopup = (lat, lon) => {
-    // Remove old popup
-    if (thePopup) thePopup.remove();
-
-    const divId = Date.now();
-    const popup = new mapboxgl.Popup()
-      .setLngLat([lon, lat])
-      .setHTML(`<div id="${divId}"></div>`)
-      .addTo(theMap);
-
-    setThePopup(popup);
-    setSelectedLatLon([lat, lon]);
-
-    if (visiblePanel === "report") {
-      ReactDOM.render(
-        <ReportPopupContent lat={lat} localeText={localeText} lon={lon} />,
-        document.getElementById(divId)
-      );
-    } else {
-      const visibleLayers = availableLayers.map((l) => isLayerVisible(l) && l).filter((l) => l);
-      ReactDOM.render(
-        <InfoPopupContent
-          lat={lat}
-          localeText={home}
-          lon={lon}
-          selectedDates={selectedDates}
-          visibleLayers={visibleLayers}
-        />,
-        document.getElementById(divId)
-      );
-    }
-  };
-
+  // console.log("The map in home: ", theMap);
   // Render
   return (
     <>
       <HomeMap
+        addPopup={addPopup}
         extraParams={extraParams}
         localeText={localeText}
         mapboxToken={mapboxToken}
-        myHeight={myHeight}
-        selectDates={selectDates}
+        // selectDates={selectDates}
         selectedDates={selectedDates}
-        setMap={setTheMap}
-        theMap={theMap}
-        addPopup={addPopup}
       />
       {home && (
         <SideBar>

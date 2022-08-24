@@ -40,41 +40,42 @@ export default class InfoPopupContent extends React.Component {
         resguardos,
       },
     } = this.state;
-    const { visibleLayers, localeText, lat, lon } = this.props;
+    const { home, visibleLayers, lat, lon } = this.props;
+
     const layerToInfo = {
       nMines: (
         <PopupMapInfo key="nMines">
           <label>
-            <strong>{localeText.nMines}: </strong>
+            <strong>{home?.nMines}: </strong>
           </label>
-          <label>{nMines ? localeText.eeLayerDetected : localeText.eeLayerNotDetected}</label>
+          <label>{nMines ? home?.eeLayerDetected : home?.eeLayerNotDetected}</label>
         </PopupMapInfo>
       ),
       pMines: (
         <PopupMapInfo key="pMines">
           <label>
-            <strong>{localeText.pMines}: </strong>
+            <strong>{home?.pMines}: </strong>
           </label>
-          <label>{pMines ? localeText.eeLayerDetected : localeText.eeLayerNotDetected}</label>
+          <label>{pMines ? home?.eeLayerDetected : home?.eeLayerNotDetected}</label>
         </PopupMapInfo>
       ),
       cMines: (
         <PopupMapInfo key="cMines">
           <label>
-            <strong>{localeText.cMines}: </strong>
+            <strong>{home?.cMines}: </strong>
           </label>
-          <label>{cMines ? localeText.eeLayerDetected : localeText.eeLayerNotDetected}</label>
+          <label>{cMines ? home?.eeLayerDetected : home?.eeLayerNotDetected}</label>
         </PopupMapInfo>
       ),
       municipalBounds: (
         <PopupMapInfo key="municipalBounds">
           <label>
-            <strong>{localeText.municipalBoundsPopup}: </strong>
+            <strong>{home?.municipalBoundsPopup}: </strong>
           </label>
           <label>
             {municipalBounds
               ? municipalBounds[0] + ", " + municipalBounds[1]
-              : localeText.municipalBoundsNotFound}
+              : home?.municipalBoundsNotFound}
           </label>
         </PopupMapInfo>
       ),
@@ -82,18 +83,18 @@ export default class InfoPopupContent extends React.Component {
         <PopupMapInfo key="protectedAreas">
           <label>
             {" "}
-            <strong>{localeText.protectedAreasPopup}:</strong>
+            <strong>{home?.protectedAreasPopup}:</strong>
           </label>
-          <label>{localeText.protectedAreasCategory}:</label>
+          <label>{home?.protectedAreasCategory}:</label>
           <label> {protectedAreas[0]}</label>
-          <label>{localeText.protectedAreasName}:</label>
+          <label>{home?.protectedAreasName}:</label>
           <label>{protectedAreas[1]}</label>
         </PopupMapInfo>
       ),
       otherAuthorizations: otherAuthorizations && (
         <PopupMapInfo key="otherAuthorizations">
           <label>
-            <strong>{localeText.otherAuthorizationsPopup}: </strong>
+            <strong>{home?.otherAuthorizationsPopup}: </strong>
           </label>
           <label>{otherAuthorizations}</label>
         </PopupMapInfo>
@@ -101,7 +102,7 @@ export default class InfoPopupContent extends React.Component {
       legalMines: legalMines && (
         <PopupMapInfo key="legalMines">
           <label>
-            <strong>{localeText.legalMinesPopup}: </strong>
+            <strong>{home?.legalMinesPopup}: </strong>
           </label>
           <label>{legalMines}</label>
         </PopupMapInfo>
@@ -109,7 +110,7 @@ export default class InfoPopupContent extends React.Component {
       tierrasDeCom: tierrasDeCom && (
         <PopupMapInfo key="tierrasDeCom">
           <label>
-            <strong>{localeText.tierrasDeComPopup}: </strong>
+            <strong>{home?.tierrasDeComPopup}: </strong>
           </label>
           <label>{tierrasDeCom}</label>
         </PopupMapInfo>
@@ -117,7 +118,7 @@ export default class InfoPopupContent extends React.Component {
       resguardos: resguardos && (
         <PopupMapInfo key="visibleLayers">
           <label>
-            <strong>{localeText.resguardosPopup}: </strong>
+            <strong>{home?.resguardosPopup}: </strong>
           </label>
           <label>{resguardos}</label>
         </PopupMapInfo>
