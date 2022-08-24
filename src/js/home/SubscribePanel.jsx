@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext, useEffect, useState } from "react";
 import styled from "@emotion/styled";
 
 import LoginMessage from "./LoginMessage";
@@ -9,6 +9,12 @@ import ToolPanel from "../components/ToolPanel";
 import { URLS } from "../constants";
 import { jsonRequest } from "../utils";
 import { MainContext } from "../components/PageLayout";
+
+const Title = styled.h2`
+  border-bottom: 1px solid gray;
+  font-weight: bold;
+  padding: 0.5rem;
+`;
 
 const DeleteButton = styled.input`
   border-radius: 50%;
@@ -37,54 +43,54 @@ const DeleteButton = styled.input`
     color: #aaa;
   }
 `;
-export default class SubscribePanel extends React.Component {
-  constructor(props) {
-    super(props);
 
-    this.state = {
-      subsLoaded: false,
-    };
-  }
+export default function SubscribePanel({
+  featureNames,
+  fitMap,
+  mapquestKey,
+  selectedRegion,
+  selectRegion,
+  subscribedList,
+  updateSubList,
+}) {
+  const [subsLoaded, setSubsLoaded] = useState(false);
+  const {
+    username,
+    localeText: { subscribe },
+  } = useContext(MainContext);
 
-  componentDidMount() {
-    this.getSubs();
-  }
+  useEffect(() => {
+    getSubs();
+  }, []);
 
-  subsResult = (result) => {
-    const { updateSubList } = this.props;
-    const {
-      localeText: { subscribe },
-    } = this.context;
+  const subsResult = (result) => {
     if (Array.isArray(result)) {
-      this.setState({ subsLoaded: true });
+      setSubsLoaded(true);
       updateSubList(result.sort());
     } else {
       alert(subscribe[result]);
     }
   };
 
-  getSubs = () => {
+  const getSubs = () => {
     jsonRequest(URLS.USER_SUBS)
       .then((result) => {
-        this.subsResult(result);
+        subsResult(result);
       })
       .catch((err) => console.error(err));
   };
 
-  addSubs = (region) => {
+  const addSubs = (region) => {
     if (region !== "") {
       jsonRequest(URLS.ADD_SUBS, { region })
         .then((result) => {
-          this.subsResult(result);
+          subsResult(result);
         })
         .catch((err) => console.error(err));
     }
   };
 
-  delSubs = (region) => {
-    const {
-      localeText: { subscribe },
-    } = this.context;
+  const delSubs = (region) => {
     const arr = region.split("_");
     const delConfirm = confirm(
       `${subscribe.delConfirm1} ${arr.reverse().join(", ")}? ${subscribe.delConfirm2}`
@@ -92,16 +98,13 @@ export default class SubscribePanel extends React.Component {
     if (delConfirm) {
       jsonRequest(URLS.DEL_SUBS, { region })
         .then((result) => {
-          this.subsResult(result);
+          subsResult(result);
         })
         .catch((err) => console.error(err));
     }
   };
 
-  renderSubscribedTable(subscribedList) {
-    const {
-      localeText: { subscribe },
-    } = this.context;
+  const renderSubscribedTable = (subscribedList) => {
     return (
       <table style={{ width: "100%", textAlign: "left", fontSize: "1rem" }}>
         <thead>
@@ -122,7 +125,7 @@ export default class SubscribePanel extends React.Component {
                   <i>{arr[1]}</i>
                 </td>
                 <td style={{ width: "30px" }}>
-                  <DeleteButton onClick={() => this.delSubs(region)} type="submit" value="X" />
+                  <DeleteButton onClick={() => delSubs(region)} type="submit" value="X" />
                 </td>
               </tr>
             );
@@ -130,58 +133,44 @@ export default class SubscribePanel extends React.Component {
         </tbody>
       </table>
     );
-  }
+  };
 
-  render() {
-    const { subsLoaded } = this.state;
-    const { featureNames, fitMap, mapquestKey, selectedRegion, selectRegion, subscribedList } =
-      this.props;
-    const {
-      username,
-      localeText: { subscribe },
-    } = this.context;
-    const parsedRegion = selectedRegion && selectedRegion.split("_");
-    const Title = styled.h2`
-      border-bottom: 1px solid gray;
-      font-weight: bold;
-      padding: 0.5rem;
-    `;
-    return (
-      <ToolPanel title={subscribe.title}>
-        {username ? (
-          <>
-            <div>
-              {subscribedList.length === 0 ? (
-                <p>{subsLoaded ? subscribe.noSubs : subscribe.loadingSubs}</p>
-              ) : (
-                <div>
-                  <span>{subscribe.subscribedTo}:</span>
-                  {this.renderSubscribedTable(subscribedList)}
-                </div>
-              )}
-            </div>
-            <div>
-              <Title>{subscribe.addNew}</Title>
-              <Search
-                featureNames={featureNames}
-                fitMap={fitMap}
-                mapquestKey={mapquestKey}
-                selectRegion={selectRegion}
-              ></Search>
-              {selectedRegion && !subscribedList.includes(selectedRegion) && (
-                <div style={{ textAlign: "center", width: "100%" }}>
-                  <Button
-                    onClick={() => this.addSubs(selectedRegion)}
-                  >{`${subscribe.subscribeTo} ${parsedRegion[2]}, ${parsedRegion[1]}`}</Button>
-                </div>
-              )}
-            </div>
-          </>
-        ) : (
-          <LoginMessage actionText={subscribe.loginAction} />
-        )}
-      </ToolPanel>
-    );
-  }
+  const parsedRegion = selectedRegion && selectedRegion.split("_");
+
+  return (
+    <ToolPanel title={subscribe.title}>
+      {username ? (
+        <>
+          <div>
+            {subscribedList.length === 0 ? (
+              <p>{subsLoaded ? subscribe.noSubs : subscribe.loadingSubs}</p>
+            ) : (
+              <div>
+                <span>{subscribe.subscribedTo}:</span>
+                {renderSubscribedTable(subscribedList)}
+              </div>
+            )}
+          </div>
+          <div>
+            <Title>{subscribe.addNew}</Title>
+            <Search
+              featureNames={featureNames}
+              fitMap={fitMap}
+              mapquestKey={mapquestKey}
+              selectRegion={selectRegion}
+            ></Search>
+            {selectedRegion && !subscribedList.includes(selectedRegion) && (
+              <div style={{ textAlign: "center", width: "100%" }}>
+                <Button
+                  onClick={() => addSubs(selectedRegion)}
+                >{`${subscribe.subscribeTo} ${parsedRegion[2]}, ${parsedRegion[1]}`}</Button>
+              </div>
+            )}
+          </div>
+        </>
+      ) : (
+        <LoginMessage actionText={subscribe.loginAction} />
+      )}
+    </ToolPanel>
+  );
 }
-SubscribePanel.contextType = MainContext;

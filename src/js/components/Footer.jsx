@@ -1,7 +1,11 @@
-import React from "react";
+import React, { useContext, useState } from "react";
 import styled from "@emotion/styled";
-import { css } from "@emotion/react";
+import { MainContext } from "./PageLayout";
+
 import IconButton from "./IconButton";
+// import SubscribePanel from "../home/SubscribePanel";
+// import LayersPanel from "../home/LayersPanel";
+import IconTextButton from "./IconTextButton";
 
 const FooterBar = styled.div`
   background-color: var(--gray-1);
@@ -14,8 +18,10 @@ const FooterBar = styled.div`
 `;
 
 const Buttons = styled.div`
-  flex: 3;
   background-color: white;
+  display: flex;
+  flex: 3;
+  justify-content: center;
 `;
 
 const MoreButtons = styled.div`
@@ -33,9 +39,9 @@ const Logo = styled.div`
 
 const LogoImg = styled.img`
   cursor: pointer;
-  height: 100%;
+  height: 22px;
   padding-right: 15px;
-  width: 130px;
+  width: 67px;
 `;
 
 const LogoGitVersion = styled.a`
@@ -47,23 +53,76 @@ const LogoGitVersion = styled.a`
   text-decoration: none;
 `;
 
-export default function Footer({ isAdmin, setShowInfo, version }) {
+export default function Footer({ setShowInfo, version }) {
+  const [visiblePanel, setVisiblePanel] = useState(null);
+  const {
+    localeText: { home },
+    isAdmin,
+  } = useContext(MainContext);
+
+  const togglePanel = (panelKey) => {
+    setVisiblePanel(panelKey === visiblePanel ? null : panelKey);
+  };
+
   return (
     <FooterBar>
-      <Buttons></Buttons>
+      <Buttons>
+        {/* Layers */}
+        <IconTextButton
+          active={visiblePanel === "layers"}
+          hasBackground={true}
+          icon="layer"
+          onClick={() => window.alert("layers panel", isAdmin)}
+          // onClick={() => togglePanel("layers")}
+          text="Layers"
+        />
+        {/* <LayersPanel
+          extraParams={this.state.extraParams}
+          nicfiLayers={this.state.nicfiLayers}
+          setParams={this.setParams}
+          theMap={this.state.theMap}
+        /> */}
+
+        {/* Subscribe */}
+        <IconTextButton
+          active={visiblePanel === "subscribe"}
+          hasBackground={true}
+          icon="envelope"
+          onClick={() => window.alert("layers panel", isAdmin)}
+          // onClick={() => togglePanel("layers")}
+          text="Subscribe"
+        />
+        {/* <MenuItem
+          icon="envelope"
+          itemName="subscribe"
+          onClick={togglePanel}
+          selectedItem={visiblePanel}
+          tooltip={localeText.home.subscribeTooltip}
+        >
+          <SubscribePanel
+            featureNames={this.state.featureNames}
+            fitMap={this.fitMap}
+            mapquestKey={this.props.mapquestKey}
+            selectedRegion={this.state.selectedRegion}
+            selectRegion={this.selectRegion}
+            subscribedList={this.state.subscribedList}
+            updateSubList={this.updateSubList}
+          />
+        </MenuItem> */}
+      </Buttons>
       <MoreButtons>
         {isAdmin && (
           <IconButton
             extraStyle={{ marginRight: "10px" }}
             icon="admin"
             onClick={() => window.location.assign("/admin")}
-            // tooltip={home.admin}
+            // tooltip={localeText.home.admin}
           />
         )}
         <IconButton
           icon="info"
           onClick={() => setShowInfo(true)}
-          // tooltip={home.appInfoTooltip}
+          // tooltip={localeText.home.appInfoTooltip}
         />
       </MoreButtons>
       <Logo id="footer-info-logo">

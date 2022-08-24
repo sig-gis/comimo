@@ -22,13 +22,15 @@ const Search = styled.div`
 `;
 
 const Logo = styled.div`
+  align-items: center;
+  display: flex;
   flex: 1;
-  padding: 5px 0;
+  justify-content: center;
 `;
 
 const LogoImg = styled.img`
   cursor: pointer;
-  height: 100%;
+  height: 43px;
   width: 130px;
 `;
 
@@ -73,11 +75,11 @@ export default function Header({
         TODO: have an active state that we can pass to IconTextButton */}
         <IconTextButton
           active={false}
-          clickHandler={() => window.alert("place holder for search functionality")}
           hasBackground={true}
           icon="search"
           iconSize="26px"
           invertBorderRadius={true}
+          onClick={() => window.alert("place holder for search functionality")}
           text="Search"
           tooltip="Placeholder Search ToolTip"
         />
@@ -96,10 +98,10 @@ export default function Header({
           <LoggedInUserPanel>
             <IconTextButton
               active={false}
-              clickHandler={() => window.location.assign("/user-account")}
               hasBackground={false}
               icon="user"
               iconSize="26px"
+              onClick={() => window.location.assign("/user-account")}
               text={username}
               tooltip="Placeholder ToolTip"
             />

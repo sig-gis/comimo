@@ -1,7 +1,7 @@
+import React, { useContext, useEffect, useState } from "react";
+import styled from "@emotion/styled";
 import "mapbox-gl/dist/mapbox-gl.css";
 import mapboxgl from "mapbox-gl";
-import React from "react";
-import styled from "@emotion/styled";
 
 import LngLatHud from "../components/LngLatHud";
 
@@ -48,54 +48,42 @@ const MapBoxWrapper = styled.div`
   }
 `;
 
-export default class HomeMap extends React.Component {
-  constructor(props) {
-    super(props);
+// TODO add theMap into an atom and use the same atom in home.jsx
 
-    this.state = {
-      thePopup: null,
-      mouseCoords: null,
-    };
-  }
+export default function HomeMap({
+  extraParams,
+  mapboxToken,
+  selectDates,
+  selectedDates,
+  setMap,
+  theMap,
+  addPopup,
+}) {
+  // Initial State
+  const [thePopup, setThePopup] = useState(null);
+  const [mouseCoords, setMouseCoords] = useState(null);
+  const { myHeight } = useContext(MainContext);
 
-  /// Lifecycle Functions ///
+  // Effects
+  useEffect(() => {
+    initMap();
+  }, []);
 
-  componentDidMount() {
-    this.initMap();
-  }
+  useEffect(() => {
+    Object.keys(selectedDates).length > 0 && getLayerUrl(Object.keys(selectedDates));
+  }, [theMap, selectedDates]);
 
-  componentDidUpdate(prevProps, _prevState) {
-    if (this.props.theMap && prevProps.myHeight !== this.props.myHeight) {
-      setTimeout(() => this.props.theMap.resize(), 50);
-    }
+  useEffect(() => {
+    setTimeout(() => theMap.resize(), 50);
+  }, [theMap, myHeight]);
 
-    if (this.state.thePopup && prevProps.reportPopup && !this.props.reportPopup) {
-      this.state.thePopup.remove();
-    }
+  useEffect(() => {
+    Object.keys(extraParams).length > 0 && getLayerUrl(Object.keys(extraParams));
+  }, [theMap, extraParams]);
 
-    if (
-      this.props.theMap &&
-      Object.keys(this.props.selectedDates).length > 0 &&
-      (prevProps.theMap !== this.props.theMap ||
-        prevProps.selectedDates !== this.props.selectedDates)
-    ) {
-      this.getLayerUrl(Object.keys(this.props.selectedDates));
-    }
-
-    if (
-      this.props.theMap &&
-      Object.keys(this.props.extraParams).length > 0 &&
-      (prevProps.theMap !== this.props.theMap || prevProps.extraParams !== this.props.extraParams)
-    ) {
-      this.getLayerUrl(Object.keys(this.props.extraParams));
-    }
-  }
-
-  /// Mapbox ///
-
-  setLayerUrl = (layer, url) => {
+  // MapBox functions
+  const setLayerUrl = (layer, url) => {
     if (layer && url && url !== "") {
-      const { theMap } = this.props;
       const style = theMap.getStyle();
       const layers = style.layers;
       const layerIdx = layers.findIndex((l) => l.id === layer);
@@ -115,13 +103,12 @@ export default class HomeMap extends React.Component {
     }
   };
 
-  getLayerUrl = (list) => {
-    const { selectedDates } = this.props;
+  const getLayerUrl = (list) => {
     list.forEach((layer) => {
       jsonRequest(URLS.GET_IMAGE_URL, { dataLayer: selectedDates[layer], type: layer })
         .then((url) => {
           // As written the URL provided must already include ? and one param so &nextParam works.
-          const params = this.props.extraParams[layer];
+          const params = extraParams[layer];
           const fullUrl =
             params == null
               ? url
@@ -129,14 +116,13 @@ export default class HomeMap extends React.Component {
                 Object.entries(params)
                   .map(([k, v]) => `&${k}=${v}`)
                   .join("");
-          this.setLayerUrl(layer, fullUrl);
+          setLayerUrl(layer, fullUrl);
         })
         .catch((error) => console.error(error));
     });
   };
 
-  initMap = () => {
-    const { selectedDates, mapboxToken, addPopup } = this.props;
+  const initMap = () => {
     mapboxgl.accessToken = mapboxToken;
     const theMap = new mapboxgl.Map({
       container: "mapbox",
@@ -150,27 +136,28 @@ export default class HomeMap extends React.Component {
       theMap.addControl(new mapboxgl.NavigationControl({ showCompass: false }));
 
       // Add layers first in the
-      this.addLayerSources(theMap, [...availableLayers].reverse());
+      addLayerSources(theMap, [...availableLayers].reverse());
 
       theMap.on("mousemove", (e) => {
         const lat = toPrecision(e.lngLat.lat, 4);
         const lng = toPrecision(e.lngLat.lng, 4);
-        this.setState({ mouseCoords: { lat, lng } });
+        setMouseCoords({ lat, lng });
       });
       theMap.on("click", (e) => {
         const { lng, lat } = e.lngLat;
         addPopup(lat, lng);
       });
 
-      this.props.setMap(theMap);
+      setMap(theMap);
+
       // This is a bit hard coded
-      this.getLayerUrl(availableLayers.slice(3));
-      if (Object.keys(selectedDates).length) this.getLayerUrl(Object.keys(selectedDates));
+      getLayerUrl(availableLayers.slice(3));
+      if (Object.keys(selectedDates).length) getLayerUrl(Object.keys(selectedDates));
     });
   };
 
   // Adds layers initially with no styling, URL is updated later.  This is to guarantee z order in mapbox
-  addLayerSources = (theMap, list) => {
+  const addLayerSources = (theMap, list) => {
     list.forEach((name) => {
       theMap.addSource(name, {
         type: "raster",
@@ -190,14 +177,11 @@ export default class HomeMap extends React.Component {
     });
   };
 
-  render() {
-    const { mouseCoords } = this.state;
-    return (
-      <>
-        <MapBoxWrapper id="mapbox" />
-        {mouseCoords && <LngLatHud mouseCoords={mouseCoords} />}
-      </>
-    );
-  }
+  // Render
+  return (
+    <>
+      <MapBoxWrapper id="mapbox" />
+      {mouseCoords && <LngLatHud mouseCoords={mouseCoords} />}
+    </>
+  );
 }
-HomeMap.contextType = MainContext;

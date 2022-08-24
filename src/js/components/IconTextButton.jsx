@@ -34,11 +34,12 @@ const Label = styled.span`
 
 function IconTextButton({
   active,
-  clickHandler,
   hasBackground,
+  extraStyle,
   icon,
   iconSize,
   invertBorderRadius,
+  onClick,
   text,
   tooltip,
 }) {
@@ -48,9 +49,10 @@ function IconTextButton({
     <Container
       $background={hasBackground}
       $invertBorderRadius={invertBorderRadius || false}
-      onClick={clickHandler}
+      onClick={onClick}
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
+      style={extraStyle}
       title={tooltip}
     >
       <IconButton active={hover || active} icon={icon} size={iconSize} />

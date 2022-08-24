@@ -11,6 +11,7 @@ export default defineConfig({
   build: {
     chunkSizeWarningLimit: 1000,
     manifest: true,
+    sourcemap: true,
     plugins: [resolve(), babel({ exclude: "node_modules/**" })],
     rollupOptions: {
       preserveEntrySignatures: "exports-only",
