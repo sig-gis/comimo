@@ -20,7 +20,7 @@ import { MainContext, PageLayout } from "./components/PageLayout";
 import { jsonRequest } from "./utils";
 import { availableLayers, URLS } from "./constants";
 
-export const theMapAtom = atom(null);
+export const mapAtom = atom(null);
 
 function HomeContents({ mapquestKey, mapboxToken }) {
   // Initial state
@@ -38,7 +38,7 @@ function HomeContents({ mapquestKey, mapboxToken }) {
       band: "rgb",
     },
   });
-  const [theMap, setTheMap] = useAtom(theMapAtom);
+  const [map, setMap] = useAtom(mapAtom);
   const [nicfiLayers, setNicfiLayers] = useState([]);
   const {
     localeText,
@@ -55,7 +55,7 @@ function HomeContents({ mapquestKey, mapboxToken }) {
 
   /// Global Map Functions ///
 
-  const addPopup = (map, lat, lon) => {
+  const addPopup = (lat, lon) => {
     // Remove old popup
     if (thePopup) thePopup.remove();
 
@@ -74,9 +74,7 @@ function HomeContents({ mapquestKey, mapboxToken }) {
         document.getElementById(divId)
       );
     } else {
-      const visibleLayers = availableLayers
-        .map((l) => isLayerVisible(map, l) && l)
-        .filter((l) => l);
+      const visibleLayers = availableLayers.map((l) => isLayerVisible(l) && l).filter((l) => l);
       ReactDOM.render(
         <InfoPopupContent
           lat={lat}
@@ -93,20 +91,20 @@ function HomeContents({ mapquestKey, mapboxToken }) {
   const fitMap = (type, arg) => {
     if (type === "point") {
       try {
-        theMap.flyTo({ center: arg, essential: true });
+        map.flyTo({ center: arg, essential: true });
       } catch (err) {
         console.error(home.errorCoordinates);
       }
     } else if (type === "bbox") {
       try {
-        theMap.fitBounds(arg);
+        map.fitBounds(arg);
       } catch (error) {
         console.error(home.errorBounds);
       }
     }
   };
 
-  const isLayerVisible = (map, layer) => map.getLayer(layer).visibility === "visible";
+  const isLayerVisible = (layer) => map.getLayer(layer).visibility === "visible";
 
   // State update
   const togglePanel = (panelKey) => {
@@ -171,7 +169,7 @@ function HomeContents({ mapquestKey, mapboxToken }) {
               extraParams={extraParams}
               nicfiLayers={nicfiLayers}
               setParams={setParams}
-              theMap={theMap}
+              theMap={map}
             />
           </MenuItem>
 

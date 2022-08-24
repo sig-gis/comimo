@@ -10,7 +10,7 @@ import { MainContext } from "../components/PageLayout";
 import { toPrecision, jsonRequest } from "../utils";
 import { URLS, availableLayers, startVisible, attributions } from "../constants";
 
-import { theMapAtom } from "../home";
+import { mapAtom } from "../home";
 
 const MapBoxWrapper = styled.div`
   height: 100%;
@@ -58,7 +58,7 @@ export default function HomeMap({ extraParams, mapboxToken, selectedDates, addPo
   // const [thePopup, setThePopup] = useState(null);
   const [mouseCoords, setMouseCoords] = useState(null);
   const { myHeight } = useContext(MainContext);
-  const [theMap, setTheMap] = useAtom(theMapAtom);
+  const [map, setMap] = useAtom(mapAtom);
 
   // Effects
   useEffect(() => {
@@ -66,23 +66,21 @@ export default function HomeMap({ extraParams, mapboxToken, selectedDates, addPo
   }, []);
 
   useEffect(() => {
-    console.log("useEffect Object.keys(selectedDates)", Object.keys(selectedDates));
-    theMap &&
-      Object.keys(selectedDates).length > 0 &&
-      getLayerUrl(theMap, Object.keys(selectedDates));
-  }, [theMap, selectedDates]);
+    // console.log("useEffect Object.keys(selectedDates)", Object.keys(selectedDates));
+    map && Object.keys(selectedDates).length > 0 && getLayerUrl(Object.keys(selectedDates));
+  }, [map, selectedDates]);
 
   useEffect(() => {
     console.log("useEffect Object.keys(extraParams)", Object.keys(extraParams));
-    theMap && Object.keys(extraParams).length > 0 && getLayerUrl(theMap, Object.keys(extraParams));
-  }, [theMap, extraParams]);
+    map && Object.keys(extraParams).length > 0 && getLayerUrl(Object.keys(extraParams));
+  }, [map, extraParams]);
 
   useEffect(() => {
-    theMap && setTimeout(() => theMap.resize(), 50);
+    map && setTimeout(() => map.resize(), 50);
   }, [myHeight]);
 
   // MapBox functions
-  const setLayerUrl = (map, layer, url) => {
+  const setLayerUrl = (layer, url) => {
     // theMap &&
     if (layer && url && url !== "") {
       const style = map.getStyle();
@@ -104,12 +102,8 @@ export default function HomeMap({ extraParams, mapboxToken, selectedDates, addPo
     }
   };
 
-  const getLayerUrl = (map, list) => {
+  const getLayerUrl = (list) => {
     list.forEach((layer) => {
-      // console.log("selected layer:", selectedDates[layer]);
-      // console.log("selected layer type:", layer);
-      // console.log("extraParams", extraParams);
-      // console.log("extraParams[layer]", extraParams[layer]);
       jsonRequest(URLS.GET_IMAGE_URL, { dataLayer: selectedDates[layer], type: layer })
         .then((url) => {
           // As written the URL provided must already include ? and one param so &nextParam works.
@@ -121,7 +115,7 @@ export default function HomeMap({ extraParams, mapboxToken, selectedDates, addPo
                 Object.entries(params)
                   .map(([k, v]) => `&${k}=${v}`)
                   .join("");
-          setLayerUrl(map, layer, fullUrl);
+          setLayerUrl(layer, fullUrl);
         })
         .catch((error) => console.error(error));
     });
@@ -151,31 +145,28 @@ export default function HomeMap({ extraParams, mapboxToken, selectedDates, addPo
       });
       map.on("click", (e) => {
         const { lng, lat } = e.lngLat;
-        addPopup(map, lat, lng);
+        addPopup(lat, lng);
       });
 
-      // setTheMap(map);
-      // console.log("The map after init:", map);
+      setMap(map);
 
       // This is a bit hard coded
-      getLayerUrl(map, availableLayers.slice(3));
-      if (Object.keys(selectedDates).length) getLayerUrl(map, Object.keys(selectedDates));
+      getLayerUrl(availableLayers.slice(3));
+      if (Object.keys(selectedDates).length) getLayerUrl(Object.keys(selectedDates));
     });
-
-    setTheMap(map);
   };
 
   // Adds layers initially with no styling, URL is updated later.  This is to guarantee z order in mapbox
-  const addLayerSources = (theMap, list) => {
+  const addLayerSources = (map, list) => {
     list.forEach((name) => {
-      theMap.addSource(name, {
+      map.addSource(name, {
         type: "raster",
         tiles: [],
         tileSize: 256,
         vis: { palette: [] },
         ...(attributions[name] && { attribution: attributions[name] }),
       });
-      theMap.addLayer({
+      map.addLayer({
         id: name,
         type: "raster",
         source: name,
