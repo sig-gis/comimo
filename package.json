@@ -20,10 +20,11 @@
     "email-validator": "^2.0.4",
     "jotai": "^1.8.0",
     "lodash": "^4.17.21",
-    "mapbox-gl": "^2.7.0",
+    "mapbox-gl": "^2.10.0",
     "prop-types": "^15.8.1",
     "react": "^16.8.0",
     "react-dom": "^16.8.0",
+    "react-scripts": "^5.0.1",
     "react-tabulator": "^0.18.1",
     "turf-extent": "^1.0.4"
   },

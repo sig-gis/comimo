@@ -6,7 +6,7 @@ import mapboxgl from "mapbox-gl";
 import DownloadPanel from "./home/DownloadPanel";
 import FilterPanel from "./home/FilterPanel";
 import HomeMap from "./home/HomeMap";
-import InfoPopupContent from "./home/InfoPopupContent";
+// import InfoPopupContent from "./home/InfoPopupContent";
 import LayersPanel from "./home/LayersPanel";
 import MenuItem from "./components/MenuItem";
 import ReportMinesPanel from "./home/ReportMinesPanel";
@@ -20,25 +20,27 @@ import { MainContext, PageLayout } from "./components/PageLayout";
 import { jsonRequest } from "./utils";
 import { availableLayers, URLS } from "./constants";
 
-export const mapAtom = atom(null);
+export const selectedDatesAtom = atom({});
+// export const selectDates = (newDates) => setSelectedDates({ ...selectedDates, ...newDates });
+// TODO fix this
+
+/// Global Map Functions ///
 
 function HomeContents({ mapquestKey, mapboxToken }) {
   // Initial state
   const [visiblePanel, setVisiblePanel] = useState(null);
   const [imageDates, setImageDates] = useState({});
-  const [selectedDates, setSelectedDates] = useState({});
+  const [selectedDates, setSelectedDates] = useAtom(selectedDatesAtom);
   const [selectedRegion, setSelectedRegion] = useState(null);
   const [featureNames, setFeatureNames] = useState({});
-  const [subscribedList, setSubsribedList] = useState([]);
+  const [subscribedList, setSubscribedList] = useState([]);
   const [thePopup, setThePopup] = useState(null);
-  const [selectedLatLon, setSelectedLatLon] = useState(null);
   const [extraParams, setExtraParams] = useState({
     NICFI: {
       dataLayer: null,
       band: "rgb",
     },
   });
-  const [map, setMap] = useAtom(mapAtom);
   const [nicfiLayers, setNicfiLayers] = useState([]);
   const {
     localeText,
@@ -53,65 +55,10 @@ function HomeContents({ mapquestKey, mapboxToken }) {
     );
   }, []);
 
-  /// Global Map Functions ///
-
-  const addPopup = (lat, lon) => {
-    // Remove old popup
-    if (thePopup) thePopup.remove();
-
-    const divId = Date.now();
-    const popup = new mapboxgl.Popup()
-      .setLngLat([lon, lat])
-      .setHTML(`<div id="${divId}"></div>`)
-      .addTo(map);
-
-    setThePopup(popup);
-    setSelectedLatLon([lat, lon]);
-
-    if (visiblePanel === "report") {
-      ReactDOM.render(
-        <ReportPopupContent lat={lat} localeText={localeText} lon={lon} />,
-        document.getElementById(divId)
-      );
-    } else {
-      const visibleLayers = availableLayers.map((l) => isLayerVisible(l) && l).filter((l) => l);
-      ReactDOM.render(
-        <InfoPopupContent
-          lat={lat}
-          // localeText={home}
-          lon={lon}
-          selectedDates={selectedDates}
-          visibleLayers={visibleLayers}
-        />,
-        document.getElementById(divId)
-      );
-    }
-  };
-
-  const fitMap = (type, arg) => {
-    if (type === "point") {
-      try {
-        map.flyTo({ center: arg, essential: true });
-      } catch (err) {
-        console.error(home.errorCoordinates);
-      }
-    } else if (type === "bbox") {
-      try {
-        map.fitBounds(arg);
-      } catch (error) {
-        console.error(home.errorBounds);
-      }
-    }
-  };
-
-  const isLayerVisible = (layer) => map.getLayer(layer).visibility === "visible";
-
   // State update
   const togglePanel = (panelKey) => {
     setVisiblePanel(panelKey === visiblePanel ? null : panelKey);
   };
-
-  const selectDates = (newDates) => setSelectedDates({ ...selectedDates, ...newDates });
 
   const setParams = (param, value) => {
     setExtraParams({
@@ -129,7 +76,7 @@ function HomeContents({ mapquestKey, mapboxToken }) {
       );
 
       setImageDates(result);
-      selectDates(initialDates);
+      setSelectedDates(initialDates);
     });
 
   const getFeatureNames = () => {
@@ -149,14 +96,15 @@ function HomeContents({ mapquestKey, mapboxToken }) {
   return (
     <>
       <HomeMap
-        addPopup={addPopup}
+        // addPopup={addPopup}
         extraParams={extraParams}
         localeText={localeText}
         mapboxToken={mapboxToken}
+        visiblePanel={visiblePanel}
         // selectDates={selectDates}
-        selectedDates={selectedDates}
+        // selectedDates={selectedDates}
       />
-      {home && (
+      {false && home && (
         <SideBar>
           {/* Layers */}
           <MenuItem
@@ -165,12 +113,12 @@ function HomeContents({ mapquestKey, mapboxToken }) {
             selectedItem={visiblePanel}
             tooltip={home.layersTooltip}
           >
-            <LayersPanel
+            {/* <LayersPanel
               extraParams={extraParams}
               nicfiLayers={nicfiLayers}
               setParams={setParams}
-              theMap={map}
-            />
+              // theMap={map}
+            /> */}
           </MenuItem>
 
           {/* Subscribe */}
@@ -181,19 +129,19 @@ function HomeContents({ mapquestKey, mapboxToken }) {
             selectedItem={visiblePanel}
             tooltip={home.subscribeTooltip}
           >
-            <SubscribePanel
+            {/* <SubscribePanel
               featureNames={featureNames}
               fitMap={fitMap}
               mapquestKey={mapquestKey}
               selectedRegion={selectedRegion}
               selectRegion={setSelectedRegion}
               subscribedList={subscribedList}
-              updateSubList={setSubsribedList}
-            />
+              updateSubList={setSubscribedList}
+            /> */}
           </MenuItem>
 
           {/* Validation */}
-          <MenuItem
+          {/* <MenuItem
             icon="check"
             itemName="validate"
             onClick={togglePanel}
@@ -205,23 +153,23 @@ function HomeContents({ mapquestKey, mapboxToken }) {
               selectedDates={selectedDates}
               subscribedList={subscribedList}
             />
-          </MenuItem>
+          </MenuItem> */}
 
           {/* Logged in Buttons */}
           {username && (
             <>
               {/* Stats graphs */}
-              <MenuItem
+              {/* <MenuItem
                 itemName="stats"
                 onClick={togglePanel}
                 selectedItem={visiblePanel}
                 tooltip={home.statsTooltip}
               >
                 <StatsPanel selectedDate={selectedDates.cMines} subscribedList={subscribedList} />
-              </MenuItem>
+              </MenuItem> */}
 
               {/* Date filter */}
-              <MenuItem
+              {/* <MenuItem
                 itemName="filter"
                 onClick={togglePanel}
                 selectedItem={visiblePanel}
@@ -232,9 +180,10 @@ function HomeContents({ mapquestKey, mapboxToken }) {
                   selectDates={selectDates}
                   selectedDates={selectedDates}
                 />
-              </MenuItem>
+              </MenuItem> */}
 
               {/* Report mines */}
+
               <MenuItem
                 icon="mine"
                 itemName="report"
@@ -242,11 +191,12 @@ function HomeContents({ mapquestKey, mapboxToken }) {
                 selectedItem={visiblePanel}
                 tooltip={home.reportTooltip}
               >
-                <ReportMinesPanel
+                {/* TODO  deal with addPopup */}
+                {/* <ReportMinesPanel
                   addPopup={addPopup}
                   fitMap={fitMap}
                   selectedLatLon={selectedLatLon}
-                />
+                /> */}
               </MenuItem>
 
               {/* Download */}
@@ -256,14 +206,14 @@ function HomeContents({ mapquestKey, mapboxToken }) {
                 selectedItem={visiblePanel}
                 tooltip={home.downloadTooltip}
               >
-                <DownloadPanel
+                {/* <DownloadPanel
                   featureNames={featureNames}
                   fitMap={fitMap}
                   mapquestKey={mapquestKey}
                   selectedDates={selectedDates}
                   selectedRegion={selectedRegion}
                   selectRegion={setSelectedRegion}
-                />
+                /> */}
               </MenuItem>
             </>
           )}
@@ -563,14 +513,17 @@ function HomeContents({ mapquestKey, mapboxToken }) {
 
 export function pageInit(args) {
   ReactDOM.render(
-    <PageLayout
-      role={args.role}
-      userLang={args.userLang}
-      username={args.username}
-      version={args.version}
-    >
-      <HomeContents mapboxToken={args.mapboxToken} mapquestKey={args.mapquestKey} />
-    </PageLayout>,
+    <React.StrictMode>
+      <PageLayout
+        role={args.role}
+        userLang={args.userLang}
+        username={args.username}
+        version={args.version}
+      >
+        <HomeContents mapboxToken={args.mapboxToken} mapquestKey={args.mapquestKey} />
+      </PageLayout>
+    </React.StrictMode>,
+
     document.getElementById("main-container")
   );
 }

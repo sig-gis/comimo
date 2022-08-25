@@ -14,8 +14,10 @@ export default defineConfig({
     sourcemap: true,
     plugins: [resolve(), babel({ exclude: "node_modules/**" })],
     rollupOptions: {
+      // external: ["mapbox-gl"],
       preserveEntrySignatures: "exports-only",
       input: [
+        // "node_modules/react-refresh/runtime.js",
         "src/js/admin.jsx",
         "src/js/collect.jsx",
         "src/js/home.jsx",

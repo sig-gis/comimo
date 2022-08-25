@@ -16,6 +16,6 @@ const LngLatHudLabel = styled.div`
   text-align: center;
 `;
 
-export default function LngLatHud({ mouseCoords: { lat, lng } }) {
-  return <LngLatHudLabel>{lat + ", " + lng}</LngLatHudLabel>;
+export default function LngLatHud({ mouseCoords: { lng, lat } }) {
+  return <LngLatHudLabel>{lng + ", " + lat}</LngLatHudLabel>;
 }
