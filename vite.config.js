@@ -36,7 +36,8 @@ export default defineConfig({
   },
   plugins: [
     react({
-      presets: ["@babel/preset-env", "@babel/preset-react", "@emotion/babel-preset-css-prop"],
+      jsxImportSource: "@emotion/react",
+      presets: ["@babel/preset-env", "@babel/preset-react"],
       plugins: [
         "@babel/plugin-proposal-class-properties",
         "@babel/plugin-transform-runtime",
