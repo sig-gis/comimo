@@ -30,6 +30,11 @@
   --blue-1: #acc8ff;
   --teal-1: #159ebf;
 
+
+  /* Sizes */
+
+  --bar-height: 60px;
+
   /* Font/text values */
   --unnamed-font-family-roboto: Roboto;
   --unnamed-font-family-roboto-condensed: Roboto Condensed;

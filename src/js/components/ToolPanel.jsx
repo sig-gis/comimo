@@ -6,11 +6,12 @@ const PanelOuter = styled.div`
   display: flex;
   flex-direction: column;
   height: 100%;
-  left: 60px;
+  /* left: x; */
   position: absolute;
-  top: 0;
+  bottom: 60px;
   width: 33vw;
   z-index: 99;
+  display: ${({ active }) => !active && "none"};
 `;
 
 const Title = styled.h2`
@@ -24,9 +25,9 @@ const Content = styled.div`
   padding: 1rem;
 `;
 
-export default function ToolPanel({ title, children }) {
+export default function ToolPanel({ title, active, children }) {
   return (
-    <PanelOuter id={`tool-panel-${title.replaceAll(' ', '-').toLowerCase()}`}>
+    <PanelOuter id={`tool-panel-${title.replaceAll(" ", "-").toLowerCase()}`} active={active}>
       <Title>{title}</Title>
       <Content>{children}</Content>
     </PanelOuter>

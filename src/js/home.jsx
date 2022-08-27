@@ -1,24 +1,74 @@
-import React, { useContext, useEffect, useState } from "react";
-import ReactDOM from "react-dom";
+import styled from "@emotion/styled";
+import { css } from "@emotion/react";
 import { atom, useAtom } from "jotai";
 import mapboxgl from "mapbox-gl";
+import React, { useContext, useEffect, useRef, useState } from "react";
+import ReactDOM from "react-dom";
 
 import DownloadPanel from "./home/DownloadPanel";
 import FilterPanel from "./home/FilterPanel";
 import HomeMap from "./home/HomeMap";
 // import InfoPopupContent from "./home/InfoPopupContent";
-import LayersPanel from "./home/LayersPanel";
+import FooterBar from "./components/FooterBar";
+import IconTextButton from "./components/IconTextButton";
+import IconButton from "./components/IconButton";
 import MenuItem from "./components/MenuItem";
+import { MainContext, PageLayout } from "./components/PageLayout";
+import SideBar from "./components/SideBar";
+import LayersPanel from "./home/LayersPanel";
 import ReportMinesPanel from "./home/ReportMinesPanel";
 import ReportPopupContent from "./home/ReportPopupContent";
-import SideBar from "./components/SideBar";
 import StatsPanel from "./home/StatsPanel";
 import SubscribePanel from "./home/SubscribePanel";
 import ValidatePanel from "./home/ValidatePanel";
-import { MainContext, PageLayout } from "./components/PageLayout";
 
-import { jsonRequest } from "./utils";
 import { availableLayers, URLS } from "./constants";
+import { jsonRequest } from "./utils";
+
+const Buttons = styled.div`
+  background-color: white;
+  display: flex;
+  flex: 3;
+  justify-content: center;
+`;
+
+const MoreButtons = styled.div`
+  flex: 1;
+  background-color: red;
+`;
+
+const Logo = styled.div`
+  align-items: center;
+  display: flex;
+  flex: 1;
+  justify-content: center;
+  padding: 5px 0;
+`;
+
+const LogoImg = styled.img`
+  cursor: pointer;
+  height: 22px;
+  padding-right: 15px;
+  width: 67px;
+`;
+
+const LogoGitVersion = styled.a`
+  color: var(--white);
+  cursor: pointer;
+  font-size: 12px;
+  letter-spacing: 0px;
+  text-align: left;
+  text-decoration: none;
+`;
+
+const Hidable = styled.div`
+  display: ${({ active }) => !active && "none"};
+`;
+
+const BarItem = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
 
 export const selectedDatesAtom = atom({});
 // export const selectDates = (newDates) => setSelectedDates({ ...selectedDates, ...newDates });
@@ -26,7 +76,7 @@ export const selectedDatesAtom = atom({});
 
 /// Global Map Functions ///
 
-function HomeContents({ mapquestKey, mapboxToken }) {
+function HomeContents({ mapquestKey, mapboxToken, version }) {
   // Initial state
   const [visiblePanel, setVisiblePanel] = useState(null);
   const [imageDates, setImageDates] = useState({});
@@ -35,6 +85,7 @@ function HomeContents({ mapquestKey, mapboxToken }) {
   const [featureNames, setFeatureNames] = useState({});
   const [subscribedList, setSubscribedList] = useState([]);
   const [thePopup, setThePopup] = useState(null);
+  const map = useRef(null);
   const [extraParams, setExtraParams] = useState({
     NICFI: {
       dataLayer: null,
@@ -91,6 +142,7 @@ function HomeContents({ mapquestKey, mapboxToken }) {
       setParams("NICFI", { ...extraParams.NICFI, dataLayer: dates[0] });
     });
   };
+
   // console.log("The map in home: ", theMap);
   // Render
   return (
@@ -101,123 +153,109 @@ function HomeContents({ mapquestKey, mapboxToken }) {
         localeText={localeText}
         mapboxToken={mapboxToken}
         visiblePanel={visiblePanel}
+        map={map}
+
         // selectDates={selectDates}
         // selectedDates={selectedDates}
       />
-      {false && home && (
-        <SideBar>
-          {/* Layers */}
-          <MenuItem
-            itemName="layer"
-            onClick={togglePanel}
-            selectedItem={visiblePanel}
-            tooltip={home.layersTooltip}
-          >
-            {/* <LayersPanel
-              extraParams={extraParams}
-              nicfiLayers={nicfiLayers}
-              setParams={setParams}
-              // theMap={map}
-            /> */}
-          </MenuItem>
-
-          {/* Subscribe */}
-          <MenuItem
-            icon="envelope"
-            itemName="subscribe"
-            onClick={togglePanel}
-            selectedItem={visiblePanel}
-            tooltip={home.subscribeTooltip}
-          >
-            {/* <SubscribePanel
-              featureNames={featureNames}
-              fitMap={fitMap}
-              mapquestKey={mapquestKey}
-              selectedRegion={selectedRegion}
-              selectRegion={setSelectedRegion}
-              subscribedList={subscribedList}
-              updateSubList={setSubscribedList}
-            /> */}
-          </MenuItem>
-
-          {/* Validation */}
-          {/* <MenuItem
-            icon="check"
-            itemName="validate"
-            onClick={togglePanel}
-            selectedItem={visiblePanel}
-            tooltip={home.validateTooltip}
-          >
-            <ValidatePanel
-              featureNames={featureNames}
-              selectedDates={selectedDates}
-              subscribedList={subscribedList}
-            />
-          </MenuItem> */}
-
-          {/* Logged in Buttons */}
-          {username && (
-            <>
-              {/* Stats graphs */}
-              {/* <MenuItem
-                itemName="stats"
-                onClick={togglePanel}
-                selectedItem={visiblePanel}
-                tooltip={home.statsTooltip}
-              >
-                <StatsPanel selectedDate={selectedDates.cMines} subscribedList={subscribedList} />
-              </MenuItem> */}
-
-              {/* Date filter */}
-              {/* <MenuItem
-                itemName="filter"
-                onClick={togglePanel}
-                selectedItem={visiblePanel}
-                tooltip={home.filterTooltip}
-              >
-                <FilterPanel
-                  imageDates={imageDates}
-                  selectDates={selectDates}
-                  selectedDates={selectedDates}
+      {home && (
+        <div id="bottom-bar">
+          <FooterBar>
+            <Buttons>
+              {/* Layers */}
+              <BarItem>
+                <IconTextButton
+                  active={visiblePanel === "layers"}
+                  hasBackground={true}
+                  icon="layer"
+                  onClick={() => togglePanel("layers")}
+                  // onClick={() => togglePanel("layers")}
+                  text="Layers"
                 />
-              </MenuItem> */}
 
-              {/* Report mines */}
+                <LayersPanel
+                  active={visiblePanel === "layers"}
+                  extraParams={extraParams}
+                  nicfiLayers={nicfiLayers}
+                  setParams={setParams}
+                  map={map.current}
+                />
+              </BarItem>
 
-              <MenuItem
-                icon="mine"
-                itemName="report"
-                onClick={togglePanel}
-                selectedItem={visiblePanel}
-                tooltip={home.reportTooltip}
+              {/* Subscribe */}
+              <div
+                css={css`
+                  display: flex;
+                  flex-direction: column;
+                `}
               >
-                {/* TODO  deal with addPopup */}
-                {/* <ReportMinesPanel
-                  addPopup={addPopup}
-                  fitMap={fitMap}
-                  selectedLatLon={selectedLatLon}
-                /> */}
-              </MenuItem>
+                <IconTextButton
+                  active={visiblePanel === "subscribe"}
+                  hasBackground={true}
+                  icon="envelope"
+                  onClick={() => togglePanel("subscribe")}
+                  text="Subscribe"
+                />
 
-              {/* Download */}
-              <MenuItem
-                itemName="download"
-                onClick={togglePanel}
-                selectedItem={visiblePanel}
-                tooltip={home.downloadTooltip}
+                <Hidable active={visiblePanel === "subscribe"}>
+                  <LayersPanel
+                    extraParams={extraParams}
+                    nicfiLayers={nicfiLayers}
+                    setParams={setParams}
+                    map={map.current}
+                  />
+                </Hidable>
+              </div>
+
+              {/* <MenuItem
+          icon="envelope"
+          itemName="subscribe"
+          onClick={togglePanel}
+          selectedItem={visiblePanel}
+          tooltip={localeText.home.subscribeTooltip}
+        >
+          <SubscribePanel
+            featureNames={this.state.featureNames}
+            fitMap={this.fitMap}
+            mapquestKey={this.props.mapquestKey}
+            selectedRegion={this.state.selectedRegion}
+            selectRegion={this.selectRegion}
+            subscribedList={this.state.subscribedList}
+            updateSubList={this.updateSubList}
+          />
+        </MenuItem> */}
+            </Buttons>
+            <MoreButtons>
+              {/* TODO: move this top bar (menu admin) */}
+              {false && isAdmin && (
+                <IconButton
+                  extraStyle={{ marginRight: "10px" }}
+                  icon="admin"
+                  onClick={() => window.location.assign("/admin")}
+                  // tooltip={localeText.home.admin}
+                />
+              )}
+              <IconButton
+                icon="info"
+                onClick={() => setShowInfo(true)}
+                // tooltip={localeText.home.appInfoTooltip}
+              />
+            </MoreButtons>
+            <Logo id="footer-info-logo">
+              <LogoImg
+                alt="app-logo"
+                onClick={() => window.location.assign("/")}
+                src="/img/app-logo.png"
+              />
+              <LogoGitVersion
+                href={`https://github.com/sig-gis/comimo/tags/${version}`}
+                target="/blank"
               >
-                {/* <DownloadPanel
-                  featureNames={featureNames}
-                  fitMap={fitMap}
-                  mapquestKey={mapquestKey}
-                  selectedDates={selectedDates}
-                  selectedRegion={selectedRegion}
-                  selectRegion={setSelectedRegion}
-                /> */}
-              </MenuItem>
-            </>
-          )}
-        </SideBar>
+                {version && `Version: ${version}`}
+              </LogoGitVersion>
+            </Logo>
+          </FooterBar>
+        </div>
       )}
     </>
   );
@@ -520,7 +558,11 @@ export function pageInit(args) {
         username={args.username}
         version={args.version}
       >
-        <HomeContents mapboxToken={args.mapboxToken} mapquestKey={args.mapquestKey} />
+        <HomeContents
+          mapboxToken={args.mapboxToken}
+          mapquestKey={args.mapquestKey}
+          version={args.version}
+        />
       </PageLayout>
     </React.StrictMode>,
 

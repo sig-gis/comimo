@@ -9,10 +9,10 @@ import { selectedDatesAtom } from "../home";
 
 // TODO: Stub
 const isLayerVisible = (map, layer) => {
-  map.current.getLayer(layer).visibility === "visible";
+  map.getLayer(layer).visibility === "visible";
 };
 
-export default function InfoPopupContent({ map, lat, lng, localeText: { home } }) {
+export default function InfoPopupContent({ map, lng, lat, localeText: { home } }) {
   const [layerInfo, setLayerInfo] = useState({});
   const [selectedDates, setSelectedDates] = useAtom(selectedDatesAtom);
   const visibleLayers = availableLayers.filter((layer) => isLayerVisible(map, layer));

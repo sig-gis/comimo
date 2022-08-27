@@ -3,16 +3,13 @@ import { MainContext } from "../components/PageLayout";
 import NICFIControl from "../components/NICFIControl";
 import ToolPanel from "../components/ToolPanel";
 import { startVisible, availableLayers } from "../constants";
-import { useAtom } from "jotai";
-import { mapAtom } from "./HomeMap";
 
-export default function LayersPanel({ extraParams, nicfiLayers, setParams }) {
+export default function LayersPanel({ map, extraParams, nicfiLayers, setParams, active }) {
   const [visible, setVisible] = useState(null);
   const [opacity, setOpacity] = useState(null);
   const {
     localeText: { layers },
   } = useContext(MainContext);
-  const [map, setMap] = useAtom(mapAtom);
 
   useEffect(() => {
     setVisible(
@@ -23,7 +20,7 @@ export default function LayersPanel({ extraParams, nicfiLayers, setParams }) {
     );
 
     setOpacity(availableLayers.reduce((acc, cur) => ({ ...acc, [cur]: 100 }), {}));
-  });
+  }, []);
 
   const setLayerVisible = (name, layerVisible) => {
     map.setLayoutProperty(name, "visibility", layerVisible ? "visible" : "none");
@@ -95,7 +92,7 @@ export default function LayersPanel({ extraParams, nicfiLayers, setParams }) {
   );
 
   return (
-    <ToolPanel title={layers.title}>
+    <ToolPanel title={layers.title} active={active}>
       {renderHeading(layers)}
       {opacity &&
         visible &&
