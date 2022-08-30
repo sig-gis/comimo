@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import PopupMapInfo from "../components/PopupMapInfo";
 import { jsonRequest, toPrecision } from "../utils";
@@ -12,18 +12,12 @@ const isLayerVisible = (map, layer) => {
   map.getLayer(layer).visibility === "visible";
 };
 
-export default function InfoPopupContent({
-  map,
-  lng,
-  lat,
-  localeText: { home },
-  selectedDates,
-  setSelectDates,
-}) {
+export default function InfoPopupContent({ map, lng, lat, localeText: { home }, setSelectDates }) {
   const [layerInfo, setLayerInfo] = useState({});
+
   // const [selectedDates, setSelectedDates] = useAtom(selectedDatesAtom);
   const visibleLayers = availableLayers.filter((layer) => isLayerVisible(map, layer));
-
+  // random
   useEffect(() => {
     if (visibleLayers.length > 0) {
       jsonRequest(URLS.GET_INFO, { lng, lat, dates: selectedDates, visibleLayers })
