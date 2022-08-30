@@ -7,7 +7,7 @@ import NICFIControl from "./components/NICFIControl";
 import { PageLayout, MainContext } from "./components/PageLayout";
 import SideBar from "./components/SideBar";
 import IconButton from "./components/IconButton";
-import ToolPanel from "./components/ToolPanel";
+import ToolCard from "./components/ToolCard";
 import LoadingModal from "./components/LoadingModal";
 
 import { URLS } from "./constants";
@@ -176,7 +176,7 @@ class CollectContent extends React.Component {
               selectedItem={this.state.visiblePanel}
               tooltip={home.layersTooltip}
             >
-              <ToolPanel title="Placeholder">
+              <ToolCard title="Placeholder">
                 <div>
                   <NICFIControl
                     extraParams={this.state.extraParams}
@@ -201,7 +201,7 @@ class CollectContent extends React.Component {
                     </a>
                   )}
                 </div>
-              </ToolPanel>
+              </ToolCard>
             </MenuItem>
             <IconButton
               icon="info"

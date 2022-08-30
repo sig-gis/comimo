@@ -1,7 +1,7 @@
 import React from "react";
 
 import Button from "../components/Button";
-import ToolPanel from "../components/ToolPanel";
+import ToolCard from "../components/ToolCard";
 import TextInput from "../components/TextInput";
 import Modal from "../components/Modal";
 
@@ -100,7 +100,7 @@ export default class ReportMinesPanel extends React.Component {
 
     const reported = reportedLatLon === selectedLatLon;
     return (
-      <ToolPanel title={report.title}>
+      <ToolCard title={report.title}>
         {report.subTitle}
         <TextInput
           style={{ marginTop: "3rem" }}
@@ -150,7 +150,7 @@ export default class ReportMinesPanel extends React.Component {
             <p>{this.state.messageBox.body}</p>
           </Modal>
         )}
-      </ToolPanel>
+      </ToolCard>
     );
   }
 }

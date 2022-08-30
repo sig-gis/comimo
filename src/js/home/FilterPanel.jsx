@@ -1,6 +1,6 @@
 import React from "react";
 
-import ToolPanel from "../components/ToolPanel";
+import ToolCard from "../components/ToolCard";
 import Button from "../components/Button";
 import Select from "../components/Select";
 
@@ -37,7 +37,7 @@ export default class FilterPanel extends React.Component {
       localeText: { filter, layers },
     } = this.context;
     return (
-      <ToolPanel title={filter.title}>
+      <ToolCard title={filter.title}>
         <span htmlFor="select-image-date">{filter.selectLabel}:</span>
         <div style={{ display: "flex", flexDirection: "column" }}>
           <Select
@@ -65,7 +65,7 @@ export default class FilterPanel extends React.Component {
             {filter.updateMap}
           </Button>
         </div>
-      </ToolPanel>
+      </ToolCard>
     );
   }
 }

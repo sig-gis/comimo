@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import { MainContext } from "../components/PageLayout";
 import NICFIControl from "../components/NICFIControl";
-import ToolPanel from "../components/ToolPanel";
+import ToolCard from "../components/ToolCard";
 import { startVisible, availableLayers } from "../constants";
 
 export default function LayersPanel({ map, extraParams, nicfiLayers, setParams, active }) {
@@ -53,7 +53,7 @@ export default function LayersPanel({ map, extraParams, nicfiLayers, setParams, 
             style={{ cursor: "pointer" }}
           />
           <label htmlFor={"label-" + name} style={{ cursor: "pointer", margin: "0 0 3px 0" }}>
-            {layers[name]}
+            {layers?.[name]}
           </label>
         </div>
         <input
@@ -71,9 +71,9 @@ export default function LayersPanel({ map, extraParams, nicfiLayers, setParams, 
   const renderHeading = (layers) => (
     <>
       <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "0rem" }}>
-        <label style={{ fontWeight: "bold", margin: "0 .25rem 0 0" }}>{layers.nameLabel}</label>
+        <label style={{ fontWeight: "bold", margin: "0 .25rem 0 0" }}>{layers?.nameLabel}</label>
         <label style={{ fontWeight: "bold", margin: "0 .25rem", width: "40%" }}>
-          {layers.opacityLabel}
+          {layers?.opacityLabel}
         </label>
       </div>
       <hr style={{ marginBottom: "0.5rem" }}></hr>
@@ -82,7 +82,7 @@ export default function LayersPanel({ map, extraParams, nicfiLayers, setParams, 
 
   const renderNICFISection = (layers) => (
     <>
-      <label style={{ fontWeight: "bold", margin: "0 .25rem 0 0" }}>{layers.satelliteTitle}</label>
+      <label style={{ fontWeight: "bold", margin: "0 .25rem 0 0" }}>{layers?.satelliteTitle}</label>
       <hr style={{ marginBottom: "0.5rem" }}></hr>
       <div style={{ display: "flex", flexDirection: "column" }}>
         {renderControl("NICFI")}
@@ -92,14 +92,14 @@ export default function LayersPanel({ map, extraParams, nicfiLayers, setParams, 
   );
 
   return (
-    <ToolPanel title={layers.title} active={active}>
+    <ToolCard title={layers?.title} active={active}>
       {renderHeading(layers)}
       {opacity &&
         visible &&
         availableLayers.map((layerName) => (layerName === "NICFI" ? "" : renderControl(layerName)))}
       <br></br>
       {opacity && visible && renderNICFISection(layers)}
-    </ToolPanel>
+    </ToolCard>
   );
 }
 
@@ -212,7 +212,7 @@ export default function LayersPanel({ map, extraParams, nicfiLayers, setParams, 
 //     localeText: { layers },
 //   } = this.context;
 //   return (
-//     <ToolPanel title={layers.title}>
+//     <ToolCard title={layers.title}>
 //       {this.renderHeading(layers)}
 //       {opacity &&
 //         visible &&
@@ -221,7 +221,7 @@ export default function LayersPanel({ map, extraParams, nicfiLayers, setParams, 
 //         )}
 //       <br></br>
 //       {opacity && visible && this.renderNICFISection(layers)}
-//     </ToolPanel>
+//     </ToolCard>
 //   );
 // }
 // }

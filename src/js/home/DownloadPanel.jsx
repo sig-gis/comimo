@@ -4,7 +4,7 @@ import styled from "@emotion/styled";
 import Button from "../components/Button";
 import Search from "../components/Search";
 import Select from "../components/Select";
-import ToolPanel from "../components/ToolPanel";
+import ToolCard from "../components/ToolCard";
 
 import LoadingModal from "../components/LoadingModal";
 import { MainContext } from "../components/PageLayout";
@@ -62,7 +62,7 @@ export default class DownloadPanel extends React.Component {
       padding: 0.5rem;
     `;
     return (
-      <ToolPanel title={download.title}>
+      <ToolCard title={download.title}>
         {this.state.showModal && <LoadingModal message="Getting URL" />}
 
         <div style={{ display: "flex", flexDirection: "column" }}>
@@ -129,7 +129,7 @@ export default class DownloadPanel extends React.Component {
             )
           )}
         </div>
-      </ToolPanel>
+      </ToolCard>
     );
   }
 }

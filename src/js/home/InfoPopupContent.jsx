@@ -12,9 +12,16 @@ const isLayerVisible = (map, layer) => {
   map.getLayer(layer).visibility === "visible";
 };
 
-export default function InfoPopupContent({ map, lng, lat, localeText: { home } }) {
+export default function InfoPopupContent({
+  map,
+  lng,
+  lat,
+  localeText: { home },
+  selectedDates,
+  setSelectDates,
+}) {
   const [layerInfo, setLayerInfo] = useState({});
-  const [selectedDates, setSelectedDates] = useAtom(selectedDatesAtom);
+  // const [selectedDates, setSelectedDates] = useAtom(selectedDatesAtom);
   const visibleLayers = availableLayers.filter((layer) => isLayerVisible(map, layer));
 
   useEffect(() => {
