@@ -62,7 +62,9 @@ export default function HomeMap({
       map.current.on("click", (e) => {
         const { lng, lat } = e.lngLat;
         setSelectedLngLat([lng, lat]);
-        setMapPopup(addPopup(map.current, lng, lat, visiblePanel, mapPopup, localeText));
+        setMapPopup(
+          addPopup(map.current, lng, lat, visiblePanel, mapPopup, selectedDates, localeText)
+        );
       });
 
       // This is a bit hard coded
@@ -162,7 +164,7 @@ const MapBoxWrapper = styled.div`
   }
 `;
 
-const addPopup = (map, lng, lat, visiblePanel, mapPopup, localeText) => {
+const addPopup = (map, lng, lat, visiblePanel, mapPopup, selectedDates, localeText) => {
   // Remove old popup
   if (mapPopup) mapPopup.remove();
 
@@ -180,7 +182,13 @@ const addPopup = (map, lng, lat, visiblePanel, mapPopup, localeText) => {
     );
   } else {
     ReactDOM.render(
-      <InfoPopupContent map={map} lng={lng} lat={lat} localeText={localeText} />,
+      <InfoPopupContent
+        map={map}
+        lng={lng}
+        lat={lat}
+        selectedDates={selectedDates}
+        localeText={localeText}
+      />,
       document.getElementById(divId)
     );
   }
