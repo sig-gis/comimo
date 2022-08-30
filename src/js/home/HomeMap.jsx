@@ -82,7 +82,6 @@ export default function HomeMap({
   }, [selectedDates]);
 
   useEffect(() => {
-    console.log("_printing extraparams: ", extraParams);
     if (map.current && selectedDates) {
       Object.keys(extraParams).length > 0 &&
         getLayerUrl(map.current, Object.keys(extraParams), selectedDates, extraParams);
@@ -213,15 +212,10 @@ const setLayerUrl = (map, layer, url) => {
 
 const getLayerUrl = (map, list, selectedDates, extraParams) => {
   list.forEach((layer) => {
-    console.log("layer", layer);
-    console.log("selectedDates", selectedDates);
-    console.log("extraParams", extraParams);
-
     jsonRequest(URLS.GET_IMAGE_URL, { dataLayer: selectedDates[layer], type: layer })
       .then((url) => {
         // As written the URL provided must already include ? and one param so &nextParam works.
         const params = extraParams[layer];
-        console.log("params", params);
         const fullUrl =
           params == null
             ? url
