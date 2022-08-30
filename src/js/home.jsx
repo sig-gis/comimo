@@ -8,7 +8,7 @@ import { useAtom } from "jotai";
 import DownloadPanel from "./home/DownloadPanel";
 import FilterPanel from "./home/FilterPanel";
 import HomeMap from "./home/HomeMap";
-import InfoPopupContent from "./home/InfoPopupContent";
+// import InfoPopupContent from "./home/InfoPopupContent";
 import FooterBar from "./components/FooterBar";
 import IconTextButton from "./components/IconTextButton";
 import IconButton from "./components/IconButton";
@@ -66,9 +66,18 @@ const BarItem = styled.div`
   // flex-direction: column;
 `;
 
+export const visiblePanelAtom = atom(null);
+export const showModalAtom = atom(null);
+
+export const processModal = (callBack, setShowModal) =>
+  new Promise(() => {
+    setShowModal(true);
+    callBack().finally(() => setShowModal(false));
+  });
+
 function HomeContents({ mapquestKey, mapboxToken, version }) {
   // Initial state
-  const [visiblePanel, setVisiblePanel] = useState(null);
+  const [visiblePanel, setVisiblePanel] = useAtom(visiblePanelAtom);
   const [imageDates, setImageDates] = useState({});
   const [selectedDates, setSelectedDates] = useState(null);
   const [selectedRegion, setSelectedRegion] = useState(null);
@@ -92,6 +101,21 @@ function HomeContents({ mapquestKey, mapboxToken, version }) {
   } = useContext(MainContext);
 
   // Effects
+
+  useEffect(() => {
+    const handleEscapeKey = (e) => {
+      if (e.keyCode === 27) {
+        // setHomeIsCleared(true);
+        setVisiblePanel(null);
+      }
+    };
+    window.addEventListener("keydown", handleEscapeKey);
+
+    return () => {
+      window.removeEventListener("keydown", handleEsc);
+    };
+  }, []);
+
   useEffect(() => {
     Promise.all([getFeatureNames(), getImageDates()]).catch((error) => console.error(error));
   }, []);
@@ -105,7 +129,7 @@ function HomeContents({ mapquestKey, mapboxToken, version }) {
     setVisiblePanel(panelKey === visiblePanel ? null : panelKey);
   };
 
-  const selectDates = (newDates) => setselectedDates({ ...selectedDates, ...newDates });
+  const selectDates = (newDates) => setSelectedDates({ ...selectedDates, ...newDates });
 
   const setParams = (param, value) => {
     setExtraParams({
@@ -221,12 +245,12 @@ function HomeContents({ mapquestKey, mapboxToken, version }) {
                 onClick={() => togglePanel("filter")}
                 text="Filter"
               />
-              {/* <FilterPanel
+              <FilterPanel
                 active={visiblePanel === "filter"}
                 imageDates={imageDates}
                 selectDates={selectDates}
                 selectedDates={selectedDates}
-              /> */}
+              />
             </BarItem>
 
             {/* Report Mines */}
@@ -238,12 +262,12 @@ function HomeContents({ mapquestKey, mapboxToken, version }) {
                 onClick={() => togglePanel("report")}
                 text="Report Mines"
               />
-              {/* <ReportMinesPanel
+              <ReportMinesPanel
                 active={visiblePanel === "report"}
                 iamgeDates={imageDates}
                 selectDates={selectDates}
                 selectedDates={selectedDates}
-              /> */}
+              />
             </BarItem>
 
             {/* Download Data */}
@@ -255,12 +279,14 @@ function HomeContents({ mapquestKey, mapboxToken, version }) {
                 onClick={() => togglePanel("download")}
                 text="Download"
               />
-              {/* <DownloadPanel
-                active={visiblePanel === "report"}
-                iamgeDates={imageDates}
-                selectDates={selectDates}
+              <DownloadPanel
+                active={visiblePanel === "download"}
+                featureNames={featureNames}
+                mapquestKey={mapquestKey}
                 selectedDates={selectedDates}
-              /> */}
+                selectedRegion={selectedRegion}
+                setSelectedRegion={setSelectedRegion}
+              />
             </BarItem>
 
             {/* Statistics */}
@@ -272,11 +298,11 @@ function HomeContents({ mapquestKey, mapboxToken, version }) {
                 onClick={() => togglePanel("stats")}
                 text="Statistics"
               />
-              {/* <StatsPanel
+              <StatsPanel
                 active={visiblePanel === "stats"}
-                selectedDate={selectedDates.cmines}
+                selectedDate={selectedDates?.cMines}
                 subscribedList={subscribedList}
-              /> */}
+              />
             </BarItem>
 
             {/* <MenuItem
