@@ -9,7 +9,7 @@ const TitleBar = styled.div`
   background: var(--gray-1);
   box-shadow: 0px 3px 6px #0000008d;
   display: flex;
-  height: 60px;
+  height: var(--bar-height);
   justify-content: space-between;
   text-align: center;
   width: 100%;
