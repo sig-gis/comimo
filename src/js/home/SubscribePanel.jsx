@@ -4,7 +4,8 @@ import styled from "@emotion/styled";
 import LoginMessage from "./LoginMessage";
 import Button from "../components/Button";
 import Search from "../components/Search";
-import ToolPanel from "../components/ToolPanel";
+import ToolCard from "../components/ToolCard";
+import { fitMap } from "../home/HomeMap";
 
 import { URLS } from "../constants";
 import { jsonRequest } from "../utils";
@@ -46,12 +47,12 @@ const DeleteButton = styled.input`
 
 export default function SubscribePanel({
   featureNames,
-  fitMap,
   mapquestKey,
   selectedRegion,
-  selectRegion,
+  setSelectedRegion,
   subscribedList,
-  updateSubList,
+  setSubscribedList,
+  active,
 }) {
   const [subsLoaded, setSubsLoaded] = useState(false);
   const {
@@ -66,7 +67,7 @@ export default function SubscribePanel({
   const subsResult = (result) => {
     if (Array.isArray(result)) {
       setSubsLoaded(true);
-      updateSubList(result.sort());
+      setSubscribedList(result.sort());
     } else {
       alert(subscribe[result]);
     }
@@ -138,39 +139,39 @@ export default function SubscribePanel({
   const parsedRegion = selectedRegion && selectedRegion.split("_");
 
   return (
-    <ToolPanel title={subscribe.title}>
+    <ToolCard title={subscribe?.title} active={active}>
       {username ? (
         <>
           <div>
             {subscribedList.length === 0 ? (
-              <p>{subsLoaded ? subscribe.noSubs : subscribe.loadingSubs}</p>
+              <p>{subsLoaded ? subscribe?.noSubs : subscribe?.loadingSubs}</p>
             ) : (
               <div>
-                <span>{subscribe.subscribedTo}:</span>
+                <span>{subscribe?.subscribedTo}:</span>
                 {renderSubscribedTable(subscribedList)}
               </div>
             )}
           </div>
           <div>
-            <Title>{subscribe.addNew}</Title>
+            <Title>{subscribe?.addNew}</Title>
             <Search
               featureNames={featureNames}
               fitMap={fitMap}
               mapquestKey={mapquestKey}
-              selectRegion={selectRegion}
+              selectRegion={setSelectedRegion}
             ></Search>
             {selectedRegion && !subscribedList.includes(selectedRegion) && (
               <div style={{ textAlign: "center", width: "100%" }}>
                 <Button
                   onClick={() => addSubs(selectedRegion)}
-                >{`${subscribe.subscribeTo} ${parsedRegion[2]}, ${parsedRegion[1]}`}</Button>
+                >{`${subscribe?.subscribeTo} ${parsedRegion[2]}, ${parsedRegion[1]}`}</Button>
               </div>
             )}
           </div>
         </>
       ) : (
-        <LoginMessage actionText={subscribe.loginAction} />
+        <LoginMessage actionText={subscribe?.loginAction} />
       )}
-    </ToolPanel>
+    </ToolCard>
   );
 }

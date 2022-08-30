@@ -1,6 +1,6 @@
 import React from "react";
 
-import ToolPanel from "../components/ToolPanel";
+import ToolCard from "../components/ToolCard";
 
 import { jsonRequest } from "../utils";
 import { MainContext } from "../components/PageLayout";
@@ -89,6 +89,7 @@ export default class StatsPanel extends React.Component {
         const sum = data.reduce((acc, [_, c]) => acc + c, 0);
         if (sum > 0.0) {
           const dataTable = new google.visualization.DataTable();
+
           dataTable.addColumn("string", stats.dateLabel);
           dataTable.addColumn("number", stats.countLabel);
 
@@ -119,7 +120,7 @@ export default class StatsPanel extends React.Component {
       localeText: { stats },
     } = this.context;
     return (
-      <ToolPanel title={stats.regionTitle}>
+      <ToolCard title={stats.regionTitle}>
         <div>
           <p style={{ lineHeight: "1rem", fontSize: ".75rem" }}>{stats.regionSubTitle}</p>
           <div id="stats1" />
@@ -129,7 +130,7 @@ export default class StatsPanel extends React.Component {
           {!chartsLoaded && <div>{`${stats.loading}...`}</div>}
           <p style={{ lineHeight: "1rem", fontSize: ".75rem" }}>{stats.areaWarning}</p>
         </div>
-      </ToolPanel>
+      </ToolCard>
     );
   }
 }

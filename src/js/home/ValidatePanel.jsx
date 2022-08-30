@@ -2,7 +2,7 @@ import React from "react";
 
 import LoginMessage from "./LoginMessage";
 import Button from "../components/Button";
-import ToolPanel from "../components/ToolPanel";
+import ToolCard from "../components/ToolCard";
 import ProjectCard from "../components/ProjectCard";
 import Select from "../components/Select";
 import TextInput from "../components/TextInput";
@@ -183,13 +183,13 @@ export default class ValidatePanel extends React.Component {
       localeText: { validate },
     } = this.context;
     return (
-      <ToolPanel title={validate.title}>
-        <span>{validate.subtitle}</span>
+      <ToolCard title={validate?.title}>
+        <span>{validate?.subtitle}</span>
         {this.state.showModal && <LoadingModal message="Creating Project" />}
         {username ? (
           <div style={{ display: "flex", flexDirection: "column" }}>
             {projects.length === 0 ? (
-              <span>{validate.noProjects}</span>
+              <span>{validate?.noProjects}</span>
             ) : (
               <>
                 {" "}
@@ -202,16 +202,16 @@ export default class ValidatePanel extends React.Component {
                 ))}
               </>
             )}
-            <h3 style={{ marginBottom: 0 }}>{`${validate.createProject}:`}</h3>
+            <h3 style={{ marginBottom: 0 }}>{`${validate?.createProject}:`}</h3>
             <TextInput
               id="projectName"
-              label={`${validate.projectName}:`}
+              label={`${validate?.projectName}:`}
               onChange={(e) => this.setState({ projectName: e.target.value })}
               value={projectName}
             />
             <Select
               id="selectMineType"
-              label={`${validate.typeLabel}:`}
+              label={`${validate?.typeLabel}:`}
               onChange={(e) => this.setState({ mineType: e.target.value })}
               options={["pMines", "nMines", "cMines"].map((m) => ({
                 value: m,
@@ -219,7 +219,7 @@ export default class ValidatePanel extends React.Component {
               }))}
               value={mineType}
             />
-            <label>{`${validate.projectRegion}:`}</label>
+            <label>{`${validate?.projectRegion}:`}</label>
             <span style={{ marginTop: ".25rem" }}>
               <input
                 checked={regionType === 1}
@@ -227,7 +227,7 @@ export default class ValidatePanel extends React.Component {
                 onChange={() => this.setState({ regionType: 1 })}
                 type="radio"
               />
-              {validate.subscribedRadio}
+              {validate?.subscribedRadio}
             </span>
             <span style={{ marginTop: ".25rem" }}>
               <input
@@ -237,19 +237,19 @@ export default class ValidatePanel extends React.Component {
                 type="radio"
                 value={2}
               />
-              {validate.customRadio}
+              {validate?.customRadio}
             </span>
             {regionType === 2 && this.renderCustomRegions()}
             <Button
               extraStyle={{ marginTop: "1rem" }}
               onClick={() => this.createProject(selectedDates[mineType] || "2022-01-01-N")}
-            >{`${validate.createButton} ${selectedDates[mineType]}`}</Button>
+            >{`${validate?.createButton} ${selectedDates[mineType]}`}</Button>
             <p>{errorMsg}</p>
           </div>
         ) : (
-          <LoginMessage actionText={validate.loginAction} />
+          <LoginMessage actionText={validate?.loginAction} />
         )}
-      </ToolPanel>
+      </ToolCard>
     );
   }
 }

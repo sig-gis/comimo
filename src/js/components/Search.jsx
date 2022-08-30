@@ -75,7 +75,7 @@ export default class Search extends React.Component {
 
     const geoSearchResults =
       geoCodedSearch && geoCodedSearch.length === 0 ? (
-        <div style={{ marginLeft: "0.25rem" }}>{search.noResults}</div>
+        <div style={{ marginLeft: "0.25rem" }}>{search?.noResults}</div>
       ) : (
         geoCodedSearch && (
           <div>
@@ -112,7 +112,7 @@ export default class Search extends React.Component {
     const selectL1 =
       l1Names.length > 0 ? (
         <Select
-          defaultOption={search.defaultState}
+          defaultOption={search?.defaultState}
           id="selectL1"
           label={search.stateLabel}
           onChange={(e) => this.setState({ selectedL1: e.target.value, selectedL2: -1 })}
@@ -120,7 +120,7 @@ export default class Search extends React.Component {
           value={selectedL1}
         />
       ) : (
-        search.loading + "..."
+        search?.loading + "..."
       );
 
     const activeMuns = featureNames[selectedL1] || {};
@@ -128,9 +128,9 @@ export default class Search extends React.Component {
     const selectL2 =
       l2names.length > 0 ? (
         <Select
-          defaultOption={search.defaultMun}
+          defaultOption={search?.defaultMun}
           id="selectL2"
-          label={search.munLabel}
+          label={search?.munLabel}
           onChange={(e) => {
             const l2Name = e.target.value;
             const coords = activeMuns[l2Name];
@@ -149,14 +149,14 @@ export default class Search extends React.Component {
       <div>
         <TextInput
           id="inputGeocode"
-          label={search.internetLabel}
+          label={search?.internetLabel}
           onChange={(e) => this.setState({ searchText: e.target.value })}
           onKeyUp={(e) => {
             if (e.key === "Enter") this.searchGeocode();
           }}
           render={() => (
             <Button onClick={this.searchGeocode} extraStyle={{ marginLeft: "0.25rem" }}>
-              {search.goButton}
+              {search?.goButton}
             </Button>
           )}
           value={searchText}
@@ -164,19 +164,19 @@ export default class Search extends React.Component {
         {geoSearchResults}
         <TextInput
           id="inputLatLng"
-          label={search.coordLabel}
+          label={search?.coordLabel}
           onChange={(e) => this.setState({ latLngText: e.target.value })}
           onKeyUp={(e) => {
             if (e.key === "Enter") this.processLatLng();
           }}
           render={() => (
             <Button onClick={this.processLatLng} extraStyle={{ marginLeft: "0.25rem" }}>
-              {search.goButton}
+              {search?.goButton}
             </Button>
           )}
           value={latLngText}
         />
-        <label>{search.selectLabel}</label>
+        <label>{search?.selectLabel}</label>
         {selectL1}
         {selectL2}
       </div>
