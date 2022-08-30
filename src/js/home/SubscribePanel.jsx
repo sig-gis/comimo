@@ -5,7 +5,6 @@ import LoginMessage from "./LoginMessage";
 import Button from "../components/Button";
 import Search from "../components/Search";
 import ToolCard from "../components/ToolCard";
-import { fitMap } from "../home/HomeMap";
 
 import { URLS } from "../constants";
 import { jsonRequest } from "../utils";
@@ -156,7 +155,6 @@ export default function SubscribePanel({
             <Title>{subscribe?.addNew}</Title>
             <Search
               featureNames={featureNames}
-              fitMap={fitMap}
               mapquestKey={mapquestKey}
               selectRegion={setSelectedRegion}
             ></Search>
