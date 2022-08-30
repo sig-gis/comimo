@@ -4,7 +4,7 @@ import { THEME } from "../constants";
 
 import IconButton from "./IconButton";
 
-const Container = styled.button`
+const Container = styled.div`
   align-items: center;
   background-color: ${({ $background }) => ($background ? "#434343" : "transparent")};
   box-shadow: 0px 3px 6px #00000029;
@@ -32,7 +32,7 @@ const Label = styled.span`
   text-align: left;
 `;
 
-function IconTextButton({
+export default function IconTextButton({
   active,
   hasBackground,
   extraStyle,
@@ -60,5 +60,3 @@ function IconTextButton({
     </Container>
   );
 }
-
-export default IconTextButton;

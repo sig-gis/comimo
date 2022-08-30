@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "@emotion/styled";
 
-import IconButton from "./IconButton";
+import IconTextButton from "./IconTextButton";
 
 const Hidable = styled.div`
   display: ${({ active }) => !active && "none"};
@@ -11,7 +11,7 @@ export default function MenuItem({ icon, selectedItem, itemName, onClick, toolti
   const active = selectedItem === itemName;
   return (
     <>
-      <IconButton
+      <IconTextButton
         active={selectedItem === itemName}
         icon={icon || itemName}
         onClick={() => onClick(itemName)}

@@ -3,7 +3,6 @@ import styled from "@emotion/styled";
 
 import SvgIcon from "./SvgIcon";
 
-
 export default function LanguageSelector({ selectedLanguage, selectLanguage }) {
   const [show, setShow] = useState(false);
 
@@ -31,7 +30,7 @@ export default function LanguageSelector({ selectedLanguage, selectLanguage }) {
   `;
   const languageIcon = styled.div`
     color: var(--red);
-  `
+  `;
   const LanguageText = styled.div`
     font-size: 18px
     letter-spacing: 0px;
@@ -40,7 +39,7 @@ export default function LanguageSelector({ selectedLanguage, selectLanguage }) {
 
   const LanguageOption = styled.div`
     /* text-align: left; */
-    font-size:16px
+    font-size: 16px;
     /* letter-spacing: 0px; */
     /* color: #ffffff; */
   `;
@@ -60,8 +59,6 @@ export default function LanguageSelector({ selectedLanguage, selectLanguage }) {
       />
     </div>
   );
-
-
 
   const renderOption = (language) => (
     <div
@@ -100,7 +97,7 @@ export default function LanguageSelector({ selectedLanguage, selectLanguage }) {
             width: "18px",
           }}
         >
-          <SvgIcon icon="down" />
+          <SvgIcon icon="down" size="14px" />
         </div>
       </div>
       {show && (

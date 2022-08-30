@@ -221,7 +221,7 @@ const iconMap = {
   admin: adminIcon,
 };
 
-function SvgIcon({ color, cursor,  extraStyles, icon,  size, verticalAlign }) {
+function SvgIcon({ color, cursor, extraStyles, icon, size, verticalAlign }) {
   return (
     <div
       style={{
@@ -231,6 +231,7 @@ function SvgIcon({ color, cursor,  extraStyles, icon,  size, verticalAlign }) {
         height: size,
         maxHeight: size,
         maxWidth: size,
+        padding: "2px",
         width: size,
         verticalAlign: verticalAlign,
         ...extraStyles,
@@ -247,14 +248,14 @@ SvgIcon.propTypes = {
   extraStyles: PropTypes.object,
   icon: PropTypes.oneOf(Object.keys(iconMap)).isRequired,
   size: PropTypes.string.isRequired,
-  verticalAlign: PropTypes.string
+  verticalAlign: PropTypes.string,
 };
 
 SvgIcon.defaultProps = {
   color: "currentColor",
   cursor: "pointer",
   extraStyles: {},
-  verticalAlign: "middle"
+  verticalAlign: "middle",
 };
 
 export default SvgIcon;
