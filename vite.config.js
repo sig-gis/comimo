@@ -7,6 +7,9 @@ import babel from "@rollup/plugin-babel";
 export default defineConfig({
   server: {
     origin: "http://127.0.0.1:8080",
+    hmr: {
+      overlay: false,
+    },
   },
   build: {
     chunkSizeWarningLimit: 1000,
@@ -36,6 +39,7 @@ export default defineConfig({
   },
   plugins: [
     react({
+      fastRefresh: true,
       jsxImportSource: "@emotion/react",
       presets: ["@babel/preset-env", "@babel/preset-react"],
       plugins: [

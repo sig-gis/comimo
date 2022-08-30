@@ -60,7 +60,7 @@
   "scripts": {
     "style-lint": "npx stylelint '**/*.css'",
     "js-lint": "find src/js -type f -exec ./node_modules/.bin/quick-lint-js --snarky {} +",
-    "bundle-dev": "npx vite build --watch & npx vite serve dist/public",
+    "bundle-dev": "npx vite build --mode dev --watch & npx vite serve dist/public",
     "bundle-prod": "npx vite build"
   }
 }
