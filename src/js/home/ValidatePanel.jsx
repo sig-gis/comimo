@@ -1,4 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
+import { useAtom } from "jotai";
 
 import LoginMessage from "./LoginMessage";
 import Button from "../components/Button";
@@ -12,11 +13,12 @@ import { URLS } from "../constants";
 import { MainContext } from "../components/PageLayout";
 import LoadingModal from "../components/LoadingModal";
 import { func } from "prop-types";
+import { showModalAtom, processModal } from "../home";
 
 export default function ValidatePanel({ subscribedList, featureNames, selectedDates, active }) {
   const [projects, setProjects] = useState([]);
   const [projectName, setProjectName] = useState("");
-  const [showModal, setShowModal] = useState(false);
+  const [showModal, setShowModal] = useAtom(showModalAtom);
   const [regionType, setRegionType] = useState(1);
   const [customRegions, setCustomRegions] = useState([]);
   const [mineType, setMineType] = useState("pMines");
@@ -41,11 +43,11 @@ export default function ValidatePanel({ subscribedList, featureNames, selectedDa
       .catch((err) => console.error(err));
   };
 
-  const processModal = (callBack) =>
-    new Promise(() => {
-      setShowModal(true);
-      callBack().finally(() => setShowModal(false));
-    });
+  // const processModal = (callBack) =>
+  //   new Promise(() => {
+  //     setShowModal(true);
+  //     callBack().finally(() => setShowModal(false));
+  //   });
 
   const checkProjectErrors = (dataLayer, selected, projectName, projects, type, validate) => {
     const errors = [
@@ -75,21 +77,23 @@ export default function ValidatePanel({ subscribedList, featureNames, selectedDa
       checkProjectErrors(dataLayer, selectedArr, projectName, projects, regionType, validate) &&
       confirm(question)
     ) {
-      processModal(() =>
-        jsonRequest(URLS.CREATE_PROJ, { dataLayer, name: projectName, regions: selectedArr })
-          .then((res) => {
-            if (res === "") {
-              getProjects();
-            } else {
-              const [alertError, logError] = res.split(", ");
-              logError && console.log(logError);
-              alert(validate?.[alertError]);
-            }
-          })
-          .catch((err) => {
-            console.error(err);
-            alert(validate?.[validate?.errorUnknown]);
-          })
+      processModal(
+        () =>
+          jsonRequest(URLS.CREATE_PROJ, { dataLayer, name: projectName, regions: selectedArr })
+            .then((res) => {
+              if (res === "") {
+                getProjects();
+              } else {
+                const [alertError, logError] = res.split(", ");
+                logError && console.log(logError);
+                alert(validate?.[alertError]);
+              }
+            })
+            .catch((err) => {
+              console.error(err);
+              alert(validate?.[validate?.errorUnknown]);
+            }),
+        setShowModal
       );
     }
   };
