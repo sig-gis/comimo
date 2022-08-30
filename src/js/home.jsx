@@ -93,17 +93,19 @@ function HomeContents({ mapquestKey, mapboxToken, version }) {
 
   // Effects
   useEffect(() => {
-    Promise.all([getFeatureNames(), getImageDates(), getNICFIDates()]).catch((error) =>
-      console.error(error)
-    );
+    Promise.all([getFeatureNames(), getImageDates()]).catch((error) => console.error(error));
   }, []);
+
+  useEffect(() => {
+    getNICFIDates();
+  }, [selectedDates]);
 
   // State update
   const togglePanel = (panelKey) => {
     setVisiblePanel(panelKey === visiblePanel ? null : panelKey);
   };
 
-  const selectDates = (newDates) => setSelectedDates({ ...selectedDates, ...newDates });
+  const selectDates = (newDates) => setselectedDates({ ...selectedDates, ...newDates });
 
   const setParams = (param, value) => {
     setExtraParams({
@@ -148,6 +150,8 @@ function HomeContents({ mapquestKey, mapboxToken, version }) {
         map={map}
         selectedDates={selectedDates}
         selectDates={selectDates}
+        setParams={setParams}
+        setNicfiLayers={setNicfiLayers}
       />
 
       <div id="bottom-bar">
@@ -200,12 +204,12 @@ function HomeContents({ mapquestKey, mapboxToken, version }) {
                 onClick={() => togglePanel("validate")}
                 text="Validations"
               />
-              {/* <ValidatePanel
+              <ValidatePanel
                 active={visiblePanel === "validate"}
                 featureNames={featureNames}
                 selectedDates={selectedDates}
                 subscribedList={subscribedList}
-              /> */}
+              />
             </BarItem>
 
             {/* Filter */}
