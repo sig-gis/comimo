@@ -20,7 +20,7 @@ export default defineConfig({
       // external: ["mapbox-gl"],
       preserveEntrySignatures: "exports-only",
       input: [
-        // "node_modules/react-refresh/runtime.js",
+        // "node_modules/react-refresh/",
         "src/js/admin.jsx",
         "src/js/collect.jsx",
         "src/js/home.jsx",
@@ -43,6 +43,7 @@ export default defineConfig({
       jsxImportSource: "@emotion/react",
       presets: ["@babel/preset-env", "@babel/preset-react"],
       plugins: [
+        // "@vitejs/plugin-react",
         "@babel/plugin-proposal-class-properties",
         "@babel/plugin-transform-runtime",
         "babel-plugin-macros",
