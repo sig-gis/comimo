@@ -27,6 +27,8 @@ import { jsonRequest } from "./utils";
 
 export const selectedDatesAtom = atom({});
 
+export const updateStateMap = (setter, prevVal, newVal) => setter({ ...prevVal, ...newVal });
+
 const Buttons = styled.div`
   display: flex;
   flex: 3;
@@ -79,7 +81,7 @@ function HomeContents({ mapquestKey, mapboxToken, version }) {
   // Initial state
   const [visiblePanel, setVisiblePanel] = useAtom(visiblePanelAtom);
   const [imageDates, setImageDates] = useState({});
-  const [selectedDates, setSelectedDates] = useState(null);
+  const [selectedDates, setSelectedDates] = useAtom(selectedDatesAtom);
   const [selectedRegion, setSelectedRegion] = useState(null);
   const [featureNames, setFeatureNames] = useState({});
   const [subscribedList, setSubscribedList] = useState([]);
@@ -185,7 +187,7 @@ function HomeContents({ mapquestKey, mapboxToken, version }) {
         mapboxToken={mapboxToken}
         visiblePanel={visiblePanel}
         map={map}
-        selectedDates={selectedDates}
+        // selectedDates={selectedDates}
         selectDates={selectDates}
         setParams={setParams}
         setNicfiLayers={setNicfiLayers}

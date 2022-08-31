@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState, useRef } from "react";
 import ReactDOM from "react-dom";
 import styled from "@emotion/styled";
-import { atom, useAtom } from "jotai";
+import { atom, useAtom, useSetAtom } from "jotai";
 import "mapbox-gl/dist/mapbox-gl.css";
 import mapboxgl from "mapbox-gl";
 
@@ -15,22 +15,18 @@ import { selectedDatesAtom } from "../home";
 import { toPrecision, jsonRequest } from "../utils";
 import { URLS, availableLayers, startVisible, attributions } from "../constants";
 
+const isEmptyMap = (m) => Object.keys(m).length === 0;
+
 // export const mapAtom = atom(null);
 export const mapPopupAtom = atom(null);
 export const selectedLatLngAtom = atom([]);
 
-export default function HomeMap({
-  map,
-  extraParams,
-  mapboxToken,
-  visiblePanel,
-  selectedDates,
-  selectDate,
-}) {
+export default function HomeMap({ map, extraParams, mapboxToken, visiblePanel, selectDate }) {
   // Initial State
   const [mouseCoords, setMouseCoords] = useState(null);
   const [mapPopup, setMapPopup] = useAtom(mapPopupAtom);
   const [selectedLatLng, setSelectedLatLng] = useAtom(selectedLatLngAtom);
+  const [selectedDates, setSelectedDates] = useAtom(selectedDatesAtom);
   const { localeText, myHeight } = useContext(MainContext);
   const mapContainer = useRef(null);
   const [lng, setLng] = useState(-73.5609339);
@@ -49,29 +45,27 @@ export default function HomeMap({
       });
     }
 
-    if (localeText?.home) {
-      map.current.on("load", () => {
-        map.current.resize();
+    if (!isEmptyMap(localeText) && !isEmptyMap(selectedDates)) {
+      map.current.resize();
 
-        // Add layers first in the
-        addLayerSources(map.current, [...availableLayers].reverse());
-        map.current.addControl(new mapboxgl.NavigationControl({ showCompass: false }));
-        map.current.on("mousemove", (e) => {
-          const lat = toPrecision(e.lngLat.lat, 4);
-          const lng = toPrecision(e.lngLat.lng, 4);
-          setMouseCoords({ lat, lng });
-        });
-        map.current.on("click", (e) => {
-          const { lat, lng } = e.lngLat;
-          setSelectedLatLng([lat, lng]);
+      // Add layers first in the
+      addLayerSources(map.current, [...availableLayers].reverse());
+      map.current.addControl(new mapboxgl.NavigationControl({ showCompass: false }));
+      map.current.on("mousemove", (e) => {
+        const lat = toPrecision(e.lngLat.lat, 4);
+        const lng = toPrecision(e.lngLat.lng, 4);
+        setMouseCoords({ lat, lng });
+      });
+      map.current.on("click", (e) => {
+        const { lat, lng } = e.lngLat;
+        setSelectedLatLng([lat, lng]);
 
-          setMapPopup(
-            addPopup(map.current, { lat, lng }, mapPopup, visiblePanel, selectedDates, localeText)
-          );
-        });
+        setMapPopup(
+          addPopup(map.current, { lat, lng }, mapPopup, visiblePanel, selectedDates, localeText)
+        );
       });
     }
-  }, [localeText]);
+  }, [localeText, selectedDates]);
 
   useEffect(() => {
     if (map.current && selectedDates) {
@@ -80,18 +74,18 @@ export default function HomeMap({
   }, [selectedDates]);
 
   useEffect(() => {
-    if (map.current && selectedDates) {
+    if (map.current && !isEmptyMap(selectedDates)) {
       Object.keys(selectedDates).length > 0 &&
         getLayerUrl(map.current, Object.keys(selectedDates), selectedDates, extraParams);
     }
   }, [selectedDates]);
 
   useEffect(() => {
-    if (map.current && selectedDates) {
+    if (map.current && !isEmptyMap(selectedDates)) {
       Object.keys(extraParams).length > 0 &&
         getLayerUrl(map.current, Object.keys(extraParams), selectedDates, extraParams);
     }
-  }, [extraParams]);
+  }, [extraParams, selectedDates]);
 
   // useEffect(() => {
   //   map && setTimeout(() => map.resize(), 50);
@@ -172,8 +166,6 @@ const MapBoxWrapper = styled.div`
 const addPopup = (map, { lat, lng }, mapPopup, visiblePanel, selectedDates, localeText) => {
   // Remove old popup
   if (mapPopup) mapPopup.remove();
-
-  console.log("localeText in addpopou", localeText);
 
   const divId = Date.now();
   const popup = new mapboxgl.Popup()
