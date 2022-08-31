@@ -2,7 +2,7 @@ import styled from "@emotion/styled";
 import { css } from "@emotion/react";
 import { atom } from "jotai";
 import mapboxgl from "mapbox-gl";
-import React, { useContext, useEffect, useRef, useState } from "react";
+import React, { useCallback, useContext, useEffect, useRef, useState } from "react";
 import ReactDOM from "react-dom";
 import { useAtom } from "jotai";
 import DownloadPanel from "./home/DownloadPanel";
@@ -117,14 +117,20 @@ function HomeContents({ mapquestKey, mapboxToken, version }) {
   }, []);
 
   useEffect(() => {
-    Promise.all([getFeatureNames(), getImageDates()]).catch((error) => console.error(error));
+    const getImageDates = async () => {
+      const result = await jsonRequest(URLS.IMG_DATES);
+      const initialDates = Object.keys(result).reduce(
+        (acc, cur) => ({ ...acc, [cur]: result[cur][0] }),
+        {}
+      );
+
+      setImageDates(result);
+      setSelectedDates(initialDates);
+    };
+
+    getImageDates().catch(console.error);
   }, []);
 
-  useEffect(() => {
-    getNICFIDates();
-  }, [selectedDates]);
-
-  // State update
   const togglePanel = (panelKey) => {
     setVisiblePanel(panelKey === visiblePanel ? null : panelKey);
   };
@@ -138,30 +144,37 @@ function HomeContents({ mapquestKey, mapboxToken, version }) {
     });
   };
 
-  // API Calls
-  const getImageDates = () =>
-    jsonRequest(URLS.IMG_DATES).then((result) => {
-      const initialDates = Object.keys(result).reduce(
-        (acc, cur) => ({ ...acc, [cur]: result[cur][0] }),
-        {}
-      );
-
-      setImageDates(result);
-      setSelectedDates(initialDates);
-    });
-
-  const getFeatureNames = () => {
-    jsonRequest(URLS.FEATURE_NAMES).then((features) => {
-      setFeatureNames(features);
-    });
-  };
-
-  const getNICFIDates = () => {
-    jsonRequest(URLS.NICFI_DATES).then((dates) => {
+  useEffect(() => {
+    const getNICFIDates = async () => {
+      const dates = await jsonRequest(URLS.NICFI_DATES);
       setNicfiLayers(dates);
       setParams("NICFI", { ...extraParams.NICFI, dataLayer: dates[0] });
-    });
-  };
+    };
+
+    getNICFIDates().catch(console.error);
+  }, [selectedDates]);
+
+  useEffect(() => {
+    const getFeatureNames = async () => {
+      const features = await jsonRequest(URLS.FEATURE_NAMES);
+      setFeatureNames(features);
+    };
+
+    getFeatureNames().catch(console.error);
+  }, []);
+
+  // API Calls
+
+  // const getImageDates = () =>
+  //   jsonRequest(URLS.IMG_DATES).then((result) => {
+  //     const initialDates = Object.keys(result).reduce(
+  //       (acc, cur) => ({ ...acc, [cur]: result[cur][0] }),
+  //       {}
+  //     );
+
+  //     setImageDates(result);
+  //     setSelectedDates(initialDates);
+  //   });
 
   return (
     <>
@@ -211,6 +224,7 @@ function HomeContents({ mapquestKey, mapboxToken, version }) {
               <SubscribePanel
                 active={visiblePanel === "subscribe"}
                 featureNames={featureNames}
+                map={map.current}
                 mapquestKey={mapquestKey}
                 selectedRegion={selectedRegion}
                 setSelectedRegion={setSelectedRegion}
@@ -282,6 +296,7 @@ function HomeContents({ mapquestKey, mapboxToken, version }) {
               <DownloadPanel
                 active={visiblePanel === "download"}
                 featureNames={featureNames}
+                map={map.current}
                 mapquestKey={mapquestKey}
                 selectedDates={selectedDates}
                 selectedRegion={selectedRegion}
