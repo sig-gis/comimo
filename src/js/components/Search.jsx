@@ -10,7 +10,7 @@ import { MainContext } from "./PageLayout";
 import { URLS } from "../constants";
 import { fitMap } from "../home/HomeMap";
 
-const searchResults = styled.div`
+const SearchResults = styled.div`
   &:active {
     background: #ddd;
     cursor: pointer;
@@ -22,7 +22,7 @@ const searchResults = styled.div`
   }
 `;
 
-export default function Search({ featureNames, mapquestKey, setSelectedRegion }) {
+export default function Search({ featureNames, map, mapquestKey, selectRegion }) {
   // State
 
   const [geoCodedSearch, setGeoCodedSearch] = useState(null);
@@ -32,7 +32,7 @@ export default function Search({ featureNames, mapquestKey, setSelectedRegion })
   const [latLngText, setLatLngText] = useState("");
 
   const {
-    localeText: { search },
+    localeText: { search, home },
   } = useContext(MainContext);
 
   // Helper search functions
@@ -42,8 +42,8 @@ export default function Search({ featureNames, mapquestKey, setSelectedRegion })
       URLS.MAPQUEST + "?key=" + mapquestKey + "&county=" + searchText + "&country=colombia";
     jsonRequest(url, null, "GET")
       .then((result) => {
-        setGeoCodedSearch({
-          geoCodedSearch: result.results[0].locations.filter((l) => {
+        setGeoCodedSearch(
+          result.results[0].locations.filter((l) => {
             try {
               return (
                 l.adminArea1 === "CO" &&
@@ -54,16 +54,16 @@ export default function Search({ featureNames, mapquestKey, setSelectedRegion })
             } catch (err) {
               return false;
             }
-          }),
-        });
+          })
+        );
       })
       .catch((error) => console.error(error));
   };
 
   const processLatLng = () => {
     const pair = latLngText.split(",");
-    const nump = pair.map((a) => parseFloat(a)).slice(0, 2);
-    fitMap("point", [nump[1], nump[0]]);
+    const [lat, lng] = pair.map((a) => parseFloat(a)).slice(0, 2);
+    fitMap(map, "point", [lng, lat], home);
   };
 
   // Helper render functions
@@ -75,16 +75,16 @@ export default function Search({ featureNames, mapquestKey, setSelectedRegion })
       geoCodedSearch && (
         <div>
           {geoCodedSearch.slice(0, 3).map((item) => (
-            <searchResults
+            <SearchResults
               key={item.adminArea3}
               onClick={() => {
                 const state = item.adminArea3.toUpperCase();
                 const mun = item.adminArea4.toUpperCase();
                 setSelectedL1(state);
                 setSelectedL2(mun);
-                fitMap("bbox", featureNames[state][mun]);
+                fitMap(map, "bbox", featureNames[state][mun], home);
                 setSelectedRegion(
-                  "mun_" + item.adminArea3.toUpperCase() + "_" + item.adminArea4.toUpperCase()
+                  `mun_${item.adminArea3.toUpperCase()}_${item.adminArea4.toUpperCase()}`
                 );
               }}
               style={{ display: "flex", flexDirection: "column" }}
@@ -98,7 +98,7 @@ export default function Search({ featureNames, mapquestKey, setSelectedRegion })
               <span>
                 {item.latLng.lat},{item.latLng.lng}
               </span>
-            </searchResults>
+            </SearchResults>
           ))}
         </div>
       )
@@ -137,7 +137,7 @@ export default function Search({ featureNames, mapquestKey, setSelectedRegion })
           const l2Name = e.target.value;
           const coords = activeMuns[l2Name];
           setSelectedL2(l2Name);
-          if (Array.isArray(coords)) fitMap("bbox", coords);
+          if (Array.isArray(coords)) fitMap(map, "bbox", coords, home);
           setSelectedRegion("mun_" + selectedL1 + "_" + l2Name);
         }}
         options={l2names}
