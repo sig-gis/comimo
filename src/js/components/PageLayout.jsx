@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useEffect } from "react";
+import { atom, useAtom, useSetAtom } from "jotai";
 
 import { ThemeProvider } from "@emotion/react";
 import AppInfo from "../home/AppInfo";
@@ -8,99 +9,132 @@ import { getLanguage, jsonRequest } from "../utils";
 import { THEME } from "../constants";
 
 // TODO: dismiss with escape app info
-export const MainContext = React.createContext();
-export class PageLayout extends React.Component {
-  constructor(props) {
-    super(props);
+export const MainContext = React.createContext({});
 
-    this.state = {
-      localeText: {},
-      selectedLanguage: ["en", "es"].includes(this.props.userLang)
-        ? this.props.userLang
-        : getLanguage(["en", "es"]),
-      myHeight: 0,
-      showInfo: false,
-    };
-  }
+export const localeTextAtom = atom({});
+export const selectedLanguageAtom = atom("en");
 
-  componentDidMount() {
-    this.getLocalText(this.state.selectedLanguage);
-    this.updateWindow();
-    window.addEventListener("touchend", this.updateWindow);
-    window.addEventListener("resize", this.updateWindow);
-  }
+export const myHeightAtom = atom(0);
+export const showInfoAtom = atom(false);
 
-  /// State Update ///
+export const mapboxTokenAtom = atom("");
+export const mapquestKeyAtom = atom("");
+export const versionDeployedAtom = atom("");
 
-  selectLanguage = (newLang) => {
-    this.setState({ selectedLanguage: newLang });
-    this.getLocalText(newLang);
+// export const textAtom = atom("hello");
+
+// const getLocalText = (lang) => {
+//   jsonRequest(`/locale/${lang}.json`, null, "GET")
+//     .then((data) => setLocaleText(data))
+//     .catch((err) => console.error(err));
+// };
+
+// export const localeText2Atom = atom((get) => {
+//   jsonRequest(`/locale/${lang}.json`, null, "GET")
+//   return get(selectedLanguageAtom).length;
+// });
+
+export function PageLayout({
+  role,
+  username,
+  children,
+  userLang,
+  mapboxToken,
+  mapquestKey,
+  versionDeployed,
+  showSearch,
+}) {
+  const [localeText, setLocaleText] = useAtom(localeTextAtom);
+  const [selectedLanguage, setSelectedLanguage] = useAtom(selectedLanguageAtom);
+  const [myHeight, setMyHeight] = useAtom(myHeightAtom);
+  const [showInfo, setShowInfo] = useAtom(showInfoAtom);
+  const setMapboxToken = useSetAtom(mapboxTokenAtom);
+  const setMapquestKey = useSetAtom(mapquestKeyAtom);
+  const setVersionDeployed = useSetAtom(versionDeployedAtom);
+
+  const isAdmin = role === "admin";
+
+  const selectLanguage = (newLang) => {
+    setSelectedLanguage(newLang);
+    getLocalText(newLang);
   };
 
-  updateWindow = () => {
+  const updateWindow = () => {
     window.scrollTo(0, 0);
-    this.setState({ myHeight: window.innerHeight });
+    setMyHeight(window.innerHeight);
   };
 
-  setShowInfo = (showInfo) => this.setState({ showInfo });
+  // API Call
 
-  /// API Calls ///
-
-  getLocalText = (lang) => {
+  const getLocalText = (lang) => {
     jsonRequest(`/locale/${lang}.json`, null, "GET")
-      .then((data) => this.setState({ localeText: data }))
+      .then((data) => setLocaleText(data))
       .catch((err) => console.error(err));
   };
 
-  render() {
-    const { myHeight, showInfo, localeText, selectedLanguage } = this.state;
-    const { role, username, children, version } = this.props;
-    const isAdmin = role === "admin";
-    return (
-      <MainContext.Provider
-        value={{
-          isAdmin,
-          username,
-          localeText,
-          myHeight,
-          setShowInfo: this.setShowInfo,
-        }}
-      >
-        <ThemeProvider theme={THEME}>
-          {showInfo && <AppInfo isAdmin={isAdmin} onClose={() => this.setShowInfo(false)} />}
+  useEffect(() => {
+    setSelectedLanguage(["en", "es"].includes(userLang) ? userLang : getLanguage(["en", "es"]));
+  }, []);
+
+  useEffect(() => {
+    if (selectedLanguage) getLocalText(selectedLanguage);
+    updateWindow();
+    window.addEventListener("touchend", updateWindow);
+    window.addEventListener("resize", updateWindow);
+  }, [selectedLanguage]);
+
+  useEffect(() => {
+    setMapboxToken(mapboxToken);
+    setMapquestKey(mapquestKey);
+    setVersionDeployed(versionDeployed);
+  }, []);
+
+  // const { myHeight, showInfo, localeText, selectedLanguage } = this.state;
+
+  return (
+    <MainContext.Provider
+      value={{
+        isAdmin,
+        username,
+        localeText,
+        myHeight,
+        setShowInfo,
+      }}
+    >
+      <ThemeProvider theme={THEME}>
+        {showInfo && <AppInfo isAdmin={isAdmin} onClose={() => setShowInfo(false)} />}
+        <div
+          id="root-component"
+          style={{
+            height: myHeight,
+            width: "100%",
+            margin: 0,
+            padding: 0,
+            position: "relative",
+            display: "flex",
+            flexDirection: "column",
+          }}
+        >
+          <Header
+            localeText={localeText}
+            selectedLanguage={selectedLanguage}
+            selectLanguage={selectLanguage}
+            setShowInfo={setShowInfo}
+            showSearch={showSearch}
+            username={username}
+          />
           <div
-            id="root-component"
+            id="page-body"
             style={{
-              height: myHeight,
-              width: "100%",
-              margin: 0,
-              padding: 0,
+              margin: "0px",
+              padding: "0px",
               position: "relative",
-              display: "flex",
-              flexDirection: "column",
+              flex: "1",
             }}
-          >
-            <Header
-              localeText={localeText}
-              selectedLanguage={selectedLanguage}
-              selectLanguage={this.selectLanguage}
-              setShowInfo={this.setShowInfo}
-              username={username}
-              version={version}
-            />
-            <div
-              id="page-body"
-              style={{
-                margin: "0px",
-                padding: "0px",
-                position: "relative",
-                flex: "1",
-              }}
-            />
-            {children}
-          </div>
-        </ThemeProvider>
-      </MainContext.Provider>
-    );
-  }
+          />
+          {children}
+        </div>
+      </ThemeProvider>
+    </MainContext.Provider>
+  );
 }
