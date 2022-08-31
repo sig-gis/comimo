@@ -13,11 +13,11 @@ import { URLS } from "../constants";
 import { jsonRequest } from "../utils";
 
 import { processModal, showModalAtom } from "../../../src/js/home";
+import { homeMapAtom } from "./HomeMap";
 
 export default function DownloadPanel({
   active,
   featureNames,
-  map,
   mapquestKey,
   selectedDates,
   selectedRegion,
@@ -25,6 +25,7 @@ export default function DownloadPanel({
 }) {
   const [clipOption, setClipOption] = useState(1);
   const [downloadURL, setDownloadURL] = useState(false);
+  const [homeMap, setMap] = useAtom(homeMapAtom);
   const [fetching, setFetching] = useState(false);
   const [mineType, setMineType] = useState("cMines");
   const [showModal, setShowModal] = useAtom(showModalAtom);
@@ -93,7 +94,7 @@ export default function DownloadPanel({
           <Title>{download?.selectMuni}</Title>
           <Search
             featureNames={featureNames}
-            map={map}
+            map={homeMap}
             mapquestKey={mapquestKey}
             setSelectedRegion={setSelectedRegion}
           ></Search>

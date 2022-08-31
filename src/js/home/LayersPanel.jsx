@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { useAtom } from "jotai";
+import { useAtom, useAtomValue } from "jotai";
 
 import { MainContext } from "../components/PageLayout";
 import NICFIControl from "../components/NICFIControl";
@@ -7,11 +7,13 @@ import ToolCard from "../components/ToolCard";
 
 import { extraMapParamsAtom } from "../home";
 import { startVisible, availableLayers } from "../constants";
+import { homeMapAtom } from "./HomeMap";
 
 export default function LayersPanel({ map, nicfiLayers, active }) {
   const [visible, setVisible] = useState(null);
   const [extraMapParams, setExtraMapParams] = useAtom(extraMapParamsAtom);
   const [opacity, setOpacity] = useState(null);
+  const homeMap = useAtomValue(homeMapAtom);
   const {
     localeText: { layers },
   } = useContext(MainContext);

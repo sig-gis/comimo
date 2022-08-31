@@ -20,8 +20,9 @@ const isEmptyMap = (m) => Object.keys(m).length === 0;
 // export const mapAtom = atom(null);
 export const mapPopupAtom = atom(null);
 export const selectedLatLngAtom = atom([]);
+export const homeMapAtom = atom(null);
 
-export default function HomeMap({ map, mapboxToken }) {
+export default function HomeMap({ mapboxToken }) {
   // Initial State
   const [mouseCoords, setMouseCoords] = useState(null);
   const [mapPopup, setMapPopup] = useAtom(mapPopupAtom);
@@ -30,6 +31,8 @@ export default function HomeMap({ map, mapboxToken }) {
   const [selectedLatLng, setSelectedLatLng] = useAtom(selectedLatLngAtom);
   const [selectedDates, setSelectedDates] = useAtom(selectedDatesAtom);
   const { localeText, myHeight } = useContext(MainContext);
+  const [homeMap, setHomeMap] = useAtom(homeMapAtom);
+
   const mapContainer = useRef(null);
   const [lng, setLng] = useState(-73.5609339);
   const [lat, setLat] = useState(4.6371205);
@@ -37,55 +40,57 @@ export default function HomeMap({ map, mapboxToken }) {
 
   // Effects
   useEffect(() => {
-    if (!map.current) {
+    if (!homeMap) {
       mapboxgl.accessToken = mapboxToken;
-      map.current = new mapboxgl.Map({
+      const map = new mapboxgl.Map({
         container: mapContainer.current,
         style: "mapbox://styles/mapbox/satellite-streets-v9",
         center: [lng, lat],
         zoom: zoom,
       });
+
+      setHomeMap(map);
     }
 
     if (!isEmptyMap(localeText) && !isEmptyMap(selectedDates)) {
-      map.current.resize();
+      homeMap.resize();
 
       // Add layers first in the
-      addLayerSources(map.current, [...availableLayers].reverse());
-      map.current.addControl(new mapboxgl.NavigationControl({ showCompass: false }));
-      map.current.on("mousemove", (e) => {
+      addLayerSources(homeMap, [...availableLayers].reverse());
+      homeMap.addControl(new mapboxgl.NavigationControl({ showCompass: false }));
+      homeMap.on("mousemove", (e) => {
         const lat = toPrecision(e.lngLat.lat, 4);
         const lng = toPrecision(e.lngLat.lng, 4);
         setMouseCoords({ lat, lng });
       });
-      map.current.on("click", (e) => {
+      homeMap.on("click", (e) => {
         const { lat, lng } = e.lngLat;
         setSelectedLatLng([lat, lng]);
 
         setMapPopup(
-          addPopup(map.current, { lat, lng }, mapPopup, visiblePanel, selectedDates, localeText)
+          addPopup(homeMap, { lat, lng }, mapPopup, visiblePanel, selectedDates, localeText)
         );
       });
     }
   }, [localeText, selectedDates]);
 
   useEffect(() => {
-    if (map.current && selectedDates) {
-      getLayerUrl(map.current, availableLayers.slice(3), selectedDates, extraMapParams);
+    if (homeMap && selectedDates) {
+      getLayerUrl(homeMap, availableLayers.slice(3), selectedDates, extraMapParams);
     }
   }, [selectedDates]);
 
   useEffect(() => {
-    if (map.current && !isEmptyMap(selectedDates)) {
+    if (homeMap && !isEmptyMap(selectedDates)) {
       Object.keys(selectedDates).length > 0 &&
-        getLayerUrl(map.current, Object.keys(selectedDates), selectedDates, extraMapParams);
+        getLayerUrl(homeMap, Object.keys(selectedDates), selectedDates, extraMapParams);
     }
   }, [selectedDates]);
 
   useEffect(() => {
-    if (map.current && !isEmptyMap(selectedDates)) {
+    if (homeMap && !isEmptyMap(selectedDates)) {
       Object.keys(extraMapParams).length > 0 &&
-        getLayerUrl(map.current, Object.keys(extraMapParams), selectedDates, extraMapParams);
+        getLayerUrl(homeMap, Object.keys(extraMapParams), selectedDates, extraMapParams);
     }
   }, [extraMapParams, selectedDates]);
 
@@ -165,7 +170,7 @@ const MapBoxWrapper = styled.div`
   }
 `;
 
-const addPopup = (map, { lat, lng }, mapPopup, visiblePanel, selectedDates, localeText) => {
+export const addPopup = (map, { lat, lng }, mapPopup, visiblePanel, selectedDates, localeText) => {
   // Remove old popup
   if (mapPopup) mapPopup.remove();
 

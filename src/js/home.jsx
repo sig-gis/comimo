@@ -7,7 +7,7 @@ import ReactDOM from "react-dom";
 import { useAtom } from "jotai";
 import DownloadPanel from "./home/DownloadPanel";
 import FilterPanel from "./home/FilterPanel";
-import HomeMap from "./home/HomeMap";
+import HomeMap, { homeMapAtom, mapPopupAtom } from "./home/HomeMap";
 // import InfoPopupContent from "./home/InfoPopupContent";
 import FooterBar from "./components/FooterBar";
 import IconTextButton from "./components/IconTextButton";
@@ -91,8 +91,8 @@ function HomeContents({ mapquestKey, mapboxToken, version }) {
   const [selectedRegion, setSelectedRegion] = useState(null);
   const [featureNames, setFeatureNames] = useState({});
   const [subscribedList, setSubscribedList] = useState([]);
-  const [thePopup, setThePopup] = useState(null);
-  const map = useRef(null);
+  const [homeMapPoupup, setHomeMapPoupup] = useAtom(mapPopupAtom);
+  const [homeMap, setHomeMap] = useAtom(homeMapAtom);
   const [extraMapParams, setExtraMapParams] = useAtom(extraMapParamsAtom);
   const [nicfiLayers, setNicfiLayers] = useState([]);
 
@@ -108,14 +108,15 @@ function HomeContents({ mapquestKey, mapboxToken, version }) {
   useEffect(() => {
     const handleEscapeKey = (e) => {
       if (e.keyCode === 27) {
-        // setHomeIsCleared(true);
+        // if (homeMapPoupup) homeMapPoupup.remove();
+        // setHomeMapPoupup(null);
         setVisiblePanel(null);
       }
     };
     window.addEventListener("keydown", handleEscapeKey);
 
     return () => {
-      window.removeEventListener("keydown", handleEsc);
+      window.removeEventListener("keydown", handleEscapeKey);
     };
   }, []);
 
@@ -168,7 +169,7 @@ function HomeContents({ mapquestKey, mapboxToken, version }) {
 
   return (
     <>
-      <HomeMap mapboxToken={mapboxToken} map={map} />
+      <HomeMap mapboxToken={mapboxToken} />
       <div id="bottom-bar">
         <FooterBar>
           <Buttons>
@@ -181,13 +182,7 @@ function HomeContents({ mapquestKey, mapboxToken, version }) {
                 onClick={() => togglePanel("layers")}
                 text="Layers"
               />
-              <LayersPanel
-                active={visiblePanel === "layers"}
-                // extraParams={extraMapParams}
-                nicfiLayers={nicfiLayers}
-                // setParams={setParams}
-                map={map.current}
-              />
+              <LayersPanel active={visiblePanel === "layers"} nicfiLayers={nicfiLayers} />
             </BarItem>
 
             {/* Subscribe */}
@@ -202,7 +197,7 @@ function HomeContents({ mapquestKey, mapboxToken, version }) {
               <SubscribePanel
                 active={visiblePanel === "subscribe"}
                 featureNames={featureNames}
-                map={map.current}
+                // map={homeMap.current}
                 mapquestKey={mapquestKey}
                 selectedRegion={selectedRegion}
                 setSelectedRegion={setSelectedRegion}
@@ -274,7 +269,7 @@ function HomeContents({ mapquestKey, mapboxToken, version }) {
               <DownloadPanel
                 active={visiblePanel === "download"}
                 featureNames={featureNames}
-                map={map.current}
+                // map={homeMap.current}
                 mapquestKey={mapquestKey}
                 selectedDates={selectedDates}
                 selectedRegion={selectedRegion}

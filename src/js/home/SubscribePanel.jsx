@@ -9,6 +9,8 @@ import ToolCard from "../components/ToolCard";
 import { URLS } from "../constants";
 import { jsonRequest } from "../utils";
 import { MainContext } from "../components/PageLayout";
+import { useAtom } from "jotai";
+import { homeMapAtom } from "./HomeMap";
 
 const Title = styled.h2`
   border-bottom: 1px solid gray;
@@ -47,7 +49,6 @@ const DeleteButton = styled.input`
 export default function SubscribePanel({
   featureNames,
   mapquestKey,
-  map,
   selectedRegion,
   setSelectedRegion,
   subscribedList,
@@ -55,6 +56,7 @@ export default function SubscribePanel({
   active,
 }) {
   const [subsLoaded, setSubsLoaded] = useState(false);
+  const [homeMap, _setHomeMap] = useAtom(homeMapAtom);
   const {
     username,
     localeText: { subscribe },
@@ -156,7 +158,7 @@ export default function SubscribePanel({
             <Title>{subscribe?.addNew}</Title>
             <Search
               featureNames={featureNames}
-              map={map}
+              map={homeMap}
               mapquestKey={mapquestKey}
               setSelectedRegion={setSelectedRegion}
             ></Search>
