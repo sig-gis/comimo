@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import styled from "@emotion/styled";
-import { THEME } from "../constants";
 
 import IconButton from "./IconButton";
 
