@@ -100,9 +100,9 @@
 (defn js-init [entry-file params]
   (let [js-params  (-> params
                        (assoc
-                        :mapboxToken (get-config :mapbox-token)
-                        :mapquestKey (get-config :mapquest-key)
-                        :version (current-version))
+                        :mapboxToken     (get-config :mapbox-token)
+                        :mapquestKey     (get-config :mapquest-key)
+                        :versionDeployed (current-version))
                        (json/write-str))
         script-str (str "import {pageInit} from \"" entry-file "\";"
                         "window.onload = function () { pageInit(" js-params "); };")]
