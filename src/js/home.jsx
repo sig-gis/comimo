@@ -108,8 +108,8 @@ function HomeContents({ mapquestKey, mapboxToken, version }) {
   useEffect(() => {
     const handleEscapeKey = (e) => {
       if (e.keyCode === 27) {
-        // if (homeMapPoupup) homeMapPoupup.remove();
-        // setHomeMapPoupup(null);
+        homeMapPoupup.remove();
+        setHomeMapPoupup(null);
         setVisiblePanel(null);
       }
     };
@@ -118,7 +118,7 @@ function HomeContents({ mapquestKey, mapboxToken, version }) {
     return () => {
       window.removeEventListener("keydown", handleEscapeKey);
     };
-  }, []);
+  }, [homeMapPoupup, visiblePanel]);
 
   useEffect(() => {
     const getImageDates = async () => {
