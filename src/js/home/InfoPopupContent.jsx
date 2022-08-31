@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { isValidElement, useEffect, useState } from "react";
 
 import PopupMapInfo from "../components/PopupMapInfo";
 import { jsonRequest, toPrecision } from "../utils";
@@ -7,19 +7,19 @@ import { MainContext } from "../components/PageLayout";
 import { useAtom } from "jotai";
 import { selectedDatesAtom } from "../home";
 
-// TODO: Stub
-const isLayerVisible = (map, layer) => {
-  map.getLayer(layer).visibility === "visible";
-};
+// TODO: home localeText is not defined/populated correctly
 
-export default function InfoPopupContent({ map, lng, lat, localeText: { home }, setSelectDates }) {
+export default function InfoPopupContent({ map, lng, lat, localeText: { home }, selectedDates }) {
   const [layerInfo, setLayerInfo] = useState({});
 
-  // const [selectedDates, setSelectedDates] = useAtom(selectedDatesAtom);
-  const visibleLayers = availableLayers.filter((layer) => isLayerVisible(map, layer));
+  const visibleLayers = availableLayers.filter(
+    (layer) => map.getLayer(layer).visibility === "visible"
+  );
+
   // random
   useEffect(() => {
     if (visibleLayers.length > 0) {
+      // TODO: selected dates is not here?
       jsonRequest(URLS.GET_INFO, { lng, lat, dates: selectedDates, visibleLayers })
         .then((resp) => setLayerInfo(resp))
         .catch((err) => console.error(err));
@@ -123,14 +123,14 @@ export default function InfoPopupContent({ map, lng, lat, localeText: { home }, 
 
   return Object.keys(layerInfo).length === visibleLayers.length ? (
     <div style={{ display: "flex", flexDirection: "column", marginRight: "0.5rem" }}>
-      <PopupMapInfo key="lnglat">
+      <PopupMapInfo key="latlng">
         <label>
-          <strong>Lng: </strong> {toPrecision(lng, 4)}
-          <span>, </span>
           <strong>Lat: </strong> {toPrecision(lat, 4)}
+          <span>, </span>
+          <strong>Lng: </strong> {toPrecision(lng, 4)}
         </label>
       </PopupMapInfo>
-      {visibleLayers.map((l) => layerToInfo[l])}
+      e {visibleLayers.map((l) => layerToInfo[l])}
     </div>
   ) : (
     <div>Loading...</div>
