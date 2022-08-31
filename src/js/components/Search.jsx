@@ -23,7 +23,7 @@ const SearchResults = styled.div`
   }
 `;
 
-export default function Search({ featureNames, mapquestKey }) {
+export default function Search({ featureNames, mapquestKey, isPanel }) {
   // State
 
   const [homeMap, setHomeMap] = useAtom(homeMapAtom);
@@ -154,35 +154,39 @@ export default function Search({ featureNames, mapquestKey }) {
   // Render
   return (
     <div>
-      <TextInput
-        id="inputGeocode"
-        label={search?.internetLabel}
-        onChange={(e) => setSearchText(e.target.value)}
-        onKeyUp={(e) => {
-          if (e.key === "Enter") searchGeocode();
-        }}
-        render={() => (
-          <Button onClick={searchGeocode} extraStyle={{ marginLeft: "0.25rem" }}>
-            {search?.goButton}
-          </Button>
-        )}
-        value={searchText}
-      />
-      {geoSearchResults}
-      <TextInput
-        id="inputLatLng"
-        label={search?.coordLabel}
-        onChange={(e) => setLatLngText(e.target.value)}
-        onKeyUp={(e) => {
-          if (e.key === "Enter") processLatLng();
-        }}
-        render={() => (
-          <Button onClick={processLatLng} extraStyle={{ marginLeft: "0.25rem" }}>
-            {search?.goButton}
-          </Button>
-        )}
-        value={latLngText}
-      />
+      {isPanel && (
+        <>
+          <TextInput
+            id="inputGeocode"
+            label={search?.internetLabel}
+            onChange={(e) => setSearchText(e.target.value)}
+            onKeyUp={(e) => {
+              if (e.key === "Enter") searchGeocode();
+            }}
+            render={() => (
+              <Button onClick={searchGeocode} extraStyle={{ marginLeft: "0.25rem" }}>
+                {search?.goButton}
+              </Button>
+            )}
+            value={searchText}
+          />
+          {geoSearchResults}
+          <TextInput
+            id="inputLatLng"
+            label={search?.coordLabel}
+            onChange={(e) => setLatLngText(e.target.value)}
+            onKeyUp={(e) => {
+              if (e.key === "Enter") processLatLng();
+            }}
+            render={() => (
+              <Button onClick={processLatLng} extraStyle={{ marginLeft: "0.25rem" }}>
+                {search?.goButton}
+              </Button>
+            )}
+            value={latLngText}
+          />
+        </>
+      )}
       <label>{search?.selectLabel}</label>
       {selectL1}
       {selectL2}

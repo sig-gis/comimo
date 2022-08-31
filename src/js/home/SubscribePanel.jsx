@@ -96,7 +96,7 @@ export default function SubscribePanel({
   const delSubs = (region) => {
     const arr = region.split("_");
     const delConfirm = confirm(
-      `${subscribe.delConfirm1} ${arr.reverse().join(", ")}? ${subscribe.delConfirm2}`
+      `${subscribe.delConfirm1} ${arr.reverse().join(", ")}? ${subscribe?.delConfirm2}`
     );
     if (delConfirm) {
       jsonRequest(URLS.DEL_SUBS, { region })
@@ -113,8 +113,8 @@ export default function SubscribePanel({
         <thead>
           <tr>
             <th style={{ width: "20px" }}>#</th>
-            <th style={{ width: "calc(100% - 50px)" }}>{subscribe.munLabel}</th>
-            <th style={{ width: "30px" }}>{subscribe.shortDelete}</th>
+            <th style={{ width: "calc(100% - 50px)" }}>{subscribe?.munLabel}</th>
+            <th style={{ width: "30px" }}>{subscribe?.shortDelete}</th>
           </tr>
         </thead>
         <tbody>
@@ -156,7 +156,7 @@ export default function SubscribePanel({
           </div>
           <div>
             <Title>{subscribe?.addNew}</Title>
-            <Search featureNames={featureNames} mapquestKey={mapquestKey}></Search>
+            <Search isPanel={false} featureNames={featureNames} mapquestKey={mapquestKey}></Search>
             {
               // TODO: inform user (either in UI or alert that is region already been subscribed to and can't add it twice)
               selectedRegion && !subscribedList.includes(selectedRegion) && (

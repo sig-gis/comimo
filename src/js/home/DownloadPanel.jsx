@@ -91,6 +91,7 @@ export default function DownloadPanel({ active, featureNames, mapquestKey, selec
         <div>
           <Title>{download?.selectMuni}</Title>
           <Search
+            isPanel={false}
             featureNames={featureNames}
             map={homeMap}
             mapquestKey={mapquestKey}
