@@ -9,7 +9,7 @@ import { extraMapParamsAtom } from "../home";
 import { startVisible, availableLayers } from "../constants";
 import { homeMapAtom } from "./HomeMap";
 
-export default function LayersPanel({ map, nicfiLayers, active }) {
+export default function LayersPanel({ nicfiLayers, active }) {
   const [visible, setVisible] = useState(null);
   const [extraMapParams, setExtraMapParams] = useAtom(extraMapParamsAtom);
   const [opacity, setOpacity] = useState(null);
@@ -37,12 +37,12 @@ export default function LayersPanel({ map, nicfiLayers, active }) {
   }, []);
 
   const setLayerVisible = (name, layerVisible) => {
-    map.setLayoutProperty(name, "visibility", layerVisible ? "visible" : "none");
+    homeMap.setLayoutProperty(name, "visibility", layerVisible ? "visible" : "none");
     setVisible({ ...visible, [name]: layerVisible });
   };
 
   const setLayerOpacity = (name, newOpacity) => {
-    map.setPaintProperty(name, "raster-opacity", newOpacity / 100);
+    homeMap.setPaintProperty(name, "raster-opacity", newOpacity / 100);
     setOpacity({ ...opacity, [name]: newOpacity });
   };
 
