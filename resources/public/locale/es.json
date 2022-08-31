@@ -29,7 +29,14 @@
     "loading": "Cargando",
     "admin": "Administración",
     "noMorePlots": "No más parcelas",
-    "pageNotFound": "404 - Página No Encontrada"
+    "pageNotFound": "404 - Página No Encontrada",
+    "layersTitle": "Capas",
+    "subscribeTitle": "Suscripciones",
+    "validationsTitle": "Validacións",
+    "filterTitle": "Filtrar",
+    "reportMinesTitle": "Reportar Minas",
+    "downloadTitle": "Descargar",
+    "statisticsTitle": "Descargar"
   },
   "appInfo": {
     "logout": "Cerrar Sesión",

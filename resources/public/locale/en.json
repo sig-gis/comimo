@@ -29,7 +29,14 @@
     "loading": "Loading",
     "admin": "Admin",
     "noMorePlots": "No more plots",
-    "pageNotFound": "404 - Page Not Found"
+    "pageNotFound": "404 - Page Not Found",
+    "layersTitle": "Layers",
+    "subscribeTitle": "Subscribe",
+    "validationsTitle": "Validations",
+    "filterTitle": "Filter",
+    "reportMinesTitle": "Report Mines",
+    "downloadTitle": "Download",
+    "statisticsTitle": "Statistics"
   },
   "appInfo": {
     "download": "Download validated data",
