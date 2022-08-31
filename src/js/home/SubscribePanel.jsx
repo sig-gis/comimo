@@ -47,6 +47,7 @@ const DeleteButton = styled.input`
 export default function SubscribePanel({
   featureNames,
   mapquestKey,
+  map,
   selectedRegion,
   setSelectedRegion,
   subscribedList,
@@ -155,8 +156,9 @@ export default function SubscribePanel({
             <Title>{subscribe?.addNew}</Title>
             <Search
               featureNames={featureNames}
+              map={map}
               mapquestKey={mapquestKey}
-              selectRegion={setSelectedRegion}
+              setSelectedRegion={setSelectedRegion}
             ></Search>
             {selectedRegion && !subscribedList.includes(selectedRegion) && (
               <div style={{ textAlign: "center", width: "100%" }}>

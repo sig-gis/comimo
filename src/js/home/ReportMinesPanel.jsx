@@ -78,8 +78,8 @@ export default function ReportMinesPanel({ selectedLatLon, fitMap, addPopup, act
     const [lat, lon] = pair.map((a) => parseFloat(a)).slice(0, 2);
     if (lat && lon) {
       // TODO, these probably dont need to be three functions
-      addPopup(lat, lon);
-      fitMap("point", [lon, lat]);
+      // addPopup(map, lat, lon);
+      // fitMap("point", [lon, lat]);
     }
   };
 

@@ -17,6 +17,7 @@ import { processModal, showModalAtom } from "../../../src/js/home";
 export default function DownloadPanel({
   active,
   featureNames,
+  map,
   mapquestKey,
   selectedDates,
   selectedRegion,
@@ -92,6 +93,7 @@ export default function DownloadPanel({
           <Title>{download?.selectMuni}</Title>
           <Search
             featureNames={featureNames}
+            map={map}
             mapquestKey={mapquestKey}
             setSelectedRegion={setSelectedRegion}
           ></Search>
