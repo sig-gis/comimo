@@ -1,15 +1,27 @@
 import React, { useContext, useEffect, useState } from "react";
+import { useAtom } from "jotai";
+
 import { MainContext } from "../components/PageLayout";
 import NICFIControl from "../components/NICFIControl";
 import ToolCard from "../components/ToolCard";
+
+import { extraMapParamsAtom } from "../home";
 import { startVisible, availableLayers } from "../constants";
 
-export default function LayersPanel({ map, extraParams, nicfiLayers, setParams, active }) {
+export default function LayersPanel({ map, nicfiLayers, active }) {
   const [visible, setVisible] = useState(null);
+  const [extraMapParams, setExtraMapParams] = useAtom(extraMapParamsAtom);
   const [opacity, setOpacity] = useState(null);
   const {
     localeText: { layers },
   } = useContext(MainContext);
+
+  const setParams = (param, value) => {
+    setExtraMapParams({
+      ...extraMapParams,
+      [param]: value,
+    });
+  };
 
   useEffect(() => {
     setVisible(
@@ -86,7 +98,11 @@ export default function LayersPanel({ map, extraParams, nicfiLayers, setParams, 
       <hr style={{ marginBottom: "0.5rem" }}></hr>
       <div style={{ display: "flex", flexDirection: "column" }}>
         {renderControl("NICFI")}
-        <NICFIControl extraParams={extraParams} nicfiLayers={nicfiLayers} setParams={setParams} />
+        <NICFIControl
+          extraParams={extraMapParams}
+          nicfiLayers={nicfiLayers}
+          setParams={setParams}
+        />
       </div>
     </>
   );

@@ -10,7 +10,7 @@ import ReportPopupContent from "./ReportPopupContent";
 import InfoPopupContent from "./InfoPopupContent";
 import { MainContext } from "../components/PageLayout";
 
-import { selectedDatesAtom } from "../home";
+import { extraMapParamsAtom, selectedDatesAtom, visiblePanelAtom } from "../home";
 
 import { toPrecision, jsonRequest } from "../utils";
 import { URLS, availableLayers, startVisible, attributions } from "../constants";
@@ -21,10 +21,12 @@ const isEmptyMap = (m) => Object.keys(m).length === 0;
 export const mapPopupAtom = atom(null);
 export const selectedLatLngAtom = atom([]);
 
-export default function HomeMap({ map, extraParams, mapboxToken, visiblePanel, selectDate }) {
+export default function HomeMap({ map, mapboxToken }) {
   // Initial State
   const [mouseCoords, setMouseCoords] = useState(null);
   const [mapPopup, setMapPopup] = useAtom(mapPopupAtom);
+  const [visiblePanel, setVisiblePanel] = useAtom(visiblePanelAtom);
+  const [extraMapParams, setExtraMapParams] = useAtom(extraMapParamsAtom);
   const [selectedLatLng, setSelectedLatLng] = useAtom(selectedLatLngAtom);
   const [selectedDates, setSelectedDates] = useAtom(selectedDatesAtom);
   const { localeText, myHeight } = useContext(MainContext);
@@ -69,23 +71,23 @@ export default function HomeMap({ map, extraParams, mapboxToken, visiblePanel, s
 
   useEffect(() => {
     if (map.current && selectedDates) {
-      getLayerUrl(map.current, availableLayers.slice(3), selectedDates, extraParams);
+      getLayerUrl(map.current, availableLayers.slice(3), selectedDates, extraMapParams);
     }
   }, [selectedDates]);
 
   useEffect(() => {
     if (map.current && !isEmptyMap(selectedDates)) {
       Object.keys(selectedDates).length > 0 &&
-        getLayerUrl(map.current, Object.keys(selectedDates), selectedDates, extraParams);
+        getLayerUrl(map.current, Object.keys(selectedDates), selectedDates, extraMapParams);
     }
   }, [selectedDates]);
 
   useEffect(() => {
     if (map.current && !isEmptyMap(selectedDates)) {
-      Object.keys(extraParams).length > 0 &&
-        getLayerUrl(map.current, Object.keys(extraParams), selectedDates, extraParams);
+      Object.keys(extraMapParams).length > 0 &&
+        getLayerUrl(map.current, Object.keys(extraMapParams), selectedDates, extraMapParams);
     }
-  }, [extraParams, selectedDates]);
+  }, [extraMapParams, selectedDates]);
 
   // useEffect(() => {
   //   map && setTimeout(() => map.resize(), 50);
@@ -219,12 +221,12 @@ const setLayerUrl = (map, layer, url) => {
   }
 };
 
-const getLayerUrl = (map, list, selectedDates, extraParams) => {
+const getLayerUrl = (map, list, selectedDates, extraMapParams) => {
   list.forEach((layer) => {
     jsonRequest(URLS.GET_IMAGE_URL, { dataLayer: selectedDates[layer], type: layer })
       .then((url) => {
         // As written the URL provided must already include ? and one param so &nextParam works.
-        const params = extraParams[layer];
+        const params = extraMapParams[layer];
         const fullUrl =
           params == null
             ? url

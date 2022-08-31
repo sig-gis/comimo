@@ -70,6 +70,12 @@ const BarItem = styled.div`
 
 export const visiblePanelAtom = atom(null);
 export const showModalAtom = atom(null);
+export const extraMapParamsAtom = atom({
+  NICFI: {
+    dataLayer: null,
+    band: "rgb",
+  },
+});
 
 export const processModal = (callBack, setShowModal) =>
   new Promise(() => {
@@ -87,12 +93,7 @@ function HomeContents({ mapquestKey, mapboxToken, version }) {
   const [subscribedList, setSubscribedList] = useState([]);
   const [thePopup, setThePopup] = useState(null);
   const map = useRef(null);
-  const [extraParams, setExtraParams] = useState({
-    NICFI: {
-      dataLayer: null,
-      band: "rgb",
-    },
-  });
+  const [extraMapParams, setExtraMapParams] = useAtom(extraMapParamsAtom);
   const [nicfiLayers, setNicfiLayers] = useState([]);
 
   const {
@@ -140,8 +141,8 @@ function HomeContents({ mapquestKey, mapboxToken, version }) {
   const selectDates = (newDates) => setSelectedDates({ ...selectedDates, ...newDates });
 
   const setParams = (param, value) => {
-    setExtraParams({
-      ...extraParams,
+    setExtraMapParams({
+      ...extraMapParams,
       [param]: value,
     });
   };
@@ -150,7 +151,7 @@ function HomeContents({ mapquestKey, mapboxToken, version }) {
     const getNICFIDates = async () => {
       const dates = await jsonRequest(URLS.NICFI_DATES);
       setNicfiLayers(dates);
-      setParams("NICFI", { ...extraParams.NICFI, dataLayer: dates[0] });
+      setParams("NICFI", { ...extraMapParams.NICFI, dataLayer: dates[0] });
     };
 
     getNICFIDates().catch(console.error);
@@ -165,34 +166,9 @@ function HomeContents({ mapquestKey, mapboxToken, version }) {
     getFeatureNames().catch(console.error);
   }, []);
 
-  // API Calls
-
-  // const getImageDates = () =>
-  //   jsonRequest(URLS.IMG_DATES).then((result) => {
-  //     const initialDates = Object.keys(result).reduce(
-  //       (acc, cur) => ({ ...acc, [cur]: result[cur][0] }),
-  //       {}
-  //     );
-
-  //     setImageDates(result);
-  //     setSelectedDates(initialDates);
-  //   });
-
   return (
     <>
-      <HomeMap
-        // addPopup={addPopup}
-        extraParams={extraParams}
-        localeText={localeText}
-        mapboxToken={mapboxToken}
-        visiblePanel={visiblePanel}
-        map={map}
-        // selectedDates={selectedDates}
-        selectDates={selectDates}
-        setParams={setParams}
-        setNicfiLayers={setNicfiLayers}
-      />
-
+      <HomeMap mapboxToken={mapboxToken} map={map} />
       <div id="bottom-bar">
         <FooterBar>
           <Buttons>
@@ -207,9 +183,9 @@ function HomeContents({ mapquestKey, mapboxToken, version }) {
               />
               <LayersPanel
                 active={visiblePanel === "layers"}
-                extraParams={extraParams}
+                // extraParams={extraMapParams}
                 nicfiLayers={nicfiLayers}
-                setParams={setParams}
+                // setParams={setParams}
                 map={map.current}
               />
             </BarItem>
