@@ -1,9 +1,15 @@
 import React from "react";
 import Button from "./Button";
+import { useAtom, useAtomValue } from "jotai";
 import styled from "@emotion/styled";
 
 import LanguageSelector from "./LanguageSelector";
 import IconTextButton from "./IconTextButton";
+import Search from "./Search";
+import ToolCard from "./ToolCard";
+
+import { visiblePanelAtom, featureNamesAtom } from "../home";
+import { mapquestKeyAtom } from "./PageLayout";
 
 const TitleBar = styled.div`
   background: var(--gray-1);
@@ -15,7 +21,7 @@ const TitleBar = styled.div`
   width: 100%;
 `;
 
-const Search = styled.div`
+const SearchContainer = styled.div`
   display: flex;
   justify-content: center;
   flex: 1;
@@ -61,29 +67,46 @@ const LoggedInUsername = styled.span`
 `;
 
 export default function Header({
+  localeText,
   selectLanguage,
   selectedLanguage,
-  username,
   setShowInfo,
-  localeText,
+  showSearch,
+  username,
   version,
 }) {
+  const featureNames = useAtomValue(featureNamesAtom);
+  const mapquestKey = useAtomValue(mapquestKeyAtom);
+  const [visiblePanel, setVisiblePanel] = useAtom(visiblePanelAtom);
+
+  const togglePanel = (panelKey) => {
+    setVisiblePanel(panelKey === visiblePanel ? null : panelKey);
+  };
+
   return (
     <TitleBar id="title-bar">
-      <Search id="header-search">
-        {/* TODO: onClick should open up the Search functionality
-        TODO: have an active state that we can pass to IconTextButton */}
-        <IconTextButton
-          active={false}
-          hasBackground={true}
-          icon="search"
-          iconSize="26px"
-          invertBorderRadius={true}
-          onClick={() => window.alert("place holder for search functionality")}
-          text="Search"
-          tooltip="Placeholder Search ToolTip"
-        />
-      </Search>
+      <SearchContainer id="header-search">
+        {showSearch && (
+          <>
+            <IconTextButton
+              active={visiblePanel === "search"}
+              hasBackground={true}
+              icon="search"
+              // iconSize="26px"
+              invertBorderRadius={true}
+              onClick={() => togglePanel("search")}
+              text={localeText.home?.searchTitle}
+            />
+            <ToolCard
+              title={localeText.home?.searchTitle}
+              isInverted={true}
+              active={visiblePanel === "search"}
+            >
+              <Search isPanel={true} featureNames={featureNames} mapquestKey={mapquestKey}></Search>
+            </ToolCard>
+          </>
+        )}
+      </SearchContainer>
       <Logo id="header-logo">
         <LogoImg
           alt="app-logo"

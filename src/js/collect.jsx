@@ -231,7 +231,8 @@ export function pageInit(args) {
       role={args.role}
       userLang={args.userLang}
       username={args.username}
-      version={args.version}
+      version={args.versionDeployed}
+      showSearch={true}
     >
       <CollectContent mapboxToken={args.mapboxToken} projectId={parseInt(args.projectId || 0)} />
     </PageLayout>,

@@ -48,10 +48,10 @@ export default function ProjectCard({
     <CardOuter>
       <Info>
         <Title href={`/collect?projectId=${id}`}>{name}</Title>
-        <div>{`${validate.predictionLabel}: ${dataLayer}`}</div>
-        <div>{`${validate.createdLabel}: ${createdDate}`}</div>
+        <div>{`${validate?.predictionLabel}: ${dataLayer}`}</div>
+        <div>{`${validate?.createdLabel}: ${createdDate}`}</div>
         <div>
-          {`${validate.regionsLabel}:`}
+          {`${validate?.regionsLabel}:`}
           <RegionsList>
             {regions
               .map((x) => x.toUpperCase().split("_"))
