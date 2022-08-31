@@ -10,7 +10,7 @@ import { URLS } from "../constants";
 import { jsonRequest } from "../utils";
 import { MainContext } from "../components/PageLayout";
 import { useAtom } from "jotai";
-import { homeMapAtom } from "./HomeMap";
+import { homeMapAtom, selectedRegionAtom } from "./HomeMap";
 
 const Title = styled.h2`
   border-bottom: 1px solid gray;
@@ -49,14 +49,14 @@ const DeleteButton = styled.input`
 export default function SubscribePanel({
   featureNames,
   mapquestKey,
-  selectedRegion,
-  setSelectedRegion,
   subscribedList,
   setSubscribedList,
   active,
 }) {
   const [subsLoaded, setSubsLoaded] = useState(false);
   const [homeMap, _setHomeMap] = useAtom(homeMapAtom);
+  const [selectedRegion, setSelectedRegion] = useAtom(selectedRegionAtom);
+
   const {
     username,
     localeText: { subscribe },
@@ -156,19 +156,17 @@ export default function SubscribePanel({
           </div>
           <div>
             <Title>{subscribe?.addNew}</Title>
-            <Search
-              featureNames={featureNames}
-              map={homeMap}
-              mapquestKey={mapquestKey}
-              setSelectedRegion={setSelectedRegion}
-            ></Search>
-            {selectedRegion && !subscribedList.includes(selectedRegion) && (
-              <div style={{ textAlign: "center", width: "100%" }}>
-                <Button
-                  onClick={() => addSubs(selectedRegion)}
-                >{`${subscribe?.subscribeTo} ${parsedRegion[2]}, ${parsedRegion[1]}`}</Button>
-              </div>
-            )}
+            <Search featureNames={featureNames} mapquestKey={mapquestKey}></Search>
+            {
+              // TODO: inform user (either in UI or alert that is region already been subscribed to and can't add it twice)
+              selectedRegion && !subscribedList.includes(selectedRegion) && (
+                <div style={{ textAlign: "center", width: "100%" }}>
+                  <Button
+                    onClick={() => addSubs(selectedRegion)}
+                  >{`${subscribe?.subscribeTo} ${parsedRegion[2]}, ${parsedRegion[1]}`}</Button>
+                </div>
+              )
+            }
           </div>
         </>
       ) : (

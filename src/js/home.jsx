@@ -1,73 +1,26 @@
-import styled from "@emotion/styled";
-import { css } from "@emotion/react";
-import { atom } from "jotai";
-import mapboxgl from "mapbox-gl";
 import React, { useCallback, useContext, useEffect, useRef, useState } from "react";
 import ReactDOM from "react-dom";
-import { useAtom } from "jotai";
+import { useAtom, atom } from "jotai";
+import styled from "@emotion/styled";
+
 import DownloadPanel from "./home/DownloadPanel";
 import FilterPanel from "./home/FilterPanel";
-import HomeMap, { homeMapAtom, mapPopupAtom } from "./home/HomeMap";
-// import InfoPopupContent from "./home/InfoPopupContent";
 import FooterBar from "./components/FooterBar";
 import IconTextButton from "./components/IconTextButton";
 import IconButton from "./components/IconButton";
-import MenuItem from "./components/MenuItem";
 import { MainContext, PageLayout } from "./components/PageLayout";
-import SideBar from "./components/SideBar";
 import LayersPanel from "./home/LayersPanel";
 import ReportMinesPanel from "./home/ReportMinesPanel";
-import ReportPopupContent from "./home/ReportPopupContent";
 import StatsPanel from "./home/StatsPanel";
 import SubscribePanel from "./home/SubscribePanel";
 import ValidatePanel from "./home/ValidatePanel";
 
+import HomeMap, { homeMapAtom, mapPopupAtom } from "./home/HomeMap";
 import { availableLayers, URLS } from "./constants";
 import { jsonRequest } from "./utils";
 
 export const selectedDatesAtom = atom({});
-
 export const updateStateMap = (setter, prevVal, newVal) => setter({ ...prevVal, ...newVal });
-
-const Buttons = styled.div`
-  display: flex;
-  flex: 3;
-  justify-content: space-around;
-`;
-
-const Logo = styled.div`
-  align-items: center;
-  display: flex;
-  flex: 1;
-  justify-content: space-around;
-  padding: 5px 0;
-`;
-
-const LogoImg = styled.img`
-  cursor: pointer;
-  height: 22px;
-  padding-right: 15px;
-  width: 67px;
-`;
-
-const LogoGitVersion = styled.a`
-  color: var(--white);
-  cursor: pointer;
-  font-size: 12px;
-  letter-spacing: 0px;
-  text-align: left;
-  text-decoration: none;
-`;
-
-const Hidable = styled.div`
-  display: ${({ active }) => !active && "none"};
-`;
-
-const BarItem = styled.div`
-  // display: flex;
-  // flex-direction: column;
-`;
-
 export const visiblePanelAtom = atom(null);
 export const showModalAtom = atom(null);
 export const extraMapParamsAtom = atom({
@@ -84,16 +37,15 @@ export const processModal = (callBack, setShowModal) =>
   });
 
 function HomeContents({ mapquestKey, mapboxToken, version }) {
-  // Initial state
   const [visiblePanel, setVisiblePanel] = useAtom(visiblePanelAtom);
-  const [imageDates, setImageDates] = useState({});
   const [selectedDates, setSelectedDates] = useAtom(selectedDatesAtom);
-  const [selectedRegion, setSelectedRegion] = useState(null);
   const [featureNames, setFeatureNames] = useState({});
   const [subscribedList, setSubscribedList] = useState([]);
   const [homeMapPoupup, setHomeMapPoupup] = useAtom(mapPopupAtom);
   const [homeMap, setHomeMap] = useAtom(homeMapAtom);
   const [extraMapParams, setExtraMapParams] = useAtom(extraMapParamsAtom);
+
+  const [imageDates, setImageDates] = useState({});
   const [nicfiLayers, setNicfiLayers] = useState([]);
 
   const {
@@ -108,8 +60,10 @@ function HomeContents({ mapquestKey, mapboxToken, version }) {
   useEffect(() => {
     const handleEscapeKey = (e) => {
       if (e.keyCode === 27) {
-        homeMapPoupup.remove();
-        setHomeMapPoupup(null);
+        if (homeMapPoupup) {
+          homeMapPoupup.remove();
+          setHomeMapPoupup(null);
+        }
         setVisiblePanel(null);
       }
     };
@@ -180,7 +134,7 @@ function HomeContents({ mapquestKey, mapboxToken, version }) {
                 hasBackground={true}
                 icon="layer"
                 onClick={() => togglePanel("layers")}
-                text="Layers"
+                text={home?.layersTitle}
               />
               <LayersPanel active={visiblePanel === "layers"} nicfiLayers={nicfiLayers} />
             </BarItem>
@@ -192,15 +146,12 @@ function HomeContents({ mapquestKey, mapboxToken, version }) {
                 hasBackground={true}
                 icon="envelope"
                 onClick={() => togglePanel("subscribe")}
-                text="Subscribe"
+                text={home?.subscribeTitle}
               />
               <SubscribePanel
                 active={visiblePanel === "subscribe"}
                 featureNames={featureNames}
-                // map={homeMap.current}
                 mapquestKey={mapquestKey}
-                selectedRegion={selectedRegion}
-                setSelectedRegion={setSelectedRegion}
                 subscribedList={subscribedList}
                 setSubscribedList={setSubscribedList}
               />
@@ -213,7 +164,7 @@ function HomeContents({ mapquestKey, mapboxToken, version }) {
                 hasBackground={true}
                 icon="check"
                 onClick={() => togglePanel("validate")}
-                text="Validations"
+                text={home?.validationsTitle}
               />
               <ValidatePanel
                 active={visiblePanel === "validate"}
@@ -222,94 +173,72 @@ function HomeContents({ mapquestKey, mapboxToken, version }) {
                 subscribedList={subscribedList}
               />
             </BarItem>
+            {/* "Advanced Controls" */}
+            {username && (
+              <>
+                {/* Filter */}
+                <BarItem>
+                  <IconTextButton
+                    active={visiblePanel === "filter"}
+                    hasBackground={true}
+                    icon="filter"
+                    onClick={() => togglePanel("filter")}
+                    text={home?.filterTitle}
+                  />
+                  <FilterPanel
+                    active={visiblePanel === "filter"}
+                    imageDates={imageDates}
+                    selectDates={selectDates}
+                    selectedDates={selectedDates}
+                  />
+                </BarItem>
 
-            {/* Filter */}
-            <BarItem>
-              <IconTextButton
-                active={visiblePanel === "filter"}
-                hasBackground={true}
-                icon="filter"
-                onClick={() => togglePanel("filter")}
-                text="Filter"
-              />
-              <FilterPanel
-                active={visiblePanel === "filter"}
-                imageDates={imageDates}
-                selectDates={selectDates}
-                selectedDates={selectedDates}
-              />
-            </BarItem>
+                {/* Report Mines */}
+                <BarItem>
+                  <IconTextButton
+                    active={visiblePanel === "report"}
+                    hasBackground={true}
+                    icon="mine"
+                    onClick={() => togglePanel("report")}
+                    text={home?.reportMinesTitle}
+                  />
+                  <ReportMinesPanel active={visiblePanel === "report"} />
+                </BarItem>
 
-            {/* Report Mines */}
-            <BarItem>
-              <IconTextButton
-                active={visiblePanel === "report"}
-                hasBackground={true}
-                icon="mine"
-                onClick={() => togglePanel("report")}
-                text="Report Mines"
-              />
-              <ReportMinesPanel
-                active={visiblePanel === "report"}
-                iamgeDates={imageDates}
-                selectDates={selectDates}
-                selectedDates={selectedDates}
-              />
-            </BarItem>
+                {/* Download Data */}
+                <BarItem>
+                  <IconTextButton
+                    active={visiblePanel === "download"}
+                    hasBackground={true}
+                    icon="download"
+                    onClick={() => togglePanel("download")}
+                    text={home?.downloadTitle}
+                  />
+                  <DownloadPanel
+                    active={visiblePanel === "download"}
+                    featureNames={featureNames}
+                    mapquestKey={mapquestKey}
+                    selectedDates={selectedDates}
+                  />
+                </BarItem>
 
-            {/* Download Data */}
-            <BarItem>
-              <IconTextButton
-                active={visiblePanel === "download"}
-                hasBackground={true}
-                icon="download"
-                onClick={() => togglePanel("download")}
-                text="Download"
-              />
-              <DownloadPanel
-                active={visiblePanel === "download"}
-                featureNames={featureNames}
-                // map={homeMap.current}
-                mapquestKey={mapquestKey}
-                selectedDates={selectedDates}
-                selectedRegion={selectedRegion}
-                setSelectedRegion={setSelectedRegion}
-              />
-            </BarItem>
-
-            {/* Statistics */}
-            <BarItem>
-              <IconTextButton
-                active={visiblePanel === "stats"}
-                hasBackground={true}
-                icon="stats"
-                onClick={() => togglePanel("stats")}
-                text="Statistics"
-              />
-              <StatsPanel
-                active={visiblePanel === "stats"}
-                selectedDate={selectedDates?.cMines}
-                subscribedList={subscribedList}
-              />
-            </BarItem>
-
-            {/* <MenuItem
-          icon="envelope"
-          itemName="subscribe"
-          onClick={togglePanel}
-          selectedItem={visiblePanel}
-          tooltip={localeText.home.subscribeTooltip}
-        >
-          <SubscribePanel
-            featureNames={this.state.featureNames}
-            fitMap={this.fitMap}
-            mapquestKey={this.props.mapquestKey}
-            selectedRegion={this.state.selectedRegion}
-            selectRegion={this.selectRegion}
-            subscribedList={this.state.subscribedList}
-            updateSubList={this.updateSubList}
-          />
-        </MenuItem> */}
+                {/* Statistics */}
+                <BarItem>
+                  <IconTextButton
+                    active={visiblePanel === "stats"}
+                    hasBackground={true}
+                    icon="stats"
+                    onClick={() => togglePanel("stats")}
+                    text={home?.statisticsTitle}
+                  />
+                  <StatsPanel
+                    active={visiblePanel === "stats"}
+                    selectedDate={selectedDates?.cMines}
+                    subscribedList={subscribedList}
+                  />
+                </BarItem>
+              </>
+            )}
           </Buttons>
           <Logo>
             {/* TODO: move this top bar (menu admin) */}
@@ -361,3 +290,39 @@ export function pageInit(args) {
     document.getElementById("main-container")
   );
 }
+
+const Buttons = styled.div`
+  display: flex;
+  flex: 3;
+  justify-content: space-around;
+`;
+
+const Logo = styled.div`
+  align-items: center;
+  display: flex;
+  flex: 1;
+  justify-content: space-around;
+  padding: 5px 0;
+`;
+
+const LogoImg = styled.img`
+  cursor: pointer;
+  height: 22px;
+  padding-right: 15px;
+  width: 67px;
+`;
+
+const LogoGitVersion = styled.a`
+  color: var(--white);
+  cursor: pointer;
+  font-size: 12px;
+  letter-spacing: 0px;
+  text-align: left;
+  text-decoration: none;
+`;
+
+const Hidable = styled.div`
+  display: ${({ active }) => !active && "none"};
+`;
+
+const BarItem = styled.div``;

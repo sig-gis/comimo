@@ -7,6 +7,7 @@ import Header from "./Header";
 import { getLanguage, jsonRequest } from "../utils";
 import { THEME } from "../constants";
 
+// TODO: dismiss with escape app info
 export const MainContext = React.createContext();
 export class PageLayout extends React.Component {
   constructor(props) {

@@ -17,13 +17,103 @@ import { URLS, availableLayers, startVisible, attributions } from "../constants"
 
 const isEmptyMap = (m) => Object.keys(m).length === 0;
 
-// export const mapAtom = atom(null);
 export const mapPopupAtom = atom(null);
 export const selectedLatLngAtom = atom([]);
 export const homeMapAtom = atom(null);
+export const selectedRegionAtom = atom(null);
+
+export const addPopup = (map, { lat, lng }, mapPopup, visiblePanel, selectedDates, localeText) => {
+  // Remove old popup
+  if (mapPopup) mapPopup.remove();
+
+  const divId = Date.now();
+  const popup = new mapboxgl.Popup()
+    .setLngLat([lng, lat])
+    .setHTML(`<div id="${divId}"></div>`)
+    .addTo(map);
+
+  // TODO: visiblePanel may not be needed when switching to Footer
+  if (visiblePanel === "report") {
+    ReactDOM.render(
+      <ReportPopupContent lat={lat} localeText={localeText} lon={lng} />,
+      document.getElementById(divId)
+    );
+  } else {
+    ReactDOM.render(
+      <InfoPopupContent
+        map={map}
+        lng={lng}
+        lat={lat}
+        selectedDates={selectedDates}
+        localeText={localeText}
+      />,
+      document.getElementById(divId)
+    );
+  }
+  return popup;
+};
+
+const setLayerUrl = (map, layer, url) => {
+  if (layer && url && url !== "") {
+    const style = map.getStyle();
+    const layers = style.layers;
+    const layerIdx = layers.findIndex((l) => l.id === layer);
+    const thisLayer = layers[layerIdx];
+
+    if (thisLayer) {
+      const {
+        layout: { visibility },
+      } = thisLayer;
+      const noUrl = style.sources[layer].tiles.length === 0;
+      style.sources[layer].tiles = [url];
+      style.layers[layerIdx] = {
+        ...thisLayer,
+        layout: { visibility: noUrl && startVisible.includes(layer) ? "visible" : visibility },
+      };
+      map.setStyle(style);
+    }
+  } else {
+    console.error("Error loading layer: ", layer, url);
+  }
+};
+
+const getLayerUrl = (map, list, selectedDates, extraMapParams) => {
+  list.forEach((layer) => {
+    jsonRequest(URLS.GET_IMAGE_URL, { dataLayer: selectedDates[layer], type: layer })
+      .then((url) => {
+        // As written the URL provided must already include ? and one param so &nextParam works.
+        const params = extraMapParams[layer];
+        const fullUrl =
+          params == null
+            ? url
+            : url +
+              Object.entries(params)
+                .map(([k, v]) => `&${k}=${v}`)
+                .join("");
+        setLayerUrl(map, layer, fullUrl);
+      })
+      .catch((error) => console.error(error));
+  });
+};
+
+export const fitMap = (map, type, coords, homeLocale) => {
+  if (type === "point") {
+    try {
+      // center takes coords in the order of [lng, lat]
+      map.flyTo({ center: coords, essential: true });
+    } catch (err) {
+      console.error(homeLocale?.errorCoordinates);
+    }
+  } else if (type === "bbox") {
+    try {
+      map.fitBounds(coords);
+    } catch (error) {
+      console.error(homeLocale?.errorBounds);
+    }
+  }
+};
 
 export default function HomeMap({ mapboxToken }) {
-  // Initial State
   const [mouseCoords, setMouseCoords] = useState(null);
   const [mapPopup, setMapPopup] = useAtom(mapPopupAtom);
   const [visiblePanel, setVisiblePanel] = useAtom(visiblePanelAtom);
@@ -49,20 +139,38 @@ export default function HomeMap({ mapboxToken }) {
         zoom: zoom,
       });
 
+      map.on("load", () => {
+        addLayerSources(map, [...availableLayers].reverse());
+      });
+
       setHomeMap(map);
     }
 
-    if (!isEmptyMap(localeText) && !isEmptyMap(selectedDates)) {
+    if (!isEmptyMap(selectedDates)) {
       homeMap.resize();
 
       // Add layers first in the
-      addLayerSources(homeMap, [...availableLayers].reverse());
+
       homeMap.addControl(new mapboxgl.NavigationControl({ showCompass: false }));
       homeMap.on("mousemove", (e) => {
         const lat = toPrecision(e.lngLat.lat, 4);
         const lng = toPrecision(e.lngLat.lng, 4);
         setMouseCoords({ lat, lng });
       });
+      //   homeMap.on("click", (e) => {
+      //     const { lat, lng } = e.lngLat;
+      //     setSelectedLatLng([lat, lng]);
+
+      //     setMapPopup(
+      //       addPopup(homeMap, { lat, lng }, mapPopup, visiblePanel, selectedDates, localeText)
+      //     );
+      //   });
+      // }
+    }
+  }, [selectedDates]);
+
+  useEffect(() => {
+    if (homeMap && !isEmptyMap(localeText)) {
       homeMap.on("click", (e) => {
         const { lat, lng } = e.lngLat;
         setSelectedLatLng([lat, lng]);
@@ -72,7 +180,7 @@ export default function HomeMap({ mapboxToken }) {
         );
       });
     }
-  }, [localeText, selectedDates]);
+  }, [homeMap, localeText]);
 
   useEffect(() => {
     if (homeMap && selectedDates) {
@@ -120,9 +228,6 @@ export default function HomeMap({ mapboxToken }) {
     });
   };
 
-  // Render
-
-  // console.log("selected dates in homemap", selectedDates);
   return (
     <>
       <MapBoxWrapper ref={mapContainer} id="mapbox" />
@@ -169,97 +274,3 @@ const MapBoxWrapper = styled.div`
     }
   }
 `;
-
-export const addPopup = (map, { lat, lng }, mapPopup, visiblePanel, selectedDates, localeText) => {
-  // Remove old popup
-  if (mapPopup) mapPopup.remove();
-
-  const divId = Date.now();
-  const popup = new mapboxgl.Popup()
-    .setLngLat([lng, lat])
-    .setHTML(`<div id="${divId}"></div>`)
-    .addTo(map);
-
-  // TODO: visiblePanel may not be needed when switching to Footer
-  if (visiblePanel === "report") {
-    ReactDOM.render(
-      <ReportPopupContent lat={lat} localeText={localeText} lon={lng} />,
-      document.getElementById(divId)
-    );
-  } else {
-    ReactDOM.render(
-      <InfoPopupContent
-        map={map}
-        lng={lng}
-        lat={lat}
-        selectedDates={selectedDates}
-        localeText={localeText}
-      />,
-      document.getElementById(divId)
-    );
-  }
-  return popup;
-};
-
-const setLayerUrl = (map, layer, url) => {
-  if (layer && url && url !== "") {
-    // console.log("Setting url", url, "for layer", layer);
-    const style = map.getStyle();
-    const layers = style.layers;
-    const layerIdx = layers.findIndex((l) => l.id === layer);
-    const thisLayer = layers[layerIdx];
-    // console.log("thislayer", thisLayer);
-    if (thisLayer) {
-      const {
-        layout: { visibility },
-      } = thisLayer;
-      const noUrl = style.sources[layer].tiles.length === 0;
-      style.sources[layer].tiles = [url];
-      style.layers[layerIdx] = {
-        ...thisLayer,
-        layout: { visibility: noUrl && startVisible.includes(layer) ? "visible" : visibility },
-      };
-      map.setStyle(style);
-    }
-  } else {
-    // console.error("Error loading layer: ", layer, url);
-  }
-};
-
-const getLayerUrl = (map, list, selectedDates, extraMapParams) => {
-  list.forEach((layer) => {
-    jsonRequest(URLS.GET_IMAGE_URL, { dataLayer: selectedDates[layer], type: layer })
-      .then((url) => {
-        // As written the URL provided must already include ? and one param so &nextParam works.
-        const params = extraMapParams[layer];
-        const fullUrl =
-          params == null
-            ? url
-            : url +
-              Object.entries(params)
-                .map(([k, v]) => `&${k}=${v}`)
-                .join("");
-        setLayerUrl(map, layer, fullUrl);
-      })
-      .catch((error) => console.error(error));
-  });
-};
-
-export const fitMap = (map, type, coords, homeLocale) => {
-  if (type === "point") {
-    try {
-      // console.log("map", map);
-      console.log("[lng, lat]", coords);
-      // center takes coords in the order of [lng, lat]
-      map.flyTo({ center: coords, essential: true });
-    } catch (err) {
-      console.error(homeLocale?.errorCoordinates);
-    }
-  } else if (type === "bbox") {
-    try {
-      map.fitBounds(coords);
-    } catch (error) {
-      console.error(homeLocale?.errorBounds);
-    }
-  }
-};
