@@ -39,35 +39,39 @@ export default function HomeMap({
 
   // Effects
   useEffect(() => {
-    if (map.current) return; // initialize map only once
-    mapboxgl.accessToken = mapboxToken;
-    map.current = new mapboxgl.Map({
-      container: mapContainer.current,
-      style: "mapbox://styles/mapbox/satellite-streets-v9",
-      center: [lng, lat],
-      zoom: zoom,
-    });
-
-    map.current.on("load", () => {
-      map.current.resize();
-
-      // Add layers first in the
-      addLayerSources(map.current, [...availableLayers].reverse());
-      map.current.addControl(new mapboxgl.NavigationControl({ showCompass: false }));
-      map.current.on("mousemove", (e) => {
-        const lat = toPrecision(e.lngLat.lat, 4);
-        const lng = toPrecision(e.lngLat.lng, 4);
-        setMouseCoords({ lat, lng });
+    if (!map.current) {
+      mapboxgl.accessToken = mapboxToken;
+      map.current = new mapboxgl.Map({
+        container: mapContainer.current,
+        style: "mapbox://styles/mapbox/satellite-streets-v9",
+        center: [lng, lat],
+        zoom: zoom,
       });
-      map.current.on("click", (e) => {
-        const { lat, lng } = e.lngLat;
-        setSelectedLatLng([lat, lng]);
-        setMapPopup(
-          addPopup(map.current, { lat, lng }, mapPopup, visiblePanel, selectedDates, localeText)
-        );
+    }
+
+    if (localeText?.home) {
+      map.current.on("load", () => {
+        map.current.resize();
+
+        // Add layers first in the
+        addLayerSources(map.current, [...availableLayers].reverse());
+        map.current.addControl(new mapboxgl.NavigationControl({ showCompass: false }));
+        map.current.on("mousemove", (e) => {
+          const lat = toPrecision(e.lngLat.lat, 4);
+          const lng = toPrecision(e.lngLat.lng, 4);
+          setMouseCoords({ lat, lng });
+        });
+        map.current.on("click", (e) => {
+          const { lat, lng } = e.lngLat;
+          setSelectedLatLng([lat, lng]);
+
+          setMapPopup(
+            addPopup(map.current, { lat, lng }, mapPopup, visiblePanel, selectedDates, localeText)
+          );
+        });
       });
-    });
-  }, []);
+    }
+  }, [localeText]);
 
   useEffect(() => {
     if (map.current && selectedDates) {
@@ -168,6 +172,8 @@ const MapBoxWrapper = styled.div`
 const addPopup = (map, { lat, lng }, mapPopup, visiblePanel, selectedDates, localeText) => {
   // Remove old popup
   if (mapPopup) mapPopup.remove();
+
+  console.log("localeText in addpopou", localeText);
 
   const divId = Date.now();
   const popup = new mapboxgl.Popup()
