@@ -36,7 +36,8 @@
     "filterTitle": "Filter",
     "reportMinesTitle": "Report Mines",
     "downloadTitle": "Download",
-    "statisticsTitle": "Statistics"
+    "statisticsTitle": "Statistics",
+    "searchTitle": "Search"
   },
   "appInfo": {
     "download": "Download validated data",

@@ -36,7 +36,8 @@
     "filterTitle": "Filtrar",
     "reportMinesTitle": "Reportar Minas",
     "downloadTitle": "Descargar",
-    "statisticsTitle": "Descargar"
+    "statisticsTitle": "Descargar",
+    "searchTitle": "Búsqueda"
   },
   "appInfo": {
     "logout": "Cerrar Sesión",
