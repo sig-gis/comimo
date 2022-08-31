@@ -5,7 +5,7 @@ import { atom, useAtom } from "jotai";
 import "mapbox-gl/dist/mapbox-gl.css";
 import mapboxgl from "mapbox-gl";
 
-import LngLatHud from "../components/LngLatHud";
+import LatLngHud from "../components/LatLngHud";
 import ReportPopupContent from "./ReportPopupContent";
 import InfoPopupContent from "./InfoPopupContent";
 import { MainContext } from "../components/PageLayout";
@@ -15,9 +15,9 @@ import { selectedDatesAtom } from "../home";
 import { toPrecision, jsonRequest } from "../utils";
 import { URLS, availableLayers, startVisible, attributions } from "../constants";
 
-export const mapAtom = atom(null);
+// export const mapAtom = atom(null);
 export const mapPopupAtom = atom(null);
-export const selectedLngLatAtom = atom([]);
+export const selectedLatLngAtom = atom([]);
 
 export default function HomeMap({
   map,
@@ -30,7 +30,7 @@ export default function HomeMap({
   // Initial State
   const [mouseCoords, setMouseCoords] = useState(null);
   const [mapPopup, setMapPopup] = useAtom(mapPopupAtom);
-  const [selectedLngLat, setSelectedLngLat] = useAtom(selectedLngLatAtom);
+  const [selectedLatLng, setSelectedLatLng] = useAtom(selectedLatLngAtom);
   const { localeText, myHeight } = useContext(MainContext);
   const mapContainer = useRef(null);
   const [lng, setLng] = useState(-73.5609339);
@@ -55,26 +55,25 @@ export default function HomeMap({
       addLayerSources(map.current, [...availableLayers].reverse());
       map.current.addControl(new mapboxgl.NavigationControl({ showCompass: false }));
       map.current.on("mousemove", (e) => {
-        const lng = toPrecision(e.lngLat.lng, 4);
         const lat = toPrecision(e.lngLat.lat, 4);
-        setMouseCoords({ lng, lat });
+        const lng = toPrecision(e.lngLat.lng, 4);
+        setMouseCoords({ lat, lng });
       });
       map.current.on("click", (e) => {
-        const { lng, lat } = e.lngLat;
-        setSelectedLngLat([lng, lat]);
+        const { lat, lng } = e.lngLat;
+        setSelectedLatLng([lat, lng]);
         setMapPopup(
-          addPopup(map.current, lng, lat, visiblePanel, mapPopup, selectedDates, localeText)
+          addPopup(map.current, { lat, lng }, mapPopup, visiblePanel, selectedDates, localeText)
         );
       });
-
-      // This is a bit hard coded
-      if (selectedDates) {
-        getLayerUrl(map.current, availableLayers.slice(3), selectedDates, extraParams);
-        if (Object.keys(selectedDates).length)
-          getLayerUrl(map, Object.keys(selectedDates), selectedDates, extraParams);
-      }
     });
   }, []);
+
+  useEffect(() => {
+    if (map.current && selectedDates) {
+      getLayerUrl(map.current, availableLayers.slice(3), selectedDates, extraParams);
+    }
+  }, [selectedDates]);
 
   useEffect(() => {
     if (map.current && selectedDates) {
@@ -91,7 +90,7 @@ export default function HomeMap({
   }, [extraParams]);
 
   // useEffect(() => {
-  //   map.current && setTimeout(() => map.current.resize(), 50);
+  //   map && setTimeout(() => map.resize(), 50);
   // }, [myHeight]);
 
   // Adds layers initially with no styling, URL is updated later.  This is to guarantee z order in mapbox
@@ -104,6 +103,7 @@ export default function HomeMap({
         vis: { palette: [] },
         ...(attributions[name] && { attribution: attributions[name] }),
       });
+      // console.log("adding layer name", name);
       map.addLayer({
         id: name,
         type: "raster",
@@ -117,10 +117,11 @@ export default function HomeMap({
 
   // Render
 
+  // console.log("selected dates in homemap", selectedDates);
   return (
     <>
       <MapBoxWrapper ref={mapContainer} id="mapbox" />
-      {mouseCoords && <LngLatHud mouseCoords={mouseCoords} />}
+      {mouseCoords && <LatLngHud mouseCoords={mouseCoords} />}
     </>
   );
 }
@@ -164,7 +165,7 @@ const MapBoxWrapper = styled.div`
   }
 `;
 
-const addPopup = (map, lng, lat, visiblePanel, mapPopup, selectedDates, localeText) => {
+const addPopup = (map, { lat, lng }, mapPopup, visiblePanel, selectedDates, localeText) => {
   // Remove old popup
   if (mapPopup) mapPopup.remove();
 
@@ -197,10 +198,12 @@ const addPopup = (map, lng, lat, visiblePanel, mapPopup, selectedDates, localeTe
 
 const setLayerUrl = (map, layer, url) => {
   if (layer && url && url !== "") {
+    // console.log("Setting url", url, "for layer", layer);
     const style = map.getStyle();
     const layers = style.layers;
     const layerIdx = layers.findIndex((l) => l.id === layer);
     const thisLayer = layers[layerIdx];
+    // console.log("thislayer", thisLayer);
     if (thisLayer) {
       const {
         layout: { visibility },
@@ -214,7 +217,7 @@ const setLayerUrl = (map, layer, url) => {
       map.setStyle(style);
     }
   } else {
-    console.error("Error loading layer: ", layer, url);
+    // console.error("Error loading layer: ", layer, url);
   }
 };
 
@@ -231,24 +234,27 @@ const getLayerUrl = (map, list, selectedDates, extraParams) => {
               Object.entries(params)
                 .map(([k, v]) => `&${k}=${v}`)
                 .join("");
-        selectedDates && setLayerUrl(map, layer, fullUrl);
+        setLayerUrl(map, layer, fullUrl);
       })
       .catch((error) => console.error(error));
   });
 };
 
-export const fitMap = (map, type, arg) => {
+export const fitMap = (map, type, coords, homeLocale) => {
   if (type === "point") {
     try {
-      map.flyTo({ center: arg, essential: true });
+      // console.log("map", map);
+      console.log("[lng, lat]", coords);
+      // center takes coords in the order of [lng, lat]
+      map.flyTo({ center: coords, essential: true });
     } catch (err) {
-      console.error(home.errorCoordinates);
+      console.error(homeLocale?.errorCoordinates);
     }
   } else if (type === "bbox") {
     try {
-      map.fitBounds(arg);
+      map.fitBounds(coords);
     } catch (error) {
-      console.error(home.errorBounds);
+      console.error(homeLocale?.errorBounds);
     }
   }
 };
