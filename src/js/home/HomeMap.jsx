@@ -1,14 +1,14 @@
 import React, { useContext, useEffect, useState, useRef } from "react";
 import ReactDOM from "react-dom";
 import styled from "@emotion/styled";
-import { atom, useAtom, useSetAtom } from "jotai";
+import { atom, useAtom, useSetAtom, useAtomValue } from "jotai";
 import "mapbox-gl/dist/mapbox-gl.css";
 import mapboxgl from "mapbox-gl";
 
 import LatLngHud from "../components/LatLngHud";
 import ReportPopupContent from "./ReportPopupContent";
 import InfoPopupContent from "./InfoPopupContent";
-import { MainContext } from "../components/PageLayout";
+import { localeTextAtom, MainContext, mapboxTokenAtom } from "../components/PageLayout";
 
 import { extraMapParamsAtom, selectedDatesAtom, visiblePanelAtom } from "../home";
 
@@ -45,7 +45,7 @@ export const addPopup = (map, { lat, lng }, mapPopup, visiblePanel, selectedDate
         lng={lng}
         lat={lat}
         selectedDates={selectedDates}
-        localeText={localeText}
+        // localeText={localeText}
       />,
       document.getElementById(divId)
     );
@@ -113,24 +113,28 @@ export const fitMap = (map, type, coords, homeLocale) => {
   }
 };
 
-export default function HomeMap({ mapboxToken }) {
+export default function HomeMap({}) {
   const [mouseCoords, setMouseCoords] = useState(null);
   const [mapPopup, setMapPopup] = useAtom(mapPopupAtom);
   const [visiblePanel, setVisiblePanel] = useAtom(visiblePanelAtom);
   const [extraMapParams, setExtraMapParams] = useAtom(extraMapParamsAtom);
   const [selectedLatLng, setSelectedLatLng] = useAtom(selectedLatLngAtom);
   const [selectedDates, setSelectedDates] = useAtom(selectedDatesAtom);
-  const { localeText, myHeight } = useContext(MainContext);
+  const localeText = useAtomValue(localeTextAtom);
   const [homeMap, setHomeMap] = useAtom(homeMapAtom);
+  const mapboxToken = useAtomValue(mapboxTokenAtom);
 
   const mapContainer = useRef(null);
   const [lng, setLng] = useState(-73.5609339);
   const [lat, setLat] = useState(4.6371205);
   const [zoom, setZoom] = useState(5);
 
+  const addHomeMapPopup = (coords) =>
+    addPopup(homeMap, coords, mapPopup, visiblePanel, selectedDates, localeText);
+
   // Effects
   useEffect(() => {
-    if (!homeMap) {
+    if (!homeMap && mapboxToken !== "") {
       mapboxgl.accessToken = mapboxToken;
       const map = new mapboxgl.Map({
         container: mapContainer.current,
@@ -167,7 +171,7 @@ export default function HomeMap({ mapboxToken }) {
       //   });
       // }
     }
-  }, [selectedDates]);
+  }, [selectedDates, mapboxToken]);
 
   useEffect(() => {
     if (homeMap && !isEmptyMap(localeText)) {
@@ -175,12 +179,10 @@ export default function HomeMap({ mapboxToken }) {
         const { lat, lng } = e.lngLat;
         setSelectedLatLng([lat, lng]);
 
-        setMapPopup(
-          addPopup(homeMap, { lat, lng }, mapPopup, visiblePanel, selectedDates, localeText)
-        );
+        setMapPopup(addHomeMapPopup({ lat, lng }));
       });
     }
-  }, [homeMap, localeText]);
+  }, [selectedDates, localeText]);
 
   useEffect(() => {
     if (homeMap && selectedDates) {

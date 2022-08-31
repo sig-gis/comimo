@@ -3,12 +3,15 @@ import React, { isValidElement, useEffect, useState } from "react";
 import PopupMapInfo from "../components/PopupMapInfo";
 import { jsonRequest, toPrecision } from "../utils";
 import { URLS, availableLayers } from "../constants";
-import { MainContext } from "../components/PageLayout";
-import { useAtom } from "jotai";
+import { MainContext, localeTextAtom } from "../components/PageLayout";
+import { useAtom, useAtomValue } from "jotai";
 import { selectedDatesAtom } from "../home";
 
-export default function InfoPopupContent({ map, lng, lat, localeText: { home }, selectedDates }) {
+export default function InfoPopupContent({ map, lng, lat, selectedDates }) {
   const [layerInfo, setLayerInfo] = useState({});
+  const localeText = useAtomValue(localeTextAtom);
+
+  const home = localeText?.home;
 
   const visibleLayers = availableLayers.filter(
     (layer) => map.getLayer(layer).visibility === "visible"

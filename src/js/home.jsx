@@ -1,6 +1,6 @@
 import React, { useCallback, useContext, useEffect, useRef, useState } from "react";
 import ReactDOM from "react-dom";
-import { useAtom, atom } from "jotai";
+import { useAtom, useAtomValue, atom } from "jotai";
 import styled from "@emotion/styled";
 
 import DownloadPanel from "./home/DownloadPanel";
@@ -8,7 +8,13 @@ import FilterPanel from "./home/FilterPanel";
 import FooterBar from "./components/FooterBar";
 import IconTextButton from "./components/IconTextButton";
 import IconButton from "./components/IconButton";
-import { MainContext, PageLayout } from "./components/PageLayout";
+import {
+  MainContext,
+  PageLayout,
+  mapboxTokenAtom,
+  mapquestKeyAtom,
+  versionDeployedAtom,
+} from "./components/PageLayout";
 import LayersPanel from "./home/LayersPanel";
 import ReportMinesPanel from "./home/ReportMinesPanel";
 import StatsPanel from "./home/StatsPanel";
@@ -29,6 +35,7 @@ export const extraMapParamsAtom = atom({
     band: "rgb",
   },
 });
+export const featureNamesAtom = atom({});
 
 export const processModal = (callBack, setShowModal) =>
   new Promise(() => {
@@ -36,15 +43,18 @@ export const processModal = (callBack, setShowModal) =>
     callBack().finally(() => setShowModal(false));
   });
 
-function HomeContents({ mapquestKey, mapboxToken, version }) {
+function HomeContents() {
   const [visiblePanel, setVisiblePanel] = useAtom(visiblePanelAtom);
   const [selectedDates, setSelectedDates] = useAtom(selectedDatesAtom);
-  const [featureNames, setFeatureNames] = useState({});
-  const [subscribedList, setSubscribedList] = useState([]);
   const [homeMapPoupup, setHomeMapPoupup] = useAtom(mapPopupAtom);
   const [homeMap, setHomeMap] = useAtom(homeMapAtom);
   const [extraMapParams, setExtraMapParams] = useAtom(extraMapParamsAtom);
+  const [featureNames, setFeatureNames] = useAtom(featureNamesAtom);
+  const mapquestKey = useAtomValue(mapquestKeyAtom);
+  const mapboxToken = useAtomValue(mapboxTokenAtom);
+  const versionDeployed = useAtomValue(versionDeployedAtom);
 
+  const [subscribedList, setSubscribedList] = useState([]);
   const [imageDates, setImageDates] = useState({});
   const [nicfiLayers, setNicfiLayers] = useState([]);
 
@@ -123,7 +133,7 @@ function HomeContents({ mapquestKey, mapboxToken, version }) {
 
   return (
     <>
-      <HomeMap mapboxToken={mapboxToken} />
+      <HomeMap />
       <div id="bottom-bar">
         <FooterBar>
           <Buttons>
@@ -261,10 +271,10 @@ function HomeContents({ mapquestKey, mapboxToken, version }) {
               src="/img/app-logo.png"
             />
             <LogoGitVersion
-              href={`https://github.com/sig-gis/comimo/tags/${version}`}
+              href={`https://github.com/sig-gis/comimo/tags/${versionDeployed}`}
               target="/blank"
             >
-              {version && `Version: ${version}`}
+              {versionDeployed && `Version: ${versionDeployed}`}
             </LogoGitVersion>
           </Logo>
         </FooterBar>
@@ -279,13 +289,12 @@ export function pageInit(args) {
       role={args.role}
       userLang={args.userLang}
       username={args.username}
-      version={args.version}
+      mapboxToken={args.mapboxToken}
+      mapquestKey={args.mapquestKey}
+      versionDeployed={args.versionDeployed}
+      showSearch={true}
     >
-      <HomeContents
-        mapboxToken={args.mapboxToken}
-        mapquestKey={args.mapquestKey}
-        version={args.version}
-      />
+      <HomeContents />
     </PageLayout>,
     document.getElementById("main-container")
   );
