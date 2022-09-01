@@ -29,7 +29,6 @@
     "loading": "Cargando",
     "admin": "Administración",
     "noMorePlots": "No más parcelas",
-    "pageNotFound": "404 - Página No Encontrada",
     "layersTitle": "Capas",
     "subscribeTitle": "Suscripciones",
     "validationsTitle": "Validacións",
@@ -37,7 +36,8 @@
     "reportMinesTitle": "Reportar Minas",
     "downloadTitle": "Descargar",
     "statisticsTitle": "Descargar",
-    "searchTitle": "Búsqueda"
+    "searchTitle": "Búsqueda",
+    "pageNotFound": "Te saliste del planeta!"
   },
   "appInfo": {
     "logout": "Cerrar Sesión",
