@@ -32,18 +32,15 @@ function PasswordForgot() {
   const [showModal, setShowModal] = useAtom(showModalAtom);
 
   const requestPassword = () =>
-    processModal(() => {
-      jsonRequest("/password-request", { email: email })
-        .then((data) => {
-          if (data === "") {
-            alert(localeText.users?.tokenSent);
-            window.location = "/";
-          } else {
-            console.error(data);
-            alert(localeText[data] || localeText.users?.errorCreating);
-          }
-        })
-        .catch((err) => console.error(err));
+    processModal(async () => {
+      const data = await jsonRequest("/password-request", { email: email }).catch(console.error);
+      if (data === "") {
+        alert(localeText.users?.tokenSent);
+        window.location = "/";
+      } else {
+        console.error(localeText.users?.[data]);
+        alert(localeText.users?.[data] || localeText.users?.errorCreating);
+      }
     }, setShowModal);
 
   const renderEmailField = (label) => (

@@ -59,8 +59,8 @@ function Register() {
     if (errors.length > 0) {
       alert(errors.map((e) => " - " + e).join("\n"));
     } else {
-      processModal(() => {
-        jsonRequest("/register", {
+      processModal(async () => {
+        const data = await jsonRequest("/register", {
           defaultLang: defaultLang,
           email: email,
           fullName: fullName,
@@ -68,17 +68,14 @@ function Register() {
           sector: sector,
           password: password,
           username: username,
-        })
-          .then((resp) => {
-            if (resp === "") {
-              alert(localeText.users?.registered);
-              window.location = "/";
-            } else {
-              console.error(resp);
-              alert(localeText[resp] || localeText.users?.errorCreating);
-            }
-          })
-          .catch((err) => console.error(err));
+        });
+        if (data === "") {
+          alert(localeText.users?.registered);
+          window.location = "/";
+        } else {
+          console.error(localeText.users?.[data]);
+          alert(localeText.users?.[data] || localeText.users?.errorCreating);
+        }
       }, setShowModal);
     }
   };
