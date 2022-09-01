@@ -18,7 +18,6 @@ export default function LanguageSelector({ selectedLanguage, selectLanguage }) {
   //   letter-spacing: 0px;
   //   color: var(--white);
   //   padding: 0 0.5rem;
-
   //   &:hover {
   //     text-decoration: underline;
   //   }

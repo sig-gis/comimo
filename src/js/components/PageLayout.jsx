@@ -34,6 +34,12 @@ export const versionDeployedAtom = atom("");
 //   return get(selectedLanguageAtom).length;
 // });
 
+export const selectLanguage = async (newLang, setSelectedLanguage, setLocaleText) => {
+  setSelectedLanguage(newLang);
+  setLocaleText(await jsonRequest(`/locale/${newLang}.json`, null, "GET").catch(console.error));
+};
+
+
 export function PageLayout({
   role,
   username,
@@ -54,10 +60,10 @@ export function PageLayout({
 
   const isAdmin = role === "admin";
 
-  const selectLanguage = (newLang) => {
-    setSelectedLanguage(newLang);
-    getLocalText(newLang);
-  };
+  // const selectLanguage = async (newLang, setSelectedLanguage, setLocaleText) => {
+  //   setSelectedLanguage(newLang);
+  //   setLocaleText(await jsonRequest(`/locale/${newLang}.json`, null, "GET").catch(console.error));
+  // };
 
   const updateWindow = () => {
     window.scrollTo(0, 0);
@@ -66,18 +72,12 @@ export function PageLayout({
 
   // API Call
 
-  const getLocalText = (lang) => {
-    jsonRequest(`/locale/${lang}.json`, null, "GET")
-      .then((data) => setLocaleText(data))
-      .catch((err) => console.error(err));
-  };
-
   useEffect(() => {
     setSelectedLanguage(["en", "es"].includes(userLang) ? userLang : getLanguage(["en", "es"]));
   }, []);
 
   useEffect(() => {
-    if (selectedLanguage) getLocalText(selectedLanguage);
+    if (selectedLanguage) selectLanguage(selectedLanguage, setSelectedLanguage, setLocaleText);
     updateWindow();
     window.addEventListener("touchend", updateWindow);
     window.addEventListener("resize", updateWindow);
@@ -91,6 +91,7 @@ export function PageLayout({
 
   // const { myHeight, showInfo, localeText, selectedLanguage } = this.state;
 
+  // TODO we don't need the provider anymore, we should remove it and update all usage of it with useAtom
   return (
     <MainContext.Provider
       value={{
@@ -118,7 +119,7 @@ export function PageLayout({
           <Header
             localeText={localeText}
             selectedLanguage={selectedLanguage}
-            selectLanguage={selectLanguage}
+            selectLanguage={(newLang) => setSelectedLanguage(newLang)}
             setShowInfo={setShowInfo}
             showSearch={showSearch}
             username={username}
