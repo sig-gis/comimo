@@ -80,8 +80,8 @@
      (if (= "dev" (get-config :server :mode))
        (list
         [:script {:type "module"}
-         "import RefreshRuntime from 'http://localhost:5173/@react-refresh'
-         RefreshRuntime.injectIntoGlobalHook(window)
+         "// import RefreshRuntime from 'http://localhost:5173/@react-refresh'
+         // RefreshRuntime.injectIntoGlobalHook(window)
          window.$RefreshReg$ = () => {}
          window.$RefreshSig$ = () => (type) => type
          window.__vite_plugin_react_preamble_installed__ = true"]
@@ -100,9 +100,9 @@
 (defn js-init [entry-file params]
   (let [js-params  (-> params
                        (assoc
-                        :mapboxToken (get-config :mapbox-token)
-                        :mapquestKey (get-config :mapquest-key)
-                        :version (current-version))
+                        :mapboxToken     (get-config :mapbox-token)
+                        :mapquestKey     (get-config :mapquest-key)
+                        :versionDeployed (current-version))
                        (json/write-str))
         script-str (str "import {pageInit} from \"" entry-file "\";"
                         "window.onload = function () { pageInit(" js-params "); };")]

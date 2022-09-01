@@ -7,14 +7,20 @@ import babel from "@rollup/plugin-babel";
 export default defineConfig({
   server: {
     origin: "http://127.0.0.1:8080",
+    hmr: {
+      overlay: false,
+    },
   },
   build: {
     chunkSizeWarningLimit: 1000,
     manifest: true,
+    sourcemap: true,
     plugins: [resolve(), babel({ exclude: "node_modules/**" })],
     rollupOptions: {
+      // external: ["mapbox-gl"],
       preserveEntrySignatures: "exports-only",
       input: [
+        // "node_modules/react-refresh/",
         "src/js/admin.jsx",
         "src/js/collect.jsx",
         "src/js/home.jsx",
@@ -33,8 +39,11 @@ export default defineConfig({
   },
   plugins: [
     react({
-      presets: ["@babel/preset-env", "@babel/preset-react", "@emotion/babel-preset-css-prop"],
+      fastRefresh: true,
+      jsxImportSource: "@emotion/react",
+      presets: ["@babel/preset-env", "@babel/preset-react"],
       plugins: [
+        // "@vitejs/plugin-react",
         "@babel/plugin-proposal-class-properties",
         "@babel/plugin-transform-runtime",
         "babel-plugin-macros",

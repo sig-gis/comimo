@@ -7,7 +7,7 @@ import NICFIControl from "./components/NICFIControl";
 import { PageLayout, MainContext } from "./components/PageLayout";
 import SideBar from "./components/SideBar";
 import IconButton from "./components/IconButton";
-import ToolPanel from "./components/ToolPanel";
+import ToolCard from "./components/ToolCard";
 import LoadingModal from "./components/LoadingModal";
 
 import { URLS } from "./constants";
@@ -176,7 +176,7 @@ class CollectContent extends React.Component {
               selectedItem={this.state.visiblePanel}
               tooltip={home.layersTooltip}
             >
-              <ToolPanel title="Placeholder">
+              <ToolCard title="Placeholder">
                 <div>
                   <NICFIControl
                     extraParams={this.state.extraParams}
@@ -201,11 +201,11 @@ class CollectContent extends React.Component {
                     </a>
                   )}
                 </div>
-              </ToolPanel>
+              </ToolCard>
             </MenuItem>
             <IconButton
-              clickHandler={() => setShowInfo(true)}
               icon="info"
+              onClick={() => setShowInfo(true)}
               parentClass="disclaimer"
               tooltip={home.appInfoTooltip}
             />
@@ -231,7 +231,8 @@ export function pageInit(args) {
       role={args.role}
       userLang={args.userLang}
       username={args.username}
-      version={args.version}
+      version={args.versionDeployed}
+      showSearch={true}
     >
       <CollectContent mapboxToken={args.mapboxToken} projectId={parseInt(args.projectId || 0)} />
     </PageLayout>,

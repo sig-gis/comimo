@@ -15,7 +15,7 @@ const StyledButton = styled.button`
   border-width: 1px;
   cursor: pointer;
   height: fit-content;
-  margin: 5px 0;
+  margin: 5px 0 5px 10px;
   padding: 0;
   transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out,
     border-color 0.15s ease-in-out;
@@ -32,12 +32,13 @@ const SvgContainer = styled.div`
   padding: 6px;
 `;
 
-function IconButton({ active, icon, parentClass, clickHandler, size, tooltip }) {
+function IconButton({ active, icon, extraStyle, onClick, parentClass, size, tooltip }) {
   return (
     <StyledButton
+      style={extraStyle}
       $active={active}
       className={parentClass || ""}
-      onClick={clickHandler}
+      onClick={onClick}
       title={tooltip}
     >
       <SvgContainer>

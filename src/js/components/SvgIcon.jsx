@@ -1,4 +1,5 @@
 import React from "react";
+import styled from "@emotion/styled";
 import PropTypes from "prop-types";
 
 const envelopeIcon = (
@@ -221,23 +222,46 @@ const iconMap = {
   admin: adminIcon,
 };
 
-function SvgIcon({ color, cursor,  extraStyles, icon,  size, verticalAlign }) {
+const SvgIconContainer = styled.div`
+  color: ${(props) => props.color};
+  cursor: ${(props) => props.cursor};
+  fill: ${(props) => props.color};
+  height: ${(props) => props.size};
+  max-height: ${(props) => props.size};
+  max-width: ${(props) => props.size};
+  padding: 2px;
+  width: ${(props) => props.size};
+  vertical-align: ${(props) => props.verticalAlign};
+
+  &:hover {
+    color: ${(props) => props.hoverColor};
+    fill: ${(props) => props.hoverFill};
+  }
+`;
+function SvgIcon({
+  color,
+  cursor,
+  extraStyles,
+  hoverColor,
+  hoverFill,
+  icon,
+  onClick,
+  size,
+  verticalAlign,
+}) {
   return (
-    <div
-      style={{
-        color: color,
-        cursor: cursor,
-        fill: color,
-        height: size,
-        maxHeight: size,
-        maxWidth: size,
-        width: size,
-        verticalAlign: verticalAlign,
-        ...extraStyles,
-      }}
+    <SvgIconContainer
+      color={color}
+      cursor={cursor}
+      hoverColor={hoverColor}
+      hoverFill={hoverFill}
+      size={size}
+      verticalAlign={verticalAlign}
+      onClick={onClick}
+      style={{ ...extraStyles }}
     >
       {iconMap[icon]}
-    </div>
+    </SvgIconContainer>
   );
 }
 
@@ -245,16 +269,19 @@ SvgIcon.propTypes = {
   color: PropTypes.string,
   cursor: PropTypes.string,
   extraStyles: PropTypes.object,
+  hoverColor: PropTypes.string,
+  hoverFill: PropTypes.string,
   icon: PropTypes.oneOf(Object.keys(iconMap)).isRequired,
+  onClick: PropTypes.func,
   size: PropTypes.string.isRequired,
-  verticalAlign: PropTypes.string
+  verticalAlign: PropTypes.string,
 };
 
 SvgIcon.defaultProps = {
   color: "currentColor",
   cursor: "pointer",
   extraStyles: {},
-  verticalAlign: "middle"
+  verticalAlign: "middle",
 };
 
 export default SvgIcon;

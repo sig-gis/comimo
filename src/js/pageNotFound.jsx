@@ -41,7 +41,8 @@ export function pageInit(args) {
       role={args.role}
       userLang={args.userLang}
       username={args.username}
-      version={args.version}
+      version={args.versionDeployed}
+      showSearch={false}
     >
       <PageNotFound />
     </PageLayout>,

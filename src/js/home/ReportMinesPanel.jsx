@@ -1,70 +1,76 @@
-import React from "react";
+import React, { useState, useContext } from "react";
+import { useAtom, useSetAtom, useAtomValue } from "jotai";
 
 import Button from "../components/Button";
-import ToolPanel from "../components/ToolPanel";
+import ToolCard from "../components/ToolCard";
 import TextInput from "../components/TextInput";
 import Modal from "../components/Modal";
 
+import HomeMap, { homeMapAtom, mapPopupAtom } from "./HomeMap";
+import { visiblePanelAtom, selectedDatesAtom } from "../home";
 import { MainContext } from "../components/PageLayout";
 import { URLS } from "../constants";
 import { jsonRequest } from "../utils";
+import { addPopup, fitMap, selectedLatLngAtom } from "./HomeMap";
 
-export default class ReportMinesPanel extends React.Component {
-  constructor(props) {
-    super(props);
+export default function ReportMinesPanel({ active }) {
+  const [mapPopup, _setMapPopup] = useAtom(mapPopupAtom);
+  const [visiblePanel, _setVisiblePanel] = useAtom(visiblePanelAtom);
+  const [selectedDates, _setSelectedDates] = useAtom(selectedDatesAtom);
+  const homeMap = useAtomValue(homeMapAtom);
+  const [selectedLatLng, setSelectedLatLng] = useAtom(selectedLatLngAtom);
+  const setMapPopup = useSetAtom(mapPopupAtom);
 
-    this.state = {
-      latLonText: "",
-      messageBox: null,
-      reportedLatLon: null,
-      reportingMine: false,
-    };
-  }
+  const [latLonText, setLatLonText] = useState("");
+  const [messageBox, setMessageBox] = useState(null);
+  const [reportedLatLng, setReportedLatLng] = useState(null);
+  const [reportingMine, setReportingMine] = useState(false);
 
-  showAlert = ({ body, closeText, confirmText, onConfirm, title }) =>
-    this.setState({
-      messageBox: {
-        body,
-        closeText,
-        confirmText,
-        onConfirm,
-        title,
-      },
+  const reported = reportedLatLng === selectedLatLng;
+
+  const {
+    localeText,
+    localeText: { report, home },
+  } = useContext(MainContext);
+
+  const showAlert = ({ body, closeText, confirmText, onConfirm, title }) =>
+    setMessageBox({
+      body,
+      closeText,
+      confirmText,
+      onConfirm,
+      title,
     });
 
   /// API Calls ///
 
-  submitMine = () => {
-    const { selectedLatLon } = this.props;
-    const {
-      localeText: { report },
-    } = this.context;
-    const [lat, lon] = selectedLatLon;
-    if (lat && lon) {
-      this.setState({ reportingMine: true });
+  const submitMine = () => {
+    if (selectedLatLng) {
+      const [lat, lon] = selectedLatLng;
+      setReportingMine(true);
       jsonRequest(URLS.REPORT_MINE, { lat, lon })
         .then((result) => {
           if (result === "") {
-            this.setState({ reportedLatLon: selectedLatLon });
-            this.showAlert({
+            setReportedLatLng(selectedLatLng);
+            showAlert({
               body: report.created,
               closeText: report.understand,
               title: report.createdTitle,
             });
           } else if (result === "Exists") {
-            this.showAlert({
+            showAlert({
               body: report.existing,
               closeText: report.understand,
               title: report.existingTitle,
             });
           } else if (result === "Outside") {
-            this.showAlert({
+            showAlert({
               body: report.outside,
               closeText: report.understand,
               title: report.outsideTitle,
             });
           } else {
-            this.showAlert({
+            showAlert({
               body: report.error,
               closeText: report.understand,
               title: report.errorTitle,
@@ -72,86 +78,83 @@ export default class ReportMinesPanel extends React.Component {
           }
         })
         .catch((error) => console.error(error))
-        .finally(() => this.setState({ reportingMine: false }));
+        .finally(() => setReportingMine(false));
     } else {
       alert("You must select a location to continue.");
     }
   };
 
   /// Helper functions ///
-  processLatLng = () => {
-    const { latLonText } = this.state;
-    const { fitMap, addPopup } = this.props;
+  const processLatLng = () => {
     const pair = latLonText.split(",");
-    const [lat, lon] = pair.map((a) => parseFloat(a)).slice(0, 2);
-    if (lat && lon) {
+    const [lat, lng] = pair.map((a) => parseFloat(a)).slice(0, 2);
+    if (lat && lng) {
       // TODO, these probably dont need to be three functions
-      addPopup(lat, lon);
-      fitMap("point", [lon, lat]);
+      setSelectedLatLng([lat, lng]);
+      setMapPopup(
+        addPopup(homeMap, { lat, lon }, mapPopup, visiblePanel, selectedDates, localeText)
+      );
+      fitMap(homeMap, "point", [lng, lat], home);
     }
   };
 
-  render() {
-    const { latLonText, reportingMine, reportedLatLon } = this.state;
-    const { selectedLatLon } = this.props;
-    const {
-      localeText: { report },
-    } = this.context;
+  return (
+    <ToolCard title={report?.title} active={active}>
+      {report?.subTitle}
+      <TextInput
+        style={{ marginTop: "3rem" }}
+        id="inputCoords"
+        label={report?.coordLabel}
+        onChange={(e) => setLatLonText(e.target.value)}
+        onKeyUp={(e) => {
+          if (e.key === "Enter") processLatLng();
+        }}
+        render={() => <Button onClick={processLatLng}>{report?.goButton}</Button>}
+        value={latLonText}
+      />
+      <h3 style={{ marginTop: "1rem" }}>{report?.selectedLocation}</h3>
+      {selectedLatLng ? (
+        <>
+          <div style={{ display: "flex", flexDirection: "column" }}>
+            <span>
+              <b>{report?.latitude}:</b> {selectedLatLng[0]}
+            </span>
+            <span>
+              <b>{report?.longitude}:</b> {selectedLatLng[1]}
+            </span>
+          </div>
 
-    const reported = reportedLatLon === selectedLatLon;
-    return (
-      <ToolPanel title={report.title}>
-        {report.subTitle}
-        <TextInput
-          style={{ marginTop: "3rem" }}
-          id="inputCoords"
-          label={report.coordLabel}
-          onChange={(e) => this.setState({ latLonText: e.target.value })}
-          onKeyUp={(e) => {
-            if (e.key === "Enter") this.processLatLng();
-          }}
-          render={() => <Button onClick={this.processLatLng}>{report.goButton}</Button>}
-          value={latLonText}
-        />
-        <h3 style={{ marginTop: "1rem" }}>{report.selectedLocation}</h3>
-        {selectedLatLon ? (
-          <>
-            <div style={{ display: "flex", flexDirection: "column" }}>
-              <span>
-                <b>{report.latitude}:</b> {selectedLatLon[0]}
-              </span>
-              <span>
-                <b>{report.longitude}:</b> {selectedLatLon[1]}
-              </span>
-            </div>
-
-            <div style={{ display: "flex", width: "100%", justifyContent: "flex-end" }}>
-              <Button
-                onClick={() =>
-                  this.showAlert({
-                    body: report.areYouSure,
-                    closeText: report.cancel,
-                    confirmText: report.imSure,
-                    onConfirm: () => this.submitMine(),
-                    title: report.submit,
-                  })
-                }
-                isDisabled={reportingMine || reported}
-              >
-                {reported ? report.reported : report.submit}
-              </Button>
-            </div>
-          </>
-        ) : (
-          <span style={{ fontStyle: "italic" }}>{report.noLocation}</span>
-        )}
-        {this.state.messageBox && (
-          <Modal {...this.state.messageBox} onClose={() => this.setState({ messageBox: null })}>
-            <p>{this.state.messageBox.body}</p>
-          </Modal>
-        )}
-      </ToolPanel>
-    );
-  }
+          <div
+            style={{
+              display: "flex",
+              width: "100%",
+              justifyContent: "flex-end",
+            }}
+          >
+            <Button
+              onClick={() =>
+                showAlert({
+                  body: report.areYouSure,
+                  closeText: report.cancel,
+                  confirmText: report.imSure,
+                  onConfirm: () => submitMine(),
+                  title: report.submit,
+                })
+              }
+              isDisabled={reportingMine || reported}
+            >
+              {reported ? report?.reported : report?.submit}
+            </Button>
+          </div>
+        </>
+      ) : (
+        <span style={{ fontStyle: "italic" }}>{report?.noLocation}</span>
+      )}
+      {messageBox && (
+        <Modal {...messageBox} onClose={() => setMessageBox(null)}>
+          <p>{messageBox.body}</p>
+        </Modal>
+      )}
+    </ToolCard>
+  );
 }
-ReportMinesPanel.contextType = MainContext;

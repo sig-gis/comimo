@@ -1,10 +1,9 @@
 import React, { useState } from "react";
 import styled from "@emotion/styled";
-import { THEME } from "../constants";
 
 import IconButton from "./IconButton";
 
-const Container = styled.button`
+const Container = styled.div`
   align-items: center;
   background-color: ${({ $background }) => ($background ? "#434343" : "transparent")};
   box-shadow: 0px 3px 6px #00000029;
@@ -32,13 +31,14 @@ const Label = styled.span`
   text-align: left;
 `;
 
-function IconTextButton({
+export default function IconTextButton({
   active,
-  clickHandler,
   hasBackground,
+  extraStyle,
   icon,
   iconSize,
   invertBorderRadius,
+  onClick,
   text,
   tooltip,
 }) {
@@ -48,9 +48,10 @@ function IconTextButton({
     <Container
       $background={hasBackground}
       $invertBorderRadius={invertBorderRadius || false}
-      onClick={clickHandler}
+      onClick={onClick}
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
+      style={extraStyle}
       title={tooltip}
     >
       <IconButton active={hover || active} icon={icon} size={iconSize} />
@@ -58,5 +59,3 @@ function IconTextButton({
     </Container>
   );
 }
-
-export default IconTextButton;

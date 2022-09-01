@@ -1,9 +1,9 @@
 import React from "react";
 import styled from "@emotion/styled";
 
-const LngLatHudLabel = styled.div`
+const LatLngHudLabel = styled.div`
   background: rgba(255, 255, 255, 0.7);
-  bottom: 32px;
+  bottom: calc(var(--bar-height) + 30px);
   right: 8px;
   border-radius: 2px;
   height: 20px;
@@ -16,6 +16,6 @@ const LngLatHudLabel = styled.div`
   text-align: center;
 `;
 
-export default function LngLatHud({ mouseCoords: { lat, lng } }) {
-  return <LngLatHudLabel>{lat + ", " + lng}</LngLatHudLabel>;
+export default function LatLngHud({ mouseCoords: { lat, lng } }) {
+  return <LatLngHudLabel>{lat + ", " + lng}</LatLngHudLabel>;
 }

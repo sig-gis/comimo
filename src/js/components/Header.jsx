@@ -1,20 +1,27 @@
 import React from "react";
 import Button from "./Button";
+import { useAtom, useAtomValue } from "jotai";
 import styled from "@emotion/styled";
 
 import LanguageSelector from "./LanguageSelector";
 import IconTextButton from "./IconTextButton";
+import Search from "./Search";
+import ToolCard from "./ToolCard";
+
+import { visiblePanelAtom, featureNamesAtom } from "../home";
+import { mapquestKeyAtom } from "./PageLayout";
 
 const TitleBar = styled.div`
   background: var(--gray-1);
+  box-shadow: 0px 3px 6px #0000008d;
   display: flex;
-  height: 60px;
+  height: var(--bar-height);
   justify-content: space-between;
   text-align: center;
   width: 100%;
 `;
 
-const Search = styled.div`
+const SearchContainer = styled.div`
   display: flex;
   justify-content: center;
   flex: 1;
@@ -22,27 +29,15 @@ const Search = styled.div`
 
 const Logo = styled.div`
   align-items: center;
-  display: relative;
+  display: flex;
   flex: 1;
-  flex-direction: column;
   justify-content: center;
-  padding: 5px 0;
 `;
 
 const LogoImg = styled.img`
   cursor: pointer;
   height: 43px;
   width: 130px;
-`;
-
-const LogoGitVersion = styled.span`
-  bottom: 0px;
-  color: var(--white);
-  font-size: 12px;
-  left: -90px;
-  letter-spacing: 0px;
-  position: relative;
-  text-align: left;
 `;
 
 const UserSettings = styled.div`
@@ -72,38 +67,52 @@ const LoggedInUsername = styled.span`
 `;
 
 export default function Header({
+  localeText,
   selectLanguage,
   selectedLanguage,
-  username,
   setShowInfo,
-  localeText,
+  showSearch,
+  username,
   version,
 }) {
+  const featureNames = useAtomValue(featureNamesAtom);
+  const mapquestKey = useAtomValue(mapquestKeyAtom);
+  const [visiblePanel, setVisiblePanel] = useAtom(visiblePanelAtom);
+
+  const togglePanel = (panelKey) => {
+    setVisiblePanel(panelKey === visiblePanel ? null : panelKey);
+  };
+
   return (
     <TitleBar id="title-bar">
-      <Search id="header-search">
-        {/* TODO: onClick should open up the Search functionality
-        TODO: have an active state that we can pass to IconTextButton */}
-        <IconTextButton
-          active={false}
-          clickHandler={() => window.alert("place holder for search functionality")}
-          hasBackground={true}
-          icon="search"
-          iconSize="26px"
-          invertBorderRadius={true}
-          text="Search"
-          tooltip="Placeholder Search ToolTip"
-        />
-      </Search>
+      <SearchContainer id="header-search">
+        {showSearch && (
+          <>
+            <IconTextButton
+              active={visiblePanel === "search"}
+              hasBackground={true}
+              icon="search"
+              // iconSize="26px"
+              invertBorderRadius={true}
+              onClick={() => togglePanel("search")}
+              text={localeText.home?.searchTitle}
+            />
+            <ToolCard
+              title={localeText.home?.searchTitle}
+              isInverted={true}
+              active={visiblePanel === "search"}
+            >
+              <Search isPanel={true} featureNames={featureNames} mapquestKey={mapquestKey}></Search>
+            </ToolCard>
+          </>
+        )}
+      </SearchContainer>
       <Logo id="header-logo">
         <LogoImg
           alt="app-logo"
           onClick={() => window.location.assign("/")}
           src="/img/app-logo.png"
-          style={{ height: "100%", cursor: "pointer" }}
         />
-        <LogoGitVersion>prod-2022-08-01</LogoGitVersion>
-        {/* <LogoGitVersion>{version && `Version: ${version}`}</LogoGitVersion> */}
       </Logo>
       <UserSettings id="user-settings">
         {username ? (
@@ -112,10 +121,10 @@ export default function Header({
           <LoggedInUserPanel>
             <IconTextButton
               active={false}
-              clickHandler={() => window.location.assign("/user-account")}
               hasBackground={false}
               icon="user"
               iconSize="26px"
+              onClick={() => window.location.assign("/user-account")}
               text={username}
               tooltip="Placeholder ToolTip"
             />

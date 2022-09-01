@@ -45,7 +45,7 @@ export default function InfoModal({ onClose, children }) {
     <OuterContainer>
       <InnerContainer>
         <CloseDiv onClick={onClose}>
-          <SvgIcon color="black" icon="close" size="1.5rem" />
+          <SvgIcon color="black" icon="close" hoverFill="var(--gray-3)" size="1.5rem" />
         </CloseDiv>
         {children}
       </InnerContainer>

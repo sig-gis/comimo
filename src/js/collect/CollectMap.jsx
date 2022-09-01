@@ -5,7 +5,7 @@ import styled from "@emotion/styled";
 import "mapbox-gl/dist/mapbox-gl.css";
 
 import { get, isString } from "lodash";
-import LngLatHud from "../components/LngLatHud";
+import LatLngHud from "../components/LatLngHud";
 
 import { jsonRequest, toPrecision } from "../utils";
 import { attributions, THEME, URLS } from "../constants";
@@ -103,6 +103,7 @@ export default class CollectMap extends React.Component {
         ...thisLayer,
         layout: { visibility: "visible" },
       };
+
       theMap.setStyle(style);
     } else {
       console.error("Error loading layer: ", layer, url);
@@ -341,7 +342,7 @@ export default class CollectMap extends React.Component {
     return (
       <>
         <MapBoxWrapper id="mapbox" />
-        {mouseCoords && <LngLatHud mouseCoords={mouseCoords} />}
+        {mouseCoords && <LatLngHud mouseCoords={mouseCoords} />}
       </>
     );
   }

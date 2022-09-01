@@ -1,357 +1,287 @@
-import mapboxgl from "mapbox-gl";
-import React from "react";
+import React, { useCallback, useContext, useEffect, useRef, useState } from "react";
 import ReactDOM from "react-dom";
+import { useAtom, useAtomValue, atom } from "jotai";
+import styled from "@emotion/styled";
+
 import DownloadPanel from "./home/DownloadPanel";
 import FilterPanel from "./home/FilterPanel";
-import HomeMap from "./home/HomeMap";
-import InfoPopupContent from "./home/InfoPopupContent";
-import LayersPanel from "./home/LayersPanel";
-import MenuItem from "./components/MenuItem";
-import ReportMinesPanel from "./home/ReportMinesPanel";
-import ReportPopupContent from "./home/ReportPopupContent";
-import SideBar from "./components/SideBar";
+import FooterBar from "./components/FooterBar";
+import IconTextButton from "./components/IconTextButton";
 import IconButton from "./components/IconButton";
+import {
+  MainContext,
+  PageLayout,
+  mapboxTokenAtom,
+  mapquestKeyAtom,
+  versionDeployedAtom,
+} from "./components/PageLayout";
+import LayersPanel from "./home/LayersPanel";
+import ReportMinesPanel from "./home/ReportMinesPanel";
 import StatsPanel from "./home/StatsPanel";
 import SubscribePanel from "./home/SubscribePanel";
 import ValidatePanel from "./home/ValidatePanel";
-import { MainContext, PageLayout } from "./components/PageLayout";
 
-import { jsonRequest } from "./utils";
+import HomeMap, { homeMapAtom, mapPopupAtom } from "./home/HomeMap";
 import { availableLayers, URLS } from "./constants";
+import { jsonRequest } from "./utils";
 
-class HomeContents extends React.Component {
-  // set up class flags so each component update doesn't do redundant JS tasks
-  constructor(props) {
-    super(props);
+export const selectedDatesAtom = atom({});
+export const updateStateMap = (setter, prevVal, newVal) => setter({ ...prevVal, ...newVal });
+export const visiblePanelAtom = atom(null);
+export const showModalAtom = atom(null);
+export const extraMapParamsAtom = atom({
+  NICFI: {
+    dataLayer: null,
+    band: "rgb",
+  },
+});
+export const featureNamesAtom = atom({});
 
-    // combining everything to app state
-    this.state = {
-      visiblePanel: null,
-      advancedOptions: false,
-      imageDates: {},
-      selectedDates: {},
-      selectedRegion: null,
-      featureNames: {},
-      subscribedList: [],
-      theMap: null,
-      selectedLatLon: null,
-      extraParams: {
-        NICFI: {
-          dataLayer: null,
-          band: "rgb",
-        },
-      },
-      nicfiLayers: [],
+export const processModal = (callBack, setShowModal) =>
+  new Promise(() => {
+    setShowModal(true);
+    callBack().finally(() => setShowModal(false));
+  });
+
+function HomeContents() {
+  const [visiblePanel, setVisiblePanel] = useAtom(visiblePanelAtom);
+  const [selectedDates, setSelectedDates] = useAtom(selectedDatesAtom);
+  const [homeMapPoupup, setHomeMapPoupup] = useAtom(mapPopupAtom);
+  const [homeMap, setHomeMap] = useAtom(homeMapAtom);
+  const [extraMapParams, setExtraMapParams] = useAtom(extraMapParamsAtom);
+  const [featureNames, setFeatureNames] = useAtom(featureNamesAtom);
+  const mapquestKey = useAtomValue(mapquestKeyAtom);
+  const mapboxToken = useAtomValue(mapboxTokenAtom);
+  const versionDeployed = useAtomValue(versionDeployedAtom);
+
+  const [subscribedList, setSubscribedList] = useState([]);
+  const [imageDates, setImageDates] = useState({});
+  const [nicfiLayers, setNicfiLayers] = useState([]);
+
+  const {
+    localeText,
+    localeText: { home },
+    username,
+    setShowInfo,
+  } = useContext(MainContext);
+
+  // Effects
+
+  useEffect(() => {
+    const handleEscapeKey = (e) => {
+      if (e.keyCode === 27) {
+        if (homeMapPoupup) {
+          homeMapPoupup.remove();
+          setHomeMapPoupup(null);
+        }
+        setVisiblePanel(null);
+      }
     };
-  }
+    window.addEventListener("keydown", handleEscapeKey);
 
-  /// Lifecycle Functions ///
+    return () => {
+      window.removeEventListener("keydown", handleEscapeKey);
+    };
+  }, [homeMapPoupup, visiblePanel]);
 
-  componentDidMount() {
-    Promise.all([this.getFeatureNames(), this.getImageDates(), this.getNICFIDates()]).catch(
-      (error) => console.error(error)
-    );
-  }
-
-  componentDidUpdate(prevProps, _prevState) {
-    if (prevProps.myHeight !== this.props.myHeight) {
-      setTimeout(() => this.state.theMap.resize(), 50);
-    }
-  }
-
-  /// State Update ///
-
-  togglePanel = (panelKey) => {
-    const { visiblePanel } = this.state;
-    this.setState({
-      visiblePanel: panelKey === visiblePanel ? null : panelKey,
-    });
-  };
-
-  updateSubList = (list) => this.setState({ subscribedList: list });
-
-  selectDates = (newDates) =>
-    this.setState({ selectedDates: { ...this.state.selectedDates, ...newDates } });
-
-  selectRegion = (region) => this.setState({ selectedRegion: region });
-
-  setMap = (theMap) => this.setState({ theMap });
-
-  setLatLon = (latLon) => this.setState({ selectedLatLon: latLon });
-
-  setParams = (param, value) => {
-    this.setState({
-      extraParams: {
-        ...this.state.extraParams,
-        [param]: value,
-      },
-    });
-  };
-
-  /// API Calls ///
-
-  getImageDates = () =>
-    jsonRequest(URLS.IMG_DATES).then((result) => {
+  useEffect(() => {
+    const getImageDates = async () => {
+      const result = await jsonRequest(URLS.IMG_DATES);
       const initialDates = Object.keys(result).reduce(
         (acc, cur) => ({ ...acc, [cur]: result[cur][0] }),
         {}
       );
-      this.setState({
-        imageDates: result,
-        selectedDates: initialDates,
-      });
-    });
 
-  getFeatureNames = () =>
-    jsonRequest(URLS.FEATURE_NAMES).then((features) => {
-      this.setState({ featureNames: features });
-    });
+      setImageDates(result);
+      setSelectedDates(initialDates);
+    };
 
-  getNICFIDates = () =>
-    jsonRequest(URLS.NICFI_DATES).then((dates) => {
-      this.setState({ nicfiLayers: dates });
-      this.setParams("NICFI", {
-        ...this.state.extraParams.NICFI,
-        dataLayer: dates[0],
-      });
-    });
+    getImageDates().catch(console.error);
+  }, []);
 
-  /// Global Map Functions ///
-
-  fitMap = (type, arg) => {
-    const {
-      localeText: { home },
-    } = this.context;
-    const { theMap } = this.state;
-    if (type === "point") {
-      try {
-        theMap.flyTo({ center: arg, essential: true });
-      } catch (err) {
-        console.error(home.errorCoordinates);
-      }
-    } else if (type === "bbox") {
-      try {
-        theMap.fitBounds(arg);
-      } catch (error) {
-        console.error(home.errorBounds);
-      }
-    }
+  const togglePanel = (panelKey) => {
+    setVisiblePanel(panelKey === visiblePanel ? null : panelKey);
   };
 
-  isLayerVisible = (layer) => this.state.theMap.getLayer(layer).visibility === "visible";
+  const selectDates = (newDates) => setSelectedDates({ ...selectedDates, ...newDates });
 
-  addPopup = (lat, lon) => {
-    const { thePopup } = this.state;
-    const reportPopup = this.state.visiblePanel === "report";
-    const {
-      localeText: { home },
-      localeText,
-    } = this.context;
-
-    // Remove old popup
-    if (thePopup) thePopup.remove();
-
-    const divId = Date.now();
-    const popup = new mapboxgl.Popup()
-      .setLngLat([lon, lat])
-      .setHTML(`<div id="${divId}"></div>`)
-      .addTo(this.state.theMap);
-    this.setState({ thePopup: popup });
-
-    this.setLatLon([lat, lon]);
-
-    if (reportPopup) {
-      ReactDOM.render(
-        <ReportPopupContent lat={lat} localeText={localeText} lon={lon} />,
-        document.getElementById(divId)
-      );
-    } else {
-      const visibleLayers = availableLayers
-        .map((l) => this.isLayerVisible(l) && l)
-        .filter((l) => l);
-      ReactDOM.render(
-        <InfoPopupContent
-          lat={lat}
-          localeText={home}
-          lon={lon}
-          selectedDates={this.state.selectedDates}
-          visibleLayers={visibleLayers}
-        />,
-        document.getElementById(divId)
-      );
-    }
+  const setParams = (param, value) => {
+    setExtraMapParams({
+      ...extraMapParams,
+      [param]: value,
+    });
   };
 
-  render() {
-    const {
-      setShowInfo,
-      myHeight,
-      username,
-      localeText: { home },
-      isAdmin,
-    } = this.context;
-    return (
-      <>
-        <HomeMap
-          extraParams={this.state.extraParams}
-          localeText={this.context.localeText}
-          mapboxToken={this.props.mapboxToken}
-          myHeight={myHeight}
-          selectDates={this.selectDates}
-          selectedDates={this.state.selectedDates}
-          setMap={this.setMap}
-          theMap={this.state.theMap}
-          addPopup={this.addPopup}
-        />
-        {home && (
-          <SideBar>
+  useEffect(() => {
+    const getNICFIDates = async () => {
+      const dates = await jsonRequest(URLS.NICFI_DATES);
+      setNicfiLayers(dates);
+      setParams("NICFI", { ...extraMapParams.NICFI, dataLayer: dates[0] });
+    };
+
+    getNICFIDates().catch(console.error);
+  }, [selectedDates]);
+
+  useEffect(() => {
+    const getFeatureNames = async () => {
+      const features = await jsonRequest(URLS.FEATURE_NAMES);
+      setFeatureNames(features);
+    };
+
+    getFeatureNames().catch(console.error);
+  }, []);
+
+  return (
+    <>
+      <HomeMap />
+      <div id="bottom-bar">
+        <FooterBar>
+          <Buttons>
             {/* Layers */}
-            <MenuItem
-              itemName="layer"
-              onClick={this.togglePanel}
-              selectedItem={this.state.visiblePanel}
-              tooltip={home.layersTooltip}
-            >
-              <LayersPanel
-                extraParams={this.state.extraParams}
-                nicfiLayers={this.state.nicfiLayers}
-                setParams={this.setParams}
-                theMap={this.state.theMap}
+            <BarItem>
+              <IconTextButton
+                active={visiblePanel === "layers"}
+                hasBackground={true}
+                icon="layer"
+                onClick={() => togglePanel("layers")}
+                text={home?.layersTitle}
               />
-            </MenuItem>
+              <LayersPanel active={visiblePanel === "layers"} nicfiLayers={nicfiLayers} />
+            </BarItem>
 
             {/* Subscribe */}
-            <MenuItem
-              icon="envelope"
-              itemName="subscribe"
-              onClick={this.togglePanel}
-              selectedItem={this.state.visiblePanel}
-              tooltip={home.subscribeTooltip}
-            >
-              <SubscribePanel
-                featureNames={this.state.featureNames}
-                fitMap={this.fitMap}
-                mapquestKey={this.props.mapquestKey}
-                selectedRegion={this.state.selectedRegion}
-                selectRegion={this.selectRegion}
-                subscribedList={this.state.subscribedList}
-                updateSubList={this.updateSubList}
+            <BarItem>
+              <IconTextButton
+                active={visiblePanel === "subscribe"}
+                hasBackground={true}
+                icon="envelope"
+                onClick={() => togglePanel("subscribe")}
+                text={home?.subscribeTitle}
               />
-            </MenuItem>
+              <SubscribePanel
+                active={visiblePanel === "subscribe"}
+                featureNames={featureNames}
+                mapquestKey={mapquestKey}
+                subscribedList={subscribedList}
+                setSubscribedList={setSubscribedList}
+              />
+            </BarItem>
 
             {/* Validation */}
-            <MenuItem
-              icon="check"
-              itemName="validate"
-              onClick={this.togglePanel}
-              selectedItem={this.state.visiblePanel}
-              tooltip={home.validateTooltip}
-            >
+            <BarItem>
+              <IconTextButton
+                active={visiblePanel === "validate"}
+                hasBackground={true}
+                icon="check"
+                onClick={() => togglePanel("validate")}
+                text={home?.validationsTitle}
+              />
               <ValidatePanel
-                featureNames={this.state.featureNames}
-                selectedDates={this.state.selectedDates}
-                subscribedList={this.state.subscribedList}
+                active={visiblePanel === "validate"}
+                featureNames={featureNames}
+                selectedDates={selectedDates}
+                subscribedList={subscribedList}
               />
-            </MenuItem>
-
-            {/* Advanced Button */}
+            </BarItem>
+            {/* "Advanced Controls" */}
             {username && (
-              <IconButton
-                clickHandler={() => {
-                  this.setState(
-                    this.state.advancedOptions
-                      ? { advancedOptions: false, ...this.advancedPanelState }
-                      : { advancedOptions: true }
-                  );
-                }}
-                icon={this.state.advancedOptions ? "minus" : "plus"}
-                tooltip={home.advancedTooltip}
-              />
-            )}
-            {this.state.advancedOptions && (
               <>
-                {/* Stats graphs */}
-                <MenuItem
-                  itemName="stats"
-                  onClick={this.togglePanel}
-                  selectedItem={this.state.visiblePanel}
-                  tooltip={home.statsTooltip}
-                >
-                  <StatsPanel
-                    selectedDate={this.state.selectedDates.cMines}
-                    subscribedList={this.state.subscribedList}
+                {/* Filter */}
+                <BarItem>
+                  <IconTextButton
+                    active={visiblePanel === "filter"}
+                    hasBackground={true}
+                    icon="filter"
+                    onClick={() => togglePanel("filter")}
+                    text={home?.filterTitle}
                   />
-                </MenuItem>
-
-                {/* Date filter */}
-                <MenuItem
-                  itemName="filter"
-                  onClick={this.togglePanel}
-                  selectedItem={this.state.visiblePanel}
-                  tooltip={home.filterTooltip}
-                >
                   <FilterPanel
-                    imageDates={this.state.imageDates}
-                    selectDates={this.selectDates}
-                    selectedDates={this.state.selectedDates}
+                    active={visiblePanel === "filter"}
+                    imageDates={imageDates}
+                    selectDates={selectDates}
+                    selectedDates={selectedDates}
                   />
-                </MenuItem>
+                </BarItem>
 
-                {/* Report mines */}
-                <MenuItem
-                  icon="mine"
-                  itemName="report"
-                  onClick={this.togglePanel}
-                  selectedItem={this.state.visiblePanel}
-                  tooltip={home.reportTooltip}
-                >
-                  <ReportMinesPanel
-                    addPopup={this.addPopup}
-                    fitMap={this.fitMap}
-                    selectedLatLon={this.state.selectedLatLon}
-                    submitMine={this.submitMine}
+                {/* Report Mines */}
+                <BarItem>
+                  <IconTextButton
+                    active={visiblePanel === "report"}
+                    hasBackground={true}
+                    icon="mine"
+                    onClick={() => togglePanel("report")}
+                    text={home?.reportMinesTitle}
                   />
-                </MenuItem>
+                  <ReportMinesPanel active={visiblePanel === "report"} />
+                </BarItem>
 
-                {/* Download */}
-                <MenuItem
-                  itemName="download"
-                  onClick={this.togglePanel}
-                  selectedItem={this.state.visiblePanel}
-                  tooltip={home.downloadTooltip}
-                >
+                {/* Download Data */}
+                <BarItem>
+                  <IconTextButton
+                    active={visiblePanel === "download"}
+                    hasBackground={true}
+                    icon="download"
+                    onClick={() => togglePanel("download")}
+                    text={home?.downloadTitle}
+                  />
                   <DownloadPanel
-                    featureNames={this.state.featureNames}
-                    fitMap={this.fitMap}
-                    mapquestKey={this.props.mapquestKey}
-                    selectedDates={this.state.selectedDates}
-                    selectedRegion={this.state.selectedRegion}
-                    selectRegion={this.selectRegion}
+                    active={visiblePanel === "download"}
+                    featureNames={featureNames}
+                    mapquestKey={mapquestKey}
+                    selectedDates={selectedDates}
                   />
-                </MenuItem>
+                </BarItem>
+
+                {/* Statistics */}
+                <BarItem>
+                  <IconTextButton
+                    active={visiblePanel === "stats"}
+                    hasBackground={true}
+                    icon="stats"
+                    onClick={() => togglePanel("stats")}
+                    text={home?.statisticsTitle}
+                  />
+                  <StatsPanel
+                    active={visiblePanel === "stats"}
+                    selectedDate={selectedDates?.cMines}
+                    subscribedList={subscribedList}
+                  />
+                </BarItem>
               </>
             )}
-            <div style={{ flexGrow: 1 }} />
-            {isAdmin && (
+          </Buttons>
+          <Logo>
+            {/* TODO: move this top bar (menu admin) */}
+            {/* {true && (
               <IconButton
-                clickHandler={() => window.location.assign("/admin")}
+                extraStyle={{ marginRight: "10px" }}
                 icon="admin"
-                tooltip={home.admin}
+                onClick={() => window.location.assign("/admin")}
+                // tooltip={localeText.home?.admin}
               />
-            )}
+            )} */}
             <IconButton
-              clickHandler={() => setShowInfo(true)}
+              // extraStyle={{ marginRight: "10px" }}
               icon="info"
-              tooltip={home.appInfoTooltip}
+              onClick={() => setShowInfo(true)}
             />
-          </SideBar>
-        )}
-      </>
-    );
-  }
+            <LogoImg
+              alt="app-logo"
+              onClick={() => window.location.assign("/")}
+              src="/img/app-logo.png"
+            />
+            <LogoGitVersion
+              href={`https://github.com/sig-gis/comimo/tags/${versionDeployed}`}
+              target="/blank"
+            >
+              {versionDeployed && `Version: ${versionDeployed}`}
+            </LogoGitVersion>
+          </Logo>
+        </FooterBar>
+      </div>
+    </>
+  );
 }
-
-HomeContents.contextType = MainContext;
 
 export function pageInit(args) {
   ReactDOM.render(
@@ -359,10 +289,49 @@ export function pageInit(args) {
       role={args.role}
       userLang={args.userLang}
       username={args.username}
-      version={args.version}
+      mapboxToken={args.mapboxToken}
+      mapquestKey={args.mapquestKey}
+      versionDeployed={args.versionDeployed}
+      showSearch={true}
     >
-      <HomeContents mapboxToken={args.mapboxToken} mapquestKey={args.mapquestKey} />
+      <HomeContents />
     </PageLayout>,
     document.getElementById("main-container")
   );
 }
+
+const Buttons = styled.div`
+  display: flex;
+  flex: 3;
+  justify-content: space-around;
+`;
+
+const Logo = styled.div`
+  align-items: center;
+  display: flex;
+  flex: 1;
+  justify-content: space-around;
+  padding: 5px 0;
+`;
+
+const LogoImg = styled.img`
+  cursor: pointer;
+  height: 22px;
+  padding-right: 15px;
+  width: 67px;
+`;
+
+const LogoGitVersion = styled.a`
+  color: var(--white);
+  cursor: pointer;
+  font-size: 12px;
+  letter-spacing: 0px;
+  text-align: left;
+  text-decoration: none;
+`;
+
+const Hidable = styled.div`
+  display: ${({ active }) => !active && "none"};
+`;
+
+const BarItem = styled.div``;
