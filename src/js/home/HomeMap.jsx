@@ -33,6 +33,7 @@ export const addPopup = (map, { lat, lng }, mapPopup, visiblePanel, selectedDate
     .addTo(map);
 
   // TODO: visiblePanel may not be needed when switching to Footer
+  // TODO: update to use refs to clear the build warning...
   if (visiblePanel === "report") {
     ReactDOM.render(
       <ReportPopupContent lat={lat} localeText={localeText} lon={lng} />,
@@ -182,7 +183,7 @@ export default function HomeMap({}) {
         setMapPopup(addHomeMapPopup({ lat, lng }));
       });
     }
-  }, [selectedDates, localeText]);
+  }, [selectedDates]);
 
   useEffect(() => {
     if (homeMap && selectedDates) {
