@@ -37,11 +37,12 @@ export const extraMapParamsAtom = atom({
 });
 export const featureNamesAtom = atom({});
 
-export const processModal = (callBack, setShowModal) =>
+export const processModal = (callBack, setShowModal) => {
   new Promise(() => {
     setShowModal(true);
     callBack().finally(() => setShowModal(false));
   });
+};
 
 function HomeContents() {
   const [visiblePanel, setVisiblePanel] = useAtom(visiblePanelAtom);

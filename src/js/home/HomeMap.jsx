@@ -8,7 +8,7 @@ import mapboxgl from "mapbox-gl";
 import LatLngHud from "../components/LatLngHud";
 import ReportPopupContent from "./ReportPopupContent";
 import InfoPopupContent from "./InfoPopupContent";
-import { localeTextAtom, MainContext, mapboxTokenAtom } from "../components/PageLayout";
+import { localeTextAtom, mapboxTokenAtom } from "../components/PageLayout";
 
 import { extraMapParamsAtom, selectedDatesAtom, visiblePanelAtom } from "../home";
 
