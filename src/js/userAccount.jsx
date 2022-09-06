@@ -74,7 +74,7 @@ function UserAccount() {
         setSector(data.sector);
       } else {
         console.error("userNotFound");
-        alert(users?.userNotFound);
+        alert(t("users.userNotFound"));
       }
     }, setShowModal);
   };
@@ -93,18 +93,19 @@ function UserAccount() {
         }).catch(console.error);
 
         if (resp === "") {
+          console.log("setting locale text to: ", defaultLang);
           selectLanguage(defaultLang, setSelectedLanguage, setLocaleText);
           showAlert({
-            body: users?.successUpdate,
-            closeText: users?.close,
-            title: users?.updateTitle,
+            body: t("users.successUpdate"),
+            closeText: t("users.close"),
+            title: t("users.updateTitle"),
           });
         } else {
           console.error(resp);
           showAlert({
-            body: users?.errorUpdating,
-            closeText: users?.close,
-            title: users?.error,
+            body: t("users.errorUpdating"),
+            closeText: t("users.close"),
+            title: t("users.error"),
           });
         }
       }, setShowModal);
@@ -113,11 +114,11 @@ function UserAccount() {
   return (
     <ThemeProvider theme={THEME}>
       <PageContainer>
-        {showModal && <LoadingModal message={users?.modalMessage} />}
+        {showModal && <LoadingModal message={t("users.modalMessage")} />}
         {/* TODO: Make submitFn optional for AccountForm and TitledForm */}
-        <AccountForm header={users?.userAccountTitle} submitFn={() => {}}>
+        <AccountForm header={t("users.userAccountTitle")} submitFn={() => { }}>
           <div style={{ display: "flex", marginBottom: "0.5rem" }}>
-            <label style={{ marginRight: "1rem" }}>{users?.language}</label>
+            <label style={{ marginRight: "1rem" }}>{t("users.language")}</label>
             <LanguageSelector
               selectedLanguage={defaultLang}
               selectLanguage={(newLnag) => setDefaultLang(newLnag)}
@@ -126,9 +127,9 @@ function UserAccount() {
           <TextInput
             disabled={false}
             id="username"
-            label={users?.username}
+            label={t("users.username")}
             onChange={(e) => setUsername(e.target.value)}
-            placeholder={`Enter ${(users?.username || "").toLowerCase()}`}
+            placeholder={`Enter ${(t("users.username") || "").toLowerCase()}`}
             type={"text"}
             value={username}
           />
@@ -136,9 +137,9 @@ function UserAccount() {
           <TextInput
             disabled={false}
             id="email"
-            label={users?.email}
+            label={t("users.email")}
             onChange={(e) => setEmail(e.target.value)}
-            placeholder={`Enter ${(users?.email || "").toLowerCase()}`}
+            placeholder={`Enter ${(t("users.email") || "").toLowerCase()}`}
             type={"email"}
             value={email}
           />
@@ -146,9 +147,9 @@ function UserAccount() {
           <TextInput
             disabled={false}
             id="fullName"
-            label={users?.fullName}
+            label={t("users.fullName")}
             onChange={(e) => setFullName(e.target.value)}
-            placeholder={`Enter ${(users?.fullName || "").toLowerCase()}`}
+            placeholder={`Enter ${(t("users.fullName") || "").toLowerCase()}`}
             type={"text"}
             value={fullName}
           />
@@ -156,54 +157,54 @@ function UserAccount() {
           <TextInput
             disabled={false}
             id="fullName"
-            label={users?.institution}
+            label={t("users.institution")}
             onChange={(e) => setInstitution(e.target.value)}
-            placeholder={`Enter ${(users?.institution || "").toLowerCase()}`}
+            placeholder={`Enter ${(t("users.institution") || "").toLowerCase()}`}
             type={"text"}
             value={fullName}
           />
 
           <Select
             id="sector"
-            label={users?.sector}
+            label={t("users.sector")}
             onChange={(e) => setSector(e.target.value)}
             options={[
-              { value: "academic", label: users?.academic },
-              { value: "government", label: users?.government },
-              { value: "ngo", label: users?.ngo },
+              { value: "academic", label: t("users.academic") },
+              { value: "government", label: t("users.government") },
+              { value: "ngo", label: t("users.ngo") },
             ]}
             value={sector}
           />
 
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-            <span style={{ color: "red" }}>{users?.allRequired}</span>
+            <span style={{ color: "red" }}>{t("users.allRequired")}</span>
             <div style={{ display: "flex", marginTop: "0.5rem" }}>
               <Button
                 onClick={() => {
                   showAlert({
-                    body: users?.logOutBody,
-                    closeText: users?.cancel,
-                    confirmText: users?.confirmText,
+                    body: t("users.logOutBody"),
+                    closeText: t("users.cancel"),
+                    confirmText: t("users.confirmText"),
                     onConfirm: () => window.location.assign("/logout"),
-                    title: users?.logout,
+                    title: t("users.logout"),
                   });
                 }}
                 extraStyle={{ marginRight: "0.5rem" }}
               >
-                {users?.logout}
+                {t("users.logout")}
               </Button>
               <Button
                 onClick={() => {
                   showAlert({
-                    body: users?.updateBody,
-                    closeText: users?.cancel,
-                    confirmText: users?.confirmText,
+                    body: t("users.updateBody"),
+                    closeText: t("users.cancel"),
+                    confirmText: t("users.confirmText"),
                     onConfirm: () => updateUser(),
-                    title: users?.userAccountTitle,
+                    title: t("users.userAccountTitle"),
                   });
                 }}
               >
-                {users?.save}
+                {t("users.save")}
               </Button>
             </div>
           </div>

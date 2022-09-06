@@ -29,7 +29,7 @@ function PageNotFound() {
   return (
     <ThemeProvider theme={THEME}>
       <PageContainer>
-        <HeaderContainer>{home?.pageNotFound}</HeaderContainer>
+        <HeaderContainer>{t("home.pageNotFound")}</HeaderContainer>
       </PageContainer>
     </ThemeProvider>
   );

@@ -2,6 +2,8 @@ import React from "react";
 import Button from "./Button";
 import { useAtom, useAtomValue } from "jotai";
 import styled from "@emotion/styled";
+import { useTranslation } from "react-i18next";
+// import i18n from "../i18n";
 
 import LanguageSelector from "./LanguageSelector";
 import IconTextButton from "./IconTextButton";
@@ -67,7 +69,6 @@ const LoggedInUsername = styled.span`
 `;
 
 export default function Header({
-  localeText,
   selectLanguage,
   selectedLanguage,
   setShowInfo,
@@ -78,6 +79,8 @@ export default function Header({
   const featureNames = useAtomValue(featureNamesAtom);
   const mapquestKey = useAtomValue(mapquestKeyAtom);
   const [visiblePanel, setVisiblePanel] = useAtom(visiblePanelAtom);
+
+  const { t, i18n } = useTranslation();
 
   const togglePanel = (panelKey) => {
     setVisiblePanel(panelKey === visiblePanel ? null : panelKey);
@@ -95,10 +98,10 @@ export default function Header({
               // iconSize="26px"
               invertBorderRadius={true}
               onClick={() => togglePanel("search")}
-              text={localeText.home?.searchTitle}
+              text={t("home.searchTitle")}
             />
             <ToolCard
-              title={localeText.home?.searchTitle}
+              title={"home.searchTitle"}
               isInverted={true}
               active={visiblePanel === "search"}
             >
@@ -135,10 +138,10 @@ export default function Header({
               window.location.assign("/login");
             }}
           >
-            {localeText.users?.login}
+            {t("users.login")}
           </Button>
         )}
-        <LanguageSelector selectedLanguage={selectedLanguage} selectLanguage={selectLanguage} />
+        <LanguageSelector selectedLanguage={i18n.language} selectLanguage={(lng) => i18n.changeLanguage(lng)} />
       </UserSettings>
     </TitleBar>
   );

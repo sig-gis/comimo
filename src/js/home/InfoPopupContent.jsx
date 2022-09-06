@@ -41,36 +41,36 @@ export default function InfoPopupContent({ map, lng, lat, selectedDates }) {
     nMines: (
       <PopupMapInfo key="nMines">
         <label>
-          <strong>{home?.nMines}: </strong>
+          <strong>{t("home.nMines")}: </strong>
         </label>
-        <label>{nMines ? home?.eeLayerDetected : home?.eeLayerNotDetected}</label>
+        <label>{nMines ? t("home.eeLayerDetected") : t("home.eeLayerNotDetected")}</label>
       </PopupMapInfo>
     ),
     pMines: (
       <PopupMapInfo key="pMines">
         <label>
-          <strong>{home?.pMines}: </strong>
+          <strong>{t("home.pMines")}: </strong>
         </label>
-        <label>{pMines ? home?.eeLayerDetected : home?.eeLayerNotDetected}</label>
+        <label>{pMines ? t("home.eeLayerDetected") : t("home.eeLayerNotDetected")}</label>
       </PopupMapInfo>
     ),
     cMines: (
       <PopupMapInfo key="cMines">
         <label>
-          <strong>{home?.cMines}: </strong>
+          <strong>{t("home.cMines")}: </strong>
         </label>
-        <label>{cMines ? home?.eeLayerDetected : home?.eeLayerNotDetected}</label>
+        <label>{cMines ? t("home.eeLayerDetected") : t("home.eeLayerNotDetected")}</label>
       </PopupMapInfo>
     ),
     municipalBounds: (
       <PopupMapInfo key="municipalBounds">
         <label>
-          <strong>{home?.municipalBoundsPopup}: </strong>
+          <strong>{t("home.municipalBoundsPopup")}: </strong>
         </label>
         <label>
           {municipalBounds
             ? municipalBounds[0] + ", " + municipalBounds[1]
-            : home?.municipalBoundsNotFound}
+            : t("home.municipalBoundsNotFound")}
         </label>
       </PopupMapInfo>
     ),
@@ -78,18 +78,18 @@ export default function InfoPopupContent({ map, lng, lat, selectedDates }) {
       <PopupMapInfo key="protectedAreas">
         <label>
           {" "}
-          <strong>{home?.protectedAreasPopup}:</strong>
+          <strong>{t("home.protectedAreasPopup")}:</strong>
         </label>
-        <label>{home?.protectedAreasCategory}:</label>
+        <label>{t("home.protectedAreasCategory")}:</label>
         <label> {protectedAreas[0]}</label>
-        <label>{home?.protectedAreasName}:</label>
+        <label>{t("home.protectedAreasName")}:</label>
         <label>{protectedAreas[1]}</label>
       </PopupMapInfo>
     ),
     otherAuthorizations: otherAuthorizations && (
       <PopupMapInfo key="otherAuthorizations">
         <label>
-          <strong>{home?.otherAuthorizationsPopup}: </strong>
+          <strong>{t("home.otherAuthorizationsPopup")}: </strong>
         </label>
         <label>{otherAuthorizations}</label>
       </PopupMapInfo>
@@ -97,7 +97,7 @@ export default function InfoPopupContent({ map, lng, lat, selectedDates }) {
     legalMines: legalMines && (
       <PopupMapInfo key="legalMines">
         <label>
-          <strong>{home?.legalMinesPopup}: </strong>
+          <strong>{t("home.legalMinesPopup")}: </strong>
         </label>
         <label>{legalMines}</label>
       </PopupMapInfo>
@@ -105,7 +105,7 @@ export default function InfoPopupContent({ map, lng, lat, selectedDates }) {
     tierrasDeCom: tierrasDeCom && (
       <PopupMapInfo key="tierrasDeCom">
         <label>
-          <strong>{home?.tierrasDeComPopup}: </strong>
+          <strong>{t("home.tierrasDeComPopup")}: </strong>
         </label>
         <label>{tierrasDeCom}</label>
       </PopupMapInfo>
@@ -113,7 +113,7 @@ export default function InfoPopupContent({ map, lng, lat, selectedDates }) {
     resguardos: resguardos && (
       <PopupMapInfo key="visibleLayers">
         <label>
-          <strong>{home?.resguardosPopup}: </strong>
+          <strong>{t("home.resguardosPopup")}: </strong>
         </label>
         <label>{resguardos}</label>
       </PopupMapInfo>

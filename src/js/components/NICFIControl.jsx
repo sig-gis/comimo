@@ -3,13 +3,13 @@ import { MainContext } from "./PageLayout";
 
 import Button from "./Button";
 import Select from "./Select";
+import { useTranslation } from "react-i18next";
 
 export default function NICFIControl({ extraParams, setParams, nicfiLayers }) {
   const [selectedTime, setTime] = useState("");
   const [selectedBand, setBand] = useState("");
-  const {
-    localeText: { layers },
-  } = useContext(MainContext);
+
+  const { t, i18n } = useTranslation();
 
   useEffect(() => {
     if (extraParams.NICFI) {
@@ -22,7 +22,7 @@ export default function NICFIControl({ extraParams, setParams, nicfiLayers }) {
     <div style={{ display: "flex", flexDirection: "column" }}>
       <Select
         id="time"
-        label={layers?.selectTime}
+        label={t("layers.selectTime")}
         onChange={(e) => setTime(e.target.value)}
         options={nicfiLayers.map((time) => ({
           value: time,
@@ -31,7 +31,7 @@ export default function NICFIControl({ extraParams, setParams, nicfiLayers }) {
         value={selectedTime}
       />
       <div style={{ display: "flex", flexDirection: "column" }}>
-        <label style={{ margin: "0rem" }}>{layers?.selectBand}</label>
+        <label style={{ margin: "0rem" }}>{t("layers.selectBand")}</label>
         <div style={{ display: "flex" }}>
           <div>
             <input
@@ -42,7 +42,7 @@ export default function NICFIControl({ extraParams, setParams, nicfiLayers }) {
               style={{ cursor: "pointer" }}
             />
             <label htmlFor="visible" style={{ cursor: "pointer", margin: 0 }}>
-              {layers?.visible}
+              {t("layers.visible")}
             </label>
           </div>
           <div style={{ paddingLeft: "1rem" }}>
@@ -54,7 +54,7 @@ export default function NICFIControl({ extraParams, setParams, nicfiLayers }) {
               style={{ cursor: "pointer" }}
             />
             <label htmlFor="infrared" style={{ cursor: "pointer", margin: 0 }}>
-              {layers?.infrared}
+              {t("layers.infrared")}
             </label>
           </div>
         </div>
@@ -68,7 +68,7 @@ export default function NICFIControl({ extraParams, setParams, nicfiLayers }) {
         }}
         extraStyle={{ marginTop: "0.5rem" }}
       >
-        {layers?.updateNICFI}
+        {t("layers.updateNICFI")}
       </Button>
     </div>
   );

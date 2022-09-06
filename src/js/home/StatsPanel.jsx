@@ -43,13 +43,13 @@ export default function StatsPanel({ active, selectedDate, subscribedList }) {
   };
 
   const getAreaStats = () => {
-    document.getElementById("stats1").innerHTML = `${stats?.loading}...`;
+    document.getElementById("stats1").innerHTML = `${t("stats.loading")}...`;
     jsonRequest(URLS.AREA_STATS, { dataLayer: selectedDate })
       .then((data) => {
         if (data.length > 0) {
           const dataTable = new google.visualization.DataTable();
-          dataTable.addColumn("string", stats?.munLabel);
-          dataTable.addColumn("number", stats?.countLabel);
+          dataTable.addColumn("string", t("stats.munLabel"));
+          dataTable.addColumn("number", t("stats.countLabel"));
 
           dataTable.addRows(data);
 
@@ -66,22 +66,22 @@ export default function StatsPanel({ active, selectedDate, subscribedList }) {
             options
           );
         } else {
-          document.getElementById("stats1").innerHTML = `<i>${stats?.noDataFound}</i>`;
+          document.getElementById("stats1").innerHTML = `<i>${t("stats.noDataFound")}</i>`;
         }
       })
-      .catch((e) => console.error(stats?.errorStats, e));
+      .catch((e) => console.error(t("stats.errorStats"), e));
   };
 
   const getAreaTS = () => {
-    document.getElementById("stats2").innerHTML = `${stats?.loading}...`;
+    document.getElementById("stats2").innerHTML = `${t("stats.loading")}...`;
     jsonRequest(URLS.AREA_TOTAL_STATS)
       .then((data) => {
         const sum = data.reduce((acc, [_, c]) => acc + c, 0);
         if (sum > 0.0) {
           const dataTable = new google.visualization.DataTable();
 
-          dataTable.addColumn("string", stats?.dateLabel);
-          dataTable.addColumn("number", stats?.countLabel);
+          dataTable.addColumn("string", t("stats.dateLabel"));
+          dataTable.addColumn("number", t("stats.countLabel"));
 
           dataTable.addRows(data);
 
@@ -98,24 +98,24 @@ export default function StatsPanel({ active, selectedDate, subscribedList }) {
             options
           );
         } else {
-          document.getElementById("stats2").innerHTML = `<i>${stats?.noDataFound}</i>`;
+          document.getElementById("stats2").innerHTML = `<i>${t("stats.noDataFound")}</i>`;
         }
       })
-      .catch((e) => console.error(stats?.errorStats, e));
+      .catch((e) => console.error(t("stats.errorStats"), e));
   };
 
   // Render
 
   return (
-    <ToolCard title={stats?.regionTitle} active={active}>
+    <ToolCard title={t("stats.regionTitle")} active={active}>
       <div>
-        <p style={{ lineHeight: "1rem", fontSize: ".75rem" }}>{stats?.regionSubTitle}</p>
+        <p style={{ lineHeight: "1rem", fontSize: ".75rem" }}>{t("stats.regionSubTitle")}</p>
         <div id="stats1" />
-        {!chartsLoaded && <div>{`${stats?.loading}...`}</div>}
-        <h3>{stats?.dateTitle}</h3>
+        {!chartsLoaded && <div>{`${t("stats.loading")}...`}</div>}
+        <h3>{t("stats.dateTitle")}</h3>
         <div id="stats2" />
-        {!chartsLoaded && <div>{`${stats?.loading}...`}</div>}
-        <p style={{ lineHeight: "1rem", fontSize: ".75rem" }}>{stats?.areaWarning}</p>
+        {!chartsLoaded && <div>{`${t("stats.loading")}...`}</div>}
+        <p style={{ lineHeight: "1rem", fontSize: ".75rem" }}>{t("stats.areaWarning")}</p>
       </div>
     </ToolCard>
   );

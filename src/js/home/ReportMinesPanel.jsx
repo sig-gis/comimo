@@ -99,28 +99,28 @@ export default function ReportMinesPanel({ active }) {
   };
 
   return (
-    <ToolCard title={report?.title} active={active}>
-      {report?.subTitle}
+    <ToolCard title={t("report.title")} active={active}>
+      {t("report.subTitle")}
       <TextInput
         style={{ marginTop: "3rem" }}
         id="inputCoords"
-        label={report?.coordLabel}
+        label={t("report.coordLabel")}
         onChange={(e) => setLatLonText(e.target.value)}
         onKeyUp={(e) => {
           if (e.key === "Enter") processLatLng();
         }}
-        render={() => <Button onClick={processLatLng}>{report?.goButton}</Button>}
+        render={() => <Button onClick={processLatLng}>{t("report.goButton")}</Button>}
         value={latLonText}
       />
-      <h3 style={{ marginTop: "1rem" }}>{report?.selectedLocation}</h3>
+      <h3 style={{ marginTop: "1rem" }}>{t("report.selectedLocation")}</h3>
       {selectedLatLng ? (
         <>
           <div style={{ display: "flex", flexDirection: "column" }}>
             <span>
-              <b>{report?.latitude}:</b> {selectedLatLng[0]}
+              <b>{t("report.latitude")}:</b> {selectedLatLng[0]}
             </span>
             <span>
-              <b>{report?.longitude}:</b> {selectedLatLng[1]}
+              <b>{t("report.longitude")}:</b> {selectedLatLng[1]}
             </span>
           </div>
 
@@ -143,12 +143,12 @@ export default function ReportMinesPanel({ active }) {
               }
               isDisabled={reportingMine || reported}
             >
-              {reported ? report?.reported : report?.submit}
+              {reported ? t("report.reported ") : t("report.submit")}
             </Button>
           </div>
         </>
       ) : (
-        <span style={{ fontStyle: "italic" }}>{report?.noLocation}</span>
+        <span style={{ fontStyle: "italic" }}>{t("report.noLocation")}</span>
       )}
       {messageBox && (
         <Modal {...messageBox} onClose={() => setMessageBox(null)}>

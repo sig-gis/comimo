@@ -10,6 +10,7 @@ import { MainContext } from "./PageLayout";
 import { URLS } from "../constants";
 import { fitMap, selectedRegionAtom, homeMapAtom } from "../home/HomeMap";
 import { useAtom } from "jotai";
+import { useTranslation } from "react-i18next";
 
 const SearchResults = styled.div`
   &:active {
@@ -35,11 +36,7 @@ export default function Search({ featureNames, mapquestKey, isPanel }) {
   const [searchText, setSearchText] = useState("");
   const [latLngText, setLatLngText] = useState("");
 
-  const {
-    localeText: { search, home },
-  } = useContext(MainContext);
-
-  // Helper search functions
+  const { t, i18n } = useTranslation();
 
   const searchGeocode = () => {
     const url =
@@ -74,7 +71,7 @@ export default function Search({ featureNames, mapquestKey, isPanel }) {
 
   const geoSearchResults =
     geoCodedSearch && geoCodedSearch.length === 0 ? (
-      <div style={{ marginLeft: "0.25rem" }}>{search?.noResults}</div>
+      <div style={{ marginLeft: "0.25rem" }}>{t("search.noResults")}</div>
     ) : (
       geoCodedSearch && (
         <div>
@@ -113,9 +110,9 @@ export default function Search({ featureNames, mapquestKey, isPanel }) {
   const selectL1 =
     l1Names.length > 0 ? (
       <Select
-        defaultOption={search?.defaultState}
+        defaultOption={t("search.defaultState")}
         id="selectL1"
-        label={search?.stateLabel}
+        label={t("search.stateLabel")}
         onChange={(e) => {
           setSelectedL1(e.target.value);
           setSelectedL2(-1);
@@ -124,7 +121,7 @@ export default function Search({ featureNames, mapquestKey, isPanel }) {
         value={selectedL1}
       />
     ) : (
-      search?.loading + "..."
+      t("search.loading") + "..."
     );
 
   const activeMuns = featureNames[selectedL1] || {};
@@ -134,9 +131,9 @@ export default function Search({ featureNames, mapquestKey, isPanel }) {
   const selectL2 =
     l2names.length > 0 ? (
       <Select
-        defaultOption={search?.defaultMun}
+        defaultOption={t("search.defaultMun")}
         id="selectL2"
-        label={search?.munLabel}
+        label={t("search.munLabel")}
         onChange={(e) => {
           const l2Name = e.target.value;
           const coords = activeMuns[l2Name];
@@ -158,14 +155,14 @@ export default function Search({ featureNames, mapquestKey, isPanel }) {
         <>
           <TextInput
             id="inputGeocode"
-            label={search?.internetLabel}
+            label={t("search.internetLabel")}
             onChange={(e) => setSearchText(e.target.value)}
             onKeyUp={(e) => {
               if (e.key === "Enter") searchGeocode();
             }}
             render={() => (
               <Button onClick={searchGeocode} extraStyle={{ marginLeft: "0.25rem" }}>
-                {search?.goButton}
+                {t("search.goButton")}
               </Button>
             )}
             value={searchText}
@@ -173,21 +170,21 @@ export default function Search({ featureNames, mapquestKey, isPanel }) {
           {geoSearchResults}
           <TextInput
             id="inputLatLng"
-            label={search?.coordLabel}
+            label={t("search.coordLabel")}
             onChange={(e) => setLatLngText(e.target.value)}
             onKeyUp={(e) => {
               if (e.key === "Enter") processLatLng();
             }}
             render={() => (
               <Button onClick={processLatLng} extraStyle={{ marginLeft: "0.25rem" }}>
-                {search?.goButton}
+                {t("search.goButton")}
               </Button>
             )}
             value={latLngText}
           />
         </>
       )}
-      <label>{search?.selectLabel}</label>
+      <label>{t("search.selectLabel")}</label>
       {selectL1}
       {selectL2}
     </div>

@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import styled from "@emotion/styled";
+import { useTranslation } from "react-i18next";
 
 import SvgIcon from "./SvgIcon";
 

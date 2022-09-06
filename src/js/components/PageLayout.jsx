@@ -5,14 +5,16 @@ import { ThemeProvider } from "@emotion/react";
 import AppInfo from "../home/AppInfo";
 import Header from "./Header";
 
+import i18n from "../i18n";
 import { getLanguage, jsonRequest } from "../utils";
 import { THEME } from "../constants";
+
 
 // TODO: dismiss with escape app info
 export const MainContext = React.createContext({});
 
 export const localeTextAtom = atom({});
-export const selectedLanguageAtom = atom("en");
+export const selectedLanguageAtom = atom(null);
 
 export const myHeightAtom = atom(0);
 export const showInfoAtom = atom(false);
@@ -20,6 +22,8 @@ export const showInfoAtom = atom(false);
 export const mapboxTokenAtom = atom("");
 export const mapquestKeyAtom = atom("");
 export const versionDeployedAtom = atom("");
+export const usernameAtom = atom(null);
+
 
 // export const textAtom = atom("hello");
 
@@ -35,6 +39,7 @@ export const versionDeployedAtom = atom("");
 // });
 
 export const selectLanguage = async (newLang, setSelectedLanguage, setLocaleText) => {
+  console.log("Setting it to...", newLang);
   setSelectedLanguage(newLang);
   setLocaleText(await jsonRequest(`/locale/${newLang}.json`, null, "GET").catch(console.error));
 };
@@ -57,6 +62,7 @@ export function PageLayout({
   const setMapboxToken = useSetAtom(mapboxTokenAtom);
   const setMapquestKey = useSetAtom(mapquestKeyAtom);
   const setVersionDeployed = useSetAtom(versionDeployedAtom);
+  const setUsername = useSetAtom(usernameAtom);
 
   const isAdmin = role === "admin";
 
@@ -73,8 +79,10 @@ export function PageLayout({
   // API Call
 
   useEffect(() => {
-    setSelectedLanguage(["en", "es"].includes(userLang) ? userLang : getLanguage(["en", "es"]));
-  }, []);
+    console.log("First:", selectedLanguage);
+    const homeLanguage = selectedLanguage || ["en", "es"].includes(userLang) ? userLang : getLanguage(["en", "es"]);
+    selectLanguage(homeLanguage, setSelectedLanguage, setLocaleText);
+  }, [userLang, selectedLanguage]);
 
   useEffect(() => {
     if (selectedLanguage) selectLanguage(selectedLanguage, setSelectedLanguage, setLocaleText);
@@ -87,6 +95,7 @@ export function PageLayout({
     setMapboxToken(mapboxToken);
     setMapquestKey(mapquestKey);
     setVersionDeployed(versionDeployed);
+    setUsername(username);
   }, []);
 
   // const { myHeight, showInfo, localeText, selectedLanguage } = this.state;
@@ -95,11 +104,11 @@ export function PageLayout({
   return (
     <MainContext.Provider
       value={{
-        isAdmin,
-        username,
-        localeText,
-        myHeight,
-        setShowInfo,
+        username, // TODO delete
+        isAdmin, // TODO delete 
+        localeText, // TODO delete 
+        myHeight, // TODO delete 
+        setShowInfo, // TODO delte
       }}
     >
       <ThemeProvider theme={THEME}>
@@ -117,7 +126,6 @@ export function PageLayout({
           }}
         >
           <Header
-            localeText={localeText}
             selectedLanguage={selectedLanguage}
             selectLanguage={(newLang) => setSelectedLanguage(newLang)}
             setShowInfo={setShowInfo}

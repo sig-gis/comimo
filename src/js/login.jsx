@@ -20,6 +20,7 @@ const PageContainer = styled.div`
   width: 100%;
 `;
 
+// TODO should redirect to home page if already logged in!
 class Login extends React.Component {
   constructor(props) {
     super(props);
@@ -40,7 +41,7 @@ class Login extends React.Component {
           const {
             localeText: { users },
           } = this.context;
-          alert(users?.errorCreating);
+          alert(t("users.errorCreating"));
         }
       })
       .catch((err) => console.error(err));
@@ -64,15 +65,15 @@ class Login extends React.Component {
     return (
       <ThemeProvider theme={THEME}>
         <PageContainer>
-          <AccountForm header={users?.loginTitle} submitFn={this.requestLogin}>
-            {this.renderField(users?.username, "text", "username")}
-            {this.renderField(users?.password, "password", "password")}
+          <AccountForm header={t("users.loginTitle")} submitFn={this.requestLogin}>
+            {this.renderField(t("users.username"), "text", "username")}
+            {this.renderField(t("users.password"), "password", "password")}
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-              <a href="/password-request">{users?.forgot}</a>
-              <Button extraStyle={{ marginTop: "1rem" }}>{users?.login}</Button>
+              <a href="/password-request">{t("users.forgot")}</a>
+              <Button extraStyle={{ marginTop: "1rem" }}>{t("users.login")}</Button>
             </div>
             <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-              <h3>{users?.newUser}</h3>
+              <h3>{t("users.newUser")}</h3>
               <div>
                 <div>
                   <Button
@@ -81,7 +82,7 @@ class Login extends React.Component {
                       window.location = "/register";
                     }}
                   >
-                    {users?.register}
+                    {t("users.register")}
                   </Button>
                 </div>
               </div>

@@ -123,7 +123,7 @@ function makeAdminTableComponent(dateDataURL, columnFields, tableRefDownloadURL)
           </Button>
         </div>
         <div>
-          {selectedDate === -1 && <EmptyMessage>{admin?.emptyTable}</EmptyMessage>}
+          {selectedDate === -1 && <EmptyMessage>{t("admin.emptyTable")}</EmptyMessage>}
           {collectedData[selectedDate]?.length > 0 && (
             <>
               <ReactTabulator
@@ -145,7 +145,7 @@ function makeAdminTableComponent(dateDataURL, columnFields, tableRefDownloadURL)
             </>
           )}
           {selectedDate !== -1 && collectedData[selectedDate]?.length === 0 && (
-            <EmptyMessage>{admin?.noData}</EmptyMessage>
+            <EmptyMessage>{t("admin.noData")}</EmptyMessage>
           )}
         </div>
       </>
@@ -225,7 +225,7 @@ function AdminContent() {
           setRoleChanged(isEqual(userList, savedUserList));
         } else {
           console.error(resp);
-          alert(admin?.errorRoleUpdate);
+          alert(t("admin.errorRoleUpdate"));
         }
       })
       .catch((err) => console.error(err));
@@ -286,17 +286,17 @@ function AdminContent() {
         />
         <GridSection>
           {renderUserRow({
-            userId: admin?.id,
-            username: admin?.username,
-            email: admin?.email,
-            role: admin?.role,
+            userId: t("admin.id"),
+            username: t("admin.username"),
+            email: t("admin.email"),
+            role: t("admin.role"),
           })}
           {userList.filter((row) => isRowIncluded(row)).map(renderUserRow)}
         </GridSection>
         <div style={{ margin: "1rem", display: "flex" }}>
           <div style={{ display: "flex", flexGrow: "1" }} />
           <Button onClick={updateUserRoles} isDisabled={!roleChanged}>
-            {admin?.save}
+            {t("admin.save")}
           </Button>
         </div>
       </>
@@ -307,7 +307,7 @@ function AdminContent() {
           placeholder="Filter"
           value={filterStr}
         />
-        <EmptyMessage>{admin?.emptyUsers}</EmptyMessage>
+        <EmptyMessage>{t("admin.emptyUsers")}</EmptyMessage>
       </>
     );
 
@@ -348,7 +348,7 @@ function AdminContent() {
           placeholder="Filter"
           value={filterStr}
         />
-        <EmptyMessage>{admin?.emptyLogs}</EmptyMessage>
+        <EmptyMessage>{t("admin.emptyLogs")}</EmptyMessage>
       </>
     );
 
@@ -398,7 +398,7 @@ function AdminContent() {
                   setPage("users");
                 }}
               >
-                {admin?.users}
+                {t("admin.users")}
               </OptionRow>
               <OptionRow
                 onClick={() => {
@@ -406,10 +406,10 @@ function AdminContent() {
                   setPage("logs");
                 }}
               >
-                {admin?.logs}
+                {t("admin.logs")}
               </OptionRow>
-              <OptionRow onClick={() => setPage("predictions")}>{admin?.predictions}</OptionRow>
-              <OptionRow onClick={() => setPage("userMines")}>{admin?.userMines}</OptionRow>
+              <OptionRow onClick={() => setPage("predictions")}>{t("admin.predictions")}</OptionRow>
+              <OptionRow onClick={() => setPage("userMines")}>{t("admin.userMines")}</OptionRow>
             </div>
           </TitledForm>
         </div>

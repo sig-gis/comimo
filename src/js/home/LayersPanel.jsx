@@ -5,18 +5,20 @@ import { MainContext } from "../components/PageLayout";
 import NICFIControl from "../components/NICFIControl";
 import ToolCard from "../components/ToolCard";
 
+// import i18n from "../i18n";
 import { extraMapParamsAtom } from "../home";
 import { startVisible, availableLayers } from "../constants";
 import { homeMapAtom } from "./HomeMap";
+import { useTranslation } from "react-i18next";
+
 
 export default function LayersPanel({ nicfiLayers, active }) {
   const [visible, setVisible] = useState(null);
   const [extraMapParams, setExtraMapParams] = useAtom(extraMapParamsAtom);
   const [opacity, setOpacity] = useState(null);
   const homeMap = useAtomValue(homeMapAtom);
-  const {
-    localeText: { layers },
-  } = useContext(MainContext);
+
+  const { t, i18n } = useTranslation();
 
   const setParams = (param, value) => {
     setExtraMapParams({
@@ -67,7 +69,7 @@ export default function LayersPanel({ nicfiLayers, active }) {
             style={{ cursor: "pointer" }}
           />
           <label htmlFor={"label-" + name} style={{ cursor: "pointer", margin: "0 0 3px 0" }}>
-            {layers?.[name]}
+            {t(`layers.${name}`)}
           </label>
         </div>
         <input
@@ -82,21 +84,21 @@ export default function LayersPanel({ nicfiLayers, active }) {
     );
   };
 
-  const renderHeading = (layers) => (
+  const renderHeading = () => (
     <>
       <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "0rem" }}>
-        <label style={{ fontWeight: "bold", margin: "0 .25rem 0 0" }}>{layers?.nameLabel}</label>
+        <label style={{ fontWeight: "bold", margin: "0 .25rem 0 0" }}>{t("layers.nameLabel")}</label>
         <label style={{ fontWeight: "bold", margin: "0 .25rem", width: "40%" }}>
-          {layers?.opacityLabel}
+          {t("layers.opacityLabel")}
         </label>
       </div>
       <hr style={{ marginBottom: "0.5rem" }}></hr>
     </>
   );
 
-  const renderNICFISection = (layers) => (
+  const renderNICFISection = () => (
     <>
-      <label style={{ fontWeight: "bold", margin: "0 .25rem 0 0" }}>{layers?.satelliteTitle}</label>
+      <label style={{ fontWeight: "bold", margin: "0 .25rem 0 0" }}>{t("layers.satelliteTitle")}</label>
       <hr style={{ marginBottom: "0.5rem" }}></hr>
       <div style={{ display: "flex", flexDirection: "column" }}>
         {renderControl("NICFI")}
@@ -110,13 +112,13 @@ export default function LayersPanel({ nicfiLayers, active }) {
   );
 
   return (
-    <ToolCard title={layers?.title} active={active}>
-      {renderHeading(layers)}
+    <ToolCard title={t("layers.title")} active={active}>
+      {renderHeading()}
       {opacity &&
         visible &&
         availableLayers.map((layerName) => (layerName === "NICFI" ? "" : renderControl(layerName)))}
       <br></br>
-      {opacity && visible && renderNICFISection(layers)}
+      {opacity && visible && renderNICFISection()}
     </ToolCard>
   );
 }

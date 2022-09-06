@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { useAtom } from "jotai";
+import { useAtom, useAtomValue } from "jotai";
 
 import LoginMessage from "./LoginMessage";
 import Button from "../components/Button";
@@ -8,26 +8,27 @@ import ProjectCard from "../components/ProjectCard";
 import Select from "../components/Select";
 import TextInput from "../components/TextInput";
 
+import { usernameAtom } from "../components/PageLayout";
 import { jsonRequest } from "../utils";
 import { URLS } from "../constants";
 import { MainContext } from "../components/PageLayout";
 import LoadingModal from "../components/LoadingModal";
 import { func } from "prop-types";
 import { showModalAtom, processModal } from "../home";
+import { useTranslation } from "react-i18next";
 
 export default function ValidatePanel({ subscribedList, featureNames, selectedDates, active }) {
+  const [showModal, setShowModal] = useAtom(showModalAtom);
+  const username = useAtomValue(usernameAtom);
   const [projects, setProjects] = useState([]);
   const [projectName, setProjectName] = useState("");
-  const [showModal, setShowModal] = useAtom(showModalAtom);
   const [regionType, setRegionType] = useState(1);
   const [customRegions, setCustomRegions] = useState([]);
   const [mineType, setMineType] = useState("pMines");
   const [errorMsg, setErrorMsg] = useState(false);
 
-  const {
-    username,
-    localeText: { validate },
-  } = useContext(MainContext);
+
+  const { t, i18n } = useTranslation();
 
   useEffect(() => {
     if (username) {
@@ -86,12 +87,12 @@ export default function ValidatePanel({ subscribedList, featureNames, selectedDa
               } else {
                 const [alertError, logError] = res.split(", ");
                 logError && console.log(logError);
-                alert(validate?.[alertError]);
+                alert(t(`validate.${alertError}`));
               }
             })
             .catch((err) => {
               console.error(err);
-              alert(validate?.[validate?.errorUnknown]);
+              alert(t("validate.errorUnknown"));
             }),
         setShowModal
       );
@@ -99,13 +100,13 @@ export default function ValidatePanel({ subscribedList, featureNames, selectedDa
   };
 
   const closeProject = (projectId) => {
-    if (confirm(validate?.closeConfirm)) {
+    if (confirm(t("validate.closeConfirm"))) {
       jsonRequest(URLS.CLOSE_PROJ, { projectId })
         .then((res) => {
           if (res === "") {
             getProjects();
           } else {
-            alert(validate?.errorClose);
+            alert(t("validate.errorClose"));
           }
         })
         .catch((err) => {
@@ -159,13 +160,13 @@ export default function ValidatePanel({ subscribedList, featureNames, selectedDa
   };
 
   return (
-    <ToolCard title={validate?.title} validate={validate} active={active}>
-      <span>{validate?.subtitle}</span>
+    <ToolCard title={t("validate.title")} active={active}>
+      <span>{t("validate.subtitle")}</span>
       {showModal && <LoadingModal message="Creating Project" />}
       {username ? (
         <div style={{ display: "flex", flexDirection: "column" }}>
           {projects.length === 0 ? (
-            <span>{validate?.noProjects}</span>
+            <span>{t("validate.noProjects")}</span>
           ) : (
             <>
               {" "}
@@ -174,24 +175,24 @@ export default function ValidatePanel({ subscribedList, featureNames, selectedDa
               ))}
             </>
           )}
-          <h3 style={{ marginBottom: 0 }}>{`${validate?.createProject}:`}</h3>
+          <h3 style={{ marginBottom: 0 }}>{`${t("validate.createProject")}:`}</h3>
           <TextInput
             id="projectName"
-            label={`${validate?.projectName}:`}
+            label={`${t("validate.projectName")}:`}
             onChange={(e) => setProjectName(e.target.value)}
             value={projectName}
           />
           <Select
             id="selectMineType"
-            label={`${validate?.typeLabel}:`}
+            label={`${t("validate.typeLabel")}:`}
             onChange={(e) => setMineType(e.target.value)}
             options={["pMines", "nMines", "cMines"].map((m) => ({
               value: m,
-              label: validate?.[m],
+              label: t(`validate.${m}`),
             }))}
             value={mineType}
           />
-          <label>{`${validate?.projectRegion}:`}</label>
+          <label>{`${t("validate.projectRegion")}:`}</label>
           <span style={{ marginTop: ".25rem" }}>
             <input
               checked={regionType === 1}
@@ -199,7 +200,7 @@ export default function ValidatePanel({ subscribedList, featureNames, selectedDa
               onChange={() => setRegionType(1)}
               type="radio"
             />
-            {validate?.subscribedRadio}
+            {t("validate.subscribedRadio")}
           </span>
           <span style={{ marginTop: ".25rem" }}>
             <input
@@ -209,17 +210,17 @@ export default function ValidatePanel({ subscribedList, featureNames, selectedDa
               type="radio"
               value={2}
             />
-            {validate?.customRadio}
+            {t("validate.customRadio")}
           </span>
           {regionType === 2 && renderCustomRegions()}
           <Button
             extraStyle={{ marginTop: "1rem" }}
             onClick={() => createProject(selectedDates?.[mineType] || "2022-01-01-N")}
-          >{`${validate?.createButton} ${selectedDates?.[mineType]}`}</Button>
+          >{`${t("validate.createButton")} ${selectedDates?.[mineType]}`}</Button>
           <p>{errorMsg}</p>
         </div>
       ) : (
-        <LoginMessage actionText={validate?.loginAction} />
+        <LoginMessage actionText={t("validate.loginAction")} />
       )}
     </ToolCard>
   );
