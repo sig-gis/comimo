@@ -55,17 +55,17 @@ export default function DownloadPanel({ active, featureNames, mapquestKey, selec
   };
 
   return (
-    <ToolCard title={download?.title} active={active}>
+    <ToolCard title={t("download.title")} active={active}>
       {showModal && <LoadingModal message="Getting URL" />}
 
       <div style={{ display: "flex", flexDirection: "column" }}>
-        <label>{`${validate?.typeLabel}:`}</label>
+        <label>{`${t("validate.typeLabel")}:`}</label>
         <Select
           id="selectMineType"
           onChange={(e) => setMineType(e.target.value)}
           options={["pMines", "nMines", "cMines"].map((k) => ({
             value: k,
-            label: validate?.[k],
+            label: t(`validate.${k}`),
           }))}
           value={mineType}
         />
@@ -76,7 +76,7 @@ export default function DownloadPanel({ active, featureNames, mapquestKey, selec
             onChange={() => setClipOption(1)}
             type="radio"
           />
-          <span>{download?.allRadio}</span>
+          <span>{t("download.allRadio")}</span>
         </div>
         {/* TODO: disabled-group is not defined yet */}
         <div className={selectedRegion ? "" : "disabled-group"} style={{ marginTop: ".25rem" }}>
@@ -86,10 +86,10 @@ export default function DownloadPanel({ active, featureNames, mapquestKey, selec
             onChange={() => setClipOption(2)}
             type="radio"
           />
-          <span>{download?.selectedRadio}</span>
+          <span>{t("download.selectedRadio")}</span>
         </div>
         <div>
-          <Title>{download?.selectMuni}</Title>
+          <Title>{t("download.selectMuni")}</Title>
           <Search
             isPanel={false}
             featureNames={featureNames}
@@ -104,22 +104,21 @@ export default function DownloadPanel({ active, featureNames, mapquestKey, selec
             onClick={getDownloadUrl}
             extraStyle={{ marginTop: "0.25rem" }}
             isDisabled={fetching}
-          >{`${download?.getUrl} ${selectedDates?.[mineType]}`}</Button>
+          >{`${t("download.getUrl")} ${t(`selectedDates.$(mineType)`)}`}</Button>
         )}
         {fetching ? (
-          <p>{`${download?.fetching}...`}</p>
+          <p>{`${t("download.fetching")}...`}</p>
         ) : (
           downloadURL && (
             <p>
               <span>
                 <a href={downloadURL[2]}>
                   {`${download.clickHere}` +
-                    ` ${
-                      downloadURL[0] === "all"
-                        ? download?.completeData
-                        : download?.munData + downloadURL[0]
+                    ` ${downloadURL[0] === "all"
+                      ? t("download.completeData")
+                      : t("download.munData") + downloadURL[0]
                     }` +
-                    ` ${download?.prep}` +
+                    ` ${t("download.prep")}` +
                     ` ${downloadURL[1]}.`}
                 </a>
               </span>

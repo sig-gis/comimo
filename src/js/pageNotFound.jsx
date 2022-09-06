@@ -39,7 +39,7 @@ function PageNotFound() {
   return (
     <ThemeProvider theme={THEME}>
       <PageContainer>
-        <HeaderContainer>{home?.pageNotFound}</HeaderContainer>
+        <HeaderContainer>{t("home.pageNotFound")}</HeaderContainer>
         <LogoImg
           alt="404-logo"
           src="/img/comimo404.jpg"

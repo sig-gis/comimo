@@ -1,7 +1,8 @@
-import React, { useCallback, useContext, useEffect, useRef, useState } from "react";
+import React, { useCallback, useContext, useEffect, useRef, useState, Suspense } from "react";
 import ReactDOM from "react-dom";
 import { useAtom, useAtomValue, atom } from "jotai";
 import styled from "@emotion/styled";
+import { useTranslation } from "react-i18next";
 
 import DownloadPanel from "./home/DownloadPanel";
 import FilterPanel from "./home/FilterPanel";
@@ -14,6 +15,7 @@ import {
   mapboxTokenAtom,
   mapquestKeyAtom,
   versionDeployedAtom,
+  localeTextAtom,
 } from "./components/PageLayout";
 import LayersPanel from "./home/LayersPanel";
 import ReportMinesPanel from "./home/ReportMinesPanel";
@@ -37,14 +39,16 @@ export const extraMapParamsAtom = atom({
 });
 export const featureNamesAtom = atom({});
 
-export const processModal = (callBack, setShowModal) =>
+export const processModal = (callBack, setShowModal) => {
   new Promise(() => {
     setShowModal(true);
     callBack().finally(() => setShowModal(false));
   });
+};
 
 function HomeContents() {
   const [visiblePanel, setVisiblePanel] = useAtom(visiblePanelAtom);
+  // const [{ home }, setLocaleText] = useAtom(localeTextAtom);
   const [selectedDates, setSelectedDates] = useAtom(selectedDatesAtom);
   const [homeMapPoupup, setHomeMapPoupup] = useAtom(mapPopupAtom);
   const [homeMap, setHomeMap] = useAtom(homeMapAtom);
@@ -58,9 +62,10 @@ function HomeContents() {
   const [imageDates, setImageDates] = useState({});
   const [nicfiLayers, setNicfiLayers] = useState([]);
 
+  // const [{ home }, setLocaleText] = useAtom(localeTextAtom);
+  const { t, i18n } = useTranslation();
+
   const {
-    localeText,
-    localeText: { home },
     username,
     setShowInfo,
   } = useContext(MainContext);
@@ -132,7 +137,7 @@ function HomeContents() {
   }, []);
 
   return (
-    <>
+    <>
       <HomeMap />
       <div id="bottom-bar">
         <FooterBar>
@@ -144,7 +149,7 @@ function HomeContents() {
                 hasBackground={true}
                 icon="layer"
                 onClick={() => togglePanel("layers")}
-                text={home?.layersTitle}
+                text={t("home.layersTitle")}
               />
               <LayersPanel active={visiblePanel === "layers"} nicfiLayers={nicfiLayers} />
             </BarItem>
@@ -156,7 +161,7 @@ function HomeContents() {
                 hasBackground={true}
                 icon="envelope"
                 onClick={() => togglePanel("subscribe")}
-                text={home?.subscribeTitle}
+                text={t("home.subscribeTitle")}
               />
               <SubscribePanel
                 active={visiblePanel === "subscribe"}
@@ -174,7 +179,7 @@ function HomeContents() {
                 hasBackground={true}
                 icon="check"
                 onClick={() => togglePanel("validate")}
-                text={home?.validationsTitle}
+                text={t("home.validationsTitle")}
               />
               <ValidatePanel
                 active={visiblePanel === "validate"}
@@ -193,7 +198,7 @@ function HomeContents() {
                     hasBackground={true}
                     icon="filter"
                     onClick={() => togglePanel("filter")}
-                    text={home?.filterTitle}
+                    text={t("home.filterTitle")}
                   />
                   <FilterPanel
                     active={visiblePanel === "filter"}
@@ -210,7 +215,7 @@ function HomeContents() {
                     hasBackground={true}
                     icon="mine"
                     onClick={() => togglePanel("report")}
-                    text={home?.reportMinesTitle}
+                    text={t("home.reportMinesTitle")}
                   />
                   <ReportMinesPanel active={visiblePanel === "report"} />
                 </BarItem>
@@ -222,7 +227,7 @@ function HomeContents() {
                     hasBackground={true}
                     icon="download"
                     onClick={() => togglePanel("download")}
-                    text={home?.downloadTitle}
+                    text={t("home.downloadTitle")}
                   />
                   <DownloadPanel
                     active={visiblePanel === "download"}
@@ -239,7 +244,7 @@ function HomeContents() {
                     hasBackground={true}
                     icon="stats"
                     onClick={() => togglePanel("stats")}
-                    text={home?.statisticsTitle}
+                    text={t("home.statisticsTitle")}
                   />
                   <StatsPanel
                     active={visiblePanel === "stats"}
@@ -257,7 +262,7 @@ function HomeContents() {
                 extraStyle={{ marginRight: "10px" }}
                 icon="admin"
                 onClick={() => window.location.assign("/admin")}
-                // tooltip={localeText.home?.admin}
+                // tooltip={localeText.home.admin}
               />
             )} */}
             <IconButton
@@ -285,53 +290,55 @@ function HomeContents() {
 
 export function pageInit(args) {
   ReactDOM.render(
-    <PageLayout
-      role={args.role}
-      userLang={args.userLang}
-      username={args.username}
-      mapboxToken={args.mapboxToken}
-      mapquestKey={args.mapquestKey}
-      versionDeployed={args.versionDeployed}
-      showSearch={true}
-    >
-      <HomeContents />
-    </PageLayout>,
+    <Suspense fallback="loading">
+      <PageLayout
+        role={args.role}
+        userLang={args.userLang}
+        username={args.username}
+        mapboxToken={args.mapboxToken}
+        mapquestKey={args.mapquestKey}
+        versionDeployed={args.versionDeployed}
+        showSearch={true}
+      >
+        <HomeContents />
+      </PageLayout >
+    </Suspense>,
     document.getElementById("main-container")
   );
 }
 
 const Buttons = styled.div`
-  display: flex;
-  flex: 3;
-  justify-content: space-around;
-`;
+      display: flex;
+      flex: 3;
+      justify-content: space-around;
+      `;
 
 const Logo = styled.div`
-  align-items: center;
-  display: flex;
-  flex: 1;
-  justify-content: space-around;
-  padding: 5px 0;
-`;
+      align-items: center;
+      display: flex;
+      flex: 1;
+      justify-content: space-around;
+      padding: 5px 0;
+      `;
 
 const LogoImg = styled.img`
-  cursor: pointer;
-  height: 22px;
-  padding-right: 15px;
-  width: 67px;
-`;
+      cursor: pointer;
+      height: 22px;
+      padding-right: 15px;
+      width: 67px;
+      `;
 
 const LogoGitVersion = styled.a`
-  color: var(--white);
-  cursor: pointer;
-  font-size: 12px;
-  letter-spacing: 0px;
-  text-align: left;
-  text-decoration: none;
-`;
+      color: var(--white);
+      cursor: pointer;
+      font-size: 12px;
+      letter-spacing: 0px;
+      text-align: left;
+      text-decoration: none;
+      `;
 
 const Hidable = styled.div`
-  display: ${({ active }) => !active && "none"};
-`;
+      display: ${({ active }) => !active && "none"};
+      `;
 
 const BarItem = styled.div``;

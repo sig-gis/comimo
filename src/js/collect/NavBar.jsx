@@ -86,7 +86,7 @@ export default function NavBar({
           renderGoToPlot()
         ) : (
           <>
-            <Button onClick={prevPlot}>{collect?.prev}</Button>
+            <Button onClick={prevPlot}>{t("collect.prev")}</Button>
             <Button
               onClick={() => setPlotAnswer("Mina")}
               extraStyle={{ backgroundColor: "#ff6654" }}
@@ -99,7 +99,7 @@ export default function NavBar({
             >
               {collect?.noMina}
             </Button>
-            <Button onClick={nextPlot}>{collect?.next}</Button>
+            <Button onClick={nextPlot}>{t("collect.next")}</Button>
             {renderGoToPlot()}
             <Button
               onClick={() => {

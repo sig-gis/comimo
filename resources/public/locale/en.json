@@ -225,7 +225,6 @@
     "userAccountTitle": "Update Account",
     "successUpdate": "Your account has been successfully updated.",
     "save": "Save",
-    "logout": "Log Out",
     "close": "Close",
     "cancel": "Cancel",
     "updateTitle": "Account Updated",
@@ -248,7 +247,8 @@
     "errorPassMatch": "Your passwords must match.",
     "errorEmailReq": "Please enter your email.",
     "userNotFound": "The user was not found. Contact support.",
-    "errorUpdating": "An error occurred while updating account. Contact support."
+    "errorUpdating": "An error occurred while updating account. Contact support.",
+    "enterEmail": "Enter email"
   },
   "admin": {
     "save": "Save",

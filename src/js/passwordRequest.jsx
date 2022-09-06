@@ -1,85 +1,88 @@
-import React from "react";
+import React, { useState } from "react";
 import ReactDOM from "react-dom";
+import styled from "@emotion/styled";
+import { useAtom, useAtomValue } from "jotai";
 
 import { ThemeProvider } from "@emotion/react";
 import LoadingModal from "./components/LoadingModal";
 import Button from "./components/Button";
 import AccountForm from "./components/AccountForm";
 import TextInput from "./components/TextInput";
+import { PageLayout, localeTextAtom } from "./components/PageLayout";
 
-import { getLanguage, jsonRequest } from "./utils";
+import { showModalAtom, processModal } from "./home";
+
+import { jsonRequest } from "./utils";
 import { THEME } from "./constants";
 
-class PasswordForgot extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      email: "",
-      localeText: {},
-      showModal: null,
-    };
-  }
+const PageContainer = styled.div`
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+  padding: 2rem;
+  width: 100%;
+`;
 
-  componentDidMount() {
-    jsonRequest(`/locale/${getLanguage(["en", "es"])}.json`, null, "GET")
-      .then((data) => this.setState({ localeText: data.users }))
-      .catch((error) => console.error(error));
-  }
+function PasswordForgot() {
+  const [email, setEmail] = useState("");
 
-  processModal = (callBack) =>
-    new Promise(() =>
-      Promise.resolve(
-        this.setState({ showModal: true }, () =>
-          callBack().finally(() => this.setState({ showModal: false }))
-        )
-      )
-    );
+  const localeText = useAtomValue(localeTextAtom);
+  const [showModal, setShowModal] = useAtom(showModalAtom);
 
-  requestPassword = () =>
-    this.processModal(() =>
-      jsonRequest("/password-request", { email: this.state.email })
-        .then((data) => {
-          if (data === "") {
-            alert(this.state.localeText.tokenSent);
-            window.location = "/";
-          } else {
-            console.error(data);
-            alert(this.state.localeText[data] || this.state.localeText.errorCreating);
-          }
-        })
-        .catch((err) => console.error(err))
-    );
+  const requestPassword = () =>
+    processModal(async () => {
+      const data = await jsonRequest("/password-request", { email: email }).catch(console.error);
+      if (data === "") {
+        alert(localeText.users?.tokenSent);
+        window.location = "/";
+      } else {
+        console.error(localeText.users?.[data]);
+        alert(localeText.users?.[data] || localeText.users?.errorCreating);
+      }
+    }, setShowModal);
 
-  renderField = (label, type, stateKey) => (
+  const renderEmailField = (label) => (
     <TextInput
-      id={stateKey}
+      id="email-input-password-request"
       label={label}
-      onChange={(e) => this.setState({ [stateKey]: e.target.value })}
+      onChange={(e) => setEmail(e.target.value)}
       onKeyPress={(e) => {
-        if (e.key === "Enter") this.requestPassword();
+        if (e.key === "Enter") requestPassword();
       }}
-      placeholder={`Enter ${(label || "").toLowerCase()}`}
-      type={type}
-      value={this.state[stateKey]}
+      placeholder={localeText.users?.enterEmail}
+      type="email"
+      value={email}
     />
   );
 
-  render() {
-    const { localeText } = this.state;
-    return (
-      <ThemeProvider theme={THEME}>
-        {this.state.showModal && <LoadingModal message={localeText.modalMessage} />}
-        <AccountForm header={localeText.requestTitle} submitFn={this.requestPassword}>
-          {this.renderField(localeText.email, "email", "email")}
+  return (
+    <ThemeProvider theme={THEME}>
+      <PageContainer>
+        {showModal && <LoadingModal message={localeText.users?.modalMessage} />}
+        <AccountForm header={localeText.users?.requestTitle} submitFn={requestPassword}>
+          {renderEmailField(localeText.users?.email)}
           <div style={{ display: "flex", justifyContent: "flex-end" }}>
-            <Button>{localeText.request}</Button>
+            <Button>{localeText.users?.request}</Button>
           </div>
         </AccountForm>
-      </ThemeProvider>
-    );
-  }
+      </PageContainer>
+    </ThemeProvider>
+  );
 }
 
 export function pageInit(args) {
-  ReactDOM.render(<PasswordForgot />, document.getElementById("main-container"));
+  ReactDOM.render(
+    <PageLayout
+      role={args.role}
+      userLang={args.userLang}
+      username={args.username}
+      version={args.versionDeployed}
+      showSearch={false}
+    >
+      <PasswordForgot />
+    </PageLayout>,
+    document.getElementById("main-container")
+  );
 }

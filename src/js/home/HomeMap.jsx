@@ -8,14 +8,14 @@ import mapboxgl from "mapbox-gl";
 import LatLngHud from "../components/LatLngHud";
 import ReportPopupContent from "./ReportPopupContent";
 import InfoPopupContent from "./InfoPopupContent";
-import { localeTextAtom, MainContext, mapboxTokenAtom } from "../components/PageLayout";
+import { localeTextAtom, mapboxTokenAtom } from "../components/PageLayout";
 
 import { extraMapParamsAtom, selectedDatesAtom, visiblePanelAtom } from "../home";
 
 import { toPrecision, jsonRequest } from "../utils";
 import { URLS, availableLayers, startVisible, attributions } from "../constants";
 
-const isEmptyMap = (m) => Object.keys(m).length === 0;
+const isEmptyMap = (m) => m && Object.keys(m).length === 0;
 
 export const mapPopupAtom = atom(null);
 export const selectedLatLngAtom = atom([]);
@@ -46,7 +46,7 @@ export const addPopup = (map, { lat, lng }, mapPopup, visiblePanel, selectedDate
         lng={lng}
         lat={lat}
         selectedDates={selectedDates}
-        // localeText={localeText}
+      // localeText={localeText}
       />,
       document.getElementById(divId)
     );
@@ -88,9 +88,9 @@ const getLayerUrl = (map, list, selectedDates, extraMapParams) => {
           params == null
             ? url
             : url +
-              Object.entries(params)
-                .map(([k, v]) => `&${k}=${v}`)
-                .join("");
+            Object.entries(params)
+              .map(([k, v]) => `&${k}=${v}`)
+              .join("");
         setLayerUrl(map, layer, fullUrl);
       })
       .catch((error) => console.error(error));
@@ -114,7 +114,7 @@ export const fitMap = (map, type, coords, homeLocale) => {
   }
 };
 
-export default function HomeMap({}) {
+export default function HomeMap({ }) {
   const [mouseCoords, setMouseCoords] = useState(null);
   const [mapPopup, setMapPopup] = useAtom(mapPopupAtom);
   const [visiblePanel, setVisiblePanel] = useAtom(visiblePanelAtom);

@@ -1,5 +1,7 @@
-import React from "react";
+import React, { useState } from "react";
 import ReactDOM from "react-dom";
+import styled from "@emotion/styled";
+import { useAtom, useAtomValue } from "jotai";
 import EmailValidator from "email-validator";
 
 import { ThemeProvider } from "@emotion/react";
@@ -9,158 +11,160 @@ import Button from "./components/Button";
 import AccountForm from "./components/AccountForm";
 import Select from "./components/Select";
 import TextInput from "./components/TextInput";
+import { PageLayout, localeTextAtom } from "./components/PageLayout";
+
+import { showModalAtom, processModal } from "./home";
 
 import { getLanguage, jsonRequest, validatePassword } from "./utils";
 import { THEME } from "./constants";
 
-class Register extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      username: "",
-      email: "",
-      fullName: "",
-      institution: "",
-      sector: "academic",
-      password: "",
-      passwordConfirmation: "",
-      localeText: {},
-      defaultLang: getLanguage(["en", "es"]),
-      showModal: false,
-    };
-  }
+const PageContainer = styled.div`
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+  padding: 2rem;
+  width: 100%;
+`;
 
-  componentDidMount() {
-    this.getLocalText(this.state.defaultLang);
-  }
+function Register() {
+  // State
+  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
+  const [fullName, setFullName] = useState("");
+  const [institution, setInstitution] = useState("");
+  const [sector, setSector] = useState("academic");
+  const [password, setPassword] = useState("");
+  const [passwordConfirmation, setPasswordConfirmation] = useState("");
+  const [defaultLang, setDefaultLang] = useState(getLanguage(["en", "es"]));
 
-  /// State Update ///
+  const [showModal, setShowModal] = useAtom(showModalAtom);
+  const localeText = useAtomValue(localeTextAtom);
 
-  processModal = (callBack) =>
-    new Promise(() =>
-      Promise.resolve(
-        this.setState({ showModal: true }, () =>
-          callBack().finally(() => this.setState({ showModal: false }))
-        )
-      )
-    );
-
-  selectLanguage = (newLang) => {
-    this.setState({ defaultLang: newLang });
-    this.getLocalText(newLang);
-  };
-
-  /// API Calls ///
-
-  getLocalText = (lang) => {
-    jsonRequest(`/locale/${lang}.json`, null, "GET")
-      .then((data) => this.setState({ localeText: data.users }))
-      .catch((err) => console.error(err));
-  };
-
-  verifyInputs = () => {
-    const { username, email, fullName, institution, password, passwordConfirmation, localeText } =
-      this.state;
+  // API calls
+  const verifyInputs = () => {
     return [
-      username.length < 3 && localeText.errorUsernameLen,
-      !EmailValidator.validate(email) && localeText.errorInvalidEmail,
-      fullName.length === 0 && localeText.errorNameReq,
-      institution.length === 0 && localeText.errorInstitutionReq,
-      !validatePassword(password) && localeText.errorPassword,
-      password !== passwordConfirmation && localeText.errorPassMatch,
+      username.length < 3 && localeText.users?.errorUsernameLen,
+      !EmailValidator.validate(email) && localeText.users?.errorInvalidEmail,
+      fullName.length === 0 && localeText.users?.errorNameReq,
+      institution.length === 0 && localeText.users?.errorInstitutionReq,
+      !validatePassword(password) && localeText.users?.errorPassword,
+      password !== passwordConfirmation && localeText.users?.errorPassMatch,
     ].filter((e) => e);
   };
 
-  registerUser = () => {
-    const errors = this.verifyInputs();
+  const registerUser = () => {
+    const errors = verifyInputs();
     if (errors.length > 0) {
       alert(errors.map((e) => " - " + e).join("\n"));
     } else {
-      this.processModal(() =>
-        jsonRequest("/register", {
-          defaultLang: this.state.defaultLang,
-          email: this.state.email,
-          fullName: this.state.fullName,
-          institution: this.state.institution,
-          sector: this.state.sector,
-          password: this.state.password,
-          username: this.state.username,
-        })
-          .then((resp) => {
-            if (resp === "") {
-              alert(this.state.localeText.registered);
-              window.location = "/";
-            } else {
-              console.error(resp);
-              alert(this.state.localeText[resp] || this.state.localeText.errorCreating);
-            }
-          })
-          .catch((err) => console.error(err))
-      );
+      processModal(async () => {
+        const data = await jsonRequest("/register", {
+          defaultLang: defaultLang,
+          email: email,
+          fullName: fullName,
+          institution: institution,
+          sector: sector,
+          password: password,
+          username: username,
+        });
+        if (data === "") {
+          alert(localeText.users?.registered);
+          window.location = "/";
+        } else {
+          console.error(localeText.users?.[data]);
+          alert(localeText.users?.[data] || localeText.users?.errorCreating);
+        }
+      }, setShowModal);
     }
   };
 
-  /// Render Functions ///
-
-  renderField = (label, type, stateKey) => (
+  // Render functions
+  const renderField = (label, type, id, state, stateSetter) => (
     <TextInput
-      id={stateKey}
+      id={`text-input-${id}`}
       label={label}
-      onChange={(e) => this.setState({ [stateKey]: e.target.value })}
+      onChange={(e) => stateSetter(e.target.value)}
       onKeyPress={(e) => {
-        if (e.key === "Enter") this.registerUser();
+        if (e.key === "Enter") registerUser();
       }}
       placeholder={`Enter ${(label || "").toLowerCase()}`}
       type={type}
-      value={this.state[stateKey]}
+      value={state}
     />
   );
 
-  renderSelect = (label, options, stateKey) => (
+  const renderSelect = (label, options, id, state, stateSetter) => (
     <Select
-      id={stateKey}
+      id={`select-input-${id}`}
       label={label}
-      onChange={(e) => this.setState({ [stateKey]: e.target.value })}
+      onChange={(e) => stateSetter(e.target.value)}
       options={options}
-      value={this.state[stateKey]}
+      value={state}
     />
   );
 
-  render() {
-    const { localeText, defaultLang } = this.state;
-    return (
-      <ThemeProvider theme={THEME}>
-        {this.state.showModal && <LoadingModal message={localeText.modalMessage} />}
-        <AccountForm header={localeText.registerTitle} submitFn={this.registerUser}>
+  // Render
+  return (
+    <ThemeProvider theme={THEME}>
+      <PageContainer>
+        {showModal && <LoadingModal message={localeText.users?.modalMessage} />}
+        <AccountForm header={localeText.users?.registerTitle} submitFn={registerUser}>
           <div style={{ display: "flex" }}>
-            <label style={{ marginRight: "1rem" }}>{localeText.language}</label>
-            <LanguageSelector selectedLanguage={defaultLang} selectLanguage={this.selectLanguage} />
+            <label style={{ marginRight: "1rem" }}>{localeText.users?.language}</label>
+            <LanguageSelector selectedLanguage={defaultLang} selectLanguage={setDefaultLang} />
           </div>
-          {this.renderField(localeText.username, "text", "username")}
-          {this.renderField(localeText.email, "email", "email")}
-          {this.renderField(localeText.fullName, "text", "fullName")}
-          {this.renderField(localeText.institution, "text", "institution")}
-          {this.renderSelect(
-            localeText.sector,
-            [
-              { value: "academic", label: localeText.academic },
-              { value: "government", label: localeText.government },
-              { value: "ngo", label: localeText.ngo },
-            ],
-            "sector"
+          {renderField(localeText.users?.username, "text", "username", username, setUsername)}
+          {renderField(localeText.users?.email, "email", "email", email, setEmail)}
+          {renderField(localeText.users?.fullName, "text", "fullName", fullName, setFullName)}
+          {renderField(
+            localeText.users?.institution,
+            "text",
+            "institution",
+            institution,
+            setInstitution
           )}
-          {this.renderField(localeText.password, "password", "password")}
-          {this.renderField(localeText.confirm, "password", "passwordConfirmation")}
+          {renderSelect(
+            localeText.users?.sector,
+            [
+              { value: "academic", label: localeText.users?.academic },
+              { value: "government", label: localeText.users?.government },
+              { value: "ngo", label: localeText.users?.ngo },
+            ],
+            "sector",
+            sector,
+            setSector
+          )}
+          {renderField(localeText.users?.password, "password", "password", password, setPassword)}
+          {renderField(
+            localeText.users?.confirm,
+            "password",
+            "passwordConfirmation",
+            passwordConfirmation,
+            setPasswordConfirmation
+          )}
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-            <span style={{ color: "red" }}>{localeText.allRequired}</span>
-            <Button extraStyle={{ marginTop: "0.5rem" }}>{localeText.register}</Button>
+            <span style={{ color: "red" }}>{localeText.users?.allRequired}</span>
+            <Button extraStyle={{ marginTop: "0.5rem" }}>{localeText.users?.register}</Button>
           </div>
         </AccountForm>
-      </ThemeProvider>
-    );
-  }
+      </PageContainer>
+    </ThemeProvider>
+  );
 }
 
 export function pageInit(args) {
-  ReactDOM.render(<Register />, document.getElementById("main-container"));
+  ReactDOM.render(
+    <PageLayout
+      role={args.role}
+      userLang={args.userLang}
+      username={args.username}
+      version={args.versionDeployed}
+      showSearch={false}
+    >
+      <Register />
+    </PageLayout>,
+    document.getElementById("main-container")
+  );
 }
