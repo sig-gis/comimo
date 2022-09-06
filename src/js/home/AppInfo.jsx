@@ -1,22 +1,30 @@
 import React, { useState, useContext } from "react";
+import styled from "@emotion/styled";
 
-import Button from "../components/Button";
 import InfoModal from "../components/InfoModal";
 import Modal from "../components/Modal";
 import { MainContext } from "../components/PageLayout";
 
+const Links = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
+
+const BoldParagraph = styled.p`
+  font-weight: var(--unnamed-font-weight-bold);
+`;
+
 export default function AppInfo({ onClose, isAdmin }) {
   const {
-    localeText: { users, appInfo },
-    username,
+    localeText: { appInfo },
   } = useContext(MainContext);
-  const [messageBox, _setMessageBox] = useState(null);
+  const [messageBox, setMessageBox] = useState(null);
 
   const showAlert = (newMessageBox) => {
-    _setMessageBox({ ...newMessageBox });
+    setMessageBox({ ...newMessageBox });
   };
 
-  const hideAlert = () => _setMessageBox(null);
+  const hideAlert = () => setMessageBox(null);
 
   const extLink = (link, text) => (
     <a style={{ marginTop: "0.5rem" }} href={link} rel="noopener noreferrer" target="_blank">
@@ -25,13 +33,14 @@ export default function AppInfo({ onClose, isAdmin }) {
   );
 
   return (
-    <InfoModal onClose={onClose}>
-      <h2>{appInfo.title}</h2>
-      <h3 style={{ margin: "1rem 0" }}>{appInfo.termsOfUse}</h3>
+    <InfoModal onClose={onClose} title={appInfo.title}>
       <p>{appInfo.shortTerms}</p>
-      {extLink(appInfo.termsUrl, appInfo.viewTerms)}
-      {extLink(appInfo.methodUrl, appInfo.viewMethod)}
-      {extLink(appInfo.manualUrl, appInfo.viewManual)}
+      <BoldParagraph>{appInfo.accessAll}</BoldParagraph>
+      <Links>
+        {extLink(appInfo.termsUrl, appInfo.viewTerms)}
+        {extLink(appInfo.methodUrl, appInfo.viewMethod)}
+        {extLink(appInfo.manualUrl, appInfo.viewManual)}
+      </Links>
       {messageBox && (
         <Modal
           {...messageBox}

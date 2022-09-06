@@ -41,15 +41,16 @@
   },
   "appInfo": {
     "logout": "Cerrar Sesión",
-    "title": "Información de la Applicación",
-    "termsOfUse": "Condiciones de uso",
+    "title": "Bienvenido",
+    "termsOfUse": "Condiciones de Uso",
     "shortTerms": "Bienvenidos a CoMiMo. Todos los servicios disponibles a través de nuestro sitio web son operados por la Universidad del Rosario, y ésta es su única propietaria. Al acceder a CoMiMo y usar sus servicios, acepta cumplir con nuestros Términos de uso y evitar cualquier uso indebido de la plataforma y su contenido",
     "viewTerms": "Haz clic aquí para ver las Condiciones de Uso",
     "termsUrl": "https://docs.google.com/document/d/1xrLgL_Ai8lR8E4ZsF0AnzjlZESMVwKuUjOgSBJE3bqo",
     "viewMethod": "Haz clic aquí para ver el Documento Metodológico",
     "methodUrl": "https://docs.google.com/document/d/1XtkDwENUM3JAQbecGgT6myU55Qc5HO5eT_PW0wzEhyI",
     "viewManual": "Haz clic aquí para ver el Manual de Usuario",
-    "manualUrl": "https://docs.google.com/document/d/1OHbs0QzThzUk7lcPyJ6xgAxwdgpKV6Oe3fJsaTACVbg"
+    "manualUrl": "https://docs.google.com/document/d/1OHbs0QzThzUk7lcPyJ6xgAxwdgpKV6Oe3fJsaTACVbg",
+    "accessAll": "Para acceder a todas las herramientas que ofrece la aplicación CoMiMo, cree una cuenta."
   },
   "download": {
     "title": "Descargar datos",
