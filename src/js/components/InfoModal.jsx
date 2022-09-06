@@ -20,18 +20,33 @@ const OuterContainer = styled.div`
 `;
 
 const InnerContainer = styled.div`
-  background: white;
-  border-radius: 5px;
+  background: #262626e8 0% 0% no-repeat padding-box;
+  border: 3px solid;
+  border-color: var(--white);
+  border-radius: 6px;
   display: flex;
   flex-direction: column;
   height: 80%;
   left: 0;
   margin: 50px auto;
-  max-width: 40rem;
+  max-width: 980px;
   padding: 1.5rem;
   position: relative;
   right: 0;
   width: 90%;
+`;
+
+const Header = styled.h1`
+  color: var(--yellow-brand);
+  border-bottom: solid 2px var(--white);
+  font: var(--unnamed-font-style-normal) normal bold 32px/32px var(--unnamed-font-family-roboto);
+  padding-bottom: 15px;
+  text-align: left;
+  text-transform: uppercase;
+`;
+
+const Body = styled.div`
+  color: var(--white);
 `;
 
 const CloseDiv = styled.div`
@@ -40,14 +55,15 @@ const CloseDiv = styled.div`
   margin-left: 1.5rem;
 `;
 
-export default function InfoModal({ onClose, children }) {
+export default function InfoModal({ onClose, title, children }) {
   return (
     <OuterContainer>
       <InnerContainer>
         <CloseDiv onClick={onClose}>
-          <SvgIcon color="black" icon="close" hoverFill="var(--gray-3)" size="1.5rem" />
+          <SvgIcon color="white" icon="close" hoverFill="var(--orange-2)" size="2rem" />
         </CloseDiv>
-        {children}
+        <Header>{title}</Header>
+        <Body>{children}</Body>
       </InnerContainer>
     </OuterContainer>
   );
