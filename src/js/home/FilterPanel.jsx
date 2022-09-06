@@ -6,6 +6,7 @@ import Select from "../components/Select";
 
 import { MainContext } from "../components/PageLayout";
 import { useSetAtom } from "jotai";
+import { useTranslation } from "react-i18next";
 
 export default function FilterPanel({
   selectedDates,
@@ -16,9 +17,7 @@ export default function FilterPanel({
 }) {
   const [newSelectedDates, setNewSelectedDates] = useState({});
 
-  const {
-    localeText: { filter, layers },
-  } = useContext(MainContext);
+  const { t, i18n } = useTranslation();
 
   const setSelectedDate = (type, date) => {
     setNewSelectedDates({ ...newSelectedDates, [type]: date });

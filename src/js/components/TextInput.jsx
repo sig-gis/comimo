@@ -17,6 +17,7 @@ const Input = styled.input`
 export default function TextInput({
   id = "textinput",
   className = "",
+  extraStyle = {},
   label = "",
   maxLength = 60,
   onChange = () => {},
@@ -30,7 +31,7 @@ export default function TextInput({
   const [touched, setTouched] = useState(false);
   const error = required && touched && value.length === 0;
   return (
-    <div>
+    <div style={{ ...extraStyle }}>
       {label && <label htmlFor={id}>{label}</label>}
       {type === "textarea" ? (
         <textarea

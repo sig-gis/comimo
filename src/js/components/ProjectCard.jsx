@@ -5,6 +5,7 @@ import Button from "./Button";
 
 import { titleCase } from "../utils";
 import { MainContext } from "./PageLayout";
+import { useTranslation } from "react-i18next";
 
 const CardOuter = styled.div`
   border: 1px solid rgb(0, 0, 0, 0.9);
@@ -40,9 +41,7 @@ export default function ProjectCard({
   project: { dataLayer, createdDate, id, name, regions },
   closeProject,
 }) {
-  const {
-    localeText: { validate },
-  } = useContext(MainContext);
+  const { t, i18n } = useTranslation();
 
   return (
     <CardOuter>

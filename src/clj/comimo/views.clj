@@ -148,6 +148,7 @@
        [:path {:d "M38 12.83l-2.83-2.83-11.17 11.17-11.17-11.17-2.83 2.83 11.17 11.17-11.17 11.17 2.83 2.83
                      11.17-11.17 11.17 11.17 2.83-2.83-11.17-11.17z"}]]]]))
 
+;;  TODO add no caching? 
 (defn render-page [uri]
   (fn [request]
     (let [page             (uri->page uri)
@@ -171,7 +172,7 @@
                        (announcement-banner))
                      [:div#main-container]]
                     [:label "No JS bundle files found. Check if your bundler is running, or wait for it to finish compiling."])
-                  (js-init (last bundle-js-files) (:params request))])})))
+                  (js-init (last bundle-js-files) (:params request))])}))) ;; TODO check if we are sending it...
 
 (defn not-found-page [request]
   (-> request

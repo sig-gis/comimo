@@ -5,15 +5,15 @@ import ToolCard from "../components/ToolCard";
 import { jsonRequest } from "../utils";
 import { MainContext } from "../components/PageLayout";
 import { URLS } from "../constants";
+import { useTranslation } from "react-i18next";
 
 export default function StatsPanel({ active, selectedDate, subscribedList }) {
   // State
 
   const [chartsLoaded, setChartsLoaded] = useState(false);
   const [fetchedFor, setFetchedFor] = useState(false);
-  const {
-    localeText: { stats },
-  } = useContext(MainContext);
+
+  const { t, i18n } = useTranslation();
 
   // Lifecycle
 

@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { useContext, useState, Suspense } from "react";
 import ReactDOM from "react-dom";
 import styled from "@emotion/styled";
 import { useAtom, useAtomValue } from "jotai";
 import EmailValidator from "email-validator";
+import { useTranslation } from "react-i18next";
 
 import { ThemeProvider } from "@emotion/react";
 import LoadingModal from "./components/LoadingModal";
@@ -11,7 +12,7 @@ import Button from "./components/Button";
 import AccountForm from "./components/AccountForm";
 import Select from "./components/Select";
 import TextInput from "./components/TextInput";
-import { PageLayout, localeTextAtom } from "./components/PageLayout";
+import { PageLayout } from "./components/PageLayout";
 
 import { showModalAtom, processModal } from "./home";
 
@@ -40,17 +41,17 @@ function Register() {
   const [defaultLang, setDefaultLang] = useState(getLanguage(["en", "es"]));
 
   const [showModal, setShowModal] = useAtom(showModalAtom);
-  const localeText = useAtomValue(localeTextAtom);
+  const { t } = useTranslation();
 
   // API calls
   const verifyInputs = () => {
     return [
-      username.length < 3 && localeText.users?.errorUsernameLen,
-      !EmailValidator.validate(email) && localeText.users?.errorInvalidEmail,
-      fullName.length === 0 && localeText.users?.errorNameReq,
-      institution.length === 0 && localeText.users?.errorInstitutionReq,
-      !validatePassword(password) && localeText.users?.errorPassword,
-      password !== passwordConfirmation && localeText.users?.errorPassMatch,
+      username.length < 3 && t("users.errorUsernameLen"),
+      !EmailValidator.validate(email) && t("users.errorInvalidEmail"),
+      fullName.length === 0 && t("users.errorNameReq"),
+      institution.length === 0 && t("users.errorInstitutionReq"),
+      !validatePassword(password) && t("users.errorPassword"),
+      password !== passwordConfirmation && t("users.errorPassMatch"),
     ].filter((e) => e);
   };
 
@@ -70,11 +71,11 @@ function Register() {
           username: username,
         });
         if (data === "") {
-          alert(localeText.users?.registered);
+          alert(t("users.registered"));
           window.location = "/";
         } else {
-          console.error(localeText.users?.[data]);
-          alert(localeText.users?.[data] || localeText.users?.errorCreating);
+          console.error(t("users.[data]"));
+          alert(t("users.[data]") || t("users.errorCreating"));
         }
       }, setShowModal);
     }
@@ -109,44 +110,38 @@ function Register() {
   return (
     <ThemeProvider theme={THEME}>
       <PageContainer>
-        {showModal && <LoadingModal message={localeText.users?.modalMessage} />}
-        <AccountForm header={localeText.users?.registerTitle} submitFn={registerUser}>
+        {showModal && <LoadingModal message={t("users.modalMessage")} />}
+        <AccountForm header={t("users.registerTitle")} submitFn={registerUser}>
           <div style={{ display: "flex" }}>
-            <label style={{ marginRight: "1rem" }}>{localeText.users?.language}</label>
+            <label style={{ marginRight: "1rem" }}>{t("users.language")}</label>
             <LanguageSelector selectedLanguage={defaultLang} selectLanguage={setDefaultLang} />
           </div>
-          {renderField(localeText.users?.username, "text", "username", username, setUsername)}
-          {renderField(localeText.users?.email, "email", "email", email, setEmail)}
-          {renderField(localeText.users?.fullName, "text", "fullName", fullName, setFullName)}
-          {renderField(
-            localeText.users?.institution,
-            "text",
-            "institution",
-            institution,
-            setInstitution
-          )}
+          {renderField(t("users.username"), "text", "username", username, setUsername)}
+          {renderField(t("users.email"), "email", "email", email, setEmail)}
+          {renderField(t("users.fullName"), "text", "fullName", fullName, setFullName)}
+          {renderField(t("users.institution"), "text", "institution", institution, setInstitution)}
           {renderSelect(
-            localeText.users?.sector,
+            t("users.sector"),
             [
-              { value: "academic", label: localeText.users?.academic },
-              { value: "government", label: localeText.users?.government },
-              { value: "ngo", label: localeText.users?.ngo },
+              { value: "academic", label: t("users.academic") },
+              { value: "government", label: t("users.government") },
+              { value: "ngo", label: t("users.ngo") },
             ],
             "sector",
             sector,
             setSector
           )}
-          {renderField(localeText.users?.password, "password", "password", password, setPassword)}
+          {renderField(t("users.password"), "password", "password", password, setPassword)}
           {renderField(
-            localeText.users?.confirm,
+            t("users.confirm"),
             "password",
             "passwordConfirmation",
             passwordConfirmation,
             setPasswordConfirmation
           )}
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-            <span style={{ color: "red" }}>{localeText.users?.allRequired}</span>
-            <Button extraStyle={{ marginTop: "0.5rem" }}>{localeText.users?.register}</Button>
+            <span style={{ color: "red" }}>{t("users.allRequired")}</span>
+            <Button extraStyle={{ marginTop: "0.5rem" }}>{t("users.register")}</Button>
           </div>
         </AccountForm>
       </PageContainer>
@@ -156,15 +151,17 @@ function Register() {
 
 export function pageInit(args) {
   ReactDOM.render(
-    <PageLayout
-      role={args.role}
-      userLang={args.userLang}
-      username={args.username}
-      version={args.versionDeployed}
-      showSearch={false}
-    >
-      <Register />
-    </PageLayout>,
+    <Suspense fallback="">
+      <PageLayout
+        role={args.role}
+        userLang={args.userLang}
+        username={args.username}
+        version={args.versionDeployed}
+        showSearch={false}
+      >
+        <Register />
+      </PageLayout>
+    </Suspense>,
     document.getElementById("main-container")
   );
 }

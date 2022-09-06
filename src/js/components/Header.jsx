@@ -3,7 +3,6 @@ import Button from "./Button";
 import { useAtom, useAtomValue } from "jotai";
 import styled from "@emotion/styled";
 import { useTranslation } from "react-i18next";
-// import i18n from "../i18n";
 
 import LanguageSelector from "./LanguageSelector";
 import IconTextButton from "./IconTextButton";
@@ -69,8 +68,8 @@ const LoggedInUsername = styled.span`
 `;
 
 export default function Header({
-  selectLanguage,
-  selectedLanguage,
+  // selectLanguage,
+  // selectedLanguage,
   setShowInfo,
   showSearch,
   username,
@@ -120,7 +119,6 @@ export default function Header({
       <UserSettings id="user-settings">
         {username ? (
           // TODO: onClick should open up the menu with the Account Settings, Notifications, and Subscribed Muncipalities buttons
-          // TODO: have an active state that we can pass to IconTextButton
           <LoggedInUserPanel>
             <IconTextButton
               active={false}
@@ -141,7 +139,10 @@ export default function Header({
             {t("users.login")}
           </Button>
         )}
-        <LanguageSelector selectedLanguage={i18n.language} selectLanguage={(lng) => i18n.changeLanguage(lng)} />
+        <LanguageSelector
+          selectedLanguage={i18n.language}
+          selectLanguage={(lng) => i18n.changeLanguage(lng)}
+        />
       </UserSettings>
     </TitleBar>
   );

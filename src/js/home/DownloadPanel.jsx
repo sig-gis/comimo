@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useTransition } from "react";
 import styled from "@emotion/styled";
 import { useAtom } from "jotai";
 
@@ -14,6 +14,7 @@ import { jsonRequest } from "../utils";
 
 import { processModal, showModalAtom } from "../../../src/js/home";
 import { homeMapAtom, selectedRegionAtom } from "./HomeMap";
+import { useTranslation } from "react-i18next";
 
 const Title = styled.h2`
   border-bottom: 1px solid gray;
@@ -31,9 +32,7 @@ export default function DownloadPanel({ active, featureNames, mapquestKey, selec
   const [fetching, setFetching] = useState(false);
   const [mineType, setMineType] = useState("cMines");
 
-  const {
-    localeText: { download, validate },
-  } = useContext(MainContext);
+  const { t, i18n } = useTranslation();
 
   const getDownloadUrl = () => {
     const region = clipOption === 1 ? "all" : selectedRegion;
@@ -104,7 +103,7 @@ export default function DownloadPanel({ active, featureNames, mapquestKey, selec
             onClick={getDownloadUrl}
             extraStyle={{ marginTop: "0.25rem" }}
             isDisabled={fetching}
-          >{`${t("download.getUrl")} ${t(`selectedDates.$(mineType)`)}`}</Button>
+          >{`${t("download.getUrl")} ${selectedDates.mineType}`}</Button>
         )}
         {fetching ? (
           <p>{`${t("download.fetching")}...`}</p>
@@ -114,9 +113,10 @@ export default function DownloadPanel({ active, featureNames, mapquestKey, selec
               <span>
                 <a href={downloadURL[2]}>
                   {`${download.clickHere}` +
-                    ` ${downloadURL[0] === "all"
-                      ? t("download.completeData")
-                      : t("download.munData") + downloadURL[0]
+                    ` ${
+                      downloadURL[0] === "all"
+                        ? t("download.completeData")
+                        : t("download.munData") + downloadURL[0]
                     }` +
                     ` ${t("download.prep")}` +
                     ` ${downloadURL[1]}.`}

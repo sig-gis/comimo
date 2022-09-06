@@ -12,6 +12,7 @@ import { MainContext } from "../components/PageLayout";
 import { URLS } from "../constants";
 import { jsonRequest } from "../utils";
 import { addPopup, fitMap, selectedLatLngAtom } from "./HomeMap";
+import { useTranslation } from "react-i18next";
 
 export default function ReportMinesPanel({ active }) {
   const [mapPopup, _setMapPopup] = useAtom(mapPopupAtom);
@@ -28,10 +29,7 @@ export default function ReportMinesPanel({ active }) {
 
   const reported = reportedLatLng === selectedLatLng;
 
-  const {
-    localeText,
-    localeText: { report, home },
-  } = useContext(MainContext);
+  const { t, i18n } = useTranslation();
 
   const showAlert = ({ body, closeText, confirmText, onConfirm, title }) =>
     setMessageBox({

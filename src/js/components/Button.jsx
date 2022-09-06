@@ -92,7 +92,6 @@ const ButtonStyled = styled.button`
   font-weight: var(--unnamed-font-weight-medium);
   letter-spacing: 0px;
   line-height: 1.5;
-  max-height: 37px;
   padding: 0.2rem 0.5rem;
   text-align: center;
   transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out,

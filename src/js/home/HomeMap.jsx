@@ -22,7 +22,7 @@ export const selectedLatLngAtom = atom([]);
 export const homeMapAtom = atom(null);
 export const selectedRegionAtom = atom(null);
 
-export const addPopup = (map, { lat, lng }, mapPopup, visiblePanel, selectedDates, localeText) => {
+export const addPopup = (map, { lat, lng }, mapPopup, visiblePanel, selectedDates) => {
   // Remove old popup
   if (mapPopup) mapPopup.remove();
 
@@ -35,18 +35,15 @@ export const addPopup = (map, { lat, lng }, mapPopup, visiblePanel, selectedDate
   // TODO: visiblePanel may not be needed when switching to Footer
   // TODO: update to use refs to clear the build warning...
   if (visiblePanel === "report") {
-    ReactDOM.render(
-      <ReportPopupContent lat={lat} localeText={localeText} lon={lng} />,
-      document.getElementById(divId)
-    );
+    ReactDOM.render(<ReportPopupContent lat={lat} lng={lng} />, document.getElementById(divId));
   } else {
     ReactDOM.render(
       <InfoPopupContent
         map={map}
-        lng={lng}
         lat={lat}
+        lng={lng}
         selectedDates={selectedDates}
-      // localeText={localeText}
+        // localeText={localeText}
       />,
       document.getElementById(divId)
     );
@@ -88,9 +85,9 @@ const getLayerUrl = (map, list, selectedDates, extraMapParams) => {
           params == null
             ? url
             : url +
-            Object.entries(params)
-              .map(([k, v]) => `&${k}=${v}`)
-              .join("");
+              Object.entries(params)
+                .map(([k, v]) => `&${k}=${v}`)
+                .join("");
         setLayerUrl(map, layer, fullUrl);
       })
       .catch((error) => console.error(error));
@@ -114,7 +111,7 @@ export const fitMap = (map, type, coords, homeLocale) => {
   }
 };
 
-export default function HomeMap({ }) {
+export default function HomeMap({}) {
   const [mouseCoords, setMouseCoords] = useState(null);
   const [mapPopup, setMapPopup] = useAtom(mapPopupAtom);
   const [visiblePanel, setVisiblePanel] = useAtom(visiblePanelAtom);
@@ -131,7 +128,7 @@ export default function HomeMap({ }) {
   const [zoom, setZoom] = useState(5);
 
   const addHomeMapPopup = (coords) =>
-    addPopup(homeMap, coords, mapPopup, visiblePanel, selectedDates, localeText);
+    addPopup(homeMap, coords, mapPopup, visiblePanel, selectedDates);
 
   // Effects
   useEffect(() => {
@@ -162,28 +159,25 @@ export default function HomeMap({ }) {
         const lng = toPrecision(e.lngLat.lng, 4);
         setMouseCoords({ lat, lng });
       });
-      //   homeMap.on("click", (e) => {
-      //     const { lat, lng } = e.lngLat;
-      //     setSelectedLatLng([lat, lng]);
-
-      //     setMapPopup(
-      //       addPopup(homeMap, { lat, lng }, mapPopup, visiblePanel, selectedDates, localeText)
-      //     );
-      //   });
-      // }
-    }
-  }, [selectedDates, mapboxToken]);
-
-  useEffect(() => {
-    if (homeMap && !isEmptyMap(localeText)) {
       homeMap.on("click", (e) => {
         const { lat, lng } = e.lngLat;
-        setSelectedLatLng([lat, lng]);
+        // setSelectedLatLng([lat, lng]);
+        console.log("clicked...");
 
         setMapPopup(addHomeMapPopup({ lat, lng }));
       });
     }
-  }, [selectedDates]);
+  }, [selectedDates, mapboxToken]);
+
+  // useEffect(() => {
+  //   if (homeMap && !isEmptyMap(localeText)) {
+  //     homeMap.on("click", (e) => {
+  //       const { lat, lng } = e.lngLat;
+  //       // setSelectedLatLng([lat, lng]);
+
+  //     });
+  //   }
+  // }, [selectedDates]);
 
   useEffect(() => {
     if (homeMap && selectedDates) {

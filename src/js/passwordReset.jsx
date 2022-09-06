@@ -1,95 +1,106 @@
-import React from "react";
+import React, { Suspense, useState } from "react";
 import ReactDOM from "react-dom";
 import { ThemeProvider } from "@emotion/react";
+import { useTranslation } from "react-i18next";
 
 import Button from "./components/Button";
 import AccountForm from "./components/AccountForm";
 import TextInput from "./components/TextInput";
+import { PageLayout } from "./components/PageLayout";
 
 import { getLanguage, jsonRequest, validatePassword } from "./utils";
 import { THEME } from "./constants";
 
-class PasswordReset extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      password: "",
-      passwordConfirmation: "",
-      localeText: {},
-    };
-  }
+function PasswordReset({ email, token }) {
+  const [password, setPassword] = useState("");
+  const [passwordConfirmation, setPasswordConfirmation] = useState("");
+  const { t } = useTranslation();
 
-  componentDidMount() {
-    jsonRequest(`/locale/${getLanguage(["en", "es"])}.json`, null, "GET")
-      .then((data) => this.setState({ localeText: data.users }))
-      .catch((error) => console.error(error));
-  }
-
-  verifyInputs = () => {
-    const { password, passwordConfirmation, localeText } = this.state;
-    const { email } = this.props;
+  const verifyInputs = () => {
     return [
-      email.length === 0 && localeText.errorEmailReq,
-      !validatePassword(password) && localeText.errorPassword,
-      password !== passwordConfirmation && localeText.errorPassMatch,
-    ].filter((e) => e);
+      email.length === 0 && t("users.errorEmailReq"),
+      !validatePassword(password) && t("users.errorPassword"),
+      password !== passwordConfirmation && t("users.errorPassMatch"),
+    ];
   };
 
-  resetPassword = () => {
-    const errors = this.verifyInputs();
+  const resetPassword = () => {
+    const errors = verifyInputs();
     if (errors.length > 0) {
       alert(errors.map((e) => " - " + e).join("\n"));
     } else {
-      const { password } = this.state;
-      const { email, token } = this.props;
       jsonRequest("/password-reset", { email, token, password })
         .then((resp) => {
           if (resp === "") {
             window.location = "/login";
           } else {
             console.error(resp);
-            alert(this.state.localeText[resp] || this.state.localeText.errorCreating);
+            alert(t(`users.${resp}`) || t("users.errorCreating"));
           }
         })
         .catch((err) => console.error(err));
     }
   };
 
-  renderField = (label, type, stateKey, fromProps = false) => (
+  const renderField = (label, type, id, state, stateSetter) => (
     <TextInput
-      disabled={fromProps}
-      id={stateKey}
+      id={`text-input-${id}`}
       label={label}
-      onChange={(e) => this.setState({ [stateKey]: e.target.value })}
+      onChange={(e) => stateSetter(e.target.value)}
       onKeyPress={(e) => {
-        if (e.key === "Enter") this.resetPassword();
+        if (e.key === "Enter") resetPassword();
       }}
       placeholder={`Enter ${(label || "").toLowerCase()}`}
       type={type}
-      value={fromProps ? this.props[stateKey] : this.state[stateKey]}
+      value={state}
     />
   );
 
-  render() {
-    const { localeText } = this.state;
-    return (
-      <ThemeProvider theme={THEME}>
-        <AccountForm header={localeText.resetTitle} submitFn={this.resetPassword}>
-          {this.renderField(localeText.email, "email", "email", true)}
-          {this.renderField(localeText.password, "password", "password")}
-          {this.renderField(localeText.confirm, "password", "passwordConfirmation")}
-          <div style={{ display: "flex", justifyContent: "end" }}>
-            <Button>buttonText={localeText.resetTitle}</Button>
-          </div>
-        </AccountForm>
-      </ThemeProvider>
-    );
-  }
+  return (
+    <ThemeProvider theme={THEME}>
+      <AccountForm header={t("users.resetTitle")} submitFn={resetPassword}>
+        <TextInput
+          className="disabled-group"
+          id="text-input-email"
+          disabled={true}
+          extraStyle={{ cursor: "not-allowed", pointerEvents: "none" }}
+          label={t("users.email")}
+          onKeyPress={(e) => {
+            if (e.key === "Enter") resetPassword();
+          }}
+          placeholder="Enter email"
+          type="email"
+          value={email}
+        />
+        {renderField(t("users.password"), "password", "password", password, setPassword)}
+        {renderField(
+          t("users.confirm"),
+          "password",
+          "passwordConfirmation",
+          passwordConfirmation,
+          setPasswordConfirmation
+        )}
+        <div style={{ display: "flex", justifyContent: "end" }}>
+          <Button>{t("users.resetTitle")}</Button>
+        </div>
+      </AccountForm>
+    </ThemeProvider>
+  );
 }
 
 export function pageInit(args) {
   ReactDOM.render(
-    <PasswordReset email={args.email || ""} token={args.token || ""} />,
+    <Suspense fallback="">
+      <PageLayout
+        role={args.role}
+        userLang={args.userLang}
+        username={args.username}
+        version={args.versionDeployed}
+        showSearch={false}
+      >
+        <PasswordReset email={args.email || ""} token={args.token || ""} />
+      </PageLayout>
+    </Suspense>,
     document.getElementById("main-container")
   );
 }

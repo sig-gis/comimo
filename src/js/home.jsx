@@ -65,10 +65,7 @@ function HomeContents() {
   // const [{ home }, setLocaleText] = useAtom(localeTextAtom);
   const { t, i18n } = useTranslation();
 
-  const {
-    username,
-    setShowInfo,
-  } = useContext(MainContext);
+  const { username, setShowInfo } = useContext(MainContext);
 
   // Effects
 
@@ -137,7 +134,7 @@ function HomeContents() {
   }, []);
 
   return (
-    <>
+    <>
       <HomeMap />
       <div id="bottom-bar">
         <FooterBar>
@@ -301,44 +298,44 @@ export function pageInit(args) {
         showSearch={true}
       >
         <HomeContents />
-      </PageLayout >
+      </PageLayout>
     </Suspense>,
     document.getElementById("main-container")
   );
 }
 
 const Buttons = styled.div`
-      display: flex;
-      flex: 3;
-      justify-content: space-around;
-      `;
+  display: flex;
+  flex: 3;
+  justify-content: space-around;
+`;
 
 const Logo = styled.div`
-      align-items: center;
-      display: flex;
-      flex: 1;
-      justify-content: space-around;
-      padding: 5px 0;
-      `;
+  align-items: center;
+  display: flex;
+  flex: 1;
+  justify-content: space-around;
+  padding: 5px 0;
+`;
 
 const LogoImg = styled.img`
-      cursor: pointer;
-      height: 22px;
-      padding-right: 15px;
-      width: 67px;
-      `;
+  cursor: pointer;
+  height: 22px;
+  padding-right: 15px;
+  width: 67px;
+`;
 
 const LogoGitVersion = styled.a`
-      color: var(--white);
-      cursor: pointer;
-      font-size: 12px;
-      letter-spacing: 0px;
-      text-align: left;
-      text-decoration: none;
-      `;
+  color: var(--white);
+  cursor: pointer;
+  font-size: 12px;
+  letter-spacing: 0px;
+  text-align: left;
+  text-decoration: none;
+`;
 
 const Hidable = styled.div`
-      display: ${({ active }) => !active && "none"};
-      `;
+  display: ${({ active }) => !active && "none"};
+`;
 
 const BarItem = styled.div``;

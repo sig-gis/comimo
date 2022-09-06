@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, Suspense } from "react";
 import ReactDOM from "react-dom";
 import styled from "@emotion/styled";
 import { ThemeProvider } from "@emotion/react";
@@ -13,31 +13,25 @@ import TextInput from "./components/TextInput";
 
 import { processModal, showModalAtom } from "./home";
 
-import {
-  PageLayout,
-  MainContext,
-  localeTextAtom,
-  selectedLanguageAtom,
-  selectLanguage,
-} from "./components/PageLayout";
+import { PageLayout, localeTextAtom } from "./components/PageLayout";
 import { jsonRequest } from "./utils";
 import { THEME } from "./constants";
 import { useEffect } from "react";
 import { useAtom } from "jotai";
+import { useTranslation } from "react-i18next";
 
 const PageContainer = styled.div`
   align-items: center;
   display: flex;
   flex-direction: column;
   height: 100%;
-  overflow: hidden;
   width: 100%;
 `;
 
 function UserAccount() {
   const [showModal, setShowModal] = useAtom(showModalAtom);
   const [{ users }, setLocaleText] = useAtom(localeTextAtom);
-  const [selectedLanguage, setSelectedLanguage] = useAtom(selectedLanguageAtom);
+  // const [selectedLanguage, setSelectedLanguage] = useAtom(selectedLanguageAtom);
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [fullName, setFullName] = useState("");
@@ -47,6 +41,8 @@ function UserAccount() {
   const [passwordConfirmation, setPasswordConfirmation] = useState("");
   const [defaultLang, setDefaultLang] = useState("en");
   const [messageBox, setMessageBox] = useState(null);
+
+  const { t, i18n } = useTranslation();
 
   useEffect(() => {
     getUserInformation();
@@ -93,8 +89,10 @@ function UserAccount() {
         }).catch(console.error);
 
         if (resp === "") {
-          console.log("setting locale text to: ", defaultLang);
-          selectLanguage(defaultLang, setSelectedLanguage, setLocaleText);
+          i18n.changeLanguage(defaultLang, (err, t) => {
+            if (err) return console.log("something went wrong loading", err);
+          });
+
           showAlert({
             body: t("users.successUpdate"),
             closeText: t("users.close"),
@@ -116,7 +114,7 @@ function UserAccount() {
       <PageContainer>
         {showModal && <LoadingModal message={t("users.modalMessage")} />}
         {/* TODO: Make submitFn optional for AccountForm and TitledForm */}
-        <AccountForm header={t("users.userAccountTitle")} submitFn={() => { }}>
+        <AccountForm header={t("users.userAccountTitle")} submitFn={() => {}}>
           <div style={{ display: "flex", marginBottom: "0.5rem" }}>
             <label style={{ marginRight: "1rem" }}>{t("users.language")}</label>
             <LanguageSelector
@@ -156,12 +154,12 @@ function UserAccount() {
 
           <TextInput
             disabled={false}
-            id="fullName"
+            id="institution"
             label={t("users.institution")}
             onChange={(e) => setInstitution(e.target.value)}
             placeholder={`Enter ${(t("users.institution") || "").toLowerCase()}`}
             type={"text"}
-            value={fullName}
+            value={institution}
           />
 
           <Select
@@ -221,14 +219,19 @@ function UserAccount() {
 
 export function pageInit(args) {
   ReactDOM.render(
-    <PageLayout
-      role={args.role}
-      userLang={args.userLang}
-      username={args.username}
-      showSearch={false}
-    >
-      <UserAccount />
-    </PageLayout>,
+    <Suspense fallback="">
+      <PageLayout
+        role={args.role}
+        userLang={args.userLang}
+        username={args.username}
+        mapboxToken={args.mapboxToken}
+        mapquestKey={args.mapquestKey}
+        versionDeployed={args.versionDeployed}
+        showSearch={true}
+      >
+        <UserAccount />
+      </PageLayout>
+    </Suspense>,
     document.getElementById("main-container")
   );
 }

@@ -1,5 +1,6 @@
-import React, { useState, useContext } from "react";
+import React, { useState } from "react";
 import styled from "@emotion/styled";
+import { useTranslation } from "react-i18next";
 
 import InfoModal from "../components/InfoModal";
 import Modal from "../components/Modal";
@@ -15,9 +16,7 @@ const BoldParagraph = styled.p`
 `;
 
 export default function AppInfo({ onClose, isAdmin }) {
-  const {
-    localeText: { appInfo },
-  } = useContext(MainContext);
+  const { t, i18n } = useTranslation();
   const [messageBox, setMessageBox] = useState(null);
 
   const showAlert = (newMessageBox) => {
@@ -27,19 +26,29 @@ export default function AppInfo({ onClose, isAdmin }) {
   const hideAlert = () => setMessageBox(null);
 
   const extLink = (link, text) => (
-    <a style={{ marginTop: "0.5rem" }} href={link} rel="noopener noreferrer" target="_blank">
+    <a
+      style={{
+        color: "var(--links)",
+        marginTop: "0.5rem",
+        font: "var(--unnamed-font-style-normal) normal bold 16px/28px var(--unnamed-font-family-roboto)",
+        letterSpacing: "var(--unnamed-character-spacing-0)",
+      }}
+      href={link}
+      rel="noopener noreferrer"
+      target="_blank"
+    >
       {text}
     </a>
   );
 
   return (
-    <InfoModal onClose={onClose} title={appInfo.title}>
-      <p>{appInfo.shortTerms}</p>
-      <BoldParagraph>{appInfo.accessAll}</BoldParagraph>
+    <InfoModal onClose={onClose} title={t("appInfo.title")}>
+      <p>{t("appInfo.shortTerms")}</p>
+      <BoldParagraph>{t("appInfo.accessAll")}</BoldParagraph>
       <Links>
-        {extLink(appInfo.termsUrl, appInfo.viewTerms)}
-        {extLink(appInfo.methodUrl, appInfo.viewMethod)}
-        {extLink(appInfo.manualUrl, appInfo.viewManual)}
+        {extLink(t("appInfo.termsUrl"), t("appInfo.viewTerms"))}
+        {extLink(t("appInfo.methodUrl"), t("appInfo.viewMethod"))}
+        {extLink(t("appInfo.manualUrl"), t("appInfo.viewManual"))}
       </Links>
       {messageBox && (
         <Modal
