@@ -222,7 +222,6 @@
     "userAccountTitle": "Actualizar Cuenta",
     "successUpdate": "Tu cuenta ha sido actualizada.",
     "save": "Guardar",
-    "logout": "Cerrar Sesión",
     "close": "Cerrar",
     "cancel": "Cancelar",
     "updateTitle": "Cuenta Actualizada",
@@ -245,7 +244,8 @@
     "errorPassMatch": "Tus contraseñas deben coincidir.",
     "errorEmailReq": "Por favor ingresa tu email.",
     "userNotFound": "La usuaria no fue encontrada. Contactar con soporte.",
-    "errorUpdating": "Se produjo un error al cuenta. Contactar con soporte."
+    "errorUpdating": "Se produjo un error al cuenta. Contactar con soporte.",
+    "enterEmail": "Ingrese correo electrónico"
   },
   "admin": {
     "save": "Guardar",
