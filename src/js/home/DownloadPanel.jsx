@@ -113,10 +113,9 @@ export default function DownloadPanel({ active, featureNames, mapquestKey, selec
               <span>
                 <a href={downloadURL[2]}>
                   {`${download.clickHere}` +
-                    ` ${
-                      downloadURL[0] === "all"
-                        ? t("download.completeData")
-                        : t("download.munData") + downloadURL[0]
+                    ` ${downloadURL[0] === "all"
+                      ? t("download.completeData")
+                      : t("download.munData") + downloadURL[0]
                     }` +
                     ` ${t("download.prep")}` +
                     ` ${downloadURL[1]}.`}

@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from "react";
+import React, { useEffect, useState, useContext, Suspense } from "react";
 import ReactDOM from "react-dom";
 import styled from "@emotion/styled";
 import { ReactTabulator } from "react-tabulator";
@@ -12,6 +12,7 @@ import "react-tabulator/lib/css/tabulator_bootstrap4.min.css"; // theme
 
 import { URLS } from "./constants";
 import { jsonRequest } from "./utils";
+import { useTranslation } from "react-i18next";
 
 const PageContainer = styled.div`
   align-items: center;
@@ -50,7 +51,7 @@ const GridRow = styled.div`
   padding: 0.5rem;
   border-bottom: 1px solid black;
 
-  &:nth-child(even) {
+  &:nth-of-type(even) {
     background-color: rgba(10, 10, 10, 0.1);
   }
 
@@ -83,9 +84,8 @@ function makeAdminTableComponent(dateDataURL, columnFields, tableRefDownloadURL)
     // STATE
     const [selectedDate, setSelectedDate] = useState(-1);
     const [tableRef, setTableRef] = useState(null);
-    const {
-      localeText: { admin },
-    } = useContext(MainContext);
+
+    const { t, i18n } = useTranslation();
 
     /// API ///
     const loadDateData = (dataLayer) =>
@@ -109,7 +109,7 @@ function makeAdminTableComponent(dateDataURL, columnFields, tableRefDownloadURL)
           >
             {selectedDate === -1 && (
               <option key={-1} value={-1}>
-                {availableDates.length > 0 ? admin.selectDate : admin.loadingDates}
+                {availableDates.length > 0 ? t("admin.selectDate") : t("admin.loadingDates")}
               </option>
             )}
             {availableDates.map((d) => (
@@ -119,7 +119,7 @@ function makeAdminTableComponent(dateDataURL, columnFields, tableRefDownloadURL)
             ))}
           </select>
           <Button onClick={() => loadDateData(selectedDate)} isDisabled={selectedDate === -1}>
-            {collectedData[selectedDate] ? admin.reload : admin.load}
+            {collectedData[selectedDate] ? t("admin.reload") : t("admin.load")}
           </Button>
         </div>
         <div>
@@ -187,9 +187,6 @@ const Filter = styled.input`
 `;
 
 function AdminContent() {
-  const {
-    localeText: { admin },
-  } = useContext(MainContext);
   const [userList, setUsers] = useState([]);
   const [savedUserList, setSavedUserList] = useState([]);
   const [logList, setLogs] = useState([]);
@@ -202,6 +199,7 @@ function AdminContent() {
     setCollectedData({ ...collectedData, [dataLayer]: data });
   const [filterStr, setFilterStr] = useState("");
 
+  const { t } = useTranslation();
   useEffect(() => {
     getUsers();
     getLogs();
@@ -361,9 +359,9 @@ function AdminContent() {
       }}
     >
       <Button onClick={() => downloadData("csv")} extraStyle={{ marginRight: "0.5rem" }}>
-        {admin.downloadCSV}
+        {t("admin.downloadCSV")}
       </Button>
-      <Button onClick={() => downloadData("json")}>{admin.downloadJSON}</Button>
+      <Button onClick={() => downloadData("json")}>{t("admin.downloadJSON")}</Button>
     </div>
   );
 
@@ -426,14 +424,16 @@ function AdminContent() {
 
 export function pageInit(args) {
   ReactDOM.render(
-    <PageLayout
-      role={args.role}
-      username={args.username}
-      version={args.versionDeployed}
-      showSearch={false}
-    >
-      <AdminContent />
-    </PageLayout>,
+    <Suspense fallback="">
+      <PageLayout
+        role={args.role}
+        username={args.username}
+        version={args.versionDeployed}
+        showSearch={false}
+      >
+        <AdminContent />
+      </PageLayout>
+    </Suspense>,
     document.getElementById("main-container")
   );
 }

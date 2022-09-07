@@ -43,7 +43,7 @@ export const addPopup = (map, { lat, lng }, mapPopup, visiblePanel, selectedDate
         lat={lat}
         lng={lng}
         selectedDates={selectedDates}
-        // localeText={localeText}
+      // localeText={localeText}
       />,
       document.getElementById(divId)
     );
@@ -85,9 +85,9 @@ const getLayerUrl = (map, list, selectedDates, extraMapParams) => {
           params == null
             ? url
             : url +
-              Object.entries(params)
-                .map(([k, v]) => `&${k}=${v}`)
-                .join("");
+            Object.entries(params)
+              .map(([k, v]) => `&${k}=${v}`)
+              .join("");
         setLayerUrl(map, layer, fullUrl);
       })
       .catch((error) => console.error(error));
@@ -111,7 +111,7 @@ export const fitMap = (map, type, coords, homeLocale) => {
   }
 };
 
-export default function HomeMap({}) {
+export default function HomeMap({ }) {
   const [mouseCoords, setMouseCoords] = useState(null);
   const [mapPopup, setMapPopup] = useAtom(mapPopupAtom);
   const [visiblePanel, setVisiblePanel] = useAtom(visiblePanelAtom);

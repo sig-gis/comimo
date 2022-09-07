@@ -74,36 +74,28 @@ export function PageLayout({
 
   // TODO we don't need the provider anymore, we should remove it and update all usage of it with useAtom
   return (
-    <MainContext.Provider
-      value={{
-        username, // TODO delete
-        isAdmin, // TODO delete
-        myHeight, // TODO delete
-        setShowInfo, // TODO delete
-      }}
-    >
-      <ThemeProvider theme={THEME}>
-        {showInfo && <AppInfo isAdmin={isAdmin} onClose={() => setShowInfo(false)} />}
-        <div
-          id="root-component"
-          style={{
-            height: myHeight,
-            width: "100%",
-            margin: 0,
-            padding: 0,
-            position: "relative",
-            display: "flex",
-            flexDirection: "column",
-          }}
-        >
-          <Header
-            setShowInfo={setShowInfo}
-            showSearch={showSearch}
-            username={username}
-          />
-          {children}
-        </div>
-      </ThemeProvider>
-    </MainContext.Provider>
+    <ThemeProvider theme={THEME}>
+      {showInfo && <AppInfo isAdmin={isAdmin} onClose={() => setShowInfo(false)} />}
+      <div
+        id="root-component"
+        style={{
+          height: myHeight,
+          width: "100%",
+          margin: 0,
+          padding: 0,
+          position: "relative",
+          display: "flex",
+          flexDirection: "column",
+        }}
+      >
+        <Header
+          setShowInfo={setShowInfo}
+          showSearch={showSearch}
+          username={username}
+        />
+        {children}
+      </div>
+    </ThemeProvider>
   );
 }
+
