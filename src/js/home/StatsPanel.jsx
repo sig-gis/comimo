@@ -1,9 +1,8 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import ToolCard from "../components/ToolCard";
 
 import { jsonRequest } from "../utils";
-import { MainContext } from "../components/PageLayout";
 import { URLS } from "../constants";
 import { useTranslation } from "react-i18next";
 

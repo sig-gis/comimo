@@ -1,10 +1,8 @@
-import React, { useContext } from "react";
 import styled from "@emotion/styled";
 
 import Button from "./Button";
 
 import { titleCase } from "../utils";
-import { MainContext } from "./PageLayout";
 import { useTranslation } from "react-i18next";
 
 const CardOuter = styled.div`

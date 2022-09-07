@@ -1,10 +1,10 @@
-import React, { useEffect, useState, useContext, Suspense } from "react";
+import React, { useEffect, useState, Suspense } from "react";
 import ReactDOM from "react-dom";
 import styled from "@emotion/styled";
 import { ReactTabulator } from "react-tabulator";
 import { isEqual } from "lodash";
 
-import { PageLayout, MainContext } from "./components/PageLayout";
+import { PageLayout } from "./components/PageLayout";
 import TitledForm from "./components/TitledForm";
 import Button from "./components/Button";
 import "react-tabulator/lib/styles.css"; // required styles

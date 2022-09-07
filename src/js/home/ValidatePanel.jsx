@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useAtom, useAtomValue } from "jotai";
 
 import LoginMessage from "./LoginMessage";
@@ -11,9 +11,7 @@ import TextInput from "../components/TextInput";
 import { usernameAtom } from "../components/PageLayout";
 import { jsonRequest } from "../utils";
 import { URLS } from "../constants";
-import { MainContext } from "../components/PageLayout";
 import LoadingModal from "../components/LoadingModal";
-import { func } from "prop-types";
 import { showModalAtom, processModal } from "../home";
 import { useTranslation } from "react-i18next";
 
@@ -28,7 +26,7 @@ export default function ValidatePanel({ subscribedList, featureNames, selectedDa
   const [errorMsg, setErrorMsg] = useState(false);
 
 
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
 
   useEffect(() => {
     if (username) {

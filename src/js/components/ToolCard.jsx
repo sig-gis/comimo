@@ -4,7 +4,7 @@ import styled from "@emotion/styled";
 import { visiblePanelAtom } from "../home";
 
 import SvgIcon from "./SvgIcon";
-import { useAtom } from "jotai";
+import { useAtom, useSetAtom } from "jotai";
 
 const PanelOuter = styled.div`
   background: #fffff8;
@@ -38,7 +38,7 @@ const Content = styled.div`
 `;
 
 export default function ToolCard({ title, active, children, isInverted }) {
-  const [visiblePanel, setVisiblePanel] = useAtom(visiblePanelAtom);
+  const setVisiblePanel = useSetAtom(visiblePanelAtom);
   return (
     <PanelOuter
       id={`tool-panel-${title?.replaceAll(" ", "-").toLowerCase()}`}

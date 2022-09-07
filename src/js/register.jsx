@@ -1,7 +1,7 @@
-import React, { useContext, useState, Suspense } from "react";
+import React, { useState, Suspense } from "react";
 import ReactDOM from "react-dom";
 import styled from "@emotion/styled";
-import { useAtom, useAtomValue } from "jotai";
+import { useAtom } from "jotai";
 import EmailValidator from "email-validator";
 import { useTranslation } from "react-i18next";
 

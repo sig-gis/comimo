@@ -1,6 +1,6 @@
-import React, { useCallback, useContext, useEffect, useRef, useState, Suspense } from "react";
+import React, { useEffect, useState, Suspense } from "react";
 import ReactDOM from "react-dom";
-import { useAtom, useAtomValue, atom } from "jotai";
+import { useAtom, useAtomValue, atom, useSetAtom } from "jotai";
 import styled from "@emotion/styled";
 import { useTranslation } from "react-i18next";
 
@@ -10,12 +10,11 @@ import FooterBar from "./components/FooterBar";
 import IconTextButton from "./components/IconTextButton";
 import IconButton from "./components/IconButton";
 import {
-  MainContext,
   PageLayout,
-  mapboxTokenAtom,
   mapquestKeyAtom,
   versionDeployedAtom,
-  localeTextAtom,
+  usernameAtom,
+  showInfoAtom,
 } from "./components/PageLayout";
 import LayersPanel from "./home/LayersPanel";
 import ReportMinesPanel from "./home/ReportMinesPanel";
@@ -23,8 +22,8 @@ import StatsPanel from "./home/StatsPanel";
 import SubscribePanel from "./home/SubscribePanel";
 import ValidatePanel from "./home/ValidatePanel";
 
-import HomeMap, { homeMapAtom, mapPopupAtom } from "./home/HomeMap";
-import { availableLayers, URLS } from "./constants";
+import HomeMap, { mapPopupAtom } from "./home/HomeMap";
+import { URLS } from "./constants";
 import { jsonRequest } from "./utils";
 
 export const selectedDatesAtom = atom({});
@@ -48,24 +47,19 @@ export const processModal = (callBack, setShowModal) => {
 
 function HomeContents() {
   const [visiblePanel, setVisiblePanel] = useAtom(visiblePanelAtom);
-  // const [{ home }, setLocaleText] = useAtom(localeTextAtom);
   const [selectedDates, setSelectedDates] = useAtom(selectedDatesAtom);
   const [homeMapPoupup, setHomeMapPoupup] = useAtom(mapPopupAtom);
-  const [homeMap, setHomeMap] = useAtom(homeMapAtom);
   const [extraMapParams, setExtraMapParams] = useAtom(extraMapParamsAtom);
   const [featureNames, setFeatureNames] = useAtom(featureNamesAtom);
+  const setShowInfo = useSetAtom(showInfoAtom);
   const mapquestKey = useAtomValue(mapquestKeyAtom);
-  const mapboxToken = useAtomValue(mapboxTokenAtom);
   const versionDeployed = useAtomValue(versionDeployedAtom);
-
+  const username = useAtomValue(usernameAtom);
   const [subscribedList, setSubscribedList] = useState([]);
   const [imageDates, setImageDates] = useState({});
   const [nicfiLayers, setNicfiLayers] = useState([]);
 
-  // const [{ home }, setLocaleText] = useAtom(localeTextAtom);
-  const { t, i18n } = useTranslation();
-
-  const { username, setShowInfo } = useContext(MainContext);
+  const { t } = useTranslation();
 
   // Effects
 
@@ -333,8 +327,5 @@ const LogoGitVersion = styled.a`
   text-decoration: none;
 `;
 
-const Hidable = styled.div`
-  display: ${({ active }) => !active && "none"};
-`;
 
 const BarItem = styled.div``;

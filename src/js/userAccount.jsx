@@ -87,7 +87,7 @@ function UserAccount() {
         }).catch(console.error);
 
         if (resp === "") {
-          i18n.changeLanguage(defaultLang, (err, t) => {
+          i18n.changeLanguage(defaultLang, (err) => {
             if (err) return console.log("something went wrong loading", err);
           });
 

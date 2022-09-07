@@ -1,7 +1,6 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useAtom, useAtomValue } from "jotai";
 
-import { MainContext } from "../components/PageLayout";
 import NICFIControl from "../components/NICFIControl";
 import ToolCard from "../components/ToolCard";
 

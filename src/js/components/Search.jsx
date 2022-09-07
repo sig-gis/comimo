@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useState } from "react";
 import styled from "@emotion/styled";
 
 import Button from "./Button";
@@ -6,10 +6,9 @@ import Select from "./Select";
 import TextInput from "./TextInput";
 
 import { jsonRequest } from "../utils";
-import { MainContext } from "./PageLayout";
 import { URLS } from "../constants";
 import { fitMap, selectedRegionAtom, homeMapAtom } from "../home/HomeMap";
-import { useAtom } from "jotai";
+import { useAtom, useAtomValue, useSetAtom } from "jotai";
 import { useTranslation } from "react-i18next";
 
 const SearchResults = styled.div`
@@ -27,8 +26,8 @@ const SearchResults = styled.div`
 export default function Search({ featureNames, mapquestKey, isPanel }) {
   // State
 
-  const [homeMap, setHomeMap] = useAtom(homeMapAtom);
-  const [selectedRegion, setSelectedRegion] = useAtom(selectedRegionAtom);
+  const homeMap = useAtomValue(homeMapAtom);
+  const setSelectedRegion = useSetAtom(selectedRegionAtom);
 
   const [geoCodedSearch, setGeoCodedSearch] = useState(null);
   const [selectedL1, setSelectedL1] = useState(-1);

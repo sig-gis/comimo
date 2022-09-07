@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState } from "react";
 import { useAtom, useSetAtom, useAtomValue } from "jotai";
 
 import Button from "../components/Button";
@@ -6,9 +6,8 @@ import ToolCard from "../components/ToolCard";
 import TextInput from "../components/TextInput";
 import Modal from "../components/Modal";
 
-import HomeMap, { homeMapAtom, mapPopupAtom } from "./HomeMap";
+import { homeMapAtom, mapPopupAtom } from "./HomeMap";
 import { visiblePanelAtom, selectedDatesAtom } from "../home";
-import { MainContext } from "../components/PageLayout";
 import { URLS } from "../constants";
 import { jsonRequest } from "../utils";
 import { addPopup, fitMap, selectedLatLngAtom } from "./HomeMap";
@@ -29,7 +28,7 @@ export default function ReportMinesPanel({ active }) {
 
   const reported = reportedLatLng === selectedLatLng;
 
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
 
   const showAlert = ({ body, closeText, confirmText, onConfirm, title }) =>
     setMessageBox({

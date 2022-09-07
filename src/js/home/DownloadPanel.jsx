@@ -1,6 +1,6 @@
-import React, { useState, useContext, useTransition } from "react";
+import React, { useState } from "react";
 import styled from "@emotion/styled";
-import { useAtom } from "jotai";
+import { useAtom, useAtomValue } from "jotai";
 
 import Button from "../components/Button";
 import Search from "../components/Search";
@@ -8,7 +8,6 @@ import Select from "../components/Select";
 import ToolCard from "../components/ToolCard";
 
 import LoadingModal from "../components/LoadingModal";
-import { MainContext } from "../components/PageLayout";
 import { URLS } from "../constants";
 import { jsonRequest } from "../utils";
 
@@ -25,14 +24,14 @@ const Title = styled.h2`
 export default function DownloadPanel({ active, featureNames, mapquestKey, selectedDates }) {
   const [showModal, setShowModal] = useAtom(showModalAtom);
   const [selectedRegion, setSelectedRegion] = useAtom(selectedRegionAtom);
-  const [homeMap, setMap] = useAtom(homeMapAtom);
+  const homeMap = useAtomValue(homeMapAtom);
 
   const [clipOption, setClipOption] = useState(1);
   const [downloadURL, setDownloadURL] = useState(false);
   const [fetching, setFetching] = useState(false);
   const [mineType, setMineType] = useState("cMines");
 
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
 
   const getDownloadUrl = () => {
     const region = clipOption === 1 ? "all" : selectedRegion;

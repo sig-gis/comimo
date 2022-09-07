@@ -1,21 +1,17 @@
-import React, { isValidElement, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import PopupMapInfo from "../components/PopupMapInfo";
 import { jsonRequest, toPrecision } from "../utils";
 import { URLS, availableLayers } from "../constants";
-import { MainContext, localeTextAtom } from "../components/PageLayout";
-import { useAtom, useAtomValue } from "jotai";
-import { selectedDatesAtom } from "../home";
 import { useTranslation } from "react-i18next";
 
 export default function InfoPopupContent({ map, lat, lng, selectedDates }) {
   const [layerInfo, setLayerInfo] = useState({});
-  const localeText = useAtomValue(localeTextAtom);
 
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
 
   const visibleLayers = availableLayers.filter(
-    (layer) => map.getLayer(layer).visibility === "visible"
+    (layer) => map && map.getLayer(layer).visibility === "visible"
   );
 
   useEffect(() => {

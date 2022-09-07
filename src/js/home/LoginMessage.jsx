@@ -1,9 +1,8 @@
-import React, { useContext } from "react";
+import React from "react";
 import { useTranslation } from "react-i18next";
 
 import Button from "../components/Button";
 
-import { MainContext } from "../components/PageLayout";
 
 export default function LoginMessage({ actionText }) {
   const { i18n, t } = useTranslation()

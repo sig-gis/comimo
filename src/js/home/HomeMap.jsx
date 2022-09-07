@@ -1,7 +1,7 @@
-import React, { useContext, useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import ReactDOM from "react-dom";
 import styled from "@emotion/styled";
-import { atom, useAtom, useSetAtom, useAtomValue } from "jotai";
+import { atom, useAtom, useAtomValue } from "jotai";
 import "mapbox-gl/dist/mapbox-gl.css";
 import mapboxgl from "mapbox-gl";
 
@@ -114,11 +114,9 @@ export const fitMap = (map, type, coords, homeLocale) => {
 export default function HomeMap({ }) {
   const [mouseCoords, setMouseCoords] = useState(null);
   const [mapPopup, setMapPopup] = useAtom(mapPopupAtom);
-  const [visiblePanel, setVisiblePanel] = useAtom(visiblePanelAtom);
-  const [extraMapParams, setExtraMapParams] = useAtom(extraMapParamsAtom);
-  const [selectedLatLng, setSelectedLatLng] = useAtom(selectedLatLngAtom);
-  const [selectedDates, setSelectedDates] = useAtom(selectedDatesAtom);
-  const localeText = useAtomValue(localeTextAtom);
+  const visiblePanel = useAtomValue(visiblePanelAtom);
+  const extraMapParams = useAtomValue(extraMapParamsAtom);
+  const selectedDates = useAtomValue(selectedDatesAtom);
   const [homeMap, setHomeMap] = useAtom(homeMapAtom);
   const mapboxToken = useAtomValue(mapboxTokenAtom);
 
@@ -162,8 +160,6 @@ export default function HomeMap({ }) {
       homeMap.on("click", (e) => {
         const { lat, lng } = e.lngLat;
         // setSelectedLatLng([lat, lng]);
-        console.log("clicked...");
-
         setMapPopup(addHomeMapPopup({ lat, lng }));
       });
     }

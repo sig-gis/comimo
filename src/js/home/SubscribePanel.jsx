@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "@emotion/styled";
 
 import LoginMessage from "./LoginMessage";
@@ -9,9 +9,8 @@ import ToolCard from "../components/ToolCard";
 import { usernameAtom, } from "../components/PageLayout";
 import { URLS } from "../constants";
 import { jsonRequest } from "../utils";
-import { MainContext } from "../components/PageLayout";
-import { useAtom, useAtomValue } from "jotai";
-import { homeMapAtom, selectedRegionAtom } from "./HomeMap";
+import { useAtomValue } from "jotai";
+import { selectedRegionAtom } from "./HomeMap";
 import { useTranslation } from "react-i18next";
 
 const Title = styled.h2`
@@ -56,11 +55,10 @@ export default function SubscribePanel({
   active,
 }) {
   const [subsLoaded, setSubsLoaded] = useState(false);
-  const [homeMap, _setHomeMap] = useAtom(homeMapAtom);
-  const [selectedRegion, setSelectedRegion] = useAtom(selectedRegionAtom);
+  const selectedRegion = useAtomValue(selectedRegionAtom);
   const username = useAtomValue(usernameAtom);
 
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
 
   useEffect(() => {
     getSubs();
