@@ -290,7 +290,6 @@ export function pageInit(args) {
     <Suspense fallback="loading">
       <PageLayout
         role={args.role}
-        userLang={args.userLang}
         username={args.username}
         mapboxToken={args.mapboxToken}
         mapquestKey={args.mapquestKey}

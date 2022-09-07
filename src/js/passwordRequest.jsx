@@ -74,7 +74,6 @@ export function pageInit(args) {
     <Suspense fallback="">
       <PageLayout
         role={args.role}
-        userLang={args.userLang}
         username={args.username}
         version={args.versionDeployed}
         showSearch={false}

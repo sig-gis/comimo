@@ -13,7 +13,7 @@ import TextInput from "./components/TextInput";
 
 import { processModal, showModalAtom } from "./home";
 
-import { PageLayout, localeTextAtom } from "./components/PageLayout";
+import { PageLayout } from "./components/PageLayout";
 import { jsonRequest } from "./utils";
 import { THEME } from "./constants";
 import { useEffect } from "react";
@@ -30,8 +30,6 @@ const PageContainer = styled.div`
 
 function UserAccount() {
   const [showModal, setShowModal] = useAtom(showModalAtom);
-  const [{ users }, setLocaleText] = useAtom(localeTextAtom);
-  // const [selectedLanguage, setSelectedLanguage] = useAtom(selectedLanguageAtom);
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [fullName, setFullName] = useState("");
@@ -114,12 +112,15 @@ function UserAccount() {
       <PageContainer>
         {showModal && <LoadingModal message={t("users.modalMessage")} />}
         {/* TODO: Make submitFn optional for AccountForm and TitledForm */}
-        <AccountForm header={t("users.userAccountTitle")} submitFn={() => {}}>
+        <AccountForm header={t("users.userAccountTitle")} submitFn={() => { }}>
           <div style={{ display: "flex", marginBottom: "0.5rem" }}>
             <label style={{ marginRight: "1rem" }}>{t("users.language")}</label>
             <LanguageSelector
               selectedLanguage={defaultLang}
-              selectLanguage={(newLnag) => setDefaultLang(newLnag)}
+              selectLanguage={(newLnag) => {
+                setDefaultLang(newLnag);
+                i18n.changeLanguage(newLnag, () => { });
+              }}
             />
           </div>
           <TextInput
@@ -222,7 +223,6 @@ export function pageInit(args) {
     <Suspense fallback="">
       <PageLayout
         role={args.role}
-        userLang={args.userLang}
         username={args.username}
         mapboxToken={args.mapboxToken}
         mapquestKey={args.mapquestKey}

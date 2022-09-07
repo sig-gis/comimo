@@ -68,8 +68,6 @@ const LoggedInUsername = styled.span`
 `;
 
 export default function Header({
-  // selectLanguage,
-  // selectedLanguage,
   setShowInfo,
   showSearch,
   username,

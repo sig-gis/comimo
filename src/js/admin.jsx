@@ -428,7 +428,6 @@ export function pageInit(args) {
   ReactDOM.render(
     <PageLayout
       role={args.role}
-      userLang={args.userLang}
       username={args.username}
       version={args.versionDeployed}
       showSearch={false}
