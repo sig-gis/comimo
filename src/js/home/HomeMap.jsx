@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import ReactDOM from "react-dom";
 import styled from "@emotion/styled";
-import { atom, useAtom, useAtomValue } from "jotai";
+import { atom, useAtom, useAtomValue, useSetAtom } from "jotai";
 import "mapbox-gl/dist/mapbox-gl.css";
 import mapboxgl from "mapbox-gl";
 
@@ -18,7 +18,7 @@ import { URLS, availableLayers, startVisible, attributions } from "../constants"
 const isEmptyMap = (m) => m && Object.keys(m).length === 0;
 
 export const mapPopupAtom = atom(null);
-export const selectedLatLngAtom = atom([]);
+export const selectedLatLngAtom = atom(null);
 export const homeMapAtom = atom(null);
 export const selectedRegionAtom = atom(null);
 
@@ -38,13 +38,7 @@ export const addPopup = (map, { lat, lng }, mapPopup, visiblePanel, selectedDate
     ReactDOM.render(<ReportPopupContent lat={lat} lng={lng} />, document.getElementById(divId));
   } else {
     ReactDOM.render(
-      <InfoPopupContent
-        map={map}
-        lat={lat}
-        lng={lng}
-        selectedDates={selectedDates}
-        // localeText={localeText}
-      />,
+      <InfoPopupContent map={map} lat={lat} lng={lng} selectedDates={selectedDates} />,
       document.getElementById(divId)
     );
   }
@@ -94,19 +88,19 @@ const getLayerUrl = (map, list, selectedDates, extraMapParams) => {
   });
 };
 
-export const fitMap = (map, type, coords, homeLocale) => {
+export const fitMap = (map, type, coords, t) => {
   if (type === "point") {
     try {
       // center takes coords in the order of [lng, lat]
       map.flyTo({ center: coords, essential: true });
     } catch (err) {
-      console.error(homeLocale?.errorCoordinates);
+      console.error(t("home.errorCoordinates"));
     }
   } else if (type === "bbox") {
     try {
       map.fitBounds(coords);
     } catch (error) {
-      console.error(homeLocale?.errorBounds);
+      console.error(t("home.errorBounds"));
     }
   }
 };
@@ -119,14 +113,15 @@ export default function HomeMap({}) {
   const selectedDates = useAtomValue(selectedDatesAtom);
   const [homeMap, setHomeMap] = useAtom(homeMapAtom);
   const mapboxToken = useAtomValue(mapboxTokenAtom);
-
+  const setSelectedLatLng = useSetAtom(selectedLatLngAtom);
   const mapContainer = useRef(null);
   const [lng, setLng] = useState(-73.5609339);
   const [lat, setLat] = useState(4.6371205);
   const [zoom, setZoom] = useState(5);
 
-  const addHomeMapPopup = (coords) =>
+  const addHomeMapPopup = (coords) => {
     addPopup(homeMap, coords, mapPopup, visiblePanel, selectedDates);
+  };
 
   // Effects
   useEffect(() => {
@@ -140,40 +135,35 @@ export default function HomeMap({}) {
       });
 
       map.on("load", () => {
+        map.resize();
         addLayerSources(map, [...availableLayers].reverse());
+        map.addControl(new mapboxgl.NavigationControl({ showCompass: false }));
+
+        // if (!isEmptyMap(selectedDates)) {
+        // Add layers first in the
+
+        map.on("mousemove", (e) => {
+          const lat = toPrecision(e.lngLat.lat, 4);
+          const lng = toPrecision(e.lngLat.lng, 4);
+          setMouseCoords({ lat, lng });
+        });
       });
 
       setHomeMap(map);
     }
+  }, [selectedDates, mapboxToken, visiblePanel]);
 
-    if (!isEmptyMap(selectedDates)) {
-      homeMap.resize();
+  useEffect(() => {
+    // const visiblePanel = useAtomValue(visiblePanelAtom);
 
-      // Add layers first in the
-
-      homeMap.addControl(new mapboxgl.NavigationControl({ showCompass: false }));
-      homeMap.on("mousemove", (e) => {
-        const lat = toPrecision(e.lngLat.lat, 4);
-        const lng = toPrecision(e.lngLat.lng, 4);
-        setMouseCoords({ lat, lng });
-      });
+    if (homeMap && !isEmptyMap(selectedDates)) {
       homeMap.on("click", (e) => {
         const { lat, lng } = e.lngLat;
-        // setSelectedLatLng([lat, lng]);
-        setMapPopup(addHomeMapPopup({ lat, lng }));
+        setSelectedLatLng([lat, lng]);
+        setMapPopup(addPopup(homeMap, { lat, lng }, mapPopup, visiblePanel, selectedDates));
       });
     }
-  }, [selectedDates, mapboxToken]);
-
-  // useEffect(() => {
-  //   if (homeMap && !isEmptyMap(localeText)) {
-  //     homeMap.on("click", (e) => {
-  //       const { lat, lng } = e.lngLat;
-  //       // setSelectedLatLng([lat, lng]);
-
-  //     });
-  //   }
-  // }, [selectedDates]);
+  }, [selectedDates, homeMap]);
 
   useEffect(() => {
     if (homeMap && selectedDates) {

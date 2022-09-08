@@ -1,7 +1,7 @@
 (ns comimo.db.subscriptions
   (:require [clojure.set                :as set]
             [triangulum.type-conversion :as tc]
-            [triangulum.database        :refer [call-sql sql-primitive]] 
+            [triangulum.database        :refer [call-sql sql-primitive]]
             [comimo.views               :refer [data-response]]
             [comimo.db.projects         :refer [create-project!]]
             [comimo.email               :refer [send-alert-mail get-base-url]]
@@ -48,14 +48,14 @@
                 {:keys [msg project-id]} (create-project! user_id
                                                           (str (if (= "en" default_lang) "Alert for " "Alerta para ")
                                                                latest-image)
-                                                          regions    
-                                                          latest-image) 
+                                                          regions
+                                                          latest-image)
                 action (if project-id "Created" "Failed")
                 project-url (str (get-base-url) "/collect?projectId=" project-id)]
             (when (= action "Created")
-              (send-alert-mail email project-url default_lang) 
+              (send-alert-mail email project-url default_lang)
               (println "email sent to " email))
-            (call-sql "log_email_alert" user_id action msg regions)              
+            (call-sql "log_email_alert" user_id action msg regions)
             (println "called log email alert sql")
             (call-sql "set_last_alert_for" user_id latest-time))
           (catch Exception e
@@ -65,22 +65,22 @@
 ;;; User Reported Mines
 ;;;
 
-(defn- report-errors [user-id lat lon]
+(defn- report-errors [user-id lat lng]
   (cond
-    (sql-primitive (call-sql "user_mine_reported" user-id lat lon))
+    (sql-primitive (call-sql "user_mine_reported" user-id lat lng))
     "Exists"
 
-    (not (location-in-country lat lon))
+    (not (location-in-country lat lng))
     "Outside"))
 
 (defn report-mine [{:keys [params]}]
   (let [user-id (tc/val->int (:userId params))
         lat     (tc/val->double (:lat params))
-        lon     (tc/val->double (:lon params))]
-    (if-let [error (report-errors user-id lat lon)]
+        lng     (tc/val->double (:lng params))]
+    (if-let [error (report-errors user-id lat lng)]
       (data-response error)
       (do
-        (call-sql "add_reported_mine" user-id lat lon)
+        (call-sql "add_reported_mine" user-id lat lng)
         (data-response "")))))
 
 ;;;

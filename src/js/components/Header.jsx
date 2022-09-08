@@ -67,7 +67,7 @@ const LoggedInUsername = styled.span`
   }
 `;
 
-export default function Header({ setShowInfo, showSearch, username, version }) {
+export default function Header({ showSearch, username }) {
   const featureNames = useAtomValue(featureNamesAtom);
   const mapquestKey = useAtomValue(mapquestKeyAtom);
   const [visiblePanel, setVisiblePanel] = useAtom(visiblePanelAtom);
@@ -93,7 +93,7 @@ export default function Header({ setShowInfo, showSearch, username, version }) {
               text={t("home.searchTitle")}
             />
             <ToolCard
-              title={"home.searchTitle"}
+              title={t("home.searchTitle")}
               isInverted={true}
               active={visiblePanel === "search"}
             >

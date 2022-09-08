@@ -4,7 +4,6 @@ import { useTranslation } from "react-i18next";
 
 import InfoModal from "../components/InfoModal";
 import Modal from "../components/Modal";
-import { MainContext } from "../components/PageLayout";
 
 const Links = styled.div`
   display: flex;
@@ -15,8 +14,8 @@ const BoldParagraph = styled.p`
   font-weight: var(--unnamed-font-weight-bold);
 `;
 
-export default function AppInfo({ onClose, isAdmin }) {
-  const { t, i18n } = useTranslation();
+export default function AppInfo({ onClose }) {
+  const { t } = useTranslation();
   const [messageBox, setMessageBox] = useState(null);
 
   const showAlert = (newMessageBox) => {

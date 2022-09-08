@@ -1,6 +1,6 @@
 import React, { useEffect, useState, Suspense } from "react";
 import ReactDOM from "react-dom";
-import { useAtom, useAtomValue, atom, useSetAtom } from "jotai";
+import { useAtom, useSetAtom, useAtomValue, atom } from "jotai";
 import styled from "@emotion/styled";
 import { useTranslation } from "react-i18next";
 
@@ -12,9 +12,9 @@ import IconButton from "./components/IconButton";
 import {
   PageLayout,
   mapquestKeyAtom,
+  showInfoAtom,
   versionDeployedAtom,
   usernameAtom,
-  showInfoAtom,
 } from "./components/PageLayout";
 import LayersPanel from "./home/LayersPanel";
 import ReportMinesPanel from "./home/ReportMinesPanel";
@@ -22,7 +22,7 @@ import StatsPanel from "./home/StatsPanel";
 import SubscribePanel from "./home/SubscribePanel";
 import ValidatePanel from "./home/ValidatePanel";
 
-import HomeMap, { mapPopupAtom } from "./home/HomeMap";
+import HomeMap, { homeMapAtom, mapPopupAtom } from "./home/HomeMap";
 import { URLS } from "./constants";
 import { jsonRequest } from "./utils";
 

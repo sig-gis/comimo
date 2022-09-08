@@ -17,7 +17,9 @@ export default function InfoPopupContent({ map, lat, lng, selectedDates }) {
   useEffect(() => {
     if (visibleLayers.length > 0) {
       jsonRequest(URLS.GET_INFO, { lng, lat, dates: selectedDates, visibleLayers })
-        .then((resp) => setLayerInfo(resp))
+        .then((resp) => {
+          setLayerInfo(resp);
+        })
         .catch((err) => console.error(err));
     }
   }, []);

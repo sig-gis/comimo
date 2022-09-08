@@ -8,6 +8,7 @@ import ProjectCard from "../components/ProjectCard";
 import Select from "../components/Select";
 import TextInput from "../components/TextInput";
 
+import { homeMapAtom, mapPopupAtom } from "./HomeMap";
 import { usernameAtom } from "../components/PageLayout";
 import { jsonRequest } from "../utils";
 import { URLS } from "../constants";
@@ -25,35 +26,26 @@ export default function ValidatePanel({ subscribedList, featureNames, selectedDa
   const [mineType, setMineType] = useState("pMines");
   const [errorMsg, setErrorMsg] = useState(false);
 
-
   const { t } = useTranslation();
 
   useEffect(() => {
     if (username) {
       getProjects();
     }
-  }, []);
+  }, [username]);
 
-  const getProjects = () => {
-    jsonRequest(URLS.USER_PROJ)
-      .then((res) => {
-        setProjects(res || []);
-      })
-      .catch((err) => console.error(err));
+  const getProjects = async () => {
+    const res = await jsonRequest(URLS.USER_PROJ).catch(console.error);
+    setProjects(res || []);
   };
 
-  // const processModal = (callBack) =>
-  //   new Promise(() => {
-  //     setShowModal(true);
-  //     callBack().finally(() => setShowModal(false));
-  //   });
-
-  const checkProjectErrors = (dataLayer, selected, projectName, projects, type, validate) => {
+  const checkProjectErrors = (dataLayer, selected, projectName, projects, type) => {
     const errors = [
-      !dataLayer && validate.errorDate,
-      selected.length === 0 && (type === 1 ? validate.errorNoSubscribe : validate.errorNoRegion),
-      !projectName && validate.errorNoName,
-      projects.find((pr) => pr[4] === projectName) && validate.errorDubName,
+      !dataLayer && t("validate.errorDate"),
+      selected.length === 0 &&
+        (type === 1 ? t("validate.errorNoSubscribe") : t("validate.errorNoRegion")),
+      !projectName && t("validate.errorNoName"),
+      projects.find((pr) => pr[4] === projectName) && t("validate.errorDubName"),
     ].filter((e) => e);
     return errors.length === 0 || setErrorMsg(errors.join("\n\n"));
   };
@@ -67,13 +59,13 @@ export default function ValidatePanel({ subscribedList, featureNames, selectedDa
         return es[2] + ", " + es[1];
       })
       .join(";");
-    const question = validate.confirmQuestion
+    const question = t("validate.confirmQuestion")
       .replace("{%date}", dataLayer)
       .replace("{%name}", projectName)
       .replace("{%region}", regions);
 
     if (
-      checkProjectErrors(dataLayer, selectedArr, projectName, projects, regionType, validate) &&
+      checkProjectErrors(dataLayer, selectedArr, projectName, projects, regionType) &&
       confirm(question)
     ) {
       processModal(
@@ -114,7 +106,6 @@ export default function ValidatePanel({ subscribedList, featureNames, selectedDa
   };
 
   const customSelect = (val) => {
-    // const { customRegions } = this.state;
     const newRegions = customRegions.includes(val)
       ? customRegions.filter((r) => r !== val)
       : [...customRegions, val];
@@ -122,14 +113,9 @@ export default function ValidatePanel({ subscribedList, featureNames, selectedDa
   };
 
   const renderCustomRegions = () => {
-    // const { customRegions } = this.state;
-    // const { featureNames } = this.props;
-    // const {
-    //   localeText: { validate },
-    // } = this.context;
     const states = Object.keys(featureNames).sort();
     return states.length === 0 ? (
-      <option key="0" disabled>{`${validate.loading}...`}</option>
+      <option key="0" disabled>{`${t("validate.loading")}...`}</option>
     ) : (
       <select
         id="selectProjRegions"

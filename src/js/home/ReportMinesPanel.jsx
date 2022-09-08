@@ -1,27 +1,28 @@
-import React, { useState } from "react";
-import { useAtom, useSetAtom, useAtomValue } from "jotai";
+import React, { useEffect, useState } from "react";
+import { useAtom, useAtomValue } from "jotai";
 
 import Button from "../components/Button";
 import ToolCard from "../components/ToolCard";
 import TextInput from "../components/TextInput";
 import Modal from "../components/Modal";
+import ReportPopupContent from "./ReportPopupContent";
+import InfoPopupContent from "./InfoPopupContent";
 
 import { homeMapAtom, mapPopupAtom } from "./HomeMap";
 import { visiblePanelAtom, selectedDatesAtom } from "../home";
 import { URLS } from "../constants";
-import { jsonRequest } from "../utils";
+import { toPrecision, jsonRequest } from "../utils";
 import { addPopup, fitMap, selectedLatLngAtom } from "./HomeMap";
 import { useTranslation } from "react-i18next";
 
 export default function ReportMinesPanel({ active }) {
-  const [mapPopup, _setMapPopup] = useAtom(mapPopupAtom);
+  const [mapPopup, setMapPopup] = useAtom(mapPopupAtom);
   const [visiblePanel, _setVisiblePanel] = useAtom(visiblePanelAtom);
   const [selectedDates, _setSelectedDates] = useAtom(selectedDatesAtom);
   const homeMap = useAtomValue(homeMapAtom);
   const [selectedLatLng, setSelectedLatLng] = useAtom(selectedLatLngAtom);
-  const setMapPopup = useSetAtom(mapPopupAtom);
 
-  const [latLonText, setLatLonText] = useState("");
+  const [latLngText, setLatLngText] = useState("");
   const [messageBox, setMessageBox] = useState(null);
   const [reportedLatLng, setReportedLatLng] = useState(null);
   const [reportingMine, setReportingMine] = useState(false);
@@ -43,34 +44,34 @@ export default function ReportMinesPanel({ active }) {
 
   const submitMine = () => {
     if (selectedLatLng) {
-      const [lat, lon] = selectedLatLng;
+      const [lat, lng] = selectedLatLng;
       setReportingMine(true);
-      jsonRequest(URLS.REPORT_MINE, { lat, lon })
+      jsonRequest(URLS.REPORT_MINE, { lat, lng })
         .then((result) => {
           if (result === "") {
             setReportedLatLng(selectedLatLng);
             showAlert({
-              body: report.created,
-              closeText: report.understand,
-              title: report.createdTitle,
+              body: t("report.created"),
+              closeText: t("report.understand"),
+              title: t("report.createdTitle"),
             });
           } else if (result === "Exists") {
             showAlert({
-              body: report.existing,
-              closeText: report.understand,
-              title: report.existingTitle,
+              body: t("report.existing"),
+              closeText: t("report.understand"),
+              title: t("report.existingTitle"),
             });
           } else if (result === "Outside") {
             showAlert({
-              body: report.outside,
-              closeText: report.understand,
-              title: report.outsideTitle,
+              body: t("report.outside"),
+              closeText: t("report.understand"),
+              title: t("report.outsideTitle"),
             });
           } else {
             showAlert({
-              body: report.error,
-              closeText: report.understand,
-              title: report.errorTitle,
+              body: t("report.error"),
+              closeText: t("report.understand"),
+              title: t("report.errorTitle"),
             });
           }
         })
@@ -83,15 +84,14 @@ export default function ReportMinesPanel({ active }) {
 
   /// Helper functions ///
   const processLatLng = () => {
-    const pair = latLonText.split(",");
+    const pair = latLngText.split(",");
     const [lat, lng] = pair.map((a) => parseFloat(a)).slice(0, 2);
     if (lat && lng) {
       // TODO, these probably dont need to be three functions
       setSelectedLatLng([lat, lng]);
-      setMapPopup(
-        addPopup(homeMap, { lat, lon }, mapPopup, visiblePanel, selectedDates, localeText)
-      );
-      fitMap(homeMap, "point", [lng, lat], home);
+      setMapPopup(addPopup(homeMap, { lat, lng }, mapPopup, visiblePanel, selectedDates));
+      // Note the coords here must be in the order of [lng, lat]
+      fitMap(homeMap, "point", [lng, lat], t);
     }
   };
 
@@ -102,22 +102,22 @@ export default function ReportMinesPanel({ active }) {
         style={{ marginTop: "3rem" }}
         id="inputCoords"
         label={t("report.coordLabel")}
-        onChange={(e) => setLatLonText(e.target.value)}
+        onChange={(e) => setLatLngText(e.target.value)}
         onKeyUp={(e) => {
           if (e.key === "Enter") processLatLng();
         }}
         render={() => <Button onClick={processLatLng}>{t("report.goButton")}</Button>}
-        value={latLonText}
+        value={latLngText}
       />
       <h3 style={{ marginTop: "1rem" }}>{t("report.selectedLocation")}</h3>
       {selectedLatLng ? (
         <>
           <div style={{ display: "flex", flexDirection: "column" }}>
             <span>
-              <b>{t("report.latitude")}:</b> {selectedLatLng[0]}
+              <b>{t("report.latitude")}:</b> {toPrecision(selectedLatLng[0], 4)}
             </span>
             <span>
-              <b>{t("report.longitude")}:</b> {selectedLatLng[1]}
+              <b>{t("report.longitude")}:</b> {toPrecision(selectedLatLng[1], 4)}
             </span>
           </div>
 
@@ -131,16 +131,16 @@ export default function ReportMinesPanel({ active }) {
             <Button
               onClick={() =>
                 showAlert({
-                  body: report.areYouSure,
-                  closeText: report.cancel,
-                  confirmText: report.imSure,
+                  body: t("report.areYouSure"),
+                  closeText: t("report.cancel"),
+                  confirmText: t("report.imSure"),
                   onConfirm: () => submitMine(),
-                  title: report.submit,
+                  title: t("report.submit"),
                 })
               }
               isDisabled={reportingMine || reported}
             >
-              {reported ? t("report.reported ") : t("report.submit")}
+              {reported ? t("report.reported") : t("report.submit")}
             </Button>
           </div>
         </>

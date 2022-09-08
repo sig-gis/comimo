@@ -35,7 +35,7 @@ export default function Search({ featureNames, mapquestKey, isPanel }) {
   const [searchText, setSearchText] = useState("");
   const [latLngText, setLatLngText] = useState("");
 
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
 
   const searchGeocode = () => {
     const url =
@@ -63,7 +63,7 @@ export default function Search({ featureNames, mapquestKey, isPanel }) {
   const processLatLng = () => {
     const pair = latLngText.split(",");
     const [lat, lng] = pair.map((a) => parseFloat(a)).slice(0, 2);
-    fitMap(homeMap, "point", [lng, lat], home);
+    fitMap(homeMap, "point", [lng, lat], t);
   };
 
   // Helper render functions
@@ -82,7 +82,7 @@ export default function Search({ featureNames, mapquestKey, isPanel }) {
                 const mun = item.adminArea4.toUpperCase();
                 setSelectedL1(state);
                 setSelectedL2(mun);
-                fitMap(homeMap, "bbox", featureNames[state][mun], home);
+                fitMap(homeMap, "bbox", featureNames[state][mun], t);
                 setSelectedRegion(
                   `mun_${item.adminArea3.toUpperCase()}_${item.adminArea4.toUpperCase()}`
                 );
@@ -137,7 +137,7 @@ export default function Search({ featureNames, mapquestKey, isPanel }) {
           const l2Name = e.target.value;
           const coords = activeMuns[l2Name];
           setSelectedL2(l2Name);
-          if (Array.isArray(coords)) fitMap(homeMap, "bbox", coords, home);
+          if (Array.isArray(coords)) fitMap(homeMap, "bbox", coords, t);
           setSelectedRegion("mun_" + selectedL1 + "_" + l2Name);
         }}
         options={l2names}

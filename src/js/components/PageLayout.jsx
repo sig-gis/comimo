@@ -75,7 +75,7 @@ export function PageLayout({
   // TODO we don't need the provider anymore, we should remove it and update all usage of it with useAtom
   return (
     <ThemeProvider theme={THEME}>
-      {showInfo && <AppInfo isAdmin={isAdmin} onClose={() => setShowInfo(false)} />}
+      {showInfo && <AppInfo onClose={() => setShowInfo(false)} />}
       <div
         id="root-component"
         style={{
@@ -88,7 +88,7 @@ export function PageLayout({
           flexDirection: "column",
         }}
       >
-        <Header setShowInfo={setShowInfo} showSearch={showSearch} username={username} />
+        <Header showSearch={showSearch} username={username} />
         {children}
       </div>
     </ThemeProvider>
