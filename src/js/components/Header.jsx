@@ -67,12 +67,7 @@ const LoggedInUsername = styled.span`
   }
 `;
 
-export default function Header({
-  setShowInfo,
-  showSearch,
-  username,
-  version,
-}) {
+export default function Header({ setShowInfo, showSearch, username, version }) {
   const featureNames = useAtomValue(featureNamesAtom);
   const mapquestKey = useAtomValue(mapquestKeyAtom);
   const [visiblePanel, setVisiblePanel] = useAtom(visiblePanelAtom);
@@ -138,6 +133,7 @@ export default function Header({
           </Button>
         )}
         <LanguageSelector
+          style={{ marginRight: "80px", paddingRight: "120px" }}
           selectedLanguage={i18n.language}
           selectLanguage={(lng) => i18n.changeLanguage(lng)}
         />

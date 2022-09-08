@@ -51,10 +51,10 @@ function HomeContents() {
   const [homeMapPoupup, setHomeMapPoupup] = useAtom(mapPopupAtom);
   const [extraMapParams, setExtraMapParams] = useAtom(extraMapParamsAtom);
   const [featureNames, setFeatureNames] = useAtom(featureNamesAtom);
+  const username = useAtomValue(usernameAtom);
   const setShowInfo = useSetAtom(showInfoAtom);
   const mapquestKey = useAtomValue(mapquestKeyAtom);
   const versionDeployed = useAtomValue(versionDeployedAtom);
-  const username = useAtomValue(usernameAtom);
   const [subscribedList, setSubscribedList] = useState([]);
   const [imageDates, setImageDates] = useState({});
   const [nicfiLayers, setNicfiLayers] = useState([]);
@@ -326,6 +326,5 @@ const LogoGitVersion = styled.a`
   text-align: left;
   text-decoration: none;
 `;
-
 
 const BarItem = styled.div``;

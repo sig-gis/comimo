@@ -3,6 +3,7 @@
    [clojure.data.json   :as json]
    [clojure.java.io     :as io]
    [clojure.string      :as str]
+   [clj-http.client :as client]
    [cognitect.transit   :as transit]
    [comimo.git          :refer [current-version]]
    [hiccup.page         :refer [html5 include-css include-js]]
@@ -17,20 +18,30 @@
 
 (defn find-bundle-js-files [page]
   (let [src-file        (format "src/js/%s.jsx" page)
-        manifest      (loop [manifest-file (io/file "dist/public/manifest.json")
-                             counter       0]
-                        (cond
-                          (.exists manifest-file)
+        manifest        (if (= "dev" (get-config :server :mode))
+                          (loop [resp (try
+                                        (client/get "http://localhost:5173/manifest.json"
+                                                    {:accept :json})
+                                        (catch Exception e nil))
+                                 counter       0]
+                            (cond
+                              resp
+                              (-> resp
+                                  :body
+                                  (json/read-str)
+                                  (get src-file))
+
+                              (> counter 50)
+                              (throw (ex-info "can't find manifest.json" {}))
+
+                              :else
+                              (do (Thread/sleep 200)
+                                  (recur resp (inc counter)))))
                           (-> (slurp "dist/public/manifest.json")
                               (json/read-str)
-                              (get src-file))
+                              (get src-file)))
 
-                          (> counter 25)
-                          (throw (ex-info "can't find manifest.json" {}))
 
-                          :else
-                          (do (Thread/sleep 100)
-                              (recur manifest-file (inc counter)))))
         entrypoint-file (str "/" (get manifest "file"))
         asset-files     (mapv #(str/replace % #"^_" "/assets/")
                               (get manifest "imports"))]

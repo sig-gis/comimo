@@ -54,7 +54,7 @@ export function PageLayout({
 
   useEffect(() => {
     const getDefaultLang = async () => {
-      let resp = await jsonRequest("/user-information");
+      const resp = await jsonRequest("/user-information");
       i18n.changeLanguage(resp?.defaultLang || "en", (err, t) => {
         if (err) return console.log("something went wrong loading", err);
       });
@@ -88,14 +88,9 @@ export function PageLayout({
           flexDirection: "column",
         }}
       >
-        <Header
-          setShowInfo={setShowInfo}
-          showSearch={showSearch}
-          username={username}
-        />
+        <Header setShowInfo={setShowInfo} showSearch={showSearch} username={username} />
         {children}
       </div>
     </ThemeProvider>
   );
 }
-

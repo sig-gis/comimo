@@ -11,7 +11,7 @@
                 :base-url "https://my.domain/"
                 :auto-validate? false}
  :server       {:http-port 8080
-                :mode      "prod"
+                :mode      "dev"
                 :log-dir   "logs"}
  :ga-id        nil
  :session-key  "changeme12345678"

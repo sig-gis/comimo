@@ -1,122 +1,106 @@
 import React, { useState } from "react";
 import styled from "@emotion/styled";
-import { useTranslation } from "react-i18next";
+import { css } from "@emotion/react";
 
 import SvgIcon from "./SvgIcon";
+import { capitalize } from "lodash";
+import IconTextButton from "./IconTextButton";
 
 export default function LanguageSelector({ selectedLanguage, selectLanguage }) {
   const [show, setShow] = useState(false);
 
-  const languageList = {
-    es: "colombia.png",
-    en: "united-states.png",
-  };
-
-  // const languageSelector = styled.div`
-  //   text-align: left;
-  //   font-size: 18px;
-  //   font-weight: var(--unnamed-font-weight-medium);
-  //   letter-spacing: 0px;
-  //   color: var(--white);
-  //   padding: 0 0.5rem;
-  //   &:hover {
-  //     text-decoration: underline;
-  //   }
-  // `;
+  const languages = { spanish: "es", english: "en" };
 
   const LanguageSelector = styled.div`
+    height: 30px;
     display: flex;
-    text-align: left;
+    cursor: pointer;
+    align-content: space-between;
+    margin-bottom: 12px;
   `;
-  const languageIcon = styled.div`
-    color: var(--red);
+
+  const Options = styled.div`
+    background: "white";
+    border-bottom: "1px solid";
+    border-right: "1px solid";
+    border-left: "1px solid";
+    width: "fit-content";
+  `;
+
+  const Option = styled.div`
+    max-height: 100%;
+    text-align: left;
+    width: 200px;
+    max-width: 100%;
+    color: var(--white);
+    background-color: #434343;
+    padding-top: 8px;
+    padding-bottom: 4px;
+    padding-left: 6px;
+    cursor: pointer;
+  `;
+
+  const Seperator = styled.hr`
+    margin: 1px 0;
+    border: 0;
+    border-top: 1px solid var(--gray-2);
+  `;
+
+  const DropDownMenu = styled.div`
+    border-radius: 0 3px 3px 0;
+    height: 30px;
+    max-height: var(--bar-height);
+    z-index: 1;
+  `;
+
+  const onClickLangaugeOption = (language) => {
+    selectLanguage(languages[language]);
+    setShow(false);
+  };
+  const LanguageIcon = styled.div`
+    height: 2rem;
+    width: 2rem;
+    background-color: var(--yellow-2);
+    border-radius: 50%;
+    display: inline-block;
   `;
   const LanguageText = styled.div`
-    font-size: 18px
+    font-size: 18px;
     letter-spacing: 0px;
     text-decoration: underline;
+    color: var(--white);
+    margin-left: 0.5rem;
   `;
 
-  const LanguageOption = styled.div`
-    /* text-align: left; */
-    font-size: 16px;
-    /* letter-spacing: 0px; */
-    /* color: #ffffff; */
-  `;
-
-  const showLanguageOption = (language) => (
-    <div
-      onClick={() => {
-        // selectLanguage(language);
-        // setShow(false);
-      }}
-      style={{ height: "30px", maxHeight: "30px" }}
-    >
-      <img
-        alt={language}
-        src={`/img/${languageList[language]}`}
-        style={{ maxWidth: "100%", maxHeight: "100%" }}
-      />
-    </div>
-  );
-
-  const renderOption = (language) => (
-    <div
-      onClick={() => {
-        selectLanguage(language);
-        setShow(false);
-      }}
-      style={{ height: "30px", maxHeight: "30px" }}
-    >
-      <img
-        alt={language}
-        src={`/img/${languageList[language]}`}
-        style={{ maxWidth: "100%", maxHeight: "100%" }}
-      />
-    </div>
+  const renderOption = (icon, title) => (
+    <Option onClick={() => onClickLangaugeOption(title)}>
+      <div
+        css={css`
+          display: flex;
+        `}
+      >
+        <SvgIcon color="var(--gray-1)" icon={icon} size="2rem" />
+        {capitalize(title)}
+      </div>
+      <Seperator />
+    </Option>
   );
 
   return (
-    <div
-      onClick={() => setShow(!show)}
-      style={{
-        borderRadius: "0 3px 3px 0",
-        height: "30px",
-        maxHeight: "30px",
-        zIndex: 1,
-      }}
-    >
-      <div style={{ display: "flex", height: "100%" }}>
-        {renderOption(selectedLanguage)}
-        <div
-          style={{
-            background: "white",
-            borderRadius: "0 3px 3px 0",
-            border: "2px solid black",
-            paddingTop: "2px",
-            width: "18px",
-          }}
-        >
-          <SvgIcon icon="down" size="14px" />
-        </div>
-      </div>
+    <DropDownMenu>
+      <LanguageSelector onClick={() => setShow(!show)}>
+        <LanguageIcon>
+          <SvgIcon color="var(--gray-1)" icon="language" size="2rem" />
+        </LanguageIcon>
+        <LanguageText>Language</LanguageText>
+      </LanguageSelector>
       {show && (
-        <div
-          style={{
-            background: "white",
-            borderBottom: "1px solid",
-            borderRight: "1px solid",
-            borderLeft: "1px solid",
-            width: "fit-content",
-          }}
-        >
-          {Object.keys(languageList).map((l) => (
-            <div key={l} style={{ paddingTop: "0.25rem" }}>
-              {renderOption(l)}
-            </div>
+        <Options>
+          {Object.keys(languages).map((l) => (
+            <div key={l}>{renderOption(l, l)}</div>
           ))}
-        </div>
+        </Options>
       )}
-    </div>
+    </DropDownMenu>
   );
 }
