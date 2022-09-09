@@ -1,8 +1,8 @@
-import React, { useState, useContext } from "react";
+import React, { useState } from "react";
 import styled from "@emotion/styled";
 
 import Button from "../components/Button";
-import { MainContext } from "../components/PageLayout";
+import { useTranslation } from "react-i18next";
 
 const ButtonRowOuter = styled.div`
   bottom: 32px;
@@ -42,10 +42,9 @@ export default function NavBar({
   prevPlot,
   setPlotAnswer,
 }) {
-  const {
-    localeText: { collect },
-  } = useContext(MainContext);
   const [plotNumberToGo, setPlotNumberToGo] = useState(null);
+
+  const { t } = useTranslation();
 
   const currentPlotNumber = () => {
     let num = plotNumberToGo || currentPlotId - shiftPlotId + 1;
@@ -74,7 +73,7 @@ export default function NavBar({
           setPlotNumberToGo(null);
         }}
       >
-        {collect?.go}
+        {t("collect.go")}
       </Button>
     </>
   );
@@ -97,7 +96,7 @@ export default function NavBar({
               onClick={() => setPlotAnswer("No Mina")}
               extraStyle={{ backgroundColor: "#00dca0" }}
             >
-              {collect?.noMina}
+              {t("collect.noMina")}
             </Button>
             <Button onClick={nextPlot}>{t("collect.next")}</Button>
             {renderGoToPlot()}
@@ -106,7 +105,7 @@ export default function NavBar({
                 window.location.assign("/");
               }}
             >
-              {collect?.exit}
+              {t("collect.exit")}
             </Button>
           </>
         )}

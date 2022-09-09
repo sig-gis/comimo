@@ -14,9 +14,10 @@ const PanelOuter = styled.div`
   flex-direction: column;
   max-height: calc(100% - (2 * var(--bar-height)));
   position: absolute;
-  top: ${({ isInverted }) => isInverted && "calc(var(--bar-height) - 5px)"};
+  top: ${({ isInverted }) => isInverted && "var(--bar-height)"};
   width: 33vw;
   z-index: 99;
+  text-align: left;
 `;
 
 const Title = styled.div`

@@ -42,7 +42,7 @@ function IconButton({ active, icon, extraStyle, onClick, parentClass, size, tool
       title={tooltip}
     >
       <SvgContainer>
-        <SvgIcon color={THEME.default.iconButton.fillColor} icon={icon} size={size || "32px"} />
+        <SvgIcon color={THEME.default.iconButton.fillColor} icon={icon} size={size || "24px"} />
       </SvgContainer>
     </StyledButton>
   );

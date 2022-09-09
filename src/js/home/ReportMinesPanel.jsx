@@ -87,9 +87,16 @@ export default function ReportMinesPanel({ active }) {
     const pair = latLngText.split(",");
     const [lat, lng] = pair.map((a) => parseFloat(a)).slice(0, 2);
     if (lat && lng) {
-      // TODO, these probably dont need to be three functions
-      setSelectedLatLng([lat, lng]);
-      setMapPopup(addPopup(homeMap, { lat, lng }, mapPopup, visiblePanel, selectedDates));
+      addPopup(
+        homeMap,
+        { lat, lng },
+        mapPopup,
+        visiblePanel,
+        selectedDates,
+        setMapPopup,
+        setSelectedLatLng
+      );
+
       // Note the coords here must be in the order of [lng, lat]
       fitMap(homeMap, "point", [lng, lat], t);
     }

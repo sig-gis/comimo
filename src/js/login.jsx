@@ -91,10 +91,8 @@ export function pageInit(args) {
       <PageLayout
         role={args.role}
         username={args.username}
-        mapboxToken={args.mapboxToken}
-        mapquestKey={args.mapquestKey}
         versionDeployed={args.versionDeployed}
-        showSearch={true}
+        showSearch={false}
       >
         <Login />
       </PageLayout>

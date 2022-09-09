@@ -22,7 +22,7 @@ import StatsPanel from "./home/StatsPanel";
 import SubscribePanel from "./home/SubscribePanel";
 import ValidatePanel from "./home/ValidatePanel";
 
-import HomeMap, { homeMapAtom, mapPopupAtom } from "./home/HomeMap";
+import HomeMap, { homeMapAtom, mapPopupAtom, selectedLatLngAtom } from "./home/HomeMap";
 import { URLS } from "./constants";
 import { jsonRequest } from "./utils";
 
@@ -58,6 +58,7 @@ function HomeContents() {
   const [subscribedList, setSubscribedList] = useState([]);
   const [imageDates, setImageDates] = useState({});
   const [nicfiLayers, setNicfiLayers] = useState([]);
+  const [selectedLatLng, setSelectedLatLng] = useAtom(selectedLatLngAtom);
 
   const { t } = useTranslation();
 
@@ -71,6 +72,8 @@ function HomeContents() {
           setHomeMapPoupup(null);
         }
         setVisiblePanel(null);
+        setSelectedLatLng(null);
+        setShowInfo(null);
       }
     };
     window.addEventListener("keydown", handleEscapeKey);
@@ -261,16 +264,16 @@ function HomeContents() {
               icon="info"
               onClick={() => setShowInfo(true)}
             />
-            <LogoImg
+            {/* <LogoImg
               alt="app-logo"
               onClick={() => window.location.assign("/")}
               src="/img/app-logo.png"
-            />
+            /> */}
             <LogoGitVersion
               href={`https://github.com/sig-gis/comimo/tags/${versionDeployed}`}
               target="/blank"
             >
-              {versionDeployed && `Version: ${versionDeployed}`}
+              {versionDeployed ? `Version: ${versionDeployed}` : "Version: Latest"}
             </LogoGitVersion>
           </Logo>
         </FooterBar>
@@ -307,7 +310,7 @@ const Logo = styled.div`
   align-items: center;
   display: flex;
   flex: 1;
-  justify-content: space-around;
+  justify-content: space-evenly;
   padding: 5px 0;
 `;
 

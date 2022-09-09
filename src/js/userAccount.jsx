@@ -5,7 +5,7 @@ import { ThemeProvider } from "@emotion/react";
 
 import AccountForm from "./components/AccountForm";
 import Button from "./components/Button";
-import LanguageSelector from "./components/LanguageSelector";
+import LanguageButtons from "./components/LanguageButtons";
 import LoadingModal from "./components/LoadingModal";
 import Modal from "./components/Modal";
 import Select from "./components/Select";
@@ -14,7 +14,7 @@ import TextInput from "./components/TextInput";
 import { processModal, showModalAtom } from "./home";
 
 import { PageLayout } from "./components/PageLayout";
-import { jsonRequest } from "./utils";
+import { getLanguage, jsonRequest } from "./utils";
 import { THEME } from "./constants";
 import { useEffect } from "react";
 import { useAtom } from "jotai";
@@ -37,7 +37,7 @@ function UserAccount() {
   const [sector, setSector] = useState("academic");
   const [password, setPassword] = useState("");
   const [passwordConfirmation, setPasswordConfirmation] = useState("");
-  const [defaultLang, setDefaultLang] = useState("en");
+  const [defaultLang, setDefaultLang] = useState(getLanguage(["en", "es"]));
   const [messageBox, setMessageBox] = useState(null);
 
   const { t, i18n } = useTranslation();
@@ -50,8 +50,8 @@ function UserAccount() {
 
   const verifyInputs = () => {
     return [
-      fullName.length === 0 && users.errorNameReq,
-      institution.length === 0 && users.errorInstitutionReq,
+      fullName.length === 0 && t("users.errorNameReq"),
+      institution.length === 0 && t("users.errorInstitutionReq"),
     ].filter((e) => e);
   };
 
@@ -112,16 +112,12 @@ function UserAccount() {
       <PageContainer>
         {showModal && <LoadingModal message={t("users.modalMessage")} />}
         {/* TODO: Make submitFn optional for AccountForm and TitledForm */}
-        <AccountForm header={t("users.userAccountTitle")} submitFn={() => { }}>
-          <div style={{ display: "flex", marginBottom: "0.5rem" }}>
-            <label style={{ marginRight: "1rem" }}>{t("users.language")}</label>
-            <LanguageSelector
-              selectedLanguage={defaultLang}
-              selectLanguage={(newLnag) => {
-                setDefaultLang(newLnag);
-                i18n.changeLanguage(newLnag, () => { });
-              }}
-            />
+        <AccountForm header={t("users.userAccountTitle")} submitFn={() => {}}>
+          <div style={{ display: "flex", flexDirection: "column", marginBottom: "10px" }}>
+            <label style={{ marginRight: "1rem", marginBottom: "10px" }}>
+              {t("users.language")}
+            </label>
+            <LanguageButtons selectedLanguage={defaultLang} selectLanguage={setDefaultLang} />
           </div>
           <TextInput
             disabled={false}
@@ -224,10 +220,8 @@ export function pageInit(args) {
       <PageLayout
         role={args.role}
         username={args.username}
-        mapboxToken={args.mapboxToken}
-        mapquestKey={args.mapquestKey}
         versionDeployed={args.versionDeployed}
-        showSearch={true}
+        showSearch={false}
       >
         <UserAccount />
       </PageLayout>

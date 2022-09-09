@@ -37,7 +37,8 @@
     "downloadTitle": "Download",
     "statisticsTitle": "Statistics",
     "searchTitle": "Search",
-    "pageNotFound": "You are out of this world!"
+    "pageNotFound": "You are out of this world!",
+    "language": "Language"
   },
   "appInfo": {
     "download": "Download validated data",

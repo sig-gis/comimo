@@ -9,28 +9,169 @@ import LatLngHud from "../components/LatLngHud";
 import ReportPopupContent from "./ReportPopupContent";
 import InfoPopupContent from "./InfoPopupContent";
 import { mapboxTokenAtom } from "../components/PageLayout";
-
 import { extraMapParamsAtom, selectedDatesAtom, visiblePanelAtom } from "../home";
 
 import { toPrecision, jsonRequest } from "../utils";
 import { URLS, availableLayers, startVisible, attributions } from "../constants";
-
-const isEmptyMap = (m) => m && Object.keys(m).length === 0;
+import { map } from "lodash";
 
 export const mapPopupAtom = atom(null);
 export const selectedLatLngAtom = atom(null);
 export const homeMapAtom = atom(null);
 export const selectedRegionAtom = atom(null);
 
-export const addPopup = (map, { lat, lng }, mapPopup, visiblePanel, selectedDates) => {
+export default function HomeMap({}) {
+  const [mouseCoords, setMouseCoords] = useState(null);
+
+  const extraMapParams = useAtomValue(extraMapParamsAtom);
+  const selectedDates = useAtomValue(selectedDatesAtom);
+  // const [homeMap, setHomeMap] = useAtom(homeMapAtom);
+  const mapboxToken = useAtomValue(mapboxTokenAtom);
+  const setSelectedLatLng = useSetAtom(selectedLatLngAtom);
+  const [mapPopup, setMapPopup] = useAtom(mapPopupAtom);
+  const visiblePanel = useAtomValue(visiblePanelAtom);
+  const [homeMap, setHomeMap] = useAtom(homeMapAtom);
+
+  const mapContainer = useRef(null);
+  const [lng, setLng] = useState(-73.5609339);
+  const [lat, setLat] = useState(4.6371205);
+  const [zoom, setZoom] = useState(5);
+
+  const addHomeMapPopup = (coords) =>
+    addPopup(homeMap, coords, mapPopup, visiblePanel, selectedDates);
+
+  // Effects
+  useEffect(() => {
+    if (!homeMap && mapboxToken !== "") {
+      mapboxgl.accessToken = mapboxToken;
+      const map = new mapboxgl.Map({
+        container: mapContainer.current,
+        style: "mapbox://styles/mapbox/satellite-streets-v9",
+        center: [lng, lat],
+        zoom: zoom,
+      });
+
+      map.on("load", () => {
+        addLayerSources(map, [...availableLayers].reverse());
+        map.resize();
+
+        // Add layers first in the
+
+        map.addControl(new mapboxgl.NavigationControl({ showCompass: false }));
+        map.on("mousemove", (e) => {
+          const lat = toPrecision(e.lngLat.lat, 4);
+          const lng = toPrecision(e.lngLat.lng, 4);
+          setMouseCoords({ lat, lng });
+        });
+      });
+
+      setHomeMap(map);
+    }
+  }, [selectedDates, mapboxToken]);
+
+  const mapOnClick = (e) => {
+    addPopup(
+      homeMap,
+      e.lngLat,
+      mapPopup,
+      visiblePanel,
+      selectedDates,
+      setMapPopup,
+      setSelectedLatLng
+    );
+  };
+
+  useEffect(() => {
+    if (homeMap) {
+      homeMap.on("click", mapOnClick);
+    }
+
+    return () => {
+      homeMap && homeMap.off("click", mapOnClick);
+      mapPopup && mapPopup.remove();
+      // setSelectedLatLng(null);
+    };
+  }, [homeMap, visiblePanel]);
+
+  useEffect(() => {
+    if (homeMap && selectedDates) {
+      getLayerUrl(homeMap, availableLayers.slice(3), selectedDates, extraMapParams);
+    }
+  }, [selectedDates]);
+
+  useEffect(() => {
+    if (homeMap && !isEmptyMap(selectedDates)) {
+      Object.keys(selectedDates).length > 0 &&
+        getLayerUrl(homeMap, Object.keys(selectedDates), selectedDates, extraMapParams);
+    }
+  }, [selectedDates]);
+
+  useEffect(() => {
+    if (homeMap && !isEmptyMap(selectedDates)) {
+      Object.keys(extraMapParams).length > 0 &&
+        getLayerUrl(homeMap, Object.keys(extraMapParams), selectedDates, extraMapParams);
+    }
+  }, [extraMapParams, selectedDates]);
+
+  // useEffect(() => {
+  //   map && setTimeout(() => map.resize(), 50);
+  // }, [myHeight]);
+
+  // Adds layers initially with no styling, URL is updated later.  This is to guarantee z order in mapbox
+  const addLayerSources = (map, list) => {
+    list.forEach((name) => {
+      map.addSource(name, {
+        type: "raster",
+        tiles: [],
+        tileSize: 256,
+        vis: { palette: [] },
+        ...(attributions[name] && { attribution: attributions[name] }),
+      });
+
+      map.addLayer({
+        id: name,
+        type: "raster",
+        source: name,
+        minzoom: 0,
+        maxzoom: 22,
+        layout: { visibility: "none" },
+      });
+    });
+  };
+
+  return (
+    <>
+      <MapBoxWrapper ref={mapContainer} id="mapbox" />
+      {mouseCoords && <LatLngHud mouseCoords={mouseCoords} />}
+    </>
+  );
+}
+
+const isEmptyMap = (m) => m && Object.keys(m).length === 0;
+
+export const addPopup = (
+  map,
+  { lat, lng },
+  mapPopup,
+  visiblePanel,
+  selectedDates,
+  setMapPopup,
+  setSelectedLatLng
+) => {
   // Remove old popup
   if (mapPopup) mapPopup.remove();
+
+  setSelectedLatLng([lat, lng]);
 
   const divId = Date.now();
   const popup = new mapboxgl.Popup()
     .setLngLat([lng, lat])
     .setHTML(`<div id="${divId}"></div>`)
     .addTo(map);
+
+  popup.on("close", (e) => {
+    setSelectedLatLng(null);
+  });
 
   // TODO: visiblePanel may not be needed when switching to Footer
   // TODO: update to use refs to clear the build warning...
@@ -42,7 +183,7 @@ export const addPopup = (map, { lat, lng }, mapPopup, visiblePanel, selectedDate
       document.getElementById(divId)
     );
   }
-  return popup;
+  setMapPopup(popup);
 };
 
 const setLayerUrl = (map, layer, url) => {
@@ -104,120 +245,6 @@ export const fitMap = (map, type, coords, t) => {
     }
   }
 };
-
-export default function HomeMap({}) {
-  const [mouseCoords, setMouseCoords] = useState(null);
-  const [mapPopup, setMapPopup] = useAtom(mapPopupAtom);
-  const visiblePanel = useAtomValue(visiblePanelAtom);
-  const extraMapParams = useAtomValue(extraMapParamsAtom);
-  const selectedDates = useAtomValue(selectedDatesAtom);
-  const [homeMap, setHomeMap] = useAtom(homeMapAtom);
-  const mapboxToken = useAtomValue(mapboxTokenAtom);
-  const setSelectedLatLng = useSetAtom(selectedLatLngAtom);
-  const mapContainer = useRef(null);
-  const [lng, setLng] = useState(-73.5609339);
-  const [lat, setLat] = useState(4.6371205);
-  const [zoom, setZoom] = useState(5);
-
-  const addHomeMapPopup = (coords) => {
-    addPopup(homeMap, coords, mapPopup, visiblePanel, selectedDates);
-  };
-
-  // Effects
-  useEffect(() => {
-    if (!homeMap && mapboxToken !== "") {
-      mapboxgl.accessToken = mapboxToken;
-      const map = new mapboxgl.Map({
-        container: mapContainer.current,
-        style: "mapbox://styles/mapbox/satellite-streets-v9",
-        center: [lng, lat],
-        zoom: zoom,
-      });
-
-      map.on("load", () => {
-        map.resize();
-        addLayerSources(map, [...availableLayers].reverse());
-        map.addControl(new mapboxgl.NavigationControl({ showCompass: false }));
-
-        // if (!isEmptyMap(selectedDates)) {
-        // Add layers first in the
-
-        map.on("mousemove", (e) => {
-          const lat = toPrecision(e.lngLat.lat, 4);
-          const lng = toPrecision(e.lngLat.lng, 4);
-          setMouseCoords({ lat, lng });
-        });
-      });
-
-      setHomeMap(map);
-    }
-  }, [selectedDates, mapboxToken, visiblePanel]);
-
-  useEffect(() => {
-    // const visiblePanel = useAtomValue(visiblePanelAtom);
-
-    if (homeMap && !isEmptyMap(selectedDates)) {
-      homeMap.on("click", (e) => {
-        const { lat, lng } = e.lngLat;
-        setSelectedLatLng([lat, lng]);
-        setMapPopup(addPopup(homeMap, { lat, lng }, mapPopup, visiblePanel, selectedDates));
-      });
-    }
-  }, [selectedDates, homeMap]);
-
-  useEffect(() => {
-    if (homeMap && selectedDates) {
-      getLayerUrl(homeMap, availableLayers.slice(3), selectedDates, extraMapParams);
-    }
-  }, [selectedDates]);
-
-  useEffect(() => {
-    if (homeMap && !isEmptyMap(selectedDates)) {
-      Object.keys(selectedDates).length > 0 &&
-        getLayerUrl(homeMap, Object.keys(selectedDates), selectedDates, extraMapParams);
-    }
-  }, [selectedDates]);
-
-  useEffect(() => {
-    if (homeMap && !isEmptyMap(selectedDates)) {
-      Object.keys(extraMapParams).length > 0 &&
-        getLayerUrl(homeMap, Object.keys(extraMapParams), selectedDates, extraMapParams);
-    }
-  }, [extraMapParams, selectedDates]);
-
-  // useEffect(() => {
-  //   map && setTimeout(() => map.resize(), 50);
-  // }, [myHeight]);
-
-  // Adds layers initially with no styling, URL is updated later.  This is to guarantee z order in mapbox
-  const addLayerSources = (map, list) => {
-    list.forEach((name) => {
-      map.addSource(name, {
-        type: "raster",
-        tiles: [],
-        tileSize: 256,
-        vis: { palette: [] },
-        ...(attributions[name] && { attribution: attributions[name] }),
-      });
-      // console.log("adding layer name", name);
-      map.addLayer({
-        id: name,
-        type: "raster",
-        source: name,
-        minzoom: 0,
-        maxzoom: 22,
-        layout: { visibility: "none" },
-      });
-    });
-  };
-
-  return (
-    <>
-      <MapBoxWrapper ref={mapContainer} id="mapbox" />
-      {mouseCoords && <LatLngHud mouseCoords={mouseCoords} />}
-    </>
-  );
-}
 
 const MapBoxWrapper = styled.div`
   height: 100%;

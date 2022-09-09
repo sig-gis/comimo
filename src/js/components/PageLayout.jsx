@@ -10,19 +10,15 @@ import i18n from "../i18n";
 import { getLanguage, jsonRequest } from "../utils";
 import { THEME } from "../constants";
 
-// TODO: dismiss with escape app info
-export const MainContext = React.createContext({});
-
-export const localeTextAtom = atom({});
-// export const selectedLanguageAtom = atom(null);
-
 export const myHeightAtom = atom(0);
 export const showInfoAtom = atom(false);
-
 export const mapboxTokenAtom = atom("");
 export const mapquestKeyAtom = atom("");
 export const versionDeployedAtom = atom("");
 export const usernameAtom = atom(null);
+
+// TODO: remove me after refactoring collect
+export const MainContext = React.createContext({});
 
 export function PageLayout({
   role,
@@ -33,7 +29,6 @@ export function PageLayout({
   versionDeployed,
   showSearch,
 }) {
-  // const [selectedLanguage, setSelectedLanguage] = useAtom(selectedLanguageAtom);
   const [myHeight, setMyHeight] = useAtom(myHeightAtom);
   const [showInfo, setShowInfo] = useAtom(showInfoAtom);
   const setMapboxToken = useSetAtom(mapboxTokenAtom);
@@ -72,7 +67,6 @@ export function PageLayout({
     setUsername(username);
   }, []);
 
-  // TODO we don't need the provider anymore, we should remove it and update all usage of it with useAtom
   return (
     <ThemeProvider theme={THEME}>
       {showInfo && <AppInfo onClose={() => setShowInfo(false)} />}
@@ -82,6 +76,7 @@ export function PageLayout({
           height: myHeight,
           width: "100%",
           margin: 0,
+          overflow: "hidden",
           padding: 0,
           position: "relative",
           display: "flex",

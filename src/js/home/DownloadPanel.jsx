@@ -102,7 +102,7 @@ export default function DownloadPanel({ active, featureNames, mapquestKey, selec
             onClick={getDownloadUrl}
             extraStyle={{ marginTop: "0.25rem" }}
             isDisabled={fetching}
-          >{`${t("download.getUrl")} ${selectedDates.mineType}`}</Button>
+          >{`${t("download.getUrl")} ${selectedDates[mineType]}`}</Button>
         )}
         {fetching ? (
           <p>{`${t("download.fetching")}...`}</p>
@@ -112,9 +112,10 @@ export default function DownloadPanel({ active, featureNames, mapquestKey, selec
               <span>
                 <a href={downloadURL[2]}>
                   {`${download.clickHere}` +
-                    ` ${downloadURL[0] === "all"
-                      ? t("download.completeData")
-                      : t("download.munData") + downloadURL[0]
+                    ` ${
+                      downloadURL[0] === "all"
+                        ? t("download.completeData")
+                        : t("download.munData") + downloadURL[0]
                     }` +
                     ` ${t("download.prep")}` +
                     ` ${downloadURL[1]}.`}

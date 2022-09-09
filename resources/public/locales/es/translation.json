@@ -37,7 +37,8 @@
     "downloadTitle": "Descargar",
     "statisticsTitle": "Descargar",
     "searchTitle": "Búsqueda",
-    "pageNotFound": "Te saliste del planeta!"
+    "pageNotFound": "Te saliste del planeta!",
+    "language": "Idioma"
   },
   "appInfo": {
     "logout": "Cerrar Sesión",

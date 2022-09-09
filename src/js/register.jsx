@@ -7,7 +7,7 @@ import { useTranslation } from "react-i18next";
 
 import { ThemeProvider } from "@emotion/react";
 import LoadingModal from "./components/LoadingModal";
-import LanguageSelector from "./components/LanguageSelector";
+import LanguageButtons from "./components/LanguageButtons";
 import Button from "./components/Button";
 import AccountForm from "./components/AccountForm";
 import Select from "./components/Select";
@@ -24,8 +24,8 @@ const PageContainer = styled.div`
   display: flex;
   flex-direction: column;
   height: 100%;
-  overflow: hidden;
-  padding: 2rem;
+  overflow: auto;
+  padding: 0 2rem 2rem 2rem;
   width: 100%;
 `;
 
@@ -112,9 +112,11 @@ function Register() {
       <PageContainer>
         {showModal && <LoadingModal message={t("users.modalMessage")} />}
         <AccountForm header={t("users.registerTitle")} submitFn={registerUser}>
-          <div style={{ display: "flex" }}>
-            <label style={{ marginRight: "1rem" }}>{t("users.language")}</label>
-            <LanguageSelector selectedLanguage={defaultLang} selectLanguage={setDefaultLang} />
+          <div style={{ display: "flex", flexDirection: "column", marginBottom: "10px" }}>
+            <label style={{ marginRight: "1rem", marginBottom: "10px" }}>
+              {t("users.language")}
+            </label>
+            <LanguageButtons selectedLanguage={defaultLang} selectLanguage={setDefaultLang} />
           </div>
           {renderField(t("users.username"), "text", "username", username, setUsername)}
           {renderField(t("users.email"), "email", "email", email, setEmail)}

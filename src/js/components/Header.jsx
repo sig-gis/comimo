@@ -16,7 +16,7 @@ const TitleBar = styled.div`
   background: var(--gray-1);
   box-shadow: 0px 3px 6px #0000008d;
   display: flex;
-  height: var(--bar-height);
+  min-height: var(--bar-height);
   justify-content: space-between;
   text-align: center;
   width: 100%;
@@ -45,7 +45,7 @@ const UserSettings = styled.div`
   align-items: center;
   display: flex;
   flex: 1;
-  justify-content: space-around;
+  justify-content: center;
 `;
 
 const LoggedInUserPanel = styled.div`
@@ -115,6 +115,7 @@ export default function Header({ showSearch, username }) {
           <LoggedInUserPanel>
             <IconTextButton
               active={false}
+              extraStyle={{ marginRight: "20px" }}
               hasBackground={false}
               icon="user"
               iconSize="26px"
@@ -125,6 +126,7 @@ export default function Header({ showSearch, username }) {
           </LoggedInUserPanel>
         ) : (
           <Button
+            extraStyle={{ marginRight: "20px" }}
             onClick={() => {
               window.location.assign("/login");
             }}
@@ -133,7 +135,6 @@ export default function Header({ showSearch, username }) {
           </Button>
         )}
         <LanguageSelector
-          style={{ marginRight: "80px", paddingRight: "120px" }}
           selectedLanguage={i18n.language}
           selectLanguage={(lng) => i18n.changeLanguage(lng)}
         />

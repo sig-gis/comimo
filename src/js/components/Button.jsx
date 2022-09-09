@@ -88,7 +88,7 @@ const ButtonStyled = styled.button`
   color: ${getFillColor};
   cursor: ${({ $disabled }) => ($disabled ? "not-allowed" : "pointer")};
   font-style: var(--unnamed-font-family-roboto);
-  font-size: 18px;
+  font-size: 16px;
   font-weight: var(--unnamed-font-weight-medium);
   letter-spacing: 0px;
   line-height: 1.5;
