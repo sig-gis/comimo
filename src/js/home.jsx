@@ -1,7 +1,8 @@
-import React, { useCallback, useContext, useEffect, useRef, useState } from "react";
+import React, { useEffect, useState, Suspense } from "react";
 import ReactDOM from "react-dom";
-import { useAtom, useAtomValue, atom } from "jotai";
+import { useAtom, useSetAtom, useAtomValue, atom } from "jotai";
 import styled from "@emotion/styled";
+import { useTranslation } from "react-i18next";
 
 import DownloadPanel from "./home/DownloadPanel";
 import FilterPanel from "./home/FilterPanel";
@@ -9,11 +10,11 @@ import FooterBar from "./components/FooterBar";
 import IconTextButton from "./components/IconTextButton";
 import IconButton from "./components/IconButton";
 import {
-  MainContext,
   PageLayout,
-  mapboxTokenAtom,
   mapquestKeyAtom,
+  showInfoAtom,
   versionDeployedAtom,
+  usernameAtom,
 } from "./components/PageLayout";
 import LayersPanel from "./home/LayersPanel";
 import ReportMinesPanel from "./home/ReportMinesPanel";
@@ -21,8 +22,8 @@ import StatsPanel from "./home/StatsPanel";
 import SubscribePanel from "./home/SubscribePanel";
 import ValidatePanel from "./home/ValidatePanel";
 
-import HomeMap, { homeMapAtom, mapPopupAtom } from "./home/HomeMap";
-import { availableLayers, URLS } from "./constants";
+import HomeMap, { homeMapAtom, mapPopupAtom, selectedLatLngAtom } from "./home/HomeMap";
+import { URLS } from "./constants";
 import { jsonRequest } from "./utils";
 
 export const selectedDatesAtom = atom({});
@@ -37,33 +38,29 @@ export const extraMapParamsAtom = atom({
 });
 export const featureNamesAtom = atom({});
 
-export const processModal = (callBack, setShowModal) =>
+export const processModal = (callBack, setShowModal) => {
   new Promise(() => {
     setShowModal(true);
     callBack().finally(() => setShowModal(false));
   });
+};
 
 function HomeContents() {
   const [visiblePanel, setVisiblePanel] = useAtom(visiblePanelAtom);
   const [selectedDates, setSelectedDates] = useAtom(selectedDatesAtom);
   const [homeMapPoupup, setHomeMapPoupup] = useAtom(mapPopupAtom);
-  const [homeMap, setHomeMap] = useAtom(homeMapAtom);
   const [extraMapParams, setExtraMapParams] = useAtom(extraMapParamsAtom);
   const [featureNames, setFeatureNames] = useAtom(featureNamesAtom);
+  const username = useAtomValue(usernameAtom);
+  const setShowInfo = useSetAtom(showInfoAtom);
   const mapquestKey = useAtomValue(mapquestKeyAtom);
-  const mapboxToken = useAtomValue(mapboxTokenAtom);
   const versionDeployed = useAtomValue(versionDeployedAtom);
-
   const [subscribedList, setSubscribedList] = useState([]);
   const [imageDates, setImageDates] = useState({});
   const [nicfiLayers, setNicfiLayers] = useState([]);
+  const [selectedLatLng, setSelectedLatLng] = useAtom(selectedLatLngAtom);
 
-  const {
-    localeText,
-    localeText: { home },
-    username,
-    setShowInfo,
-  } = useContext(MainContext);
+  const { t } = useTranslation();
 
   // Effects
 
@@ -75,6 +72,8 @@ function HomeContents() {
           setHomeMapPoupup(null);
         }
         setVisiblePanel(null);
+        setSelectedLatLng(null);
+        setShowInfo(null);
       }
     };
     window.addEventListener("keydown", handleEscapeKey);
@@ -144,7 +143,7 @@ function HomeContents() {
                 hasBackground={true}
                 icon="layer"
                 onClick={() => togglePanel("layers")}
-                text={home?.layersTitle}
+                text={t("home.layersTitle")}
               />
               <LayersPanel active={visiblePanel === "layers"} nicfiLayers={nicfiLayers} />
             </BarItem>
@@ -156,7 +155,7 @@ function HomeContents() {
                 hasBackground={true}
                 icon="envelope"
                 onClick={() => togglePanel("subscribe")}
-                text={home?.subscribeTitle}
+                text={t("home.subscribeTitle")}
               />
               <SubscribePanel
                 active={visiblePanel === "subscribe"}
@@ -174,7 +173,7 @@ function HomeContents() {
                 hasBackground={true}
                 icon="check"
                 onClick={() => togglePanel("validate")}
-                text={home?.validationsTitle}
+                text={t("home.validationsTitle")}
               />
               <ValidatePanel
                 active={visiblePanel === "validate"}
@@ -193,7 +192,7 @@ function HomeContents() {
                     hasBackground={true}
                     icon="filter"
                     onClick={() => togglePanel("filter")}
-                    text={home?.filterTitle}
+                    text={t("home.filterTitle")}
                   />
                   <FilterPanel
                     active={visiblePanel === "filter"}
@@ -210,7 +209,7 @@ function HomeContents() {
                     hasBackground={true}
                     icon="mine"
                     onClick={() => togglePanel("report")}
-                    text={home?.reportMinesTitle}
+                    text={t("home.reportMinesTitle")}
                   />
                   <ReportMinesPanel active={visiblePanel === "report"} />
                 </BarItem>
@@ -222,7 +221,7 @@ function HomeContents() {
                     hasBackground={true}
                     icon="download"
                     onClick={() => togglePanel("download")}
-                    text={home?.downloadTitle}
+                    text={t("home.downloadTitle")}
                   />
                   <DownloadPanel
                     active={visiblePanel === "download"}
@@ -239,7 +238,7 @@ function HomeContents() {
                     hasBackground={true}
                     icon="stats"
                     onClick={() => togglePanel("stats")}
-                    text={home?.statisticsTitle}
+                    text={t("home.statisticsTitle")}
                   />
                   <StatsPanel
                     active={visiblePanel === "stats"}
@@ -257,7 +256,7 @@ function HomeContents() {
                 extraStyle={{ marginRight: "10px" }}
                 icon="admin"
                 onClick={() => window.location.assign("/admin")}
-                // tooltip={localeText.home?.admin}
+                // tooltip={localeText.home.admin}
               />
             )} */}
             <IconButton
@@ -265,16 +264,16 @@ function HomeContents() {
               icon="info"
               onClick={() => setShowInfo(true)}
             />
-            <LogoImg
+            {/* <LogoImg
               alt="app-logo"
               onClick={() => window.location.assign("/")}
               src="/img/app-logo.png"
-            />
+            /> */}
             <LogoGitVersion
               href={`https://github.com/sig-gis/comimo/tags/${versionDeployed}`}
               target="/blank"
             >
-              {versionDeployed && `Version: ${versionDeployed}`}
+              {versionDeployed ? `Version: ${versionDeployed}` : "Version: Latest"}
             </LogoGitVersion>
           </Logo>
         </FooterBar>
@@ -285,17 +284,18 @@ function HomeContents() {
 
 export function pageInit(args) {
   ReactDOM.render(
-    <PageLayout
-      role={args.role}
-      userLang={args.userLang}
-      username={args.username}
-      mapboxToken={args.mapboxToken}
-      mapquestKey={args.mapquestKey}
-      versionDeployed={args.versionDeployed}
-      showSearch={true}
-    >
-      <HomeContents />
-    </PageLayout>,
+    <Suspense fallback="loading">
+      <PageLayout
+        role={args.role}
+        username={args.username}
+        mapboxToken={args.mapboxToken}
+        mapquestKey={args.mapquestKey}
+        versionDeployed={args.versionDeployed}
+        showSearch={true}
+      >
+        <HomeContents />
+      </PageLayout>
+    </Suspense>,
     document.getElementById("main-container")
   );
 }
@@ -310,7 +310,7 @@ const Logo = styled.div`
   align-items: center;
   display: flex;
   flex: 1;
-  justify-content: space-around;
+  justify-content: space-evenly;
   padding: 5px 0;
 `;
 
@@ -328,10 +328,6 @@ const LogoGitVersion = styled.a`
   letter-spacing: 0px;
   text-align: left;
   text-decoration: none;
-`;
-
-const Hidable = styled.div`
-  display: ${({ active }) => !active && "none"};
 `;
 
 const BarItem = styled.div``;

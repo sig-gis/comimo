@@ -6,7 +6,7 @@ import IconButton from "./IconButton";
 const Container = styled.div`
   align-items: center;
   background-color: ${({ $background }) => ($background ? "#434343" : "transparent")};
-  box-shadow: 0px 3px 6px #00000029;
+  box-shadow: ${({ $background }) => ($background ? "0px 3px 6px #00000029" : "none")};
   border-radius: ${({ $invertBorderRadius }) =>
     $invertBorderRadius ? "6px 6px 0px 0px" : "0px 0px 6px 6px"};
   color: var(--white);
@@ -24,7 +24,7 @@ const Container = styled.div`
 
 const Label = styled.span`
   color: var(--white);
-  font-size: 18px;
+  font-size: 16px;
   font-weight: var(--unnamed-font-weight-medium);
   letter-spacing: 0px;
   padding: 0 0.5rem;

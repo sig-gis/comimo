@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "@emotion/styled";
 
 import LoginMessage from "./LoginMessage";
@@ -6,11 +6,12 @@ import Button from "../components/Button";
 import Search from "../components/Search";
 import ToolCard from "../components/ToolCard";
 
+import { usernameAtom, } from "../components/PageLayout";
 import { URLS } from "../constants";
 import { jsonRequest } from "../utils";
-import { MainContext } from "../components/PageLayout";
-import { useAtom } from "jotai";
-import { homeMapAtom, selectedRegionAtom } from "./HomeMap";
+import { useAtomValue } from "jotai";
+import { selectedRegionAtom } from "./HomeMap";
+import { useTranslation } from "react-i18next";
 
 const Title = styled.h2`
   border-bottom: 1px solid gray;
@@ -54,13 +55,10 @@ export default function SubscribePanel({
   active,
 }) {
   const [subsLoaded, setSubsLoaded] = useState(false);
-  const [homeMap, _setHomeMap] = useAtom(homeMapAtom);
-  const [selectedRegion, setSelectedRegion] = useAtom(selectedRegionAtom);
+  const selectedRegion = useAtomValue(selectedRegionAtom);
+  const username = useAtomValue(usernameAtom);
 
-  const {
-    username,
-    localeText: { subscribe },
-  } = useContext(MainContext);
+  const { t } = useTranslation();
 
   useEffect(() => {
     getSubs();
@@ -96,7 +94,7 @@ export default function SubscribePanel({
   const delSubs = (region) => {
     const arr = region.split("_");
     const delConfirm = confirm(
-      `${subscribe.delConfirm1} ${arr.reverse().join(", ")}? ${subscribe?.delConfirm2}`
+      `${subscribe.delConfirm1} ${arr.reverse().join(", ")}? ${t("subscribe.delConfirm2")}`
     );
     if (delConfirm) {
       jsonRequest(URLS.DEL_SUBS, { region })
@@ -113,8 +111,8 @@ export default function SubscribePanel({
         <thead>
           <tr>
             <th style={{ width: "20px" }}>#</th>
-            <th style={{ width: "calc(100% - 50px)" }}>{subscribe?.munLabel}</th>
-            <th style={{ width: "30px" }}>{subscribe?.shortDelete}</th>
+            <th style={{ width: "calc(100% - 50px)" }}>{t("subscribe.munLabel")}</th>
+            <th style={{ width: "30px" }}>{t("subscribe.shortDelete")}</th>
           </tr>
         </thead>
         <tbody>
@@ -141,21 +139,21 @@ export default function SubscribePanel({
   const parsedRegion = selectedRegion && selectedRegion.split("_");
 
   return (
-    <ToolCard title={subscribe?.title} active={active}>
+    <ToolCard title={t("subscribe.title")} active={active}>
       {username ? (
         <>
           <div>
             {subscribedList.length === 0 ? (
-              <p>{subsLoaded ? subscribe?.noSubs : subscribe?.loadingSubs}</p>
+              <p>{subsLoaded ? t("subscribe.noSubs") : t("subscribe.loadingSubs")}</p>
             ) : (
               <div>
-                <span>{subscribe?.subscribedTo}:</span>
+                <span>{t("subscribe.subscribedTo")}:</span>
                 {renderSubscribedTable(subscribedList)}
               </div>
             )}
           </div>
           <div>
-            <Title>{subscribe?.addNew}</Title>
+            <Title>{t("subscribe.addNew")}</Title>
             <Search isPanel={false} featureNames={featureNames} mapquestKey={mapquestKey}></Search>
             {
               // TODO: inform user (either in UI or alert that is region already been subscribed to and can't add it twice)
@@ -163,14 +161,14 @@ export default function SubscribePanel({
                 <div style={{ textAlign: "center", width: "100%" }}>
                   <Button
                     onClick={() => addSubs(selectedRegion)}
-                  >{`${subscribe?.subscribeTo} ${parsedRegion[2]}, ${parsedRegion[1]}`}</Button>
+                  >{`${t("subscribe.subscribeTo")} ${parsedRegion[2]}, ${parsedRegion[1]}`}</Button>
                 </div>
               )
             }
           </div>
         </>
       ) : (
-        <LoginMessage actionText={subscribe?.loginAction} />
+        <LoginMessage actionText={t("subscribe.loginAction")} />
       )}
     </ToolCard>
   );

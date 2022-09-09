@@ -1,7 +1,8 @@
-import React, { useContext } from "react";
+import React, { Suspense } from "react";
 import ReactDOM from "react-dom";
 import styled from "@emotion/styled";
 import { ThemeProvider } from "@emotion/react";
+import { useTranslation } from "react-i18next";
 
 import { PageLayout, MainContext } from "./components/PageLayout";
 
@@ -13,7 +14,7 @@ const PageContainer = styled.div`
   display: flex;
   flex-direction: column;
   height: 100%;
-  overflow: hidden;
+  overflow: auto;
   padding: 2rem;
   width: 100%;
 `;
@@ -32,14 +33,12 @@ const HeaderContainer = styled.h1`
 `;
 
 function PageNotFound() {
-  const {
-    localeText: { home },
-  } = useContext(MainContext);
+  const { t } = useTranslation();
 
   return (
     <ThemeProvider theme={THEME}>
       <PageContainer>
-        <HeaderContainer>{home?.pageNotFound}</HeaderContainer>
+        <HeaderContainer>{t("home.pageNotFound")}</HeaderContainer>
         <LogoImg
           alt="404-logo"
           src="/img/comimo404.jpg"
@@ -52,15 +51,16 @@ function PageNotFound() {
 
 export function pageInit(args) {
   ReactDOM.render(
-    <PageLayout
-      role={args.role}
-      userLang={args.userLang}
-      username={args.username}
-      version={args.versionDeployed}
-      showSearch={false}
-    >
-      <PageNotFound />
-    </PageLayout>,
+    <Suspense fallback="">
+      <PageLayout
+        role={args.role}
+        username={args.username}
+        versionDeployed={args.versionDeployed}
+        showSearch={false}
+      >
+        <PageNotFound />
+      </PageLayout>
+    </Suspense>,
     document.getElementById("main-container")
   );
 }

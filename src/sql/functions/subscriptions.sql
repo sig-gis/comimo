@@ -124,13 +124,13 @@ $$ LANGUAGE SQL;
 CREATE OR REPLACE FUNCTION add_reported_mine(
     _user_id    integer,
     _lat        real, -- x
-    _lon        real -- y
+    _lng        real -- y
  ) RETURNS void AS $$
 
     INSERT INTO user_mines
-        (user_rid, lat, lon)
+        (user_rid, lat, lng)
     VALUES
-        (_user_id, _lat, _lon)
+        (_user_id, _lat, _lng)
 
 $$ LANGUAGE SQL;
 
@@ -138,13 +138,13 @@ $$ LANGUAGE SQL;
 CREATE OR REPLACE FUNCTION user_mine_reported(
     _user_id    integer,
     _lat        float,
-    _lon        float
+    _lng        float
  ) RETURNS boolean AS $$
 
     SELECT count(1) > 0
     FROM user_mines
     WHERE user_rid = _user_id
         AND lat = _lat
-        AND lon = _lon
+        AND lng = _lng
 
 $$ LANGUAGE SQL;

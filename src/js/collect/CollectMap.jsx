@@ -120,9 +120,9 @@ export default class CollectMap extends React.Component {
             params == null
               ? url
               : url +
-                Object.entries(params)
-                  .map(([k, v]) => `&${k}=${v}`)
-                  .join("");
+              Object.entries(params)
+                .map(([k, v]) => `&${k}=${v}`)
+                .join("");
           this.setLayerUrl(layer, fullUrl);
         })
         .catch((error) => console.error(error));
@@ -226,8 +226,8 @@ export default class CollectMap extends React.Component {
     answer === "Mina"
       ? THEME.mina.background
       : answer === "No Mina"
-      ? THEME.noMina.background
-      : THEME.map.unanswered;
+        ? THEME.noMina.background
+        : THEME.map.unanswered;
 
   addIndividualPlotLayers = () => {
     const { projectPlots } = this.props;

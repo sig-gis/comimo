@@ -1,166 +1,168 @@
-import React from "react";
+import React, { useState, Suspense } from "react";
 import ReactDOM from "react-dom";
+import styled from "@emotion/styled";
+import { useAtom } from "jotai";
 import EmailValidator from "email-validator";
+import { useTranslation } from "react-i18next";
 
 import { ThemeProvider } from "@emotion/react";
 import LoadingModal from "./components/LoadingModal";
-import LanguageSelector from "./components/LanguageSelector";
+import LanguageButtons from "./components/LanguageButtons";
 import Button from "./components/Button";
 import AccountForm from "./components/AccountForm";
 import Select from "./components/Select";
 import TextInput from "./components/TextInput";
+import { PageLayout } from "./components/PageLayout";
+
+import { showModalAtom, processModal } from "./home";
 
 import { getLanguage, jsonRequest, validatePassword } from "./utils";
 import { THEME } from "./constants";
 
-class Register extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      username: "",
-      email: "",
-      fullName: "",
-      institution: "",
-      sector: "academic",
-      password: "",
-      passwordConfirmation: "",
-      localeText: {},
-      defaultLang: getLanguage(["en", "es"]),
-      showModal: false,
-    };
-  }
+const PageContainer = styled.div`
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: auto;
+  padding: 0 2rem 2rem 2rem;
+  width: 100%;
+`;
 
-  componentDidMount() {
-    this.getLocalText(this.state.defaultLang);
-  }
+function Register() {
+  // State
+  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
+  const [fullName, setFullName] = useState("");
+  const [institution, setInstitution] = useState("");
+  const [sector, setSector] = useState("academic");
+  const [password, setPassword] = useState("");
+  const [passwordConfirmation, setPasswordConfirmation] = useState("");
+  const [defaultLang, setDefaultLang] = useState(getLanguage(["en", "es"]));
 
-  /// State Update ///
+  const [showModal, setShowModal] = useAtom(showModalAtom);
+  const { t } = useTranslation();
 
-  processModal = (callBack) =>
-    new Promise(() =>
-      Promise.resolve(
-        this.setState({ showModal: true }, () =>
-          callBack().finally(() => this.setState({ showModal: false }))
-        )
-      )
-    );
-
-  selectLanguage = (newLang) => {
-    this.setState({ defaultLang: newLang });
-    this.getLocalText(newLang);
-  };
-
-  /// API Calls ///
-
-  getLocalText = (lang) => {
-    jsonRequest(`/locale/${lang}.json`, null, "GET")
-      .then((data) => this.setState({ localeText: data.users }))
-      .catch((err) => console.error(err));
-  };
-
-  verifyInputs = () => {
-    const { username, email, fullName, institution, password, passwordConfirmation, localeText } =
-      this.state;
+  // API calls
+  const verifyInputs = () => {
     return [
-      username.length < 3 && localeText.errorUsernameLen,
-      !EmailValidator.validate(email) && localeText.errorInvalidEmail,
-      fullName.length === 0 && localeText.errorNameReq,
-      institution.length === 0 && localeText.errorInstitutionReq,
-      !validatePassword(password) && localeText.errorPassword,
-      password !== passwordConfirmation && localeText.errorPassMatch,
+      username.length < 3 && t("users.errorUsernameLen"),
+      !EmailValidator.validate(email) && t("users.errorInvalidEmail"),
+      fullName.length === 0 && t("users.errorNameReq"),
+      institution.length === 0 && t("users.errorInstitutionReq"),
+      !validatePassword(password) && t("users.errorPassword"),
+      password !== passwordConfirmation && t("users.errorPassMatch"),
     ].filter((e) => e);
   };
 
-  registerUser = () => {
-    const errors = this.verifyInputs();
+  const registerUser = () => {
+    const errors = verifyInputs();
     if (errors.length > 0) {
       alert(errors.map((e) => " - " + e).join("\n"));
     } else {
-      this.processModal(() =>
-        jsonRequest("/register", {
-          defaultLang: this.state.defaultLang,
-          email: this.state.email,
-          fullName: this.state.fullName,
-          institution: this.state.institution,
-          sector: this.state.sector,
-          password: this.state.password,
-          username: this.state.username,
-        })
-          .then((resp) => {
-            if (resp === "") {
-              alert(this.state.localeText.registered);
-              window.location = "/";
-            } else {
-              console.error(resp);
-              alert(this.state.localeText[resp] || this.state.localeText.errorCreating);
-            }
-          })
-          .catch((err) => console.error(err))
-      );
+      processModal(async () => {
+        const data = await jsonRequest("/register", {
+          defaultLang: defaultLang,
+          email: email,
+          fullName: fullName,
+          institution: institution,
+          sector: sector,
+          password: password,
+          username: username,
+        });
+        if (data === "") {
+          alert(t("users.registered"));
+          window.location = "/";
+        } else {
+          console.error(t("users.[data]"));
+          alert(t("users.[data]") || t("users.errorCreating"));
+        }
+      }, setShowModal);
     }
   };
 
-  /// Render Functions ///
-
-  renderField = (label, type, stateKey) => (
+  // Render functions
+  const renderField = (label, type, id, state, stateSetter) => (
     <TextInput
-      id={stateKey}
+      id={`text-input-${id}`}
       label={label}
-      onChange={(e) => this.setState({ [stateKey]: e.target.value })}
+      onChange={(e) => stateSetter(e.target.value)}
       onKeyPress={(e) => {
-        if (e.key === "Enter") this.registerUser();
+        if (e.key === "Enter") registerUser();
       }}
       placeholder={`Enter ${(label || "").toLowerCase()}`}
       type={type}
-      value={this.state[stateKey]}
+      value={state}
     />
   );
 
-  renderSelect = (label, options, stateKey) => (
+  const renderSelect = (label, options, id, state, stateSetter) => (
     <Select
-      id={stateKey}
+      id={`select-input-${id}`}
       label={label}
-      onChange={(e) => this.setState({ [stateKey]: e.target.value })}
+      onChange={(e) => stateSetter(e.target.value)}
       options={options}
-      value={this.state[stateKey]}
+      value={state}
     />
   );
 
-  render() {
-    const { localeText, defaultLang } = this.state;
-    return (
-      <ThemeProvider theme={THEME}>
-        {this.state.showModal && <LoadingModal message={localeText.modalMessage} />}
-        <AccountForm header={localeText.registerTitle} submitFn={this.registerUser}>
-          <div style={{ display: "flex" }}>
-            <label style={{ marginRight: "1rem" }}>{localeText.language}</label>
-            <LanguageSelector selectedLanguage={defaultLang} selectLanguage={this.selectLanguage} />
+  // Render
+  return (
+    <ThemeProvider theme={THEME}>
+      <PageContainer>
+        {showModal && <LoadingModal message={t("users.modalMessage")} />}
+        <AccountForm header={t("users.registerTitle")} submitFn={registerUser}>
+          <div style={{ display: "flex", flexDirection: "column", marginBottom: "10px" }}>
+            <label style={{ marginRight: "1rem", marginBottom: "10px" }}>
+              {t("users.language")}
+            </label>
+            <LanguageButtons selectedLanguage={defaultLang} selectLanguage={setDefaultLang} />
           </div>
-          {this.renderField(localeText.username, "text", "username")}
-          {this.renderField(localeText.email, "email", "email")}
-          {this.renderField(localeText.fullName, "text", "fullName")}
-          {this.renderField(localeText.institution, "text", "institution")}
-          {this.renderSelect(
-            localeText.sector,
+          {renderField(t("users.username"), "text", "username", username, setUsername)}
+          {renderField(t("users.email"), "email", "email", email, setEmail)}
+          {renderField(t("users.fullName"), "text", "fullName", fullName, setFullName)}
+          {renderField(t("users.institution"), "text", "institution", institution, setInstitution)}
+          {renderSelect(
+            t("users.sector"),
             [
-              { value: "academic", label: localeText.academic },
-              { value: "government", label: localeText.government },
-              { value: "ngo", label: localeText.ngo },
+              { value: "academic", label: t("users.academic") },
+              { value: "government", label: t("users.government") },
+              { value: "ngo", label: t("users.ngo") },
             ],
-            "sector"
+            "sector",
+            sector,
+            setSector
           )}
-          {this.renderField(localeText.password, "password", "password")}
-          {this.renderField(localeText.confirm, "password", "passwordConfirmation")}
+          {renderField(t("users.password"), "password", "password", password, setPassword)}
+          {renderField(
+            t("users.confirm"),
+            "password",
+            "passwordConfirmation",
+            passwordConfirmation,
+            setPasswordConfirmation
+          )}
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-            <span style={{ color: "red" }}>{localeText.allRequired}</span>
-            <Button extraStyle={{ marginTop: "0.5rem" }}>{localeText.register}</Button>
+            <span style={{ color: "red" }}>{t("users.allRequired")}</span>
+            <Button extraStyle={{ marginTop: "0.5rem" }}>{t("users.register")}</Button>
           </div>
         </AccountForm>
-      </ThemeProvider>
-    );
-  }
+      </PageContainer>
+    </ThemeProvider>
+  );
 }
 
 export function pageInit(args) {
-  ReactDOM.render(<Register />, document.getElementById("main-container"));
+  ReactDOM.render(
+    <Suspense fallback="">
+      <PageLayout
+        role={args.role}
+        username={args.username}
+        version={args.versionDeployed}
+        showSearch={false}
+      >
+        <Register />
+      </PageLayout>
+    </Suspense>,
+    document.getElementById("main-container")
+  );
 }

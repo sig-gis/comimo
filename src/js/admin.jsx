@@ -1,10 +1,10 @@
-import React, { useEffect, useState, useContext } from "react";
+import React, { useEffect, useState, Suspense } from "react";
 import ReactDOM from "react-dom";
 import styled from "@emotion/styled";
 import { ReactTabulator } from "react-tabulator";
 import { isEqual } from "lodash";
 
-import { PageLayout, MainContext } from "./components/PageLayout";
+import { PageLayout } from "./components/PageLayout";
 import TitledForm from "./components/TitledForm";
 import Button from "./components/Button";
 import "react-tabulator/lib/styles.css"; // required styles
@@ -12,13 +12,14 @@ import "react-tabulator/lib/css/tabulator_bootstrap4.min.css"; // theme
 
 import { URLS } from "./constants";
 import { jsonRequest } from "./utils";
+import { useTranslation } from "react-i18next";
 
 const PageContainer = styled.div`
   align-items: center;
   display: flex;
   flex-direction: column;
   height: 100%;
-  overflow: hidden;
+  overflow: auto;
   width: 100%;
 `;
 
@@ -50,7 +51,7 @@ const GridRow = styled.div`
   padding: 0.5rem;
   border-bottom: 1px solid black;
 
-  &:nth-child(even) {
+  &:nth-of-type(even) {
     background-color: rgba(10, 10, 10, 0.1);
   }
 
@@ -83,9 +84,8 @@ function makeAdminTableComponent(dateDataURL, columnFields, tableRefDownloadURL)
     // STATE
     const [selectedDate, setSelectedDate] = useState(-1);
     const [tableRef, setTableRef] = useState(null);
-    const {
-      localeText: { admin },
-    } = useContext(MainContext);
+
+    const { t, i18n } = useTranslation();
 
     /// API ///
     const loadDateData = (dataLayer) =>
@@ -109,7 +109,7 @@ function makeAdminTableComponent(dateDataURL, columnFields, tableRefDownloadURL)
           >
             {selectedDate === -1 && (
               <option key={-1} value={-1}>
-                {availableDates.length > 0 ? admin.selectDate : admin.loadingDates}
+                {availableDates.length > 0 ? t("admin.selectDate") : t("admin.loadingDates")}
               </option>
             )}
             {availableDates.map((d) => (
@@ -119,11 +119,11 @@ function makeAdminTableComponent(dateDataURL, columnFields, tableRefDownloadURL)
             ))}
           </select>
           <Button onClick={() => loadDateData(selectedDate)} isDisabled={selectedDate === -1}>
-            {collectedData[selectedDate] ? admin.reload : admin.load}
+            {collectedData[selectedDate] ? t("admin.reload") : t("admin.load")}
           </Button>
         </div>
         <div>
-          {selectedDate === -1 && <EmptyMessage>{admin?.emptyTable}</EmptyMessage>}
+          {selectedDate === -1 && <EmptyMessage>{t("admin.emptyTable")}</EmptyMessage>}
           {collectedData[selectedDate]?.length > 0 && (
             <>
               <ReactTabulator
@@ -145,7 +145,7 @@ function makeAdminTableComponent(dateDataURL, columnFields, tableRefDownloadURL)
             </>
           )}
           {selectedDate !== -1 && collectedData[selectedDate]?.length === 0 && (
-            <EmptyMessage>{admin?.noData}</EmptyMessage>
+            <EmptyMessage>{t("admin.noData")}</EmptyMessage>
           )}
         </div>
       </>
@@ -187,9 +187,6 @@ const Filter = styled.input`
 `;
 
 function AdminContent() {
-  const {
-    localeText: { admin },
-  } = useContext(MainContext);
   const [userList, setUsers] = useState([]);
   const [savedUserList, setSavedUserList] = useState([]);
   const [logList, setLogs] = useState([]);
@@ -202,6 +199,7 @@ function AdminContent() {
     setCollectedData({ ...collectedData, [dataLayer]: data });
   const [filterStr, setFilterStr] = useState("");
 
+  const { t } = useTranslation();
   useEffect(() => {
     getUsers();
     getLogs();
@@ -225,7 +223,7 @@ function AdminContent() {
           setRoleChanged(isEqual(userList, savedUserList));
         } else {
           console.error(resp);
-          alert(admin?.errorRoleUpdate);
+          alert(t("admin.errorRoleUpdate"));
         }
       })
       .catch((err) => console.error(err));
@@ -286,17 +284,17 @@ function AdminContent() {
         />
         <GridSection>
           {renderUserRow({
-            userId: admin?.id,
-            username: admin?.username,
-            email: admin?.email,
-            role: admin?.role,
+            userId: t("admin.id"),
+            username: t("admin.username"),
+            email: t("admin.email"),
+            role: t("admin.role"),
           })}
           {userList.filter((row) => isRowIncluded(row)).map(renderUserRow)}
         </GridSection>
         <div style={{ margin: "1rem", display: "flex" }}>
           <div style={{ display: "flex", flexGrow: "1" }} />
           <Button onClick={updateUserRoles} isDisabled={!roleChanged}>
-            {admin?.save}
+            {t("admin.save")}
           </Button>
         </div>
       </>
@@ -307,7 +305,7 @@ function AdminContent() {
           placeholder="Filter"
           value={filterStr}
         />
-        <EmptyMessage>{admin?.emptyUsers}</EmptyMessage>
+        <EmptyMessage>{t("admin.emptyUsers")}</EmptyMessage>
       </>
     );
 
@@ -348,7 +346,7 @@ function AdminContent() {
           placeholder="Filter"
           value={filterStr}
         />
-        <EmptyMessage>{admin?.emptyLogs}</EmptyMessage>
+        <EmptyMessage>{t("admin.emptyLogs")}</EmptyMessage>
       </>
     );
 
@@ -361,9 +359,9 @@ function AdminContent() {
       }}
     >
       <Button onClick={() => downloadData("csv")} extraStyle={{ marginRight: "0.5rem" }}>
-        {admin.downloadCSV}
+        {t("admin.downloadCSV")}
       </Button>
-      <Button onClick={() => downloadData("json")}>{admin.downloadJSON}</Button>
+      <Button onClick={() => downloadData("json")}>{t("admin.downloadJSON")}</Button>
     </div>
   );
 
@@ -398,7 +396,7 @@ function AdminContent() {
                   setPage("users");
                 }}
               >
-                {admin?.users}
+                {t("admin.users")}
               </OptionRow>
               <OptionRow
                 onClick={() => {
@@ -406,10 +404,10 @@ function AdminContent() {
                   setPage("logs");
                 }}
               >
-                {admin?.logs}
+                {t("admin.logs")}
               </OptionRow>
-              <OptionRow onClick={() => setPage("predictions")}>{admin?.predictions}</OptionRow>
-              <OptionRow onClick={() => setPage("userMines")}>{admin?.userMines}</OptionRow>
+              <OptionRow onClick={() => setPage("predictions")}>{t("admin.predictions")}</OptionRow>
+              <OptionRow onClick={() => setPage("userMines")}>{t("admin.userMines")}</OptionRow>
             </div>
           </TitledForm>
         </div>
@@ -426,15 +424,16 @@ function AdminContent() {
 
 export function pageInit(args) {
   ReactDOM.render(
-    <PageLayout
-      role={args.role}
-      userLang={args.userLang}
-      username={args.username}
-      version={args.versionDeployed}
-      showSearch={false}
-    >
-      <AdminContent />
-    </PageLayout>,
+    <Suspense fallback="">
+      <PageLayout
+        role={args.role}
+        username={args.username}
+        version={args.versionDeployed}
+        showSearch={false}
+      >
+        <AdminContent />
+      </PageLayout>
+    </Suspense>,
     document.getElementById("main-container")
   );
 }

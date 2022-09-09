@@ -2,6 +2,7 @@ import React from "react";
 import Button from "./Button";
 import { useAtom, useAtomValue } from "jotai";
 import styled from "@emotion/styled";
+import { useTranslation } from "react-i18next";
 
 import LanguageSelector from "./LanguageSelector";
 import IconTextButton from "./IconTextButton";
@@ -15,7 +16,7 @@ const TitleBar = styled.div`
   background: var(--gray-1);
   box-shadow: 0px 3px 6px #0000008d;
   display: flex;
-  height: var(--bar-height);
+  min-height: var(--bar-height);
   justify-content: space-between;
   text-align: center;
   width: 100%;
@@ -44,7 +45,7 @@ const UserSettings = styled.div`
   align-items: center;
   display: flex;
   flex: 1;
-  justify-content: space-around;
+  justify-content: center;
 `;
 
 const LoggedInUserPanel = styled.div`
@@ -66,18 +67,12 @@ const LoggedInUsername = styled.span`
   }
 `;
 
-export default function Header({
-  localeText,
-  selectLanguage,
-  selectedLanguage,
-  setShowInfo,
-  showSearch,
-  username,
-  version,
-}) {
+export default function Header({ showSearch, username }) {
   const featureNames = useAtomValue(featureNamesAtom);
   const mapquestKey = useAtomValue(mapquestKeyAtom);
   const [visiblePanel, setVisiblePanel] = useAtom(visiblePanelAtom);
+
+  const { t, i18n } = useTranslation();
 
   const togglePanel = (panelKey) => {
     setVisiblePanel(panelKey === visiblePanel ? null : panelKey);
@@ -95,10 +90,10 @@ export default function Header({
               // iconSize="26px"
               invertBorderRadius={true}
               onClick={() => togglePanel("search")}
-              text={localeText.home?.searchTitle}
+              text={t("home.searchTitle")}
             />
             <ToolCard
-              title={localeText.home?.searchTitle}
+              title={t("home.searchTitle")}
               isInverted={true}
               active={visiblePanel === "search"}
             >
@@ -117,10 +112,10 @@ export default function Header({
       <UserSettings id="user-settings">
         {username ? (
           // TODO: onClick should open up the menu with the Account Settings, Notifications, and Subscribed Muncipalities buttons
-          // TODO: have an active state that we can pass to IconTextButton
           <LoggedInUserPanel>
             <IconTextButton
               active={false}
+              extraStyle={{ marginRight: "20px" }}
               hasBackground={false}
               icon="user"
               iconSize="26px"
@@ -131,14 +126,18 @@ export default function Header({
           </LoggedInUserPanel>
         ) : (
           <Button
+            extraStyle={{ marginRight: "20px" }}
             onClick={() => {
               window.location.assign("/login");
             }}
           >
-            {localeText.users?.login}
+            {t("users.login")}
           </Button>
         )}
-        <LanguageSelector selectedLanguage={selectedLanguage} selectLanguage={selectLanguage} />
+        <LanguageSelector
+          selectedLanguage={i18n.language}
+          selectLanguage={(lng) => i18n.changeLanguage(lng)}
+        />
       </UserSettings>
     </TitleBar>
   );

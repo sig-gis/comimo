@@ -54,8 +54,8 @@
 (defn get-points-within [data-layer regions]
   (py-wrapper utils/getPointsWithin (str point-location "/" data-layer) regions))
 
-(defn location-in-country [lat lon]
-  (py-wrapper utils/locationInCountry lat lon))
+(defn location-in-country [lat lng]
+  (py-wrapper utils/locationInCountry lat lng))
 
 ;; For now this isnt generic.
 (defn get-image-list []
@@ -159,7 +159,7 @@
   (let [visible-layers (:visibleLayers params)
         mine-dates     (:dates params)
         lat            (tc/val->double (:lat params))
-        lon            (tc/val->double (:lon params))]
+        lng            (tc/val->double (:lng params))]
     (data-response (->> visible-layers
                         (pmap
                          (fn [v]
@@ -169,9 +169,9 @@
                                   :image (py-wrapper utils/imagePointExists
                                                      (str source-base "/" (get mine-dates (keyword v)))
                                                      lat
-                                                     lon)
+                                                     lng)
 
-                                  :vector (py-wrapper utils/vectorPointOverlaps source lat lon info-cols)
+                                  :vector (py-wrapper utils/vectorPointOverlaps source lat lng info-cols)
 
                                   ""))]))
                         (into {})))))

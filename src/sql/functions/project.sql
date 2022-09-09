@@ -94,7 +94,7 @@ CREATE OR REPLACE FUNCTION calc_project_boundary(_project_id integer, _m_buffer 
 
     UPDATE projects SET boundary = b
     FROM (
-        SELECT add_buffer(ST_SetSRID(ST_Extent(ST_MakePoint(lat, lon)), 4326), _m_buffer) AS b
+        SELECT add_buffer(ST_SetSRID(ST_Extent(ST_MakePoint(lat, lng)), 4326), _m_buffer) AS b
         FROM plots
         WHERE project_rid = _project_id
     ) bb

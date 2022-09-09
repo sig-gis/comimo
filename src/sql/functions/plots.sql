@@ -17,7 +17,7 @@ $$ LANGUAGE SQL;
 CREATE OR REPLACE FUNCTION calc_plot_geom(_project_id integer, _m_buffer real)
  RETURNS void AS $$
 
-    UPDATE plots SET geom = add_buffer(ST_MakePoint(lat, lon), _m_buffer)
+    UPDATE plots SET geom = add_buffer(ST_MakePoint(lat, lng), _m_buffer)
     WHERE project_rid = _project_id
 
 $$ LANGUAGE SQL;
@@ -26,14 +26,14 @@ CREATE OR REPLACE FUNCTION select_project_plots(_project_id integer)
  RETURNS table (
     plot_id    integer,
     lat        float,
-    lon        float,
+    lng        float,
     geom       text,
     answer     text
  ) AS $$
 
     SELECT plot_uid,
         lat,
-        lon,
+        lng,
         ST_AsGeoJSON(geom),
         answer
     FROM plots
@@ -79,7 +79,7 @@ CREATE OR REPLACE FUNCTION get_predictions(_data_layer text)
     project_name    text,
     data_layer      text,
     lat             float,
-    lon             float,
+    lng             float,
     answer          text
  ) AS $$
 
@@ -88,7 +88,7 @@ CREATE OR REPLACE FUNCTION get_predictions(_data_layer text)
         institution,
         name,
         data_layer,
-        lon,
+        lng,
         lat,
         answer
     FROM projects, users, plots
@@ -105,14 +105,14 @@ CREATE OR REPLACE FUNCTION get_user_mines(_year_month text)
     email            text,
     organization     text,
     lat              float,
-    lon              float,
+    lng              float,
     reported_date    text
  ) AS $$
 
     SELECT username,
         email,
         institution,
-        lon,
+        lng,
         lat,
         to_char(reported_date, 'YYYY-MM-DD')
     FROM user_mines, users

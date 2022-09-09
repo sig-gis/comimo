@@ -1,37 +1,54 @@
-import React, { useState, useContext } from "react";
+import React, { useState } from "react";
+import styled from "@emotion/styled";
+import { useTranslation } from "react-i18next";
 
-import Button from "../components/Button";
 import InfoModal from "../components/InfoModal";
 import Modal from "../components/Modal";
-import { MainContext } from "../components/PageLayout";
 
-export default function AppInfo({ onClose, isAdmin }) {
-  const {
-    localeText: { users, appInfo },
-    username,
-  } = useContext(MainContext);
-  const [messageBox, _setMessageBox] = useState(null);
+const Links = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
+
+const BoldParagraph = styled.p`
+  font-weight: var(--unnamed-font-weight-bold);
+`;
+
+export default function AppInfo({ onClose }) {
+  const { t } = useTranslation();
+  const [messageBox, setMessageBox] = useState(null);
 
   const showAlert = (newMessageBox) => {
-    _setMessageBox({ ...newMessageBox });
+    setMessageBox({ ...newMessageBox });
   };
 
-  const hideAlert = () => _setMessageBox(null);
+  const hideAlert = () => setMessageBox(null);
 
   const extLink = (link, text) => (
-    <a style={{ marginTop: "0.5rem" }} href={link} rel="noopener noreferrer" target="_blank">
+    <a
+      style={{
+        color: "var(--links)",
+        marginTop: "0.5rem",
+        font: "var(--unnamed-font-style-normal) normal bold 16px/28px var(--unnamed-font-family-roboto)",
+        letterSpacing: "var(--unnamed-character-spacing-0)",
+      }}
+      href={link}
+      rel="noopener noreferrer"
+      target="_blank"
+    >
       {text}
     </a>
   );
 
   return (
-    <InfoModal onClose={onClose}>
-      <h2>{appInfo.title}</h2>
-      <h3 style={{ margin: "1rem 0" }}>{appInfo.termsOfUse}</h3>
-      <p>{appInfo.shortTerms}</p>
-      {extLink(appInfo.termsUrl, appInfo.viewTerms)}
-      {extLink(appInfo.methodUrl, appInfo.viewMethod)}
-      {extLink(appInfo.manualUrl, appInfo.viewManual)}
+    <InfoModal onClose={onClose} title={t("appInfo.title")}>
+      <p>{t("appInfo.shortTerms")}</p>
+      <BoldParagraph>{t("appInfo.accessAll")}</BoldParagraph>
+      <Links>
+        {extLink(t("appInfo.termsUrl"), t("appInfo.viewTerms"))}
+        {extLink(t("appInfo.methodUrl"), t("appInfo.viewMethod"))}
+        {extLink(t("appInfo.manualUrl"), t("appInfo.viewManual"))}
+      </Links>
       {messageBox && (
         <Modal
           {...messageBox}

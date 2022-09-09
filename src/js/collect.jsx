@@ -157,7 +157,7 @@ class CollectContent extends React.Component {
     const currentPlot = projectPlots.find((p) => p.id === currentPlotId);
     return (
       <>
-        {this.state.showModal && <LoadingModal message={home?.loading || "Cargando"} />}
+        {this.state.showModal && <LoadingModal message={t("home.loading") || "Cargando"} />}
         <CollectMap
           boundary={projectDetails.boundary}
           currentPlot={currentPlot}
@@ -229,7 +229,6 @@ export function pageInit(args) {
   ReactDOM.render(
     <PageLayout
       role={args.role}
-      userLang={args.userLang}
       username={args.username}
       version={args.versionDeployed}
       showSearch={true}

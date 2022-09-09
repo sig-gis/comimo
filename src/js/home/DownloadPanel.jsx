@@ -1,6 +1,6 @@
-import React, { useState, useContext } from "react";
+import React, { useState } from "react";
 import styled from "@emotion/styled";
-import { useAtom } from "jotai";
+import { useAtom, useAtomValue } from "jotai";
 
 import Button from "../components/Button";
 import Search from "../components/Search";
@@ -8,12 +8,12 @@ import Select from "../components/Select";
 import ToolCard from "../components/ToolCard";
 
 import LoadingModal from "../components/LoadingModal";
-import { MainContext } from "../components/PageLayout";
 import { URLS } from "../constants";
 import { jsonRequest } from "../utils";
 
 import { processModal, showModalAtom } from "../../../src/js/home";
 import { homeMapAtom, selectedRegionAtom } from "./HomeMap";
+import { useTranslation } from "react-i18next";
 
 const Title = styled.h2`
   border-bottom: 1px solid gray;
@@ -24,16 +24,14 @@ const Title = styled.h2`
 export default function DownloadPanel({ active, featureNames, mapquestKey, selectedDates }) {
   const [showModal, setShowModal] = useAtom(showModalAtom);
   const [selectedRegion, setSelectedRegion] = useAtom(selectedRegionAtom);
-  const [homeMap, setMap] = useAtom(homeMapAtom);
+  const homeMap = useAtomValue(homeMapAtom);
 
   const [clipOption, setClipOption] = useState(1);
   const [downloadURL, setDownloadURL] = useState(false);
   const [fetching, setFetching] = useState(false);
   const [mineType, setMineType] = useState("cMines");
 
-  const {
-    localeText: { download, validate },
-  } = useContext(MainContext);
+  const { t } = useTranslation();
 
   const getDownloadUrl = () => {
     const region = clipOption === 1 ? "all" : selectedRegion;
@@ -55,17 +53,17 @@ export default function DownloadPanel({ active, featureNames, mapquestKey, selec
   };
 
   return (
-    <ToolCard title={download?.title} active={active}>
+    <ToolCard title={t("download.title")} active={active}>
       {showModal && <LoadingModal message="Getting URL" />}
 
       <div style={{ display: "flex", flexDirection: "column" }}>
-        <label>{`${validate?.typeLabel}:`}</label>
+        <label>{`${t("validate.typeLabel")}:`}</label>
         <Select
           id="selectMineType"
           onChange={(e) => setMineType(e.target.value)}
           options={["pMines", "nMines", "cMines"].map((k) => ({
             value: k,
-            label: validate?.[k],
+            label: t(`validate.${k}`),
           }))}
           value={mineType}
         />
@@ -76,7 +74,7 @@ export default function DownloadPanel({ active, featureNames, mapquestKey, selec
             onChange={() => setClipOption(1)}
             type="radio"
           />
-          <span>{download?.allRadio}</span>
+          <span>{t("download.allRadio")}</span>
         </div>
         {/* TODO: disabled-group is not defined yet */}
         <div className={selectedRegion ? "" : "disabled-group"} style={{ marginTop: ".25rem" }}>
@@ -86,10 +84,10 @@ export default function DownloadPanel({ active, featureNames, mapquestKey, selec
             onChange={() => setClipOption(2)}
             type="radio"
           />
-          <span>{download?.selectedRadio}</span>
+          <span>{t("download.selectedRadio")}</span>
         </div>
         <div>
-          <Title>{download?.selectMuni}</Title>
+          <Title>{t("download.selectMuni")}</Title>
           <Search
             isPanel={false}
             featureNames={featureNames}
@@ -104,10 +102,10 @@ export default function DownloadPanel({ active, featureNames, mapquestKey, selec
             onClick={getDownloadUrl}
             extraStyle={{ marginTop: "0.25rem" }}
             isDisabled={fetching}
-          >{`${download?.getUrl} ${selectedDates?.[mineType]}`}</Button>
+          >{`${t("download.getUrl")} ${selectedDates[mineType]}`}</Button>
         )}
         {fetching ? (
-          <p>{`${download?.fetching}...`}</p>
+          <p>{`${t("download.fetching")}...`}</p>
         ) : (
           downloadURL && (
             <p>
@@ -116,10 +114,10 @@ export default function DownloadPanel({ active, featureNames, mapquestKey, selec
                   {`${download.clickHere}` +
                     ` ${
                       downloadURL[0] === "all"
-                        ? download?.completeData
-                        : download?.munData + downloadURL[0]
+                        ? t("download.completeData")
+                        : t("download.munData") + downloadURL[0]
                     }` +
-                    ` ${download?.prep}` +
+                    ` ${t("download.prep")}` +
                     ` ${downloadURL[1]}.`}
                 </a>
               </span>

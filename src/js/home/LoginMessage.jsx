@@ -1,22 +1,21 @@
-import React, { useContext } from "react";
+import React from "react";
+import { useTranslation } from "react-i18next";
 
 import Button from "../components/Button";
 
-import { MainContext } from "../components/PageLayout";
 
 export default function LoginMessage({ actionText }) {
-  const {
-    localeText: { users },
-  } = useContext(MainContext);
+  const { i18n, t } = useTranslation()
+
   return (
     <div style={{ textAlign: "center", width: "100%" }}>
-      <p>{`${users?.toView} ${actionText}.`}</p>
+      <p>{`${t("users.toView")} ${actionText}.`}</p>
       <Button
         onClick={() => {
           location.href = "login";
         }}
       >
-        {users?.login}
+        {t("users.login")}
       </Button>
     </div>
   );

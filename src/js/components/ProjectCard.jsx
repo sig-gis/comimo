@@ -1,10 +1,9 @@
-import React, { useContext } from "react";
 import styled from "@emotion/styled";
 
 import Button from "./Button";
 
 import { titleCase } from "../utils";
-import { MainContext } from "./PageLayout";
+import { useTranslation } from "react-i18next";
 
 const CardOuter = styled.div`
   border: 1px solid rgb(0, 0, 0, 0.9);
@@ -40,18 +39,16 @@ export default function ProjectCard({
   project: { dataLayer, createdDate, id, name, regions },
   closeProject,
 }) {
-  const {
-    localeText: { validate },
-  } = useContext(MainContext);
+  const { t, i18n } = useTranslation();
 
   return (
     <CardOuter>
       <Info>
         <Title href={`/collect?projectId=${id}`}>{name}</Title>
-        <div>{`${validate?.predictionLabel}: ${dataLayer}`}</div>
-        <div>{`${validate?.createdLabel}: ${createdDate}`}</div>
+        <div>{`${t("validate.predictionLabel")}: ${dataLayer}`}</div>
+        <div>{`${t("validate.createdLabel")}: ${createdDate}`}</div>
         <div>
-          {`${validate?.regionsLabel}:`}
+          {`${t("validate.regionsLabel")}:`}
           <RegionsList>
             {regions
               .map((x) => x.toUpperCase().split("_"))
