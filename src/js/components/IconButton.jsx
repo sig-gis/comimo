@@ -21,7 +21,8 @@ const StyledButton = styled.button`
     border-color 0.15s ease-in-out;
 
   &:hover {
-    background-color: ${THEME.hover.iconButton.backgroundColor};
+    background-color: ${({ $bgColorHover }) =>
+      $bgColorHover || THEME.hover.iconButton.backgroundColor};
     border-color: ${THEME.hover.iconButton.borderColor};
   }
 `;
@@ -32,17 +33,27 @@ const SvgContainer = styled.div`
   padding: 6px;
 `;
 
-function IconButton({ active, icon, extraStyle, onClick, parentClass, size, tooltip }) {
+function IconButton({
+  active,
+  bgColorHover,
+  icon,
+  extraStyle,
+  onClick,
+  parentClass,
+  size,
+  tooltip,
+}) {
   return (
     <StyledButton
       style={extraStyle}
       $active={active}
+      $bgColorHover={bgColorHover}
       className={parentClass || ""}
       onClick={onClick}
       title={tooltip}
     >
       <SvgContainer>
-        <SvgIcon color={THEME.default.iconButton.fillColor} icon={icon} size={size || "24px"} />
+        <SvgIcon color={THEME.default.iconButton.fillColor} icon={icon} size={size || "26px"} />
       </SvgContainer>
     </StyledButton>
   );

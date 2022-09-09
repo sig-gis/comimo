@@ -119,6 +119,7 @@ function UserAccount() {
             </label>
             <LanguageButtons selectedLanguage={defaultLang} selectLanguage={setDefaultLang} />
           </div>
+          <hr style={{ border: "1px dashed", borderColor: "var(--gray" }} />
           <TextInput
             disabled={false}
             id="username"

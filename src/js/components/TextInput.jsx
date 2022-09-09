@@ -12,6 +12,11 @@ const Input = styled.input`
   margin-top: 0.25rem;
 `;
 
+const TextLabel = styled.label`
+  color: var(--gray-1);
+  font: normal normal medium 18px/18px Roboto;
+`;
+
 // TODO: Add showing error like when in searching for invalide coordinates...
 
 export default function TextInput({
@@ -32,7 +37,7 @@ export default function TextInput({
   const error = required && touched && value.length === 0;
   return (
     <div style={{ ...extraStyle }}>
-      {label && <label htmlFor={id}>{label}</label>}
+      {label && <TextLabel htmlFor={id}>{label}</TextLabel>}
       {type === "textarea" ? (
         <textarea
           style={{ width: "100%" }}

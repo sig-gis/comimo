@@ -118,6 +118,7 @@ function Register() {
             </label>
             <LanguageButtons selectedLanguage={defaultLang} selectLanguage={setDefaultLang} />
           </div>
+          <hr style={{ border: "1px dashed", borderColor: "var(--gray" }} />
           {renderField(t("users.username"), "text", "username", username, setUsername)}
           {renderField(t("users.email"), "email", "email", email, setEmail)}
           {renderField(t("users.fullName"), "text", "fullName", fullName, setFullName)}

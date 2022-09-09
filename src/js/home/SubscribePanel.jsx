@@ -5,8 +5,9 @@ import LoginMessage from "./LoginMessage";
 import Button from "../components/Button";
 import Search from "../components/Search";
 import ToolCard from "../components/ToolCard";
+import IconButton from "../components/IconButton";
 
-import { usernameAtom, } from "../components/PageLayout";
+import { usernameAtom } from "../components/PageLayout";
 import { URLS } from "../constants";
 import { jsonRequest } from "../utils";
 import { useAtomValue } from "jotai";
@@ -69,7 +70,7 @@ export default function SubscribePanel({
       setSubsLoaded(true);
       setSubscribedList(result.sort());
     } else {
-      alert(subscribe[result]);
+      alert(t(`subscribe${result}`));
     }
   };
 
@@ -94,7 +95,7 @@ export default function SubscribePanel({
   const delSubs = (region) => {
     const arr = region.split("_");
     const delConfirm = confirm(
-      `${subscribe.delConfirm1} ${arr.reverse().join(", ")}? ${t("subscribe.delConfirm2")}`
+      `${t("subscribe.delConfirm1")} ${arr.reverse().join(", ")}? ${t("subscribe.delConfirm2")}`
     );
     if (delConfirm) {
       jsonRequest(URLS.DEL_SUBS, { region })
@@ -125,8 +126,15 @@ export default function SubscribePanel({
                   {arr[2] + ", "}
                   <i>{arr[1]}</i>
                 </td>
-                <td style={{ width: "30px" }}>
-                  <DeleteButton onClick={() => delSubs(region)} type="submit" value="X" />
+                <td style={{ width: "30px", display: "flex", justifyContent: "center" }}>
+                  <IconButton
+                    extraStyle={{ borderColor: "red" }}
+                    bgColorHover="#ff40409e"
+                    size="15px"
+                    icon="redX"
+                    tooltip="remove"
+                    onClick={() => delSubs(region)}
+                  />
                 </td>
               </tr>
             );
@@ -159,9 +167,9 @@ export default function SubscribePanel({
               // TODO: inform user (either in UI or alert that is region already been subscribed to and can't add it twice)
               selectedRegion && !subscribedList.includes(selectedRegion) && (
                 <div style={{ textAlign: "center", width: "100%" }}>
-                  <Button
-                    onClick={() => addSubs(selectedRegion)}
-                  >{`${t("subscribe.subscribeTo")} ${parsedRegion[2]}, ${parsedRegion[1]}`}</Button>
+                  <Button onClick={() => addSubs(selectedRegion)}>{`${t("subscribe.subscribeTo")} ${
+                    parsedRegion[2]
+                  }, ${parsedRegion[1]}`}</Button>
                 </div>
               )
             }

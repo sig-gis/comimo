@@ -270,7 +270,11 @@ function HomeContents() {
               src="/img/app-logo.png"
             /> */}
             <LogoGitVersion
-              href={`https://github.com/sig-gis/comimo/tags/${versionDeployed}`}
+              href={
+                versionDeployed
+                  ? `https://github.com/sig-gis/comimo/tags/${versionDeployed}`
+                  : "https://github.com/sig-gis/comimo"
+              }
               target="/blank"
             >
               {versionDeployed ? `Version: ${versionDeployed}` : "Version: Latest"}
