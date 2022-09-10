@@ -8,6 +8,7 @@ import LanguageSelector from "./LanguageSelector";
 import IconTextButton from "./IconTextButton";
 import Search from "./Search";
 import ToolCard from "./ToolCard";
+import UserDropdown from "./UserDropdown";
 
 import { visiblePanelAtom, featureNamesAtom } from "../home";
 import { mapquestKeyAtom } from "./PageLayout";
@@ -111,19 +112,7 @@ export default function Header({ showSearch, username }) {
       </Logo>
       <UserSettings id="user-settings">
         {username ? (
-          // TODO: onClick should open up the menu with the Account Settings, Notifications, and Subscribed Muncipalities buttons
-          <LoggedInUserPanel>
-            <IconTextButton
-              active={false}
-              extraStyle={{ marginRight: "20px" }}
-              hasBackground={false}
-              icon="user"
-              iconSize="26px"
-              onClick={() => window.location.assign("/user-account")}
-              text={username}
-              tooltip="Placeholder ToolTip"
-            />
-          </LoggedInUserPanel>
+          <UserDropdown username={username} />
         ) : (
           <Button
             extraStyle={{ marginRight: "20px" }}

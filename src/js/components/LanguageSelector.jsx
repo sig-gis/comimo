@@ -9,11 +9,14 @@ export default function LanguageSelector({ selectedLanguage, selectLanguage }) {
   const [show, setShow] = useState(false);
   const { t } = useTranslation();
 
-  const languages = { spanish: "es", english: "en" };
+  const languages = {
+    es: { icon: "spanish", value: "es", text: "Español" },
+    en: { icon: "english", value: "en", text: "English" },
+  };
 
   const onClickLangaugeOption = (language) => {
-    selectLanguage(languages[language]);
-    // setShow(false);
+    selectLanguage(language);
+    setShow(false);
   };
 
   return (
@@ -28,9 +31,9 @@ export default function LanguageSelector({ selectedLanguage, selectLanguage }) {
       />
       <DropDownMenu
         active={show}
-        selected={selectedLanguage}
         options={languages}
         optionOnClick={onClickLangaugeOption}
+        selected={selectedLanguage}
       />
     </div>
   );

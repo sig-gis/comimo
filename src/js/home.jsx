@@ -250,15 +250,6 @@ function HomeContents() {
             )}
           </Buttons>
           <Logo>
-            {/* TODO: move this top bar (menu admin) */}
-            {/* {true && (
-              <IconButton
-                extraStyle={{ marginRight: "10px" }}
-                icon="admin"
-                onClick={() => window.location.assign("/admin")}
-                // tooltip={localeText.home.admin}
-              />
-            )} */}
             <IconButton
               // extraStyle={{ marginRight: "10px" }}
               icon="info"
