@@ -1,11 +1,7 @@
-import React, { useState } from "react";
+import React from "react";
 import styled from "@emotion/styled";
 
-import { visiblePanelAtom } from "../home";
-
-import { capitalize } from "lodash";
 import SvgIcon from "./SvgIcon";
-import { useAtom, useSetAtom } from "jotai";
 
 const PanelOuter = styled.div`
   background: var(--gray-option);
@@ -60,14 +56,15 @@ const Seperator = styled.hr`
 `;
 
 export default function DropDownMenu({ active, options, optionOnClick, selected }) {
-  const renderOption = (language, languageAbbr) => {
+  const renderOption = (val) => {
+    const { icon, value, text } = val;
     return (
       <>
-        <Option selected={selected === languageAbbr} onClick={() => optionOnClick(language)}>
-          <SvgIcon color="var(--gray-1)" icon={language} size="2rem" />
-          <OptionText>{capitalize(language)}</OptionText>
+        <Option selected={selected === value} onClick={() => optionOnClick(value)}>
+          <SvgIcon color="var(--gray-1)" icon={icon} size="2rem" />
+          <OptionText>{text}</OptionText>
         </Option>
-        <Seperator selected={selected === languageAbbr} />
+        <Seperator selected={selected === value} />
       </>
     );
   };
@@ -76,8 +73,8 @@ export default function DropDownMenu({ active, options, optionOnClick, selected 
     <PanelOuter active={active}>
       {active && (
         <>
-          {Object.entries(options).map(([language, languageAbbr]) => (
-            <div key={language}> {renderOption(language, languageAbbr)}</div>
+          {Object.entries(options).map(([key, val]) => (
+            <div key={key}> {renderOption(val)}</div>
           ))}
         </>
       )}

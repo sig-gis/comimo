@@ -223,7 +223,7 @@
     "verifying": "Verifying email",
     "verified": "Account has been verified.  Please log in to continue.",
     "modalMessage": "Loading",
-    "userAccountTitle": "Update Account",
+    "userAccountTitle": "Account Settings",
     "successUpdate": "Your account has been successfully updated.",
     "save": "Save",
     "close": "Close",
@@ -249,7 +249,9 @@
     "errorEmailReq": "Please enter your email.",
     "userNotFound": "The user was not found. Contact support.",
     "errorUpdating": "An error occurred while updating account. Contact support.",
-    "enterEmail": "Enter email"
+    "enterEmail": "Enter email",
+    "settings": "Settings",
+    "admin": "Admin"
   },
   "admin": {
     "save": "Save",
