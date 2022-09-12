@@ -1,6 +1,7 @@
 import React, { useState, Suspense } from "react";
 import ReactDOM from "react-dom";
 import styled from "@emotion/styled";
+import { css } from "@emotion/react";
 import { ThemeProvider } from "@emotion/react";
 
 import AccountForm from "./components/AccountForm";
@@ -113,13 +114,29 @@ function UserAccount() {
         {showModal && <LoadingModal message={t("users.modalMessage")} />}
         {/* TODO: Make submitFn optional for AccountForm and TitledForm */}
         <AccountForm header={t("users.userAccountTitle")} submitFn={() => {}}>
-          <div style={{ display: "flex", flexDirection: "column", marginBottom: "10px" }}>
-            <label style={{ marginRight: "1rem", marginBottom: "10px" }}>
+          <div
+            css={css`
+              display: flex;
+              flex-direction: column;
+              margin-bottom: 10px;
+            `}
+          >
+            <label
+              css={css`
+                margin-right: 1rem;
+                margin-bottom: 10px;
+              `}
+            >
               {t("users.language")}
             </label>
             <LanguageButtons selectedLanguage={defaultLang} selectLanguage={setDefaultLang} />
           </div>
-          <hr style={{ border: "1px dashed", borderColor: "var(--gray" }} />
+          <hr
+            css={css`
+              border: 1px dashed;
+              border-color: var(--gray);
+            `}
+          />
           <TextInput
             disabled={false}
             id="username"

@@ -5,7 +5,7 @@ import LoginMessage from "./LoginMessage";
 import Button from "../components/Button";
 import Search from "../components/Search";
 import ToolCard from "../components/ToolCard";
-import IconButton from "../components/IconButton";
+import DeleteButton from "../components/DeleteButton";
 
 import { usernameAtom } from "../components/PageLayout";
 import { URLS } from "../constants";
@@ -18,34 +18,6 @@ const Title = styled.h2`
   border-bottom: 1px solid gray;
   font-weight: bold;
   padding: 0.5rem;
-`;
-
-const DeleteButton = styled.input`
-  border-radius: 50%;
-  height: 1.75rem;
-  width: 1.75rem;
-  font-size: 1.25rem;
-  font-weight: bolder;
-  border: none;
-  color: red;
-
-  &:hover {
-    background: #ff40409e;
-  }
-
-  &:active {
-    background: #ff0000;
-    color: white;
-  }
-
-  &:focus {
-    outline: none;
-  }
-
-  &:disabled {
-    background: #ddd;
-    color: #aaa;
-  }
 `;
 
 export default function SubscribePanel({
@@ -127,14 +99,7 @@ export default function SubscribePanel({
                   <i>{arr[1]}</i>
                 </td>
                 <td style={{ width: "30px", display: "flex", justifyContent: "center" }}>
-                  <IconButton
-                    extraStyle={{ borderColor: "red" }}
-                    bgColorHover="#ff40409e"
-                    size="15px"
-                    icon="redX"
-                    tooltip="remove"
-                    onClick={() => delSubs(region)}
-                  />
+                  <DeleteButton onClick={() => delSubs(region)} />
                 </td>
               </tr>
             );

@@ -1,5 +1,4 @@
 import React from "react";
-import PropTypes from "prop-types";
 import styled from "@emotion/styled";
 import { THEME } from "../constants";
 
@@ -58,21 +57,5 @@ function IconButton({
     </StyledButton>
   );
 }
-
-// IconButton.propTypes = {
-//   color: PropTypes.string,
-//   cursor: PropTypes.string,
-//   extraStyles: PropTypes.object,
-//   icon: PropTypes.string.isRequired,
-//   size: PropTypes.string.isRequired,
-//   verticalAlign: PropTypes.string
-// };
-
-// IconButton.defaultProps = {
-//   color: "currentColor",
-//   cursor: "pointer",
-//   extraStyles: {},
-//   verticalAlign: "middle"
-// };
 
 export default IconButton;

@@ -12,7 +12,7 @@ const Input = styled.input`
   margin-top: 0.25rem;
 `;
 
-const TextLabel = styled.label`
+const Label = styled.label`
   color: var(--gray-1);
   font: normal normal medium 18px/18px Roboto;
 `;
@@ -37,7 +37,7 @@ export default function TextInput({
   const error = required && touched && value.length === 0;
   return (
     <div style={{ ...extraStyle }}>
-      {label && <TextLabel htmlFor={id}>{label}</TextLabel>}
+      {label && <Label htmlFor={id}>{label}</Label>}
       {type === "textarea" ? (
         <textarea
           style={{ width: "100%" }}
