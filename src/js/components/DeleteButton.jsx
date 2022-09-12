@@ -2,7 +2,7 @@ import React from "react";
 
 import IconButton from "./IconButton";
 
-function DeleteButton({ onClick }) {
+const DeleteButton = ({ onClick }) => (
   <IconButton
     extraStyle={{ borderColor: "red" }}
     bgColorHover="#ff40409e"
@@ -10,7 +10,7 @@ function DeleteButton({ onClick }) {
     icon="redX"
     tooltip="remove"
     onClick={onClick}
-  />;
-}
+  />
+);
 
 export default DeleteButton;
