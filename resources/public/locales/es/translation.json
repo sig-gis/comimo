@@ -221,7 +221,7 @@
     "verifying": "Verificando email",
     "verified": "Cuenta verificada. Por favor accede con tu usuario y clave para continuar.",
     "modalMessage": "Cargando",
-    "userAccountTitle": "Actualizar Cuenta",
+    "userAccountTitle": "Configuraciones de la Cuenta",
     "successUpdate": "Tu cuenta ha sido actualizada.",
     "save": "Guardar",
     "close": "Cerrar",
@@ -247,7 +247,9 @@
     "errorEmailReq": "Por favor ingresa tu email.",
     "userNotFound": "La usuaria no fue encontrada. Contactar con soporte.",
     "errorUpdating": "Se produjo un error al cuenta. Contactar con soporte.",
-    "enterEmail": "Ingrese correo electrónico"
+    "enterEmail": "Ingrese correo electrónico",
+    "settings": "Ajustes",
+    "admin": "Administradora"
   },
   "admin": {
     "save": "Guardar",
