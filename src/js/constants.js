@@ -114,6 +114,19 @@ export const availableLayers = [
   "NICFI",
 ];
 
+export const layerColors = {
+  cMines: "var(--confirmed-mines)",
+  nMines: "var(--new-mines)",
+  pMines: "var(--current-pred)",
+  municipalBounds: "var(--municipal-bounds)",
+  legalMines: "var(--mining-titles)",
+  otherAuthorizations: "var(--authorizations)",
+  tierrasDeCom: "var(--communal-lands)",
+  resguardos: "var(--indigenous)",
+  protectedAreas: "var(--protected-areas)",
+  NICFI: "var(--nicfi)",
+};
+
 export const startVisible = ["cMines", "NICFI"];
 
 export const attributions = {

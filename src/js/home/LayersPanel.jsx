@@ -1,14 +1,49 @@
 import React, { useEffect, useState } from "react";
 import { useAtom, useAtomValue } from "jotai";
+import styled from "@emotion/styled";
 
 import NICFIControl from "../components/NICFIControl";
 import ToolCard from "../components/ToolCard";
 
 // import i18n from "../i18n";
 import { extraMapParamsAtom } from "../home";
-import { startVisible, availableLayers } from "../constants";
+import { startVisible, availableLayers, layerColors } from "../constants";
 import { homeMapAtom } from "./HomeMap";
 import { useTranslation } from "react-i18next";
+
+const LayerCheckbox = styled.input`
+  accent-color: ${({ layerColor }) => layerColor || "var(--teal-1)"};
+`;
+
+const LayerSlider = styled.input`
+  background: ${({ layerColor }) =>
+    layerColor
+      ? `transparent linear-gradient(90deg, var(--gray-4) 0%, ${layerColor} 100%) 0% 0% no-repeat padding-box`
+      : "transparent linear-gradient(90deg, var(--gray-4) 0%, var(--black) 100%) 0% 0% no-repeat padding-box"};
+
+  &::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    background: ${({ layerColor }) => layerColor || "var(--teal-1)"};
+    border: 2px solid;
+    border-color: var(--white);
+    border-radius: 50%;
+    box-shadow: 0px 3px 2px #00000040;
+    cursor: ew-resize;
+    height: 18px;
+    width: 18px;
+  }
+
+  &::-moz-range-thumb {
+    background: ${({ layerColor }) => layerColor || "var(--teal-1)"};
+    border: 2px solid;
+    border-color: var(--white);
+    border-radius: 50%;
+    box-shadow: 0px 3px 2px #00000040;
+    cursor: ew-resize;
+    height: 18px;
+    width: 18px;
+  }
+`;
 
 export default function LayersPanel({ nicfiLayers, active }) {
   const [visible, setVisible] = useState(null);
@@ -16,7 +51,7 @@ export default function LayersPanel({ nicfiLayers, active }) {
   const [opacity, setOpacity] = useState(null);
   const homeMap = useAtomValue(homeMapAtom);
 
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
 
   const setParams = (param, value) => {
     setExtraMapParams({
@@ -47,6 +82,7 @@ export default function LayersPanel({ nicfiLayers, active }) {
   };
 
   const renderControl = (name) => {
+    const layerColor = layerColors[name];
     const layerVisible = visible[name];
     return (
       <div
@@ -59,7 +95,8 @@ export default function LayersPanel({ nicfiLayers, active }) {
         }}
       >
         <div>
-          <input
+          <LayerCheckbox
+            layerColor={layerColor}
             checked={layerVisible}
             id={"label-" + name}
             onChange={() => setLayerVisible(name, !layerVisible)}
@@ -70,11 +107,12 @@ export default function LayersPanel({ nicfiLayers, active }) {
             {t(`layers.${name}`)}
           </label>
         </div>
-        <input
+        <LayerSlider
+          layerColor={layerColor}
           max="100"
           min="0"
           onChange={(e) => setLayerOpacity(name, parseInt(e.target.value))}
-          style={{ padding: "0rem", margin: "0rem", cursor: "pointer", width: "40%" }}
+          style={{ padding: "0rem", margin: "0rem", width: "40%" }}
           type="range"
           value={opacity[name]}
         />
