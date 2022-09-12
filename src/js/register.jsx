@@ -1,6 +1,7 @@
 import React, { useState, Suspense } from "react";
 import ReactDOM from "react-dom";
 import styled from "@emotion/styled";
+import { css } from "@emotion/react";
 import { useAtom } from "jotai";
 import EmailValidator from "email-validator";
 import { useTranslation } from "react-i18next";
@@ -112,12 +113,29 @@ function Register() {
       <PageContainer>
         {showModal && <LoadingModal message={t("users.modalMessage")} />}
         <AccountForm header={t("users.registerTitle")} submitFn={registerUser}>
-          <div style={{ display: "flex", flexDirection: "column", marginBottom: "10px" }}>
-            <label style={{ marginRight: "1rem", marginBottom: "10px" }}>
+          <div
+            css={css`
+              display: flex;
+              flex-direction: column;
+              margin-bottom: 10px;
+            `}
+          >
+            <label
+              css={css`
+                margin-right: 1rem;
+                margin-bottom: 10px;
+              `}
+            >
               {t("users.language")}
             </label>
             <LanguageButtons selectedLanguage={defaultLang} selectLanguage={setDefaultLang} />
           </div>
+          <hr
+            css={css`
+              border: 1px dashed;
+              border-color: var(--gray);
+            `}
+          />
           {renderField(t("users.username"), "text", "username", username, setUsername)}
           {renderField(t("users.email"), "email", "email", email, setEmail)}
           {renderField(t("users.fullName"), "text", "fullName", fullName, setFullName)}

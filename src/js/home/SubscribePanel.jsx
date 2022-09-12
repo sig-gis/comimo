@@ -5,8 +5,9 @@ import LoginMessage from "./LoginMessage";
 import Button from "../components/Button";
 import Search from "../components/Search";
 import ToolCard from "../components/ToolCard";
+import DeleteButton from "../components/DeleteButton";
 
-import { usernameAtom, } from "../components/PageLayout";
+import { usernameAtom } from "../components/PageLayout";
 import { URLS } from "../constants";
 import { jsonRequest } from "../utils";
 import { useAtomValue } from "jotai";
@@ -17,34 +18,6 @@ const Title = styled.h2`
   border-bottom: 1px solid gray;
   font-weight: bold;
   padding: 0.5rem;
-`;
-
-const DeleteButton = styled.input`
-  border-radius: 50%;
-  height: 1.75rem;
-  width: 1.75rem;
-  font-size: 1.25rem;
-  font-weight: bolder;
-  border: none;
-  color: red;
-
-  &:hover {
-    background: #ff40409e;
-  }
-
-  &:active {
-    background: #ff0000;
-    color: white;
-  }
-
-  &:focus {
-    outline: none;
-  }
-
-  &:disabled {
-    background: #ddd;
-    color: #aaa;
-  }
 `;
 
 export default function SubscribePanel({
@@ -69,7 +42,7 @@ export default function SubscribePanel({
       setSubsLoaded(true);
       setSubscribedList(result.sort());
     } else {
-      alert(subscribe[result]);
+      alert(t(`subscribe${result}`));
     }
   };
 
@@ -94,7 +67,7 @@ export default function SubscribePanel({
   const delSubs = (region) => {
     const arr = region.split("_");
     const delConfirm = confirm(
-      `${subscribe.delConfirm1} ${arr.reverse().join(", ")}? ${t("subscribe.delConfirm2")}`
+      `${t("subscribe.delConfirm1")} ${arr.reverse().join(", ")}? ${t("subscribe.delConfirm2")}`
     );
     if (delConfirm) {
       jsonRequest(URLS.DEL_SUBS, { region })
@@ -125,8 +98,8 @@ export default function SubscribePanel({
                   {arr[2] + ", "}
                   <i>{arr[1]}</i>
                 </td>
-                <td style={{ width: "30px" }}>
-                  <DeleteButton onClick={() => delSubs(region)} type="submit" value="X" />
+                <td style={{ width: "30px", display: "flex", justifyContent: "center" }}>
+                  <DeleteButton onClick={() => delSubs(region)} />
                 </td>
               </tr>
             );
@@ -159,9 +132,9 @@ export default function SubscribePanel({
               // TODO: inform user (either in UI or alert that is region already been subscribed to and can't add it twice)
               selectedRegion && !subscribedList.includes(selectedRegion) && (
                 <div style={{ textAlign: "center", width: "100%" }}>
-                  <Button
-                    onClick={() => addSubs(selectedRegion)}
-                  >{`${t("subscribe.subscribeTo")} ${parsedRegion[2]}, ${parsedRegion[1]}`}</Button>
+                  <Button onClick={() => addSubs(selectedRegion)}>{`${t("subscribe.subscribeTo")} ${
+                    parsedRegion[2]
+                  }, ${parsedRegion[1]}`}</Button>
                 </div>
               )
             }
