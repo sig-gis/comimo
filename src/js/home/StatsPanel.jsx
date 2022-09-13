@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 
 import ToolCard from "../components/ToolCard";
+import Divider from "../components/Divider";
 
 import { jsonRequest } from "../utils";
 import { URLS } from "../constants";
@@ -111,6 +112,7 @@ export default function StatsPanel({ active, selectedDate, subscribedList }) {
         <p style={{ lineHeight: "1rem", fontSize: ".75rem" }}>{t("stats.regionSubTitle")}</p>
         <div id="stats1" />
         {!chartsLoaded && <div>{`${t("stats.loading")}...`}</div>}
+        <Divider />
         <h3>{t("stats.dateTitle")}</h3>
         <div id="stats2" />
         {!chartsLoaded && <div>{`${t("stats.loading")}...`}</div>}

@@ -31,7 +31,6 @@
   --blue-1: #acc8ff;
   --teal-1: #159ebf;
 
-
   /* Sizes */
 
   --bar-height: 60px;
@@ -266,10 +265,10 @@ input[type="checkbox"] {
 input[type="range"] {
   -webkit-appearance: none;
   -webkit-tap-highlight-color: rgba(255, 255, 255, 0);
-  height: 8px;
-  border: none;
+  border: #C6C6C6 1px solid;
   border-radius: 30px;
-  background-image: linear-gradient(to right, #0080ff 5%, #001b3b 100%);
+  cursor: ew-resize;
+  height: 8px;
   outline: none;
 }
 

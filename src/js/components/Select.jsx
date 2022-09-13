@@ -1,6 +1,15 @@
 import React from "react";
+import styled from "@emotion/styled";
 
 import { isString } from "lodash";
+
+const Label = styled.label`
+  font: var(--unnamed-font-style-normal) var(--unnamed-font-weight-medium)
+    var(--unnamed-font-size-16) / var(--unnamed-line-spacing-19) var(--unnamed-font-family-roboto);
+  letter-spacing: var(--unnamed-character-spacing-0);
+  color: var(--black);
+  text-align: left;
+`;
 
 function Option({ option, valueKey = "value", labelKey = "label", disabled }) {
   const [value, label] = isString(option, "String")
@@ -27,8 +36,8 @@ export default function Select({
   defaultOption = "",
 }) {
   return (
-    <div style={{ marginBottom: "1rem" }}>
-      <label htmlFor={id}>{label}</label>
+    <div style={{ marginBottom: "0.5rem" }}>
+      <Label htmlFor={id}>{label}</Label>
       <select
         style={{ width: "100%", cursor: "pointer", padding: "0.25rem", marginTop: "0.25rem" }}
         disabled={disabled}

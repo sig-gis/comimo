@@ -101,6 +101,8 @@ export const URLS = {
   USERS: "get-users-list",
 };
 
+export const miningLayers = ["cMines", "nMines", "pMines"];
+
 export const availableLayers = [
   "cMines",
   "nMines",
@@ -113,6 +115,19 @@ export const availableLayers = [
   "protectedAreas",
   "NICFI",
 ];
+
+export const layerColors = {
+  cMines: "#800080",
+  nMines: "#FF0000",
+  pMines: "#FFA500",
+  municipalBounds: "#E2615B",
+  legalMines: "#ECEE0D",
+  otherAuthorizations: "#094876",
+  tierrasDeCom: "#EDD18F",
+  resguardos: "#DB99DB",
+  protectedAreas: "#30CE97",
+  NICFI: "#159ebf",
+};
 
 export const startVisible = ["cMines", "NICFI"];
 

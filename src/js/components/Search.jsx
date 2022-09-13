@@ -183,7 +183,6 @@ export default function Search({ featureNames, mapquestKey, isPanel }) {
           />
         </>
       )}
-      <label>{t("search.selectLabel")}</label>
       {selectL1}
       {selectL2}
     </div>

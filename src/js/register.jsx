@@ -14,11 +14,22 @@ import AccountForm from "./components/AccountForm";
 import Select from "./components/Select";
 import TextInput from "./components/TextInput";
 import { PageLayout } from "./components/PageLayout";
+import Divider from "./components/Divider";
 
 import { showModalAtom, processModal } from "./home";
 
 import { getLanguage, jsonRequest, validatePassword } from "./utils";
 import { THEME } from "./constants";
+
+const Label = styled.label`
+  font: var(--unnamed-font-style-normal) var(--unnamed-font-weight-medium)
+    var(--unnamed-font-size-16) / var(--unnamed-line-spacing-19) var(--unnamed-font-family-roboto);
+  letter-spacing: var(--unnamed-character-spacing-0);
+  color: var(--black);
+  margin-right: 1rem;
+  margin-bottom: 10px;
+  text-align: left;
+`;
 
 const PageContainer = styled.div`
   align-items: center;
@@ -120,22 +131,10 @@ function Register() {
               margin-bottom: 10px;
             `}
           >
-            <label
-              css={css`
-                margin-right: 1rem;
-                margin-bottom: 10px;
-              `}
-            >
-              {t("users.language")}
-            </label>
+            <Label>{t("users.language")}</Label>
             <LanguageButtons selectedLanguage={defaultLang} selectLanguage={setDefaultLang} />
           </div>
-          <hr
-            css={css`
-              border: 1px dashed;
-              border-color: var(--gray);
-            `}
-          />
+          <Divider />
           {renderField(t("users.username"), "text", "username", username, setUsername)}
           {renderField(t("users.email"), "email", "email", email, setEmail)}
           {renderField(t("users.fullName"), "text", "fullName", fullName, setFullName)}

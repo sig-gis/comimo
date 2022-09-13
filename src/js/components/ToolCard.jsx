@@ -7,7 +7,7 @@ import SvgIcon from "./SvgIcon";
 import { useAtom, useSetAtom } from "jotai";
 
 const PanelOuter = styled.div`
-  background: #fffff8;
+  background: var(--gray-4);
   border-radius: ${({ isInverted }) => (isInverted ? "0 0 6px 6px" : "6px 6px 0 0")};
   bottom: ${({ isInverted }) => !isInverted && "var(--bar-height)"};
   display: ${({ active }) => (active ? "flex" : "none")};
@@ -26,8 +26,10 @@ const Title = styled.div`
   border-radius: ${({ isInverted }) => !isInverted && "6px 6px 0 0"};
   color: var(--white);
   display: flex;
-  font: normal normal bold 18px/21px Roboto;
+  font: var(--unnamed-font-style-normal) var(--unnamed-font-weight-bold) var(--unnamed-font-size-18) /
+    21px var(--unnamed-font-family-roboto);
   justify-content: space-between;
+  letter-spacing: 0px;
   padding: 0.5rem;
   text-align: left;
   text-transform: uppercase;

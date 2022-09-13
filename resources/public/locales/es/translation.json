@@ -91,11 +91,13 @@
     "selectBand": "Seleccionar Banda",
     "visible": "Visible",
     "infrared": "Infrarroja",
-    "selectTime": "Seleccione Fecha"
+    "selectTime": "Seleccione Fecha",
+    "other": "Otras Capas",
+    "mining": "Actvidad Minera"
   },
   "report": {
-    "title": "Reportar minas",
-    "subTitle": "Haz clic en la mina que quieres reportar o ingresa sus coordenadas",
+    "title": "Reportar Minas",
+    "subTitle": "Haz clic en la mina que quieres reportar o ingresa sus coordenadas:",
     "goButton": "Ir",
     "coordLabel": "Buscar por coordenadas (Latitud, Longitud)",
     "selectedLocation": "Punto seleccionado",
@@ -121,7 +123,7 @@
   "search": {
     "noResults": "Sin resultados",
     "stateLabel": "Departamento",
-    "defaultState": "Selecciona un departamento",
+    "defaultState": "Seleccione un departamento",
     "loading": "Cargando",
     "munLabel": "Municipio",
     "defaultMun": "Selecciona un municipio",
@@ -155,7 +157,7 @@
     "subscribedTo": "Estás suscrito a alertas para los siguientes municipios",
     "subscribeTo": "Suscribirse a",
     "loginAction": "Suscripciones",
-    "addNew": "Agregar nueva suscripción"
+    "addNew": "Agregar Nueva Suscripción"
   },
   "validate": {
     "errorDate": "Seleccionar una fecha.",
@@ -172,12 +174,12 @@
     "regionsLabel": "Municipios",
     "loading": "Cargando",
     "title": "Validación",
-    "subtitle": "Ver proyectos existentes o crear uno nuevo para validar las predicciones",
+    "subtitle": "Proyectos Existentes",
     "noProjects": "No tienes ningún proyecto activo.",
     "name": "Nombre",
-    "createProject": "Crea un nuevo proyecto",
-    "projectName": "Ingresa el nombre del proyecto",
-    "projectRegion": "Selecciona los municipios del proyecto",
+    "createProject": "Crea un Nuevo Proyecto",
+    "projectName": "Ingresa el Nombre del Proyecto",
+    "projectRegion": "Selecciona los Municipios del Proyecto",
     "subscribedRadio": "Municipios suscritos",
     "customRadio": "Municipios personalizados",
     "createButton": "Crear nuevo proyecto para",
