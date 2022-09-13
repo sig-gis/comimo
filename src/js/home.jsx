@@ -133,146 +133,143 @@ function HomeContents() {
   return (
     <>
       <HomeMap />
-      <div id="bottom-bar">
-        <FooterBar>
-          <Buttons>
-            {/* Layers */}
-            <BarItem>
-              <IconTextButton
-                active={visiblePanel === "layers"}
-                hasBackground={true}
-                icon="layer"
-                onClick={() => togglePanel("layers")}
-                text={t("home.layersTitle")}
-              />
-              <LayersPanel active={visiblePanel === "layers"} nicfiLayers={nicfiLayers} />
-            </BarItem>
-
-            {/* Subscribe */}
-            <BarItem>
-              <IconTextButton
-                active={visiblePanel === "subscribe"}
-                hasBackground={true}
-                icon="envelope"
-                onClick={() => togglePanel("subscribe")}
-                text={t("home.subscribeTitle")}
-              />
-              <SubscribePanel
-                active={visiblePanel === "subscribe"}
-                featureNames={featureNames}
-                mapquestKey={mapquestKey}
-                subscribedList={subscribedList}
-                setSubscribedList={setSubscribedList}
-              />
-            </BarItem>
-
-            {/* Validation */}
-            <BarItem>
-              <IconTextButton
-                active={visiblePanel === "validate"}
-                hasBackground={true}
-                icon="check"
-                onClick={() => togglePanel("validate")}
-                text={t("home.validationsTitle")}
-              />
-              <ValidatePanel
-                active={visiblePanel === "validate"}
-                featureNames={featureNames}
-                selectedDates={selectedDates}
-                subscribedList={subscribedList}
-              />
-            </BarItem>
-            {/* "Advanced Controls" */}
-            {username && (
-              <>
-                {/* Filter */}
-                <BarItem>
-                  <IconTextButton
-                    active={visiblePanel === "filter"}
-                    hasBackground={true}
-                    icon="filter"
-                    onClick={() => togglePanel("filter")}
-                    text={t("home.filterTitle")}
-                  />
-                  <FilterPanel
-                    active={visiblePanel === "filter"}
-                    imageDates={imageDates}
-                    selectDates={selectDates}
-                    selectedDates={selectedDates}
-                  />
-                </BarItem>
-
-                {/* Report Mines */}
-                <BarItem>
-                  <IconTextButton
-                    active={visiblePanel === "report"}
-                    hasBackground={true}
-                    icon="mine"
-                    onClick={() => togglePanel("report")}
-                    text={t("home.reportMinesTitle")}
-                  />
-                  <ReportMinesPanel active={visiblePanel === "report"} />
-                </BarItem>
-
-                {/* Download Data */}
-                <BarItem>
-                  <IconTextButton
-                    active={visiblePanel === "download"}
-                    hasBackground={true}
-                    icon="download"
-                    onClick={() => togglePanel("download")}
-                    text={t("home.downloadTitle")}
-                  />
-                  <DownloadPanel
-                    active={visiblePanel === "download"}
-                    featureNames={featureNames}
-                    mapquestKey={mapquestKey}
-                    selectedDates={selectedDates}
-                  />
-                </BarItem>
-
-                {/* Statistics */}
-                <BarItem>
-                  <IconTextButton
-                    active={visiblePanel === "stats"}
-                    hasBackground={true}
-                    icon="stats"
-                    onClick={() => togglePanel("stats")}
-                    text={t("home.statisticsTitle")}
-                  />
-                  <StatsPanel
-                    active={visiblePanel === "stats"}
-                    selectedDate={selectedDates?.cMines}
-                    subscribedList={subscribedList}
-                  />
-                </BarItem>
-              </>
-            )}
-          </Buttons>
-          <Logo>
-            <IconButton
-              // extraStyle={{ marginRight: "10px" }}
-              icon="info"
-              onClick={() => setShowInfo(true)}
+      <FooterBar>
+        <Buttons>
+          {/* Layers */}
+          <BarItem>
+            <IconTextButton
+              active={visiblePanel === "layers"}
+              hasBackground={true}
+              icon="layer"
+              onClick={() => togglePanel("layers")}
+              text={t("home.layersTitle")}
             />
-            {/* <LogoImg
-              alt="app-logo"
-              onClick={() => window.location.assign("/")}
-              src="/img/app-logo.png"
-            /> */}
-            <LogoGitVersion
-              href={
-                versionDeployed
-                  ? `https://github.com/sig-gis/comimo/tags/${versionDeployed}`
-                  : "https://github.com/sig-gis/comimo"
-              }
-              target="/blank"
-            >
-              {versionDeployed ? `Version: ${versionDeployed}` : "Version: Latest"}
-            </LogoGitVersion>
-          </Logo>
-        </FooterBar>
-      </div>
+            <LayersPanel
+              nicfiOnly={false}
+              active={visiblePanel === "layers"}
+              nicfiLayers={nicfiLayers}
+            />
+          </BarItem>
+
+          {/* Subscribe */}
+          <BarItem>
+            <IconTextButton
+              active={visiblePanel === "subscribe"}
+              hasBackground={true}
+              icon="envelope"
+              onClick={() => togglePanel("subscribe")}
+              text={t("home.subscribeTitle")}
+            />
+            <SubscribePanel
+              active={visiblePanel === "subscribe"}
+              featureNames={featureNames}
+              mapquestKey={mapquestKey}
+              subscribedList={subscribedList}
+              setSubscribedList={setSubscribedList}
+            />
+          </BarItem>
+
+          {/* Validation */}
+          <BarItem>
+            <IconTextButton
+              active={visiblePanel === "validate"}
+              hasBackground={true}
+              icon="check"
+              onClick={() => togglePanel("validate")}
+              text={t("home.validationsTitle")}
+            />
+            <ValidatePanel
+              active={visiblePanel === "validate"}
+              featureNames={featureNames}
+              selectedDates={selectedDates}
+              subscribedList={subscribedList}
+            />
+          </BarItem>
+          {/* "Advanced Controls" */}
+          {username && (
+            <>
+              {/* Filter */}
+              <BarItem>
+                <IconTextButton
+                  active={visiblePanel === "filter"}
+                  hasBackground={true}
+                  icon="filter"
+                  onClick={() => togglePanel("filter")}
+                  text={t("home.filterTitle")}
+                />
+                <FilterPanel
+                  active={visiblePanel === "filter"}
+                  imageDates={imageDates}
+                  selectDates={selectDates}
+                  selectedDates={selectedDates}
+                />
+              </BarItem>
+
+              {/* Report Mines */}
+              <BarItem>
+                <IconTextButton
+                  active={visiblePanel === "report"}
+                  hasBackground={true}
+                  icon="mine"
+                  onClick={() => togglePanel("report")}
+                  text={t("home.reportMinesTitle")}
+                />
+                <ReportMinesPanel active={visiblePanel === "report"} />
+              </BarItem>
+
+              {/* Download Data */}
+              <BarItem>
+                <IconTextButton
+                  active={visiblePanel === "download"}
+                  hasBackground={true}
+                  icon="download"
+                  onClick={() => togglePanel("download")}
+                  text={t("home.downloadTitle")}
+                />
+                <DownloadPanel
+                  active={visiblePanel === "download"}
+                  featureNames={featureNames}
+                  mapquestKey={mapquestKey}
+                  selectedDates={selectedDates}
+                />
+              </BarItem>
+
+              {/* Statistics */}
+              <BarItem>
+                <IconTextButton
+                  active={visiblePanel === "stats"}
+                  hasBackground={true}
+                  icon="stats"
+                  onClick={() => togglePanel("stats")}
+                  text={t("home.statisticsTitle")}
+                />
+                <StatsPanel
+                  active={visiblePanel === "stats"}
+                  selectedDate={selectedDates?.cMines}
+                  subscribedList={subscribedList}
+                />
+              </BarItem>
+            </>
+          )}
+        </Buttons>
+        <Logo>
+          <IconButton
+            icon="info"
+            onClick={() => setShowInfo(true)}
+            tooltip={t("home.appInfoTooltip")}
+          />
+          <LogoGitVersion
+            href={
+              versionDeployed
+                ? `https://github.com/sig-gis/comimo/tags/${versionDeployed}`
+                : "https://github.com/sig-gis/comimo"
+            }
+            target="/blank"
+          >
+            {versionDeployed ? `Version: ${versionDeployed}` : "Version: Latest"}
+          </LogoGitVersion>
+        </Logo>
+      </FooterBar>
     </>
   );
 }
@@ -307,13 +304,6 @@ const Logo = styled.div`
   flex: 1;
   justify-content: space-evenly;
   padding: 5px 0;
-`;
-
-const LogoImg = styled.img`
-  cursor: pointer;
-  height: 22px;
-  padding-right: 15px;
-  width: 67px;
 `;
 
 const LogoGitVersion = styled.a`

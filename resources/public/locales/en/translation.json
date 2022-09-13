@@ -70,7 +70,7 @@
   },
   "filter": {
     "title": "Filter data",
-    "selectLabel": "Select the dates of prediction",
+    "selectLabel": "Select a dates of prediction",
     "updateMap": "Update map"
   },
   "layers": {
@@ -93,13 +93,11 @@
     "selectBand": "Select Band",
     "visible": "Visible",
     "infrared": "Infrared",
-    "selectTime": "Select Date",
-    "other": "Other Layers",
-    "mining": "Mining Activity"
+    "selectTime": "Select Date"
   },
   "report": {
     "title": "Report Mines",
-    "subTitle": "Click on the map or enter coordinates into the box below:",
+    "subTitle": "Click on the map or enter coordinates into the box below.",
     "goButton": "Go",
     "coordLabel": "Latitude, Longitude Search",
     "selectedLocation": "Selected Location",
@@ -125,7 +123,7 @@
   "search": {
     "noResults": "No Results",
     "stateLabel": "State",
-    "defaultState": "Select a state",
+    "defaultState": "Select a State",
     "loading": "Loading",
     "munLabel": "Municipality",
     "defaultMun": "Select a municipality",
@@ -156,10 +154,10 @@
     "title": "Your subscriptions",
     "noSubs": "You are not subscribed to any alerts.",
     "loadingSubs": "Loading subscriptions...",
-    "subscribedTo": "You are subscribed to alerts from the following municipalities",
+    "subscribedTo": "You are subscribed to alerts from following municipalities",
     "subscribeTo": "Subscribe to",
     "loginAction": "subscriptions",
-    "addNew": "Add New Subscription"
+    "addNew": "Add new subscription"
   },
   "validate": {
     "errorDate": "Please select a date.",
@@ -176,15 +174,15 @@
     "regionsLabel": "Municipalities",
     "loading": "Loading",
     "title": "Validation",
-    "subtitle": "Existing Projects",
+    "subtitle": "View or add projects to validate mine data",
     "noProjects": "You don't have any active projects.",
     "name": "Name",
-    "createProject": "Create a New Project",
+    "createProject": "Create a new project",
     "errorNewProject": "Error creating new project",
     "projectExists": "Project already exists",
     "projectWithNoPlots": "Error creating project with no plots",
-    "projectName": "Enter Project Name",
-    "projectRegion": "Select Project Municipalities",
+    "projectName": "Enter Project name",
+    "projectRegion": "Select project municipalities",
     "subscribedRadio": "Subscribed municipalities",
     "customRadio": "Custom municipalities",
     "createButton": "Create new project for",
@@ -283,6 +281,8 @@
     "go": "Go",
     "exit": "Exit",
     "next": "Next",
-    "prev": "Previous"
+    "prev": "Previous",
+    "download": "Download Plot KML",
+    "selectPlot": "You must select a plot in order to download its KML file."
   }
 }

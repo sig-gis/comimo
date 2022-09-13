@@ -5,7 +5,7 @@ import Button from "../components/Button";
 import { useTranslation } from "react-i18next";
 
 const ButtonRowOuter = styled.div`
-  bottom: 32px;
+  bottom: calc(var(--bar-height) + 32px);
   margin-left: 50px;
   display: flex;
   justify-content: center;

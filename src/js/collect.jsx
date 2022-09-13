@@ -1,8 +1,9 @@
+import React, { useEffect, useState, Suspense } from "react";
+import ReactDOM from "react-dom";
 import { last } from "lodash";
 import { useAtom, useAtomValue } from "jotai";
 import { useTranslation } from "react-i18next";
-import React, { useEffect, useState, Suspense } from "react";
-import ReactDOM from "react-dom";
+import styled from "@emotion/styled";
 
 import {
   PageLayout,
@@ -10,13 +11,17 @@ import {
   myHeightAtom,
   mapboxTokenAtom,
   showInfoAtom,
+  versionDeployedAtom,
 } from "./components/PageLayout";
 import IconButton from "./components/IconButton";
 import LoadingModal from "./components/LoadingModal";
-import MenuItem from "./components/MenuItem";
+import FooterBar from "./components/FooterBar";
+import IconTextButton from "./components/IconTextButton";
 import NICFIControl from "./components/NICFIControl";
-import SideBar from "./components/SideBar";
 import ToolCard from "./components/ToolCard";
+
+import LayersPanel from "./home/LayersPanel";
+import CollectDownload from "./collect/CollectDownload";
 
 import { jsonRequest } from "./utils";
 import { URLS } from "./constants";
@@ -24,17 +29,47 @@ import { visiblePanelAtom, extraMapParamsAtom, showModalAtom } from "./home";
 import CollectMap from "./collect/CollectMap";
 import NavBar from "./collect/NavBar";
 
+const BarItem = styled.div`
+  margin: 0 2rem;
+`;
+
+const Buttons = styled.div`
+  display: flex;
+  flex: 3;
+  justify-content: flex-start;
+`;
+
+const Logo = styled.div`
+  align-items: center;
+  display: flex;
+  flex: 1;
+  justify-content: space-evenly;
+  padding: 5px 0;
+`;
+
+const LogoGitVersion = styled.a`
+  color: var(--white);
+  cursor: pointer;
+  font-size: 12px;
+  letter-spacing: 0px;
+  text-align: left;
+  text-decoration: none;
+`;
+
 const CollectContent = ({ projectId }) => {
-  const [visiblePanel, setVisisblePanel] = useAtom(visiblePanelAtom);
+  // State
+  const [visiblePanel, setVisiblePanel] = useAtom(visiblePanelAtom);
   const [showModal, setShowModal] = useAtom(showModalAtom);
   const [extraMapParams, setExtraMapParams] = useAtom(extraMapParamsAtom);
+  const [showInfo, setShowInfo] = useAtom(showInfoAtom);
   const myHeight = useAtomValue(myHeightAtom);
   const mapboxToken = useAtomValue(mapboxTokenAtom);
-  const [showInfo, setShowInfo] = useAtom(showInfoAtom);
+  const versionDeployed = useAtomValue(versionDeployedAtom);
 
   const [projectDetails, setProjectDetails] = useState([]);
   const [projectPlots, setProjectPlots] = useState([]);
   const [currentPlotId, setCurrentPlotId] = useState(-1);
+  const [nicfiLayers, setNicfiLayers] = useState([]);
 
   const { t, i18n } = useTranslation();
 
@@ -52,7 +87,20 @@ const CollectContent = ({ projectId }) => {
     setVisiblePanel(panelKey === visiblePanel ? null : panelKey);
   };
 
-  const [nicfiLayers, setNicfiLayers] = useState([]);
+  // Effects
+  useEffect(() => {
+    const handleEscapeKey = (e) => {
+      if (e.keyCode === 27) {
+        setVisiblePanel(null);
+        setShowInfo(null);
+      }
+    };
+    window.addEventListener("keydown", handleEscapeKey);
+
+    return () => {
+      window.removeEventListener("keydown", handleEscapeKey);
+    };
+  }, [visiblePanel]);
 
   useEffect(() => {
     (async () => {
@@ -79,6 +127,7 @@ const CollectContent = ({ projectId }) => {
     })();
   }, []);
 
+  // Helper Functions
   const nextPlot = () => {
     const nextPlot = projectPlots.find((p) => p.id > currentPlotId) || projectPlots[0];
     currentPlotId === nextPlot.id ? alert(t("home.noMorePlots)")) : setCurrentPlotId(nextPlot.id);
@@ -109,67 +158,17 @@ const CollectContent = ({ projectId }) => {
     }
   };
 
-  /// Helpers ///
+  /// Render ///
 
-  const geomToKML = (geom) => {
-    const coordinates = geom.coordinates[0];
-    const strCoords = coordinates.map((c) => c.join(",")).join(" ");
-    return (
-      '<kml xmlns="http://www.opengis.net/kml/2.2" xmlns:gx="http://www.google.com/kml/ext/2.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.opengis.net/kml/2.2 https://developers.google.com/kml/schema/kml22gx.xsd"><Document><Placemark><Polygon><outerBoundaryIs><LinearRing><coordinates>' +
-      strCoords +
-      "</coordinates></LinearRing></outerBoundaryIs></Polygon></Placemark></Document></kml>"
-    );
-  };
   return (
     <>
-      {showModal && <LoadingModal message={t("home.loading") || "Cargando"} />}
+      {showModal && <LoadingModal message={t("home.loading")} />}
       <CollectMap
         boundary={projectDetails.boundary}
         currentPlot={currentPlot}
-        // extraParams={extraMapParams}
         goToPlot={goToPlot}
-        mapboxToken={mapboxToken}
-        myHeight={myHeight}
         projectPlots={projectPlots}
       />
-
-      <SideBar>
-        {/* Layers */}
-        <MenuItem
-          itemName="layer"
-          onClick={togglePanel}
-          selectedItem={visiblePanel}
-          tooltip={t("home.layersTooltip")}
-        >
-          <ToolCard title="Placeholder">
-            <div>
-              <NICFIControl
-                extraParams={extraMapParams}
-                nicfiLayers={nicfiLayers}
-                setParams={setParams}
-              />
-              {currentPlot?.geom && (
-                <a
-                  download={"comimo_projectId-" + projectId + "_plotId-" + currentPlotId + ".kml"}
-                  href={
-                    "data:earth.kml+xml application/vnd.google-earth.kmz, " +
-                    encodeURIComponent(geomToKML(currentPlot?.geom))
-                  }
-                >
-                  {/* TODO:Needs a translation */}
-                  Download Plot KML
-                </a>
-              )}
-            </div>
-          </ToolCard>
-        </MenuItem>
-        <IconButton
-          icon="info"
-          onClick={() => setShowInfo(true)}
-          parentClass="disclaimer"
-          tooltip={t("home.appInfoTooltip")}
-        />
-      </SideBar>
       <NavBar
         currentPlotId={currentPlotId}
         goToPlot={goToPlot}
@@ -178,6 +177,59 @@ const CollectContent = ({ projectId }) => {
         setPlotAnswer={setPlotAnswer}
         shiftPlotId={projectPlots[0]?.id}
       />
+      <FooterBar>
+        <Buttons>
+          {/* Layers */}
+          <BarItem>
+            <IconTextButton
+              active={visiblePanel === "layers"}
+              hasBackground={true}
+              icon="layer"
+              onClick={() => togglePanel("layers")}
+              text={t("home.layersTitle")}
+            />
+            <LayersPanel
+              active={visiblePanel === "layers"}
+              nicfiLayers={nicfiLayers}
+              nicfiOnly={true}
+            />
+          </BarItem>
+
+          {/* Download Data */}
+          <BarItem>
+            <IconTextButton
+              active={visiblePanel === "download"}
+              hasBackground={true}
+              icon="download"
+              onClick={() => togglePanel("download")}
+              text={t("home.downloadTitle")}
+            />
+            <CollectDownload
+              active={visiblePanel === "download"}
+              currentPlot={currentPlot}
+              currentPlotId={currentPlotId}
+              projectId={projectId}
+            />
+          </BarItem>
+        </Buttons>
+        <Logo>
+          <IconButton
+            icon="info"
+            onClick={() => setShowInfo(true)}
+            tooltip={t("home.appInfoTooltip")}
+          />
+          <LogoGitVersion
+            href={
+              versionDeployed
+                ? `https://github.com/sig-gis/comimo/tags/${versionDeployed}`
+                : "https://github.com/sig-gis/comimo"
+            }
+            target="/blank"
+          >
+            {versionDeployed ? `Version: ${versionDeployed}` : "Version: Latest"}
+          </LogoGitVersion>
+        </Logo>
+      </FooterBar>
     </>
   );
 };
@@ -401,7 +453,7 @@ export function pageInit(args) {
         mapboxToken={args.mapboxToken}
         mapquestKey={args.mapquestKey}
         versionDeployed={args.versionDeployed}
-        showSearch={false}
+        showSearch={true}
       >
         <CollectContent projectId={parseInt(args.projectId || 0)} />
       </PageLayout>

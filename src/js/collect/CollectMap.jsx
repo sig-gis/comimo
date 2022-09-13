@@ -59,6 +59,8 @@ export default function CollectMap({ boundary, projectPlots, goToPlot, currentPl
   // TODO duplicate?
   const isLayerVisible = (layer) => collectMap.getLayer(layer).visibility === "visible";
 
+  // console.log("geometry", boundary);
+
   useEffect(() => {
     if (!collectMap && mapboxToken !== "") {
       mapboxgl.accessToken = mapboxToken;
@@ -85,12 +87,15 @@ export default function CollectMap({ boundary, projectPlots, goToPlot, currentPl
 
       // TODO!: Figure this out..
 
-      // this.getLayerUrl(["NICFI"]);
       // getLayerUrl(map, availableLayers.slice(3), selectedDates, extraMapParams);
 
       setHomeMap(map);
     }
-  }, [mapboxToken]);
+  }, [mapboxToken, boundary]);
+
+  useEffect(() => {
+    // collectMap && getLayerUrl("NICFI");
+  }, [collectMap]);
 
   // const mapOnClick = (e) => {
   //   addPopup(
@@ -168,12 +173,12 @@ export default function CollectMap({ boundary, projectPlots, goToPlot, currentPl
   };
 
   useEffect(() => {
-    collectMap && addBoundary();
-  }, [boundary]);
-
-  // useEffect(() => {
-  //   collectMap && addBoundary();
-  // }, [boundary]);
+    collectMap &&
+      boundary &&
+      collectMap.on("load", () => {
+        addBoundary();
+      });
+  }, [collectMap, boundary]);
 
   const plotColor = (answer) =>
     answer === "Mina"
@@ -260,8 +265,7 @@ export default function CollectMap({ boundary, projectPlots, goToPlot, currentPl
           "line-width": 4,
         },
       });
-
-      collectMap.on("click", p.id + "sym", (e) => {
+      collectMap.on("click", p.id + "", (e) => {
         goToPlot(number);
       });
     });
@@ -271,10 +275,8 @@ export default function CollectMap({ boundary, projectPlots, goToPlot, currentPl
     collectMap && addPlots();
   }, [projectPlots.length]);
 
-  const updateVisiblePlot = () => {
-    const {
-      currentPlot: { geom, id, answer },
-    } = projectPlots;
+  const updateVisiblePlot = (map) => {
+    const { geom, id, answer } = currentPlot;
     if (geom) {
       // Set new color
       collectMap.setPaintProperty(id + "", "line-color", plotColor(answer));
@@ -285,31 +287,32 @@ export default function CollectMap({ boundary, projectPlots, goToPlot, currentPl
   };
 
   useEffect(() => {
-    collectMap && updateVisiblePlot();
+    collectMap && updateVisiblePlot(collectMap);
   }, [currentPlot]);
 
-  const getLayerUrl = (list) => {
-    list.forEach((layer) => {
-      const url = (async () => await jsonRequest(URLS.GET_IMAGE_URL, { type: layer }))().catch(
-        console.error
-      );
+  // const getLayerUrl = (list) => {
+  //   list.forEach((layer) => {
+  //     const url = (async () => await jsonRequest(URLS.GET_IMAGE_URL, { type: layer }))().catch(
+  //       console.error
+  //     );
 
-      // As written the URL provided must already include ? and one param so &nextParam works.
-      const params = extraMapParams[layer];
-      const fullUrl =
-        params == null
-          ? url
-          : url +
-            Object.entries(params)
-              .map(([k, v]) => `&${k}=${v}`)
-              .join("");
-      setLayerUrl(layer, fullUrl);
-    });
-  };
+  //     // As written the URL provided must already include ? and one param so &nextParam works.
+  //     const params = extraMapParams[layer];
+  //     const fullUrl =
+  //       params == null
+  //         ? url
+  //         : url +
+  //           Object.entries(params)
+  //             .map(([k, v]) => `&${k}=${v}`)
+  //             .join("");
+  //     setLayerUrl(layer, fullUrl);
+  //   });
+  // };
 
   const setLayerUrl = (layer, url) => {
-    if (layer && url && url !== "") {
+    if (collectMap && layer && url && url !== "") {
       const style = collectMap.getStyle();
+      console.log("Style", style);
       const layers = style.layers;
       const layerIdx = layers.findIndex((l) => l.id === layer);
       const thisLayer = layers[layerIdx];
@@ -324,12 +327,30 @@ export default function CollectMap({ boundary, projectPlots, goToPlot, currentPl
       console.error("Error loading layer: ", layer, url);
     }
   };
+  const getLayerUrl = async () => {
+    for (const layer of Object.keys(extraMapParams)) {
+      const url = await jsonRequest(URLS.GET_IMAGE_URL, { type: layer }).catch(console.error);
+      const params = extraMapParams[layer];
+
+      const fullUrl =
+        params == null
+          ? url
+          : url +
+            Object.entries(params)
+              .map(([k, v]) => `&${k}=${v}`)
+              .join("");
+
+      setLayerUrl(layer, fullUrl);
+    }
+  };
 
   useEffect(() => {
     if (collectMap && Object.keys(extraMapParams).length > 0) {
-      getLayerUrl(Object.keys(extraMapParams));
+      for (const layer of Object.keys(extraMapParams)) {
+        getLayerUrl(layer);
+      }
     }
-  }, [extraMapParams]);
+  }, [collectMap, extraMapParams]);
 
   return (
     <>
