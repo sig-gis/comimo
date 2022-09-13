@@ -6,6 +6,7 @@ import Button from "../components/Button";
 import Search from "../components/Search";
 import Select from "../components/Select";
 import ToolCard from "../components/ToolCard";
+import Divider from "../components/Divider";
 
 import LoadingModal from "../components/LoadingModal";
 import { URLS } from "../constants";
@@ -15,10 +16,12 @@ import { processModal, showModalAtom } from "../../../src/js/home";
 import { homeMapAtom, selectedRegionAtom } from "./HomeMap";
 import { useTranslation } from "react-i18next";
 
-const Title = styled.h2`
-  border-bottom: 1px solid gray;
-  font-weight: bold;
-  padding: 0.5rem;
+const Label = styled.label`
+  font: var(--unnamed-font-style-normal) var(--unnamed-font-weight-medium)
+    var(--unnamed-font-size-16) / var(--unnamed-line-spacing-19) var(--unnamed-font-family-roboto);
+  letter-spacing: var(--unnamed-character-spacing-0);
+  color: var(--black);
+  text-align: left;
 `;
 
 export default function DownloadPanel({ active, featureNames, mapquestKey, selectedDates }) {
@@ -55,9 +58,8 @@ export default function DownloadPanel({ active, featureNames, mapquestKey, selec
   return (
     <ToolCard title={t("download.title")} active={active}>
       {showModal && <LoadingModal message="Getting URL" />}
-
       <div style={{ display: "flex", flexDirection: "column" }}>
-        <label>{`${t("validate.typeLabel")}:`}</label>
+        <Label>{`${t("validate.typeLabel")}:`}</Label>
         <Select
           id="selectMineType"
           onChange={(e) => setMineType(e.target.value)}
@@ -67,27 +69,38 @@ export default function DownloadPanel({ active, featureNames, mapquestKey, selec
           }))}
           value={mineType}
         />
-        <div style={{ marginTop: ".25rem" }}>
+        <div style={{ cursor: "pointer", marginTop: ".25rem" }}>
           <input
+            style={{ cursor: "pointer" }}
+            id="completeData"
             checked={clipOption === 1}
             name="downloadRegion"
             onChange={() => setClipOption(1)}
             type="radio"
           />
-          <span>{t("download.allRadio")}</span>
+          <label style={{ cursor: "pointer" }} htmlFor="completeData">
+            {t("download.allRadio")}
+          </label>
         </div>
         {/* TODO: disabled-group is not defined yet */}
-        <div className={selectedRegion ? "" : "disabled-group"} style={{ marginTop: ".25rem" }}>
+        <div
+          className={selectedRegion ? "" : "disabled-group"}
+          style={{ cursor: "pointer", marginTop: ".25rem" }}
+        >
           <input
+            id="selectedMunicipality"
+            style={{ cursor: "pointer" }}
             checked={clipOption === 2}
             name="downloadRegion"
             onChange={() => setClipOption(2)}
             type="radio"
           />
-          <span>{t("download.selectedRadio")}</span>
+          <label style={{ cursor: "pointer" }} htmlFor="selectedMunicipality">
+            {t("download.selectedRadio")}
+          </label>
         </div>
+        <Divider />
         <div>
-          <Title>{t("download.selectMuni")}</Title>
           <Search
             isPanel={false}
             featureNames={featureNames}
@@ -111,7 +124,7 @@ export default function DownloadPanel({ active, featureNames, mapquestKey, selec
             <p>
               <span>
                 <a href={downloadURL[2]}>
-                  {`${download.clickHere}` +
+                  {`${t("download.clickHere")}` +
                     ` ${
                       downloadURL[0] === "all"
                         ? t("download.completeData")

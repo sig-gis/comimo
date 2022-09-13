@@ -1,14 +1,25 @@
 import React, { useEffect, useState } from "react";
 import { useAtom, useAtomValue } from "jotai";
+import styled from "@emotion/styled";
 
 import NICFIControl from "../components/NICFIControl";
 import ToolCard from "../components/ToolCard";
+import Divider from "../components/Divider";
+import HeaderLabel from "../components/HeaderLabel";
 
 // import i18n from "../i18n";
 import { extraMapParamsAtom } from "../home";
-import { startVisible, availableLayers } from "../constants";
+import { startVisible, availableLayers, miningLayers } from "../constants";
 import { homeMapAtom } from "./HomeMap";
 import { useTranslation } from "react-i18next";
+
+const Label = styled.label`
+  font: var(--unnamed-font-style-normal) var(--unnamed-font-weight-medium) 20px/20px
+    var(--unnamed-font-family-roboto);
+  letter-spacing: var(--unnamed-character-spacing-0);
+  color: var(--gray-1);
+  text-align: left;
+`;
 
 export default function LayersPanel({ nicfiLayers, active }) {
   const [visible, setVisible] = useState(null);
@@ -85,23 +96,59 @@ export default function LayersPanel({ nicfiLayers, active }) {
   const renderHeading = () => (
     <>
       <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "0rem" }}>
-        <label style={{ fontWeight: "bold", margin: "0 .25rem 0 0" }}>
-          {t("layers.nameLabel")}
-        </label>
-        <label style={{ fontWeight: "bold", margin: "0 .25rem", width: "40%" }}>
-          {t("layers.opacityLabel")}
-        </label>
+        <Label>{t("layers.nameLabel")}</Label>
+        <Label style={{ width: "40%" }}>{t("layers.opacityLabel")}</Label>
       </div>
-      <hr style={{ marginBottom: "0.5rem" }}></hr>
+      <Divider />
     </>
   );
 
+  const renderMiningActivitySection = () => {
+    return (
+      <>
+        <HeaderLabel
+          extraStyle={{ margin: "-16px -16px 10px -16px" }}
+          background="var(--orange-4)"
+          textColor="var(--gray-1)"
+        >
+          {t("layers.mining")}
+        </HeaderLabel>
+        {renderHeading()}
+        {availableLayers.map(
+          (layerName) => miningLayers.includes(layerName) && renderControl(layerName)
+        )}
+      </>
+    );
+  };
+
+  const renderOtherLayersSection = () => {
+    return (
+      <>
+        <HeaderLabel
+          extraStyle={{ margin: "16px -16px 10px -16px" }}
+          background="var(--gray-3)"
+          textColor="var(--gray-1)"
+        >
+          {t("layers.other")}
+        </HeaderLabel>
+        {renderHeading()}
+        {availableLayers.map(
+          (layerName) =>
+            layerName !== "NICFI" && !miningLayers.includes(layerName) && renderControl(layerName)
+        )}
+      </>
+    );
+  };
+
   const renderNICFISection = () => (
     <>
-      <label style={{ fontWeight: "bold", margin: "0 .25rem 0 0" }}>
-        {t("layers.satelliteTitle")}
-      </label>
-      <hr style={{ marginBottom: "0.5rem" }}></hr>
+      <HeaderLabel
+        extraStyle={{ margin: "16px -16px" }}
+        background="#426F96"
+        textColor="var(--white)"
+      >
+        {t("layers.NICFI")}
+      </HeaderLabel>
       <div style={{ display: "flex", flexDirection: "column" }}>
         {renderControl("NICFI")}
         <NICFIControl
@@ -115,11 +162,8 @@ export default function LayersPanel({ nicfiLayers, active }) {
 
   return (
     <ToolCard title={t("layers.title")} active={active}>
-      {renderHeading()}
-      {opacity &&
-        visible &&
-        availableLayers.map((layerName) => (layerName === "NICFI" ? "" : renderControl(layerName)))}
-      <br></br>
+      {opacity && visible && renderMiningActivitySection()}
+      {opacity && visible && renderOtherLayersSection()}
       {opacity && visible && renderNICFISection()}
     </ToolCard>
   );

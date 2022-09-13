@@ -101,6 +101,8 @@ export const URLS = {
   USERS: "get-users-list",
 };
 
+export const miningLayers = ["cMines", "nMines", "pMines"];
+
 export const availableLayers = [
   "cMines",
   "nMines",

@@ -70,7 +70,7 @@
   },
   "filter": {
     "title": "Filter data",
-    "selectLabel": "Select a dates of prediction",
+    "selectLabel": "Select the dates of prediction",
     "updateMap": "Update map"
   },
   "layers": {
@@ -93,11 +93,13 @@
     "selectBand": "Select Band",
     "visible": "Visible",
     "infrared": "Infrared",
-    "selectTime": "Select Date"
+    "selectTime": "Select Date",
+    "other": "Other Layers",
+    "mining": "Mining Activity"
   },
   "report": {
     "title": "Report Mines",
-    "subTitle": "Click on the map or enter coordinates into the box below.",
+    "subTitle": "Click on the map or enter coordinates into the box below:",
     "goButton": "Go",
     "coordLabel": "Latitude, Longitude Search",
     "selectedLocation": "Selected Location",
@@ -123,7 +125,7 @@
   "search": {
     "noResults": "No Results",
     "stateLabel": "State",
-    "defaultState": "Select a State",
+    "defaultState": "Select a state",
     "loading": "Loading",
     "munLabel": "Municipality",
     "defaultMun": "Select a municipality",
@@ -154,10 +156,10 @@
     "title": "Your subscriptions",
     "noSubs": "You are not subscribed to any alerts.",
     "loadingSubs": "Loading subscriptions...",
-    "subscribedTo": "You are subscribed to alerts from following municipalities",
+    "subscribedTo": "You are subscribed to alerts from the following municipalities",
     "subscribeTo": "Subscribe to",
     "loginAction": "subscriptions",
-    "addNew": "Add new subscription"
+    "addNew": "Add New Subscription"
   },
   "validate": {
     "errorDate": "Please select a date.",
@@ -174,15 +176,15 @@
     "regionsLabel": "Municipalities",
     "loading": "Loading",
     "title": "Validation",
-    "subtitle": "View or add projects to validate mine data",
+    "subtitle": "Existing Projects",
     "noProjects": "You don't have any active projects.",
     "name": "Name",
-    "createProject": "Create a new project",
+    "createProject": "Create a New Project",
     "errorNewProject": "Error creating new project",
     "projectExists": "Project already exists",
     "projectWithNoPlots": "Error creating project with no plots",
-    "projectName": "Enter Project name",
-    "projectRegion": "Select project municipalities",
+    "projectName": "Enter Project Name",
+    "projectRegion": "Select Project Municipalities",
     "subscribedRadio": "Subscribed municipalities",
     "customRadio": "Custom municipalities",
     "createButton": "Create new project for",

@@ -13,8 +13,11 @@ const Input = styled.input`
 `;
 
 const Label = styled.label`
-  color: var(--gray-1);
-  font: normal normal medium 18px/18px Roboto;
+  font: var(--unnamed-font-style-normal) var(--unnamed-font-weight-medium)
+    var(--unnamed-font-size-16) / var(--unnamed-line-spacing-19) var(--unnamed-font-family-roboto);
+  letter-spacing: var(--unnamed-character-spacing-0);
+  color: var(--black);
+  text-align: left;
 `;
 
 // TODO: Add showing error like when in searching for invalide coordinates...
