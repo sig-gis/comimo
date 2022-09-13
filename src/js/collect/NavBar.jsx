@@ -90,7 +90,7 @@ export default function NavBar({
               onClick={() => setPlotAnswer("Mina")}
               extraStyle={{ backgroundColor: "#ff6654" }}
             >
-              {collect?.mina}
+              {t("collect.mina")}
             </Button>
             <Button
               onClick={() => setPlotAnswer("No Mina")}

@@ -1,8 +1,14 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import mapboxgl from "mapbox-gl";
 import extent from "turf-extent";
 import styled from "@emotion/styled";
 import "mapbox-gl/dist/mapbox-gl.css";
+import { useAtom, useAtomValue } from "jotai";
+
+// TODO: rename this to a generic name
+import { homeMapAtom } from "../home/HomeMap";
+import { extraMapParamsAtom } from "../home";
+import { mapboxTokenAtom } from "../components/PageLayout";
 
 import { get, isString } from "lodash";
 import LatLngHud from "../components/LatLngHud";
@@ -38,14 +44,20 @@ const MapBoxWrapper = styled.div`
   }
 `;
 
-const CollectMap2 = ({ boundary, projectPlots, goToPlot, currentPlot }) => {
+export default function CollectMap({ boundary, projectPlots, goToPlot, currentPlot }) {
   const [collectMap, setHomeMap] = useAtom(homeMapAtom);
   const [mouseCoords, setMouseCoords] = useState(null);
   const mapboxToken = useAtomValue(mapboxTokenAtom);
   const extraMapParams = useAtomValue(extraMapParamsAtom);
 
+  const [lng, setLng] = useState(-73.5609339);
+  const [lat, setLat] = useState(4.6371205);
+  const [zoom, setZoom] = useState(5);
+
+  const mapContainer = useRef(null);
+
   // TODO duplicate?
-  const isLayerVisible = (layer) => this.state.collectMap.getLayer(layer).visibility === "visible";
+  const isLayerVisible = (layer) => collectMap.getLayer(layer).visibility === "visible";
 
   useEffect(() => {
     if (!collectMap && mapboxToken !== "") {
@@ -78,7 +90,7 @@ const CollectMap2 = ({ boundary, projectPlots, goToPlot, currentPlot }) => {
 
       setHomeMap(map);
     }
-  }, [selectedDates, mapboxToken]);
+  }, [mapboxToken]);
 
   // const mapOnClick = (e) => {
   //   addPopup(
@@ -159,9 +171,9 @@ const CollectMap2 = ({ boundary, projectPlots, goToPlot, currentPlot }) => {
     collectMap && addBoundary();
   }, [boundary]);
 
-  useEffect(() => {
-    collectMap && addBoundary();
-  }, [boundary]);
+  // useEffect(() => {
+  //   collectMap && addBoundary();
+  // }, [boundary]);
 
   const plotColor = (answer) =>
     answer === "Mina"
@@ -213,7 +225,7 @@ const CollectMap2 = ({ boundary, projectPlots, goToPlot, currentPlot }) => {
     // See the updateVisiblePlot for where we do these updates
     projectPlots.forEach((p) => {
       const number = p.id - shiftId + 1;
-      const color = this.plotColor(p.answer);
+      const color = plotColor(p.answer);
 
       // Add each individual plot label
       collectMap.addLayer({
@@ -265,8 +277,8 @@ const CollectMap2 = ({ boundary, projectPlots, goToPlot, currentPlot }) => {
     } = projectPlots;
     if (geom) {
       // Set new color
-      collectMap.setPaintProperty(id + "", "line-color", this.plotColor(answer));
-      collectMap.setPaintProperty(id + "plotLabel", "text-color", this.plotColor(answer));
+      collectMap.setPaintProperty(id + "", "line-color", plotColor(answer));
+      collectMap.setPaintProperty(id + "plotLabel", "text-color", plotColor(answer));
       collectMap.setPaintProperty(id + "", "line-width", 6);
       fitMap("bbox", extent(geom));
     }
@@ -277,11 +289,13 @@ const CollectMap2 = ({ boundary, projectPlots, goToPlot, currentPlot }) => {
   }, [currentPlot]);
 
   const getLayerUrl = (list) => {
-    list.forEach(async (layer) => {
-      const url = await jsonRequest(URLS.GET_IMAGE_URL, { type: layer }).catch(console.error);
+    list.forEach((layer) => {
+      const url = (async () => await jsonRequest(URLS.GET_IMAGE_URL, { type: layer }))().catch(
+        console.error
+      );
 
       // As written the URL provided must already include ? and one param so &nextParam works.
-      const params = this.props.extraParams[layer];
+      const params = extraMapParams[layer];
       const fullUrl =
         params == null
           ? url
@@ -319,11 +333,11 @@ const CollectMap2 = ({ boundary, projectPlots, goToPlot, currentPlot }) => {
 
   return (
     <>
-      <MapBoxWrapper id="mapbox" />
+      <MapBoxWrapper ref={mapContainer} id="mapbox" />
       {mouseCoords && <LatLngHud mouseCoords={mouseCoords} />}
     </>
   );
-};
+}
 
 // NEWWWWWWWW UPPPPPPPPP
 

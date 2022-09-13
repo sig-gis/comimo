@@ -55,34 +55,28 @@ const CollectContent = ({ projectId }) => {
   const [nicfiLayers, setNicfiLayers] = useState([]);
 
   useEffect(() => {
-    const getProjectData = async () => {
-      const projectDetails = await jsonRequest(URLS.PROJ_DATA, { projectId: this.props.projectId });
+    (async () => {
+      const projectDetails = await jsonRequest(URLS.PROJ_DATA, { projectId: projectId }).catch(
+        console.error
+      );
       setProjectDetails(projectDetails);
-      return projectDetails;
-    };
-    const getProjectPlots = async () => {
+
       const projectPlots = await jsonRequest(URLS.PROJ_PLOTS, {
-        projectId: this.props.projectId,
-      }).setProjectPlots(projectPlots);
-      return projectPlots;
-    };
-    const getNICFIDates = async () => {
+        projectId: projectId,
+      });
+      setProjectPlots(projectPlots);
+
       const nicfiLayers = await jsonRequest(URLS.NICFI_DATES);
       setNicfiLayers(nicfiLayers);
-      return nicfiLayers;
-    };
 
-    const projectDetails = getProjectData().catch(console.error);
-    const _projectPlots = getProjectPlots().catch(console.error);
-    const nicfiLayers = getNICFIDates().catch(console.error);
+      const dateRegex = /\d{4}-\d{2}/g;
+      const projectDate = last([...projectDetails.dataLayer.matchAll(dateRegex)])[0];
+      const nicfiDate = nicfiLayers.find(
+        (l) => [...l.matchAll(dateRegex)].length === 1 && l.includes(projectDate)
+      );
 
-    const dateRegex = /\d{4}-\d{2}/g;
-    const projectDate = last([...projectDetails.dataLayer.matchAll(dateRegex)])[0];
-    const nicfiDate = nicfiLayers.find(
-      (l) => [...l.matchAll(dateRegex)].length === 1 && l.includes(projectDate)
-    );
-
-    setParams("NICFI", { ...extraMapParams.NICFI, dataLayer: nicfiDate || nicfiLayers[0] });
+      setParams("NICFI", { ...extraMapParams.NICFI, dataLayer: nicfiDate || nicfiLayers[0] });
+    })();
   }, []);
 
   const nextPlot = () => {
