@@ -279,7 +279,7 @@ function HomeContents() {
 
 export function pageInit(args) {
   ReactDOM.render(
-    <Suspense fallback="loading">
+    <Suspense fallback="">
       <PageLayout
         role={args.role}
         username={args.username}
