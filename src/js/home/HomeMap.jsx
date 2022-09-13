@@ -118,7 +118,7 @@ export default function HomeMap({}) {
   //   map && setTimeout(() => map.resize(), 50);
   // }, [myHeight]);
 
-  // Adds layers initially with no styling, URL is updated later.  This is to guarantee z order in mapbox
+  // Adds layers initially with no styling, URL is updated later. This is to guarantee z-index order in mapbox
   const addLayerSources = (map, list) => {
     list.forEach((name) => {
       map.addSource(name, {

@@ -94,8 +94,8 @@ export default function CollectMap({ boundary, projectPlots, goToPlot, currentPl
   }, [mapboxToken, boundary]);
 
   useEffect(() => {
-    // collectMap && getLayerUrl("NICFI");
-  }, [collectMap]);
+    collectMap && Object.keys(extraMapParams).length > 0 && getLayerUrl("NICFI");
+  }, [collectMap, extraMapParams]);
 
   // const mapOnClick = (e) => {
   //   addPopup(
@@ -110,6 +110,8 @@ export default function CollectMap({ boundary, projectPlots, goToPlot, currentPl
   // MAP functions
 
   // TODO do we need map argument?
+  // TODO we need the NICFI layer below the MapBox plot layer
+  // Adds layers initially with no styling, URL is updated later. This is to guarantee z-index order in mapbox
   const addLayerSources = (collectMap, list) => {
     list.forEach((name) => {
       collectMap.addSource(name, {
@@ -312,7 +314,6 @@ export default function CollectMap({ boundary, projectPlots, goToPlot, currentPl
   const setLayerUrl = (layer, url) => {
     if (collectMap && layer && url && url !== "") {
       const style = collectMap.getStyle();
-      console.log("Style", style);
       const layers = style.layers;
       const layerIdx = layers.findIndex((l) => l.id === layer);
       const thisLayer = layers[layerIdx];
@@ -321,27 +322,31 @@ export default function CollectMap({ boundary, projectPlots, goToPlot, currentPl
         ...thisLayer,
         layout: { visibility: "visible" },
       };
-
       collectMap.setStyle(style);
     } else {
       console.error("Error loading layer: ", layer, url);
     }
   };
-  const getLayerUrl = async () => {
-    for (const layer of Object.keys(extraMapParams)) {
-      const url = await jsonRequest(URLS.GET_IMAGE_URL, { type: layer }).catch(console.error);
-      const params = extraMapParams[layer];
 
-      const fullUrl =
-        params == null
-          ? url
-          : url +
-            Object.entries(params)
-              .map(([k, v]) => `&${k}=${v}`)
-              .join("");
+  const getLayerUrl = async (layer) => {
+    const url = await jsonRequest(URLS.GET_IMAGE_URL, { type: layer }).catch(console.error);
+    const params = extraMapParams[layer];
+    // console.log("extraMapParams", extraMapParams);
+    // console.log("params", params);
 
-      setLayerUrl(layer, fullUrl);
-    }
+    const fullUrl =
+      params == null
+        ? url
+        : url +
+          Object.entries(params)
+            .map(([k, v]) => `&${k}=${v}`)
+            .join("");
+
+    // console.log("layer: ", layer);
+    // console.log("fullurl", fullUrl);
+    // console.log("url", url);
+
+    setLayerUrl(layer, fullUrl);
   };
 
   useEffect(() => {
@@ -359,8 +364,6 @@ export default function CollectMap({ boundary, projectPlots, goToPlot, currentPl
     </>
   );
 }
-
-// NEWWWWWWWW UPPPPPPPPP
 
 // export default class CollectMap extends React.Component {
 // constructor(props) {

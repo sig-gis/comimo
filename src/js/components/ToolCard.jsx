@@ -16,7 +16,7 @@ const PanelOuter = styled.div`
   position: absolute;
   top: ${({ isInverted }) => isInverted && "var(--bar-height)"};
   width: 33vw;
-  z-index: 99;
+  z-index: 100;
   text-align: left;
 `;
 

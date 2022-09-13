@@ -12,7 +12,7 @@ const ButtonRowOuter = styled.div`
   position: fixed;
   text-align: center;
   width: 100%;
-  z-index: 10000;
+  z-index: 99;
 `;
 
 const ButtonRowInner = styled.div`
