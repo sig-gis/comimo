@@ -95,6 +95,7 @@ export default function HomeMap({}) {
 
   useEffect(() => {
     if (homeMap && selectedDates) {
+      // For all non-mining layers (since the mining layers are the first 3 in availableLayers)
       getLayerUrl(homeMap, availableLayers.slice(3), selectedDates, extraMapParams);
     }
   }, [selectedDates]);

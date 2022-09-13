@@ -6,6 +6,7 @@ import Button from "../components/Button";
 import Search from "../components/Search";
 import ToolCard from "../components/ToolCard";
 import DeleteButton from "../components/DeleteButton";
+import HeaderLabel from "../components/HeaderLabel";
 
 import { usernameAtom } from "../components/PageLayout";
 import { URLS } from "../constants";
@@ -13,12 +14,6 @@ import { jsonRequest } from "../utils";
 import { useAtomValue } from "jotai";
 import { selectedRegionAtom } from "./HomeMap";
 import { useTranslation } from "react-i18next";
-
-const Title = styled.h2`
-  border-bottom: 1px solid gray;
-  font-weight: bold;
-  padding: 0.5rem;
-`;
 
 export default function SubscribePanel({
   featureNames,
@@ -126,15 +121,22 @@ export default function SubscribePanel({
             )}
           </div>
           <div>
-            <Title>{t("subscribe.addNew")}</Title>
+            <HeaderLabel
+              extraStyle={{ margin: "16px -16px 10px -16px" }}
+              background="#426F96"
+              textColor="var(--white)"
+            >
+              {t("subscribe.addNew")}
+            </HeaderLabel>
             <Search isPanel={false} featureNames={featureNames} mapquestKey={mapquestKey}></Search>
             {
               // TODO: inform user (either in UI or alert that is region already been subscribed to and can't add it twice)
               selectedRegion && !subscribedList.includes(selectedRegion) && (
                 <div style={{ textAlign: "center", width: "100%" }}>
-                  <Button onClick={() => addSubs(selectedRegion)}>{`${t("subscribe.subscribeTo")} ${
-                    parsedRegion[2]
-                  }, ${parsedRegion[1]}`}</Button>
+                  <Button
+                    extraStyle={{ margin: "1rem 0" }}
+                    onClick={() => addSubs(selectedRegion)}
+                  >{`${t("subscribe.subscribeTo")} ${parsedRegion[2]}, ${parsedRegion[1]}`}</Button>
                 </div>
               )
             }
