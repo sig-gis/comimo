@@ -7,7 +7,7 @@ import SvgIcon from "./SvgIcon";
 import { useAtom, useSetAtom } from "jotai";
 
 const PanelOuter = styled.div`
-  background: #fffff8;
+  background: var(--gray-4);
   border-radius: ${({ isInverted }) => (isInverted ? "0 0 6px 6px" : "6px 6px 0 0")};
   bottom: ${({ isInverted }) => !isInverted && "var(--bar-height)"};
   display: ${({ active }) => (active ? "flex" : "none")};
