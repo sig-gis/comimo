@@ -11,6 +11,7 @@ import LoadingModal from "./components/LoadingModal";
 import Modal from "./components/Modal";
 import Select from "./components/Select";
 import TextInput from "./components/TextInput";
+import Divider from "./components/Divider";
 
 import { processModal, showModalAtom } from "./home";
 
@@ -20,6 +21,16 @@ import { THEME } from "./constants";
 import { useEffect } from "react";
 import { useAtom } from "jotai";
 import { useTranslation } from "react-i18next";
+
+const Label = styled.label`
+  font: var(--unnamed-font-style-normal) var(--unnamed-font-weight-medium)
+    var(--unnamed-font-size-16) / var(--unnamed-line-spacing-19) var(--unnamed-font-family-roboto);
+  letter-spacing: var(--unnamed-character-spacing-0);
+  color: var(--black);
+  margin-right: 1rem;
+  margin-bottom: 10px;
+  text-align: left;
+`;
 
 const PageContainer = styled.div`
   align-items: center;
@@ -121,22 +132,10 @@ function UserAccount() {
               margin-bottom: 10px;
             `}
           >
-            <label
-              css={css`
-                margin-right: 1rem;
-                margin-bottom: 10px;
-              `}
-            >
-              {t("users.language")}
-            </label>
+            <Label>{t("users.language")}</Label>
             <LanguageButtons selectedLanguage={defaultLang} selectLanguage={setDefaultLang} />
           </div>
-          <hr
-            css={css`
-              border: 1px dashed;
-              border-color: var(--gray);
-            `}
-          />
+          <Divider />
           <TextInput
             disabled={false}
             id="username"

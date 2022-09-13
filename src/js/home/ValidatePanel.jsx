@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useAtom, useAtomValue } from "jotai";
+import styled from "@emotion/styled";
 
 import LoginMessage from "./LoginMessage";
 import Button from "../components/Button";
@@ -7,6 +8,7 @@ import ToolCard from "../components/ToolCard";
 import ProjectCard from "../components/ProjectCard";
 import Select from "../components/Select";
 import TextInput from "../components/TextInput";
+import HeaderLabel from "../components/HeaderLabel";
 
 import { homeMapAtom, mapPopupAtom } from "./HomeMap";
 import { usernameAtom } from "../components/PageLayout";
@@ -15,6 +17,14 @@ import { URLS } from "../constants";
 import LoadingModal from "../components/LoadingModal";
 import { showModalAtom, processModal } from "../home";
 import { useTranslation } from "react-i18next";
+
+const Label = styled.label`
+  font: var(--unnamed-font-style-normal) var(--unnamed-font-weight-medium)
+    var(--unnamed-font-size-16) / var(--unnamed-line-spacing-19) var(--unnamed-font-family-roboto);
+  letter-spacing: var(--unnamed-character-spacing-0);
+  color: var(--black);
+  text-align: left;
+`;
 
 export default function ValidatePanel({ subscribedList, featureNames, selectedDates, active }) {
   const [showModal, setShowModal] = useAtom(showModalAtom);
@@ -145,7 +155,13 @@ export default function ValidatePanel({ subscribedList, featureNames, selectedDa
 
   return (
     <ToolCard title={t("validate.title")} active={active}>
-      <span>{t("validate.subtitle")}</span>
+      <HeaderLabel
+        extraStyle={{ margin: "-16px -16px 16px -16px" }}
+        background="var(--orange-4)"
+        textColor="var(--gray-1)"
+      >
+        {t("validate.subtitle")}
+      </HeaderLabel>
       {showModal && <LoadingModal message="Creating Project" />}
       {username ? (
         <div style={{ display: "flex", flexDirection: "column" }}>
@@ -159,7 +175,13 @@ export default function ValidatePanel({ subscribedList, featureNames, selectedDa
               ))}
             </>
           )}
-          <h3 style={{ marginBottom: 0 }}>{`${t("validate.createProject")}:`}</h3>
+          <HeaderLabel
+            extraStyle={{ margin: "16px -16px 16px -16px" }}
+            background="#426F96"
+            textColor="var(--white)"
+          >
+            {t("validate.createProject")}
+          </HeaderLabel>
           <TextInput
             id="projectName"
             label={`${t("validate.projectName")}:`}
@@ -176,7 +198,7 @@ export default function ValidatePanel({ subscribedList, featureNames, selectedDa
             }))}
             value={mineType}
           />
-          <label>{`${t("validate.projectRegion")}:`}</label>
+          <Label>{`${t("validate.projectRegion")}:`}</Label>
           <span style={{ marginTop: ".25rem" }}>
             <input
               checked={regionType === 1}
@@ -201,7 +223,7 @@ export default function ValidatePanel({ subscribedList, featureNames, selectedDa
             extraStyle={{ marginTop: "1rem" }}
             onClick={() => createProject(selectedDates?.[mineType] || "2022-01-01-N")}
           >{`${t("validate.createButton")} ${selectedDates?.[mineType]}`}</Button>
-          <p>{errorMsg}</p>
+          {errorMsg && <p>{errorMsg}</p>}
         </div>
       ) : (
         <LoginMessage actionText={t("validate.loginAction")} />

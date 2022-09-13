@@ -26,8 +26,10 @@ const Title = styled.div`
   border-radius: ${({ isInverted }) => !isInverted && "6px 6px 0 0"};
   color: var(--white);
   display: flex;
-  font: normal normal bold 18px/21px Roboto;
+  font: var(--unnamed-font-style-normal) var(--unnamed-font-weight-bold) var(--unnamed-font-size-18) /
+    21px var(--unnamed-font-family-roboto);
   justify-content: space-between;
+  letter-spacing: 0px;
   padding: 0.5rem;
   text-align: left;
   text-transform: uppercase;

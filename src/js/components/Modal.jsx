@@ -8,6 +8,14 @@ import Button from "../components/Button";
  * Style functions for the Modal component
  */
 
+const Label = styled.label`
+  font: var(--unnamed-font-style-normal) var(--unnamed-font-weight-medium)
+    var(--unnamed-font-size-16) / var(--unnamed-line-spacing-19) var(--unnamed-font-family-roboto);
+  letter-spacing: var(--unnamed-character-spacing-0);
+  color: var(--gray-1);
+  text-align: left;
+`;
+
 const ModalWrapper = styled.div`
   background-color: rgba(0, 0, 0, 0.4);
   height: 100%;
@@ -102,7 +110,7 @@ export default function Modal({ title, children, closeText, confirmText, onClose
       <ModalContainer onClick={(e) => e.stopPropagation()} role="document">
         <ModalContent id="confirmModalContent">
           <ModalTitle>
-            <h5 id="confirmModalTitle">{title}</h5>
+            <Label id="confirmModalTitle">{title}</Label>
             <CloseButton aria-label="Close" onClick={onClose} type="button">
               &times;
             </CloseButton>
