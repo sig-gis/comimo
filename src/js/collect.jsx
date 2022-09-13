@@ -1,240 +1,463 @@
-import { last } from "lodash";
-import React from "react";
+import React, { useEffect, useState, Suspense } from "react";
 import ReactDOM from "react-dom";
+import { last } from "lodash";
+import { useAtom, useAtomValue } from "jotai";
+import { useTranslation } from "react-i18next";
+import styled from "@emotion/styled";
 
-import MenuItem from "./components/MenuItem";
-import NICFIControl from "./components/NICFIControl";
-import { PageLayout, MainContext } from "./components/PageLayout";
-import SideBar from "./components/SideBar";
+import {
+  PageLayout,
+  MainContext,
+  myHeightAtom,
+  mapboxTokenAtom,
+  showInfoAtom,
+  versionDeployedAtom,
+} from "./components/PageLayout";
 import IconButton from "./components/IconButton";
-import ToolCard from "./components/ToolCard";
 import LoadingModal from "./components/LoadingModal";
+import FooterBar from "./components/FooterBar";
+import IconTextButton from "./components/IconTextButton";
+import NICFIControl from "./components/NICFIControl";
+import ToolCard from "./components/ToolCard";
 
-import { URLS } from "./constants";
+import LayersPanel from "./home/LayersPanel";
+import CollectDownload from "./collect/CollectDownload";
+
 import { jsonRequest } from "./utils";
+import { URLS } from "./constants";
+import { visiblePanelAtom, extraMapParamsAtom, showModalAtom } from "./home";
 import CollectMap from "./collect/CollectMap";
 import NavBar from "./collect/NavBar";
 
-class CollectContent extends React.Component {
-  constructor(props) {
-    super(props);
+const BarItem = styled.div`
+  margin: 0 2rem;
+`;
 
-    // combining everything to app state
-    this.state = {
-      visiblePanel: null,
-      projectDetails: {},
-      projectPlots: [],
-      currentPlotId: -1,
-      extraParams: {
-        NICFI: {
-          dataLayer: null,
-          band: "rgb",
-        },
-      },
-      nicfiLayers: [],
-      showModal: null,
-    };
-  }
+const Buttons = styled.div`
+  display: flex;
+  flex: 3;
+  justify-content: flex-start;
+`;
 
-  /// Lifecycle Functions ///
+const Logo = styled.div`
+  align-items: center;
+  display: flex;
+  flex: 1;
+  justify-content: space-evenly;
+  padding: 5px 0;
+`;
 
-  componentDidMount() {
-    Promise.all([this.getProjectData(), this.getProjectPlots(), this.getNICFIDates()]).then(
-      ([projectDetails, _, nicfiLayers]) => {
-        const dateRegex = /\d{4}-\d{2}/g;
-        const projectDate = last([...projectDetails.dataLayer.matchAll(dateRegex)])[0];
-        const nicfiDate = nicfiLayers.find(
-          (l) => [...l.matchAll(dateRegex)].length === 1 && l.includes(projectDate)
-        );
-        this.setParams("NICFI", {
-          ...this.state.extraParams.NICFI,
-          dataLayer: nicfiDate || nicfiLayers[0],
-        });
+const LogoGitVersion = styled.a`
+  color: var(--white);
+  cursor: pointer;
+  font-size: 12px;
+  letter-spacing: 0px;
+  text-align: left;
+  text-decoration: none;
+`;
+
+const CollectContent = ({ projectId }) => {
+  // State
+  const [visiblePanel, setVisiblePanel] = useAtom(visiblePanelAtom);
+  const [showModal, setShowModal] = useAtom(showModalAtom);
+  const [extraMapParams, setExtraMapParams] = useAtom(extraMapParamsAtom);
+  const [showInfo, setShowInfo] = useAtom(showInfoAtom);
+  const myHeight = useAtomValue(myHeightAtom);
+  const mapboxToken = useAtomValue(mapboxTokenAtom);
+  const versionDeployed = useAtomValue(versionDeployedAtom);
+
+  const [projectDetails, setProjectDetails] = useState([]);
+  const [projectPlots, setProjectPlots] = useState([]);
+  const [currentPlotId, setCurrentPlotId] = useState(-1);
+  const [nicfiLayers, setNicfiLayers] = useState([]);
+
+  const { t, i18n } = useTranslation();
+
+  const currentPlot = projectPlots.find((p) => p.id === currentPlotId);
+
+  // TODO: repetitive in home
+  const setParams = (param, value) => {
+    setExtraMapParams({
+      ...extraMapParams,
+      [param]: value,
+    });
+  };
+  // TODO: repetitive in home
+  const togglePanel = (panelKey) => {
+    setVisiblePanel(panelKey === visiblePanel ? null : panelKey);
+  };
+
+  // Effects
+  useEffect(() => {
+    const handleEscapeKey = (e) => {
+      if (e.keyCode === 27) {
+        setVisiblePanel(null);
+        setShowInfo(null);
       }
-    );
-  }
+    };
+    window.addEventListener("keydown", handleEscapeKey);
 
-  getProjectData = () =>
-    jsonRequest(URLS.PROJ_DATA, { projectId: this.props.projectId }).then((result) => {
-      this.setState({ projectDetails: result });
-      return result;
-    });
+    return () => {
+      window.removeEventListener("keydown", handleEscapeKey);
+    };
+  }, [visiblePanel]);
 
-  // TODO, this can probably be combined into get projectData
-  getProjectPlots = () =>
-    jsonRequest(URLS.PROJ_PLOTS, { projectId: this.props.projectId }).then((result) => {
-      this.setState({ projectPlots: result });
-    });
+  useEffect(() => {
+    (async () => {
+      const projectDetails = await jsonRequest(URLS.PROJ_DATA, { projectId: projectId }).catch(
+        console.error
+      );
+      setProjectDetails(projectDetails);
 
-  getNICFIDates = () =>
-    jsonRequest(URLS.NICFI_DATES).then((dates) => {
-      this.setState({ nicfiLayers: dates });
-      return dates;
-    });
+      const projectPlots = await jsonRequest(URLS.PROJ_PLOTS, {
+        projectId: projectId,
+      });
+      setProjectPlots(projectPlots);
 
-  /// State Update ///
+      const nicfiLayers = await jsonRequest(URLS.NICFI_DATES);
+      setNicfiLayers(nicfiLayers);
 
-  togglePanel = (panelKey) => {
-    const { visiblePanel } = this.state;
-    this.setState({
-      visiblePanel: panelKey === visiblePanel ? null : panelKey,
-    });
-  };
+      const dateRegex = /\d{4}-\d{2}/g;
+      const projectDate = last([...projectDetails.dataLayer.matchAll(dateRegex)])[0];
+      const nicfiDate = nicfiLayers.find(
+        (l) => [...l.matchAll(dateRegex)].length === 1 && l.includes(projectDate)
+      );
 
-  nextPlot = () => {
-    const {
-      localeText: { home },
-    } = this.context;
-    const { currentPlotId, projectPlots } = this.state;
+      setParams("NICFI", { ...extraMapParams.NICFI, dataLayer: nicfiDate || nicfiLayers[0] });
+    })();
+  }, []);
+
+  // Helper Functions
+  const nextPlot = () => {
     const nextPlot = projectPlots.find((p) => p.id > currentPlotId) || projectPlots[0];
-    currentPlotId === nextPlot.id
-      ? alert(home.noMorePlots)
-      : this.setState({ currentPlotId: nextPlot.id });
+    currentPlotId === nextPlot.id ? alert(t("home.noMorePlots)")) : setCurrentPlotId(nextPlot.id);
   };
 
-  goToPlot = (number) => {
-    const { currentPlotId, projectPlots } = this.state;
+  const goToPlot = (number) => {
     if (number > 0 && number <= projectPlots.length) {
       const nextPlot = projectPlots[number - 1];
-      this.setState({ currentPlotId: nextPlot.id });
+      setCurrentPlotId(nextPlot.id);
     }
   };
 
-  prevPlot = () => {
-    const {
-      localeText: { home },
-    } = this.context;
-    const { currentPlotId, projectPlots } = this.state;
+  const prevPlot = () => {
     const plotsCopy = [...projectPlots].reverse();
     const prevPlot = plotsCopy.find((p) => p.id < currentPlotId) || plotsCopy[0];
-    currentPlotId === prevPlot.id
-      ? alert(home.noMorePlots)
-      : this.setState({ currentPlotId: prevPlot.id });
+    currentPlotId === prevPlot.id ? alert(t("home.noMorePlots")) : setCurrentPlotId(prevPlot.id);
   };
 
-  setPlotAnswer = (answer) => {
-    const { currentPlotId, projectPlots } = this.state;
-    jsonRequest(URLS.SAVE_ANSWER, { plotId: this.state.currentPlotId, answer })
-      .then(() => {
-        const newProjectPlots = projectPlots.map((p) =>
-          p.id === currentPlotId ? { ...p, answer } : p
-        );
-        this.setState({ projectPlots: newProjectPlots });
-      })
-      .catch(() => {
-        alert("Error Saving plot");
-      });
+  const setPlotAnswer = async (answer) => {
+    try {
+      await jsonRequest(URLS.SAVE_ANSWER, { plotId: currentPlotId, answer });
+      const newProjectPlots = projectPlots.map((p) =>
+        p.id === currentPlotId ? { ...p, answer } : p
+      );
+      setProjectPlots(newProjectPlots);
+    } catch {
+      console.error("Error Saving plot");
+    }
   };
 
-  setParams = (param, value) => {
-    this.setState({
-      extraParams: {
-        ...this.state.extraParams,
-        [param]: value,
-      },
-    });
-  };
+  /// Render ///
 
-  /// Helpers ///
-
-  geomToKML = (geom) => {
-    const coordinates = geom.coordinates[0];
-    const strCoords = coordinates.map((c) => c.join(",")).join(" ");
-    return (
-      '<kml xmlns="http://www.opengis.net/kml/2.2" xmlns:gx="http://www.google.com/kml/ext/2.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.opengis.net/kml/2.2 https://developers.google.com/kml/schema/kml22gx.xsd"><Document><Placemark><Polygon><outerBoundaryIs><LinearRing><coordinates>' +
-      strCoords +
-      "</coordinates></LinearRing></outerBoundaryIs></Polygon></Placemark></Document></kml>"
-    );
-  };
-
-  render() {
-    const { projectDetails, currentPlotId, projectPlots } = this.state;
-    const {
-      setShowInfo,
-      myHeight,
-      localeText: { home },
-    } = this.context;
-    const currentPlot = projectPlots.find((p) => p.id === currentPlotId);
-    return (
-      <>
-        {this.state.showModal && <LoadingModal message={t("home.loading") || "Cargando"} />}
-        <CollectMap
-          boundary={projectDetails.boundary}
-          currentPlot={currentPlot}
-          extraParams={this.state.extraParams}
-          goToPlot={this.goToPlot}
-          mapboxToken={this.props.mapboxToken}
-          myHeight={myHeight}
-          projectPlots={projectPlots}
-        />
-        {home && (
-          <SideBar>
-            {/* Layers */}
-            <MenuItem
-              itemName="layer"
-              onClick={this.togglePanel}
-              selectedItem={this.state.visiblePanel}
-              tooltip={home.layersTooltip}
-            >
-              <ToolCard title="Placeholder">
-                <div>
-                  <NICFIControl
-                    extraParams={this.state.extraParams}
-                    nicfiLayers={this.state.nicfiLayers}
-                    setParams={this.setParams}
-                  />
-                  {currentPlot?.geom && (
-                    <a
-                      download={
-                        "comimo_projectId-" +
-                        this.props.projectId +
-                        "_plotId-" +
-                        this.state.currentPlotId +
-                        ".kml"
-                      }
-                      href={
-                        "data:earth.kml+xml application/vnd.google-earth.kmz, " +
-                        encodeURIComponent(this.geomToKML(currentPlot?.geom))
-                      }
-                    >
-                      Download Plot KML
-                    </a>
-                  )}
-                </div>
-              </ToolCard>
-            </MenuItem>
-            <IconButton
-              icon="info"
-              onClick={() => setShowInfo(true)}
-              parentClass="disclaimer"
-              tooltip={home.appInfoTooltip}
+  return (
+    <>
+      {showModal && <LoadingModal message={t("home.loading")} />}
+      <CollectMap
+        boundary={projectDetails.boundary}
+        currentPlot={currentPlot}
+        goToPlot={goToPlot}
+        projectPlots={projectPlots}
+      />
+      <NavBar
+        currentPlotId={currentPlotId}
+        goToPlot={goToPlot}
+        nextPlot={nextPlot}
+        prevPlot={prevPlot}
+        setPlotAnswer={setPlotAnswer}
+        shiftPlotId={projectPlots[0]?.id}
+      />
+      <FooterBar>
+        <Buttons>
+          {/* Layers */}
+          <BarItem>
+            <IconTextButton
+              active={visiblePanel === "layers"}
+              hasBackground={true}
+              icon="layer"
+              onClick={() => togglePanel("layers")}
+              text={t("home.layersTitle")}
             />
-          </SideBar>
-        )}
-        <NavBar
-          currentPlotId={this.state.currentPlotId}
-          goToPlot={this.goToPlot}
-          nextPlot={this.nextPlot}
-          prevPlot={this.prevPlot}
-          setPlotAnswer={this.setPlotAnswer}
-          shiftPlotId={projectPlots[0]?.id}
-        />
-      </>
-    );
-  }
-}
-CollectContent.contextType = MainContext;
+            <LayersPanel
+              active={visiblePanel === "layers"}
+              nicfiLayers={nicfiLayers}
+              nicfiOnly={true}
+            />
+          </BarItem>
+
+          {/* Download Data */}
+          <BarItem>
+            <IconTextButton
+              active={visiblePanel === "download"}
+              hasBackground={true}
+              icon="download"
+              onClick={() => togglePanel("download")}
+              text={t("home.downloadTitle")}
+            />
+            <CollectDownload
+              active={visiblePanel === "download"}
+              currentPlot={currentPlot}
+              currentPlotId={currentPlotId}
+              projectId={projectId}
+            />
+          </BarItem>
+        </Buttons>
+        <Logo>
+          <IconButton
+            icon="info"
+            onClick={() => setShowInfo(true)}
+            tooltip={t("home.appInfoTooltip")}
+          />
+          <LogoGitVersion
+            href={
+              versionDeployed
+                ? `https://github.com/sig-gis/comimo/tags/${versionDeployed}`
+                : "https://github.com/sig-gis/comimo"
+            }
+            target="/blank"
+          >
+            {versionDeployed ? `Version: ${versionDeployed}` : "Version: Latest"}
+          </LogoGitVersion>
+        </Logo>
+      </FooterBar>
+    </>
+  );
+};
+
+// class CollectContent extends React.Component {
+// constructor(props) {
+//   super(props);
+
+//   // combining everything to app state
+//   this.state = {
+//     visiblePanel: null,
+//     projectDetails: {},
+//     projectPlots: [],
+//     currentPlotId: -1,
+//     extraParams: {
+//       NICFI: {
+//         dataLayer: null,
+//         band: "rgb",
+//       },
+//     },
+//     nicfiLayers: [],
+//     showModal: null,
+//   };
+// }
+
+/// Lifecycle Functions ///
+
+// componentDidMount() {
+//   Promise.all([this.getProjectData(), this.getProjectPlots(), this.getNICFIDates()]).then(
+//     ([projectDetails, _, nicfiLayers]) => {
+//       const dateRegex = /\d{4}-\d{2}/g;
+//       const projectDate = last([...projectDetails.dataLayer.matchAll(dateRegex)])[0];
+//       const nicfiDate = nicfiLayers.find(
+//         (l) => [...l.matchAll(dateRegex)].length === 1 && l.includes(projectDate)
+//       );
+//       this.setParams("NICFI", {
+//         ...this.state.extraParams.NICFI,
+//         dataLayer: nicfiDate || nicfiLayers[0],
+//       });
+//     }
+//   );
+// }
+
+// getProjectData = () =>
+//   jsonRequest(URLS.PROJ_DATA, { projectId: this.props.projectId }).then((result) => {
+//     this.setState({ projectDetails: result });
+//     return result;
+//   });
+
+// TODO, this can probably be combined into get projectData
+// getProjectPlots = () =>
+//   jsonRequest(URLS.PROJ_PLOTS, { projectId: this.props.projectId }).then((result) => {
+//     this.setState({ projectPlots: result });
+//   });
+
+// getNICFIDates = () =>
+//   jsonRequest(URLS.NICFI_DATES).then((dates) => {
+//     this.setState({ nicfiLayers: dates });
+//     return dates;
+//   });
+
+/// State Update ///
+
+// togglePanel = (panelKey) => {
+//   const { visiblePanel } = this.state;
+//   this.setState({
+//     visiblePanel: panelKey === visiblePanel ? null : panelKey,
+//   });
+// };
+
+// nextPlot = () => {
+//   const {
+//     localeText: { home },
+//   } = this.context;
+//   const { currentPlotId, projectPlots } = this.state;
+//   const nextPlot = projectPlots.find((p) => p.id > currentPlotId) || projectPlots[0];
+//   currentPlotId === nextPlot.id
+//     ? alert(home.noMorePlots)
+//     : this.setState({ currentPlotId: nextPlot.id });
+// };
+
+// goToPlot = (number) => {
+//   const { currentPlotId, projectPlots } = this.state;
+//   if (number > 0 && number <= projectPlots.length) {
+//     const nextPlot = projectPlots[number - 1];
+//     this.setState({ currentPlotId: nextPlot.id });
+//   }
+// };
+
+// prevPlot = () => {
+//   const {
+//     localeText: { home },
+//   } = this.context;
+//   const { currentPlotId, projectPlots } = this.state;
+//   const plotsCopy = [...projectPlots].reverse();
+//   const prevPlot = plotsCopy.find((p) => p.id < currentPlotId) || plotsCopy[0];
+//   currentPlotId === prevPlot.id
+//     ? alert(home.noMorePlots)
+//     : this.setState({ currentPlotId: prevPlot.id });
+// };
+
+// setPlotAnswer = (answer) => {
+//   const { currentPlotId, projectPlots } = this.state;
+//   jsonRequest(URLS.SAVE_ANSWER, { plotId: this.state.currentPlotId, answer })
+//     .then(() => {
+//       const newProjectPlots = projectPlots.map((p) =>
+//         p.id === currentPlotId ? { ...p, answer } : p
+//       );
+//       this.setState({ projectPlots: newProjectPlots });
+//     })
+//     .catch(() => {
+//       alert("Error Saving plot");
+//     });
+// };
+
+// setParams = (param, value) => {
+//   this.setState({
+//     extraParams: {
+//       ...this.state.extraParams,
+//       [param]: value,
+//     },
+//   });
+// };
+
+// /// Helpers ///
+
+// geomToKML = (geom) => {
+//   const coordinates = geom.coordinates[0];
+//   const strCoords = coordinates.map((c) => c.join(",")).join(" ");
+//   return (
+//     '<kml xmlns="http://www.opengis.net/kml/2.2" xmlns:gx="http://www.google.com/kml/ext/2.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.opengis.net/kml/2.2 https://developers.google.com/kml/schema/kml22gx.xsd"><Document><Placemark><Polygon><outerBoundaryIs><LinearRing><coordinates>' +
+//     strCoords +
+//     "</coordinates></LinearRing></outerBoundaryIs></Polygon></Placemark></Document></kml>"
+//   );
+// };
+
+// render() {
+// const { projectDetails, currentPlotId, projectPlots } = this.state;
+// const {
+//   setShowInfo,
+//   myHeight,
+//   localeText: { home },
+// } = this.context;
+// const currentPlot = projectPlots.find((p) => p.id === currentPlotId);
+//   return (
+//     <>
+//       {this.state.showModal && <LoadingModal message={t("home.loading") || "Cargando"} />}
+//       <CollectMap
+//         boundary={projectDetails.boundary}
+//         currentPlot={currentPlot}
+//         extraParams={this.state.extraParams}
+//         goToPlot={this.goToPlot}
+//         mapboxToken={this.props.mapboxToken}
+//         myHeight={myHeight}
+//         projectPlots={projectPlots}
+//       />
+//       {home && (
+//         <SideBar>
+//           {/* Layers */}
+//           <MenuItem
+//             itemName="layer"
+//             onClick={this.togglePanel}
+//             selectedItem={this.state.visiblePanel}
+//             tooltip={home.layersTooltip}
+//           >
+//             <ToolCard title="Placeholder">
+//               <div>
+//                 <NICFIControl
+//                   extraParams={this.state.extraParams}
+//                   nicfiLayers={this.state.nicfiLayers}
+//                   setParams={this.setParams}
+//                 />
+//                 {currentPlot?.geom && (
+//                   <a
+//                     download={
+//                       "comimo_projectId-" +
+//                       this.props.projectId +
+//                       "_plotId-" +
+//                       this.state.currentPlotId +
+//                       ".kml"
+//                     }
+//                     href={
+//                       "data:earth.kml+xml application/vnd.google-earth.kmz, " +
+//                       encodeURIComponent(this.geomToKML(currentPlot?.geom))
+//                     }
+//                   >
+//                     Download Plot KML
+//                   </a>
+//                 )}
+//               </div>
+//             </ToolCard>
+//           </MenuItem>
+//           <IconButton
+//             icon="info"
+//             onClick={() => setShowInfo(true)}
+//             parentClass="disclaimer"
+//             tooltip={home.appInfoTooltip}
+//           />
+//         </SideBar>
+//       )}
+//       <NavBar
+//         currentPlotId={this.state.currentPlotId}
+//         goToPlot={this.goToPlot}
+//         nextPlot={this.nextPlot}
+//         prevPlot={this.prevPlot}
+//         setPlotAnswer={this.setPlotAnswer}
+//         shiftPlotId={projectPlots[0]?.id}
+//       />
+//     </>
+//   );
+// }
+// }
+// CollectContent.contextType = MainContext;
 
 export function pageInit(args) {
   ReactDOM.render(
-    <PageLayout
-      role={args.role}
-      username={args.username}
-      version={args.versionDeployed}
-      showSearch={true}
-    >
-      <CollectContent mapboxToken={args.mapboxToken} projectId={parseInt(args.projectId || 0)} />
-    </PageLayout>,
+    <Suspense fallback="">
+      <PageLayout
+        role={args.role}
+        username={args.username}
+        mapboxToken={args.mapboxToken}
+        mapquestKey={args.mapquestKey}
+        versionDeployed={args.versionDeployed}
+        showSearch={true}
+      >
+        <CollectContent projectId={parseInt(args.projectId || 0)} />
+      </PageLayout>
+    </Suspense>,
     document.getElementById("main-container")
   );
 }

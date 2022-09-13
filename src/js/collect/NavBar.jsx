@@ -5,7 +5,7 @@ import Button from "../components/Button";
 import { useTranslation } from "react-i18next";
 
 const ButtonRowOuter = styled.div`
-  bottom: 32px;
+  bottom: calc(var(--bar-height) + 32px);
   margin-left: 50px;
   display: flex;
   justify-content: center;
@@ -90,7 +90,7 @@ export default function NavBar({
               onClick={() => setPlotAnswer("Mina")}
               extraStyle={{ backgroundColor: "#ff6654" }}
             >
-              {collect?.mina}
+              {t("collect.mina")}
             </Button>
             <Button
               onClick={() => setPlotAnswer("No Mina")}

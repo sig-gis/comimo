@@ -53,7 +53,7 @@ const LayerSlider = styled.input`
   }
 `;
 
-export default function LayersPanel({ nicfiLayers, active }) {
+export default function LayersPanel({ nicfiLayers, active, nicfiOnly }) {
   const [visible, setVisible] = useState(null);
   const [extraMapParams, setExtraMapParams] = useAtom(extraMapParamsAtom);
   const [opacity, setOpacity] = useState(null);
@@ -178,7 +178,7 @@ export default function LayersPanel({ nicfiLayers, active }) {
   const renderNICFISection = () => (
     <>
       <HeaderLabel
-        extraStyle={{ margin: "16px -16px" }}
+        extraStyle={nicfiOnly ? { margin: "-16px -16px 16px -16px" } : { margin: "16px -16px" }}
         background="#426F96"
         textColor="var(--white)"
       >
@@ -197,8 +197,8 @@ export default function LayersPanel({ nicfiLayers, active }) {
 
   return (
     <ToolCard title={t("layers.title")} active={active}>
-      {opacity && visible && renderMiningActivitySection()}
-      {opacity && visible && renderOtherLayersSection()}
+      {!nicfiOnly && opacity && visible && renderMiningActivitySection()}
+      {!nicfiOnly && opacity && visible && renderOtherLayersSection()}
       {opacity && visible && renderNICFISection()}
     </ToolCard>
   );
