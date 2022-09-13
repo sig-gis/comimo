@@ -7,9 +7,6 @@ import NICFIControl from "../components/NICFIControl";
 import ToolCard from "../components/ToolCard";
 import Divider from "../components/Divider";
 import HeaderLabel from "../components/HeaderLabel";
-import { homeMapAtom } from "./HomeMap";
-import { useTranslation } from "react-i18next";
-
 import { extraMapParamsAtom } from "../home";
 import { startVisible, availableLayers, miningLayers, layerColors } from "../constants";
 import { homeMapAtom } from "./HomeMap";
@@ -21,6 +18,7 @@ const Label = styled.label`
   letter-spacing: var(--unnamed-character-spacing-0);
   color: var(--gray-1);
   text-align: left;
+`;
 
 const LayerCheckbox = styled.input`
   accent-color: ${({ layerColor }) => layerColor || "var(--teal-1)"};
