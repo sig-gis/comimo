@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useAtom, useAtomValue } from "jotai";
 import styled from "@emotion/styled";
+import { css } from "@emotion/react";
 
 import NICFIControl from "../components/NICFIControl";
 import ToolCard from "../components/ToolCard";
@@ -15,33 +16,32 @@ const LayerCheckbox = styled.input`
   accent-color: ${({ layerColor }) => layerColor || "var(--teal-1)"};
 `;
 
+const sliderThumb = (layerColor) => css`
+  background: ${layerColor || "var(--teal-1)"};
+  border: 2px solid;
+  border-color: var(--white);
+  border-radius: 50%;
+  box-shadow: 0px 3px 2px #00000040;
+  cursor: ew-resize;
+  height: 18px;
+  width: 18px;
+`;
+
 const LayerSlider = styled.input`
   background: ${({ layerColor }) =>
     layerColor
       ? `transparent linear-gradient(90deg, var(--gray-4) 0%, ${layerColor} 100%) 0% 0% no-repeat padding-box`
       : "transparent linear-gradient(90deg, var(--gray-4) 0%, var(--black) 100%) 0% 0% no-repeat padding-box"};
 
+  /* Chrome/Safari */
   &::-webkit-slider-thumb {
     -webkit-appearance: none;
-    background: ${({ layerColor }) => layerColor || "var(--teal-1)"};
-    border: 2px solid;
-    border-color: var(--white);
-    border-radius: 50%;
-    box-shadow: 0px 3px 2px #00000040;
-    cursor: ew-resize;
-    height: 18px;
-    width: 18px;
+    ${({ layerColor }) => sliderThumb(layerColor)}
   }
 
+  /* Firefox */
   &::-moz-range-thumb {
-    background: ${({ layerColor }) => layerColor || "var(--teal-1)"};
-    border: 2px solid;
-    border-color: var(--white);
-    border-radius: 50%;
-    box-shadow: 0px 3px 2px #00000040;
-    cursor: ew-resize;
-    height: 18px;
-    width: 18px;
+    ${({ layerColor }) => sliderThumb(layerColor)}
   }
 `;
 

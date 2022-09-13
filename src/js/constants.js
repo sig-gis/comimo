@@ -115,16 +115,16 @@ export const availableLayers = [
 ];
 
 export const layerColors = {
-  cMines: "var(--confirmed-mines)",
-  nMines: "var(--new-mines)",
-  pMines: "var(--current-pred)",
-  municipalBounds: "var(--municipal-bounds)",
-  legalMines: "var(--mining-titles)",
-  otherAuthorizations: "var(--authorizations)",
-  tierrasDeCom: "var(--communal-lands)",
-  resguardos: "var(--indigenous)",
-  protectedAreas: "var(--protected-areas)",
-  NICFI: "var(--nicfi)",
+  cMines: "#800080",
+  nMines: "#FF0000",
+  pMines: "#FFA500",
+  municipalBounds: "#E2615B",
+  legalMines: "#ECEE0D",
+  otherAuthorizations: "#094876",
+  tierrasDeCom: "#EDD18F",
+  resguardos: "#DB99DB",
+  protectedAreas: "#30CE97",
+  NICFI: "#159ebf",
 };
 
 export const startVisible = ["cMines", "NICFI"];
