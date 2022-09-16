@@ -36,7 +36,7 @@ export default function LanguageButtons({ selectedLanguage, selectLanguage }) {
         }}
       >
         <IconContainer>
-          <SvgIcon extraStyles={{ marginRight: "5px" }} icon="english" size="16px" />
+          <SvgIcon extraStyle={{ marginRight: "5px" }} icon="english" size="16px" />
           English
         </IconContainer>
       </Button>
@@ -49,7 +49,7 @@ export default function LanguageButtons({ selectedLanguage, selectLanguage }) {
         }}
       >
         <IconContainer>
-          <SvgIcon extraStyles={{ marginRight: "5px" }} icon="spanish" size="16px" />
+          <SvgIcon extraStyle={{ marginRight: "5px" }} icon="spanish" size="16px" />
           Español
         </IconContainer>
       </Button>

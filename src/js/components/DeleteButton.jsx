@@ -6,8 +6,9 @@ const DeleteButton = ({ onClick }) => (
   <IconButton
     extraStyle={{ borderColor: "red" }}
     bgColorHover="#ff40409e"
+    color="var(--error-red)"
     size="15px"
-    icon="redX"
+    icon="x"
     tooltip="remove"
     onClick={onClick}
   />

@@ -240,12 +240,9 @@ const spanishLangaugeIcon = (
   </svg>
 );
 
-const redXIcon = (
+const xIcon = (
   <svg viewBox="0 0 20 20">
-    <path
-      fill="red"
-      d="M10 6.9L14.34 0h5.48l-6.74 9.92L20 20h-5.55L10 12.99 5.55 20H0L6.92 9.92.18 0h5.48L10 6.9z"
-    ></path>
+    <path d="M10 6.9L14.34 0h5.48l-6.74 9.92L20 20h-5.55L10 12.99 5.55 20H0L6.92 9.92.18 0h5.48L10 6.9z"></path>
   </svg>
 );
 
@@ -255,6 +252,25 @@ const settingsIcon = (
       fill="#fff"
       d="M17.6 11c.04-.33.06-.67.05-1 0-.35-.05-.65-.05-1l2.15-1.65c.21-.15.25-.43.11-.64l-2.05-3.45a.497.497 0 00-.61-.2l-2.56 1c-.53-.41-1.12-.75-1.74-1L12.54.41a.546.546 0 00-.51-.4h-4.1c-.24 0-.45.17-.51.4l-.41 2.65c-.62.26-1.2.6-1.74 1l-2.56-1a.47.47 0 00-.61.2L.05 6.7c-.1.22-.06.47.1.65L2.35 9c0 .35-.05.65-.05 1s.05.65.05 1L.21 12.65c-.21.15-.25.43-.11.64l2.05 3.45c.13.21.39.29.61.2l2.56-1c.53.41 1.12.75 1.74 1l.41 2.65c.05.24.27.41.51.4h4.09c.24 0 .45-.17.51-.4l.41-2.65c.62-.26 1.2-.6 1.74-1l2.56 1c.23.1.49.02.61-.2l2.05-3.45c.1-.22.06-.47-.1-.65l-2.25-1.65zm-7.62 2.5c-1.93-.04-3.46-1.65-3.42-3.58a3.5 3.5 0 017 .08c0 1.94-1.59 3.51-3.54 3.5h-.04z"
     ></path>
+  </svg>
+);
+
+const nextIcon = (
+  <svg viewBox="0 0 48 48">
+    <path d="M37.324 20.026l-22-12.412a4.685 4.685 0 00-4.711.036 4.528 4.528 0 00-2.28 3.938v24.824a4.528 4.528 0 002.28 3.938 4.687 4.687 0 004.711.036l22-12.412a4.543 4.543 0 000-7.948z"></path>
+  </svg>
+);
+
+const prevIcon = (
+  <svg style={{ transform: "rotate(180deg)" }} viewBox="0 0 48 48">
+    <path d="M37.324 20.026l-22-12.412a4.685 4.685 0 00-4.711.036 4.528 4.528 0 00-2.28 3.938v24.824a4.528 4.528 0 002.28 3.938 4.687 4.687 0 004.711.036l22-12.412a4.543 4.543 0 000-7.948z"></path>
+  </svg>
+);
+
+const warningIcon = (
+  <svg viewBox="0 0 512 512">
+    <path d="M505.403 406.394L295.389 58.102c-8.274-13.721-23.367-22.245-39.39-22.245s-31.116 8.524-39.391 22.246L6.595 406.394c-8.551 14.182-8.804 31.95-.661 46.37 8.145 14.42 23.491 23.378 40.051 23.378h420.028c16.56 0 31.907-8.958 40.052-23.379 8.143-14.421 7.89-32.189-.662-46.369zm-28.364 29.978a12.684 12.684 0 01-11.026 6.436H45.985a12.68 12.68 0 01-11.025-6.435 12.683 12.683 0 01.181-12.765L245.156 75.316A12.732 12.732 0 01256 69.192c4.41 0 8.565 2.347 10.843 6.124l210.013 348.292a12.677 12.677 0 01.183 12.764z"></path>
+    <path d="M256.154 173.005c-12.68 0-22.576 6.804-22.576 18.866 0 36.802 4.329 89.686 4.329 126.489.001 9.587 8.352 13.607 18.248 13.607 7.422 0 17.937-4.02 17.937-13.607 0-36.802 4.329-89.686 4.329-126.489 0-12.061-10.205-18.866-22.267-18.866zM256.465 353.306c-13.607 0-23.814 10.824-23.814 23.814 0 12.68 10.206 23.814 23.814 23.814 12.68 0 23.505-11.134 23.505-23.814 0-12.99-10.826-23.814-23.505-23.814z"></path>
   </svg>
 );
 
@@ -277,8 +293,11 @@ const iconMap = {
   language: languageIcon,
   english: englishLanguageIcon,
   spanish: spanishLangaugeIcon,
-  redX: redXIcon,
+  x: xIcon,
   settings: settingsIcon,
+  next: nextIcon,
+  prev: prevIcon,
+  warning: warningIcon,
 };
 
 const SvgIconContainer = styled.div`
@@ -300,7 +319,7 @@ const SvgIconContainer = styled.div`
 function SvgIcon({
   color,
   cursor,
-  extraStyles,
+  extraStyle,
   hoverColor,
   hoverFill,
   icon,
@@ -317,7 +336,7 @@ function SvgIcon({
       size={size}
       verticalAlign={verticalAlign}
       onClick={onClick}
-      style={{ ...extraStyles }}
+      style={{ ...extraStyle }}
     >
       {iconMap[icon]}
     </SvgIconContainer>
@@ -327,7 +346,7 @@ function SvgIcon({
 SvgIcon.propTypes = {
   color: PropTypes.string,
   cursor: PropTypes.string,
-  extraStyles: PropTypes.object,
+  extraStyle: PropTypes.object,
   hoverColor: PropTypes.string,
   hoverFill: PropTypes.string,
   icon: PropTypes.oneOf(Object.keys(iconMap)).isRequired,
@@ -339,7 +358,7 @@ SvgIcon.propTypes = {
 SvgIcon.defaultProps = {
   color: "currentColor",
   cursor: "pointer",
-  extraStyles: {},
+  extraStyle: {},
   verticalAlign: "middle",
 };
 

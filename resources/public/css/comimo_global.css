@@ -257,6 +257,25 @@ button:focus {
   outline: 0;
 }
 
+input[type="number"] {
+  border: 1px solid;
+  border-color: var(--gray-2);
+  border-radius: 4px 0px 0px 4px;
+  /* height: 39px; */
+  width: 70px;
+}
+
+/* Hide Default input number arrows */
+input[type="number"] {
+  -webkit-appearance: textfield;
+     -moz-appearance: textfield;
+          appearance: textfield;
+}
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+}
+
 input[type="radio"],
 input[type="checkbox"] {
   margin-right: 0.5rem;

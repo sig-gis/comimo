@@ -71,7 +71,7 @@ const CollectContent = ({ projectId }) => {
   const [currentPlotId, setCurrentPlotId] = useState(-1);
   const [nicfiLayers, setNicfiLayers] = useState([]);
 
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
 
   const currentPlot = projectPlots.find((p) => p.id === currentPlotId);
 
@@ -130,7 +130,7 @@ const CollectContent = ({ projectId }) => {
   // Helper Functions
   const nextPlot = () => {
     const nextPlot = projectPlots.find((p) => p.id > currentPlotId) || projectPlots[0];
-    currentPlotId === nextPlot.id ? alert(t("home.noMorePlots)")) : setCurrentPlotId(nextPlot.id);
+    currentPlotId === nextPlot.id ? alert(t("home.noMorePlots")) : setCurrentPlotId(nextPlot.id);
   };
 
   const goToPlot = (number) => {
