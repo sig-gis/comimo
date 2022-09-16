@@ -301,8 +301,10 @@ const iconMap = {
 };
 
 const SvgIconContainer = styled.div`
+  align-items: center;
   color: ${(props) => props.color};
   cursor: ${(props) => props.cursor};
+  display: flex;
   fill: ${(props) => props.color};
   height: ${(props) => props.size};
   max-height: ${(props) => props.size};

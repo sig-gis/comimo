@@ -119,44 +119,60 @@ export default function NavBar({
               <SvgButton
                 onClick={prevPlot}
                 text={t("collect.prev")}
+                backgroundColor="var(--white)"
+                backgroundColorHover="var(--nav-bar-button)"
+                fillColor="black"
+                fillColorHover="var(--white)"
                 icon="prev"
                 iconSize="20px"
                 fill="var(--white)"
-                extraStyle={{ marginRight: "1rem" }}
+                extraStyle={{ marginRight: "0.5rem" }}
               />
               <SvgButton
                 onClick={nextPlot}
                 text={t("collect.next")}
+                backgroundColor="var(--white)"
+                backgroundColorHover="var(--nav-bar-button)"
+                fillColor="black"
+                fillColorHover="var(--white)"
                 icon="next"
                 iconSize="20px"
                 fill="var(--white)"
-                extraStyle={{ marginRight: "1rem" }}
+                extraStyle={{ marginRight: "2rem" }}
               />
               <SvgButton
                 text={t("collect.noMina")}
-                backgroundColor="#597D31"
+                backgroundColor="var(--no-mina)"
                 backgroundColorHover="var(--white)"
                 fillColor="var(--white)"
-                fillColorHover="#597D31"
+                fillColorHover="var(--no-mina)"
                 icon="check"
                 iconSize="20px"
                 onClick={() => setPlotAnswer("No Mina")}
-                extraStyle={{ marginRight: "1rem" }}
+                extraStyle={{ marginRight: "0.5rem" }}
               />
               <SvgButton
                 text={t("collect.mina")}
+                backgroundColor="var(--mina)"
+                backgroundColorHover="var(--white)"
+                fillColor="var(--white)"
+                fillColorHover="var(--mina)"
                 icon="warning"
                 iconSize="20px"
                 onClick={() => setPlotAnswer("Mina")}
-                extraStyle={{ marginRight: "1rem" }}
+                extraStyle={{ marginRight: "2rem" }}
               />
               {renderGoToPlot()}
               <SvgButton
                 text={t("collect.exit")}
+                backgroundColor="var(--nav-bar-button)"
+                backgroundColorHover="var(--gray-1)"
+                fillColor="var(--white)"
+                fillColorHover="var(--white)"
                 icon="x"
                 iconSize="20px"
                 onClick={() => window.location.assign("/")}
-                extraStyle={{ marginLeft: "1rem" }}
+                extraStyle={{ marginLeft: "2rem" }}
               />
             </>
           )}

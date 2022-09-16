@@ -22,15 +22,25 @@ const Label = styled.span`
 export default function IconTextButton({
   extraStyle,
   backgroundColor,
+  backgroundColorHover,
   icon,
   iconSize,
   fill,
+  fillColor,
+  fillColorHover,
   onClick,
   text,
 }) {
   return (
     <div style={extraStyle}>
-      <Button backgroundColor={backgroundColor} onClick={onClick} extraStyle={{ height: "40px" }}>
+      <Button
+        fillColor={fillColor}
+        fillColorHover={fillColorHover}
+        backgroundColor={backgroundColor}
+        backgroundColorHover={backgroundColorHover}
+        onClick={onClick}
+        extraStyle={{ height: "40px" }}
+      >
         <SvgContainer>
           <SvgIcon
             extraStyle={{ marginRight: "0.25rem" }}
