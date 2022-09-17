@@ -216,7 +216,7 @@ export default function CollectMap({ boundary, projectPlots, goToPlot, currentPl
       features: projectPlots.map((p) => ({
         type: "Feature",
         properties: { id: p.id },
-        geometry: { type: "Point", coordinates: [p.lat, p.lon] },
+        geometry: { type: "Point", coordinates: [p.lat, p.lng] },
       })),
     };
     collectMap.addSource("plotLabels", {
@@ -275,6 +275,7 @@ export default function CollectMap({ boundary, projectPlots, goToPlot, currentPl
 
   useEffect(() => {
     collectMap && addPlots();
+    collectMap && console.log("collectMap style:", collectMap.getStyle());
   }, [projectPlots.length]);
 
   const updateVisiblePlot = (map) => {
