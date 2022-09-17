@@ -13,6 +13,7 @@ const Buttons = styled.div`
 `;
 
 const IconContainer = styled.div`
+  align-items: center;
   display: flex;
 `;
 
