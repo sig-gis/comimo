@@ -4,6 +4,7 @@ import resolve from "@rollup/plugin-node-resolve";
 import babel from "@rollup/plugin-babel";
 
 // https://vitejs.dev/config/
+// TODO add conditions (prod/dev)
 export default defineConfig({
   server: {
     origin: "http://127.0.0.1:8080",
@@ -13,6 +14,7 @@ export default defineConfig({
   },
   build: {
     chunkSizeWarningLimit: 1000,
+    minify: false,
     manifest: true,
     sourcemap: true,
     plugins: [resolve(), babel({ exclude: "node_modules/**" })],
@@ -33,6 +35,11 @@ export default defineConfig({
         "src/js/verifyUser.jsx",
       ],
       output: {
+        // compact: false,
+        // sourcemap: true,
+        // entryFileNames: "[name].js",
+        // preserveModules: true,
+        // minifyInternalExports: false,
         dir: "dist/public",
       },
     },
