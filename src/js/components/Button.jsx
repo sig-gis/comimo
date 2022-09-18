@@ -4,8 +4,10 @@ import { THEME } from "../constants";
 
 // Background color
 
-const getBackgroundColor = ({ $active, $disabled, $secondaryButton }) => {
-  if ($disabled) {
+const getBackgroundColor = ({ $active, $backgroundColor, $disabled, $secondaryButton }) => {
+  if ($backgroundColor) {
+    return $backgroundColor;
+  } else if ($disabled) {
     return THEME.disabled.backgroundColor;
   } else if ($secondaryButton) {
     return $active
@@ -18,8 +20,10 @@ const getBackgroundColor = ({ $active, $disabled, $secondaryButton }) => {
   }
 };
 
-const getBackgroundColorHover = ({ $disabled, $secondaryButton }) => {
-  if ($disabled) {
+const getBackgroundColorHover = ({ $backgroundColorHover, $disabled, $secondaryButton }) => {
+  if ($backgroundColorHover) {
+    return $backgroundColorHover;
+  } else if ($disabled) {
     return THEME.disabled.backgroundColor;
   } else if ($secondaryButton) {
     return THEME.hover.secondaryButton.backgroundColor;
@@ -56,8 +60,10 @@ const getBorderColorHover = ({ $disabled, $secondaryButton }) => {
 
 // Fill color
 
-const getFillColor = ({ $active, $disabled, $secondaryButton }) => {
-  if ($disabled) {
+const getFillColor = ({ $active, $fillColor, $disabled, $secondaryButton }) => {
+  if ($fillColor) {
+    return $fillColor;
+  } else if ($disabled) {
     return THEME.disabled.fillColor;
   } else if ($secondaryButton) {
     return $active
@@ -68,8 +74,10 @@ const getFillColor = ({ $active, $disabled, $secondaryButton }) => {
   }
 };
 
-const getFillColorHover = ({ $disabled, $secondaryButton }) => {
-  if ($disabled) {
+const getFillColorHover = ({ $disabled, $fillColorHover, $secondaryButton }) => {
+  if ($fillColorHover) {
+    return $fillColorHover;
+  } else if ($disabled) {
     return THEME.disabled.fillColor;
   } else if ($secondaryButton) {
     return THEME.hover.secondaryButton.fillColor;
@@ -87,9 +95,8 @@ const ButtonStyled = styled.button`
     $active || $disabled ? "none" : "0px 2px 4px #00000050"};
   color: ${getFillColor};
   cursor: ${({ $disabled }) => ($disabled ? "not-allowed" : "pointer")};
-  font-style: var(--unnamed-font-family-roboto);
-  font-size: 16px;
-  font-weight: var(--unnamed-font-weight-medium);
+  font: var(--unnamed-font-style-normal) var(--unnamed-font-weight-medium)
+    var(--unnamed-font-size-18) / 21px var(--unnamed-font-family-roboto);
   letter-spacing: 0px;
   line-height: 1.5;
   padding: 0.2rem 0.5rem;
@@ -106,11 +113,27 @@ const ButtonStyled = styled.button`
   }
 `;
 
-function Button({ active, children, extraStyle, isDisabled, onClick, secondaryButton, tooltip }) {
+function Button({
+  active,
+  backgroundColor,
+  backgroundColorHover,
+  children,
+  extraStyle,
+  fillColor,
+  fillColorHover,
+  isDisabled,
+  onClick,
+  secondaryButton,
+  tooltip,
+}) {
   return (
     <ButtonStyled
       style={extraStyle}
       $active={active}
+      $backgroundColor={backgroundColor}
+      $backgroundColorHover={backgroundColorHover}
+      $fillColor={fillColor}
+      $fillColorHover={fillColorHover}
       $disabled={isDisabled}
       disabled={isDisabled}
       $secondaryButton={secondaryButton || false}

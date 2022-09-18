@@ -35,6 +35,7 @@ const SvgContainer = styled.div`
 function IconButton({
   active,
   bgColorHover,
+  color,
   icon,
   extraStyle,
   onClick,
@@ -52,7 +53,11 @@ function IconButton({
       title={tooltip}
     >
       <SvgContainer>
-        <SvgIcon color={THEME.default.iconButton.fillColor} icon={icon} size={size || "26px"} />
+        <SvgIcon
+          color={color || THEME.default.iconButton.fillColor}
+          icon={icon}
+          size={size || "26px"}
+        />
       </SvgContainer>
     </StyledButton>
   );

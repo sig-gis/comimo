@@ -2,16 +2,28 @@ import React, { useState } from "react";
 import styled from "@emotion/styled";
 
 import Button from "../components/Button";
+import SvgIcon from "../components/SvgIcon";
+import SvgButton from "./SvgButton";
+import InputNumber from "./InputNumber";
 import { useTranslation } from "react-i18next";
 
-const ButtonRowOuter = styled.div`
-  bottom: calc(var(--bar-height) + 32px);
-  margin-left: 50px;
+const ButtonContainer = styled.div`
   display: flex;
   justify-content: center;
+`;
+
+const ButtonRowOuter = styled.div`
+  background: #000000c1 0% 0% no-repeat padding-box;
+  border: 1px solid;
+  border-color: var(--gray-4);
+  border-radius: 12px;
+  bottom: calc(var(--bar-height) + 32px);
+  display: flex;
+  justify-content: center;
+  padding: 0.75rem 1rem;
   position: fixed;
   text-align: center;
-  width: 100%;
+  width: auto;
   z-index: 99;
 `;
 
@@ -20,18 +32,13 @@ const ButtonRowInner = styled.div`
   display: inline-block;
   display: flex;
 
-  button {
+  /* button {
     margin-right: 1rem;
 
     &:last-child {
       margin-right: 0rem;
     }
-  }
-`;
-
-const PlotNumberInput = styled.input`
-  margin-left: 1rem;
-  width: 3em;
+  } */
 `;
 
 export default function NavBar({
@@ -53,24 +60,47 @@ export default function NavBar({
 
   const renderGoToPlot = () => (
     <>
-      <PlotNumberInput
+      <InputNumber
         autoComplete="off"
-        id="plotId"
+        id="plotIdInput"
         min="1"
-        onChange={(e) => setPlotNumberToGo(e.target.value)}
+        max="none"
+        onChange={(e) => {
+          console.log("changed");
+          setPlotNumberToGo(e.target.value);
+        }}
         onKeyDown={(e) => {
           if (e.key === "Enter") {
             goToPlot(currentPlotNumber());
             setPlotNumberToGo(null);
           }
         }}
-        type="number"
         value={currentPlotNumber()}
+        // TODO this increases the number in the input but doesn't actually change the plot number to go to
+        onClickIncrease={() => {
+          const e = new Event("change");
+          const plotIdInput = document.getElementById("plotIdInput");
+          plotIdInput.stepUp();
+          plotIdInput.dispatchEvent(e);
+        }}
+        onClickDecrease={() => {
+          const e = new Event("change");
+          const plotIdInput = document.getElementById("plotIdInput");
+          plotIdInput.stepDown();
+          plotIdInput.dispatchEvent(e);
+        }}
+        extraStyle={{ marginRight: "0.5rem" }}
       />
       <Button
         onClick={() => {
           goToPlot(currentPlotNumber());
           setPlotNumberToGo(null);
+        }}
+        extraStyle={{
+          font: "var(--unnamed-font-style-normal) var(--unnamed-font-weight-bold) var(--unnamed-font-size-18)/21px Roboto Condensed",
+          height: "40px",
+          textTransform: "uppercase",
+          width: "42px",
         }}
       >
         {t("collect.go")}
@@ -79,37 +109,75 @@ export default function NavBar({
   );
 
   return (
-    <ButtonRowOuter>
-      <ButtonRowInner>
-        {currentPlotId === -1 ? (
-          renderGoToPlot()
-        ) : (
-          <>
-            <Button onClick={prevPlot}>{t("collect.prev")}</Button>
-            <Button
-              onClick={() => setPlotAnswer("Mina")}
-              extraStyle={{ backgroundColor: "#ff6654" }}
-            >
-              {t("collect.mina")}
-            </Button>
-            <Button
-              onClick={() => setPlotAnswer("No Mina")}
-              extraStyle={{ backgroundColor: "#00dca0" }}
-            >
-              {t("collect.noMina")}
-            </Button>
-            <Button onClick={nextPlot}>{t("collect.next")}</Button>
-            {renderGoToPlot()}
-            <Button
-              onClick={() => {
-                window.location.assign("/");
-              }}
-            >
-              {t("collect.exit")}
-            </Button>
-          </>
-        )}
-      </ButtonRowInner>
-    </ButtonRowOuter>
+    <ButtonContainer>
+      <ButtonRowOuter>
+        <ButtonRowInner>
+          {currentPlotId === -1 ? (
+            renderGoToPlot()
+          ) : (
+            <>
+              <SvgButton
+                onClick={prevPlot}
+                text={t("collect.prev")}
+                backgroundColor="var(--white)"
+                backgroundColorHover="var(--nav-bar-button)"
+                fillColor="black"
+                fillColorHover="var(--white)"
+                icon="prev"
+                iconSize="20px"
+                fill="var(--white)"
+                extraStyle={{ marginRight: "0.5rem" }}
+              />
+              <SvgButton
+                onClick={nextPlot}
+                text={t("collect.next")}
+                backgroundColor="var(--white)"
+                backgroundColorHover="var(--nav-bar-button)"
+                fillColor="black"
+                fillColorHover="var(--white)"
+                icon="next"
+                iconSize="20px"
+                fill="var(--white)"
+                extraStyle={{ marginRight: "2rem" }}
+              />
+              <SvgButton
+                text={t("collect.noMina")}
+                backgroundColor="var(--no-mina)"
+                backgroundColorHover="var(--white)"
+                fillColor="var(--white)"
+                fillColorHover="var(--no-mina)"
+                icon="check"
+                iconSize="20px"
+                onClick={() => setPlotAnswer("No Mina")}
+                extraStyle={{ marginRight: "0.5rem" }}
+              />
+              <SvgButton
+                text={t("collect.mina")}
+                backgroundColor="var(--mina)"
+                backgroundColorHover="var(--white)"
+                fillColor="var(--white)"
+                fillColorHover="var(--mina)"
+                icon="warning"
+                iconSize="20px"
+                onClick={() => setPlotAnswer("Mina")}
+                extraStyle={{ marginRight: "2rem" }}
+              />
+              {renderGoToPlot()}
+              <SvgButton
+                text={t("collect.exit")}
+                backgroundColor="var(--nav-bar-button)"
+                backgroundColorHover="var(--gray-1)"
+                fillColor="var(--white)"
+                fillColorHover="var(--white)"
+                icon="x"
+                iconSize="20px"
+                onClick={() => window.location.assign("/")}
+                extraStyle={{ marginLeft: "2rem" }}
+              />
+            </>
+          )}
+        </ButtonRowInner>
+      </ButtonRowOuter>
+    </ButtonContainer>
   );
 }
