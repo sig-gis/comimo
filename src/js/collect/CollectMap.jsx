@@ -141,8 +141,6 @@ export default function CollectMap({ boundary, projectPlots, goToPlot, currentPl
     fitMap("bbox", extent(geoJSON));
   };
 
-
-
   const plotColor = (answer) =>
     answer === "Mina"
       ? THEME.mina.background
@@ -177,7 +175,7 @@ export default function CollectMap({ boundary, projectPlots, goToPlot, currentPl
       features: projectPlots.map((p) => ({
         type: "Feature",
         properties: { id: p.id },
-        geometry: { type: "Point", coordinates: [p.lat, p.lng] },
+        geometry: { type: "Point", coordinates: [p.lat, p.lon] }, // TODO rename it to p.lng 
       })),
     };
     collectMap.addSource("plotLabels", {
@@ -196,22 +194,7 @@ export default function CollectMap({ boundary, projectPlots, goToPlot, currentPl
       const color = plotColor(p.answer);
 
       // Add each individual plot label
-      collectMap.addLayer({
-        id: p.id + "plotLabel", // mapbox needs a string
-        type: "symbol",
-        source: "plotLabels",
-        filter: ["==", ["get", "id"], p.id],
-        layout: {
-          "text-field": "" + number,
-          "text-allow-overlap": false,
-          "text-size": 24,
-          "text-anchor": "center",
-          "text-ignore-placement": true,
-        },
-        paint: {
-          "text-color": color,
-        },
-      });
+
 
       // Add each individual plot boundary
       collectMap.addLayer({
@@ -228,13 +211,30 @@ export default function CollectMap({ boundary, projectPlots, goToPlot, currentPl
           "line-width": 4,
         },
       });
+
+      collectMap.addLayer({
+        id: p.id + "plotLabel", // mapbox needs a string
+        type: "symbol",
+        source: "plotLabels",
+        filter: ["==", ["get", "id"], p.id],
+        layout: {
+          "text-field": "" + number,
+          "text-allow-overlap": false,
+          "text-size": 24,
+          "text-anchor": "center",
+          "text-ignore-placement": true,
+        },
+        paint: {
+          "text-color": color,
+        },
+      });
       collectMap.on("click", p.id + "", (e) => {
         goToPlot(number);
       });
     });
   };
 
-  const updateVisiblePlot = (map) => {
+  const updateVisiblePlot = () => {
     const { geom, id, answer } = currentPlot;
     if (geom) {
       // Set new color
@@ -248,25 +248,6 @@ export default function CollectMap({ boundary, projectPlots, goToPlot, currentPl
   useEffect(() => {
     collectMap && updateVisiblePlot(collectMap);
   }, [currentPlot]);
-
-  // const getLayerUrl = (list) => {
-  //   list.forEach((layer) => {
-  //     const url = (async () => await jsonRequest(URLS.GET_IMAGE_URL, { type: layer }))().catch(
-  //       console.error
-  //     );
-
-  //     // As written the URL provided must already include ? and one param so &nextParam works.
-  //     const params = extraMapParams[layer];
-  //     const fullUrl =
-  //       params == null
-  //         ? url
-  //         : url +
-  //           Object.entries(params)
-  //             .map(([k, v]) => `&${k}=${v}`)
-  //             .join("");
-  //     setLayerUrl(layer, fullUrl);
-  //   });
-  // };
 
   const setLayerUrl = (layer, url) => {
     if (collectMap && layer && url && url !== "") {
