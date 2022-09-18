@@ -234,10 +234,6 @@ export default function CollectMap({ boundary, projectPlots, goToPlot, currentPl
     });
   };
 
-
-
-
-
   const updateVisiblePlot = (map) => {
     const { geom, id, answer } = currentPlot;
     if (geom) {
