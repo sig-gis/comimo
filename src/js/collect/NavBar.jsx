@@ -1,11 +1,14 @@
 import React, { useState } from "react";
+import { useAtom } from "jotai";
 import styled from "@emotion/styled";
+import { useTranslation } from "react-i18next";
 
 import Button from "../components/Button";
 import SvgIcon from "../components/SvgIcon";
 import SvgButton from "./SvgButton";
 import InputNumber from "./InputNumber";
-import { useTranslation } from "react-i18next";
+
+import { currentPlotNumberAtom, currentPlotIdAtom } from "../collect";
 
 const ButtonContainer = styled.div`
   display: flex;
@@ -42,22 +45,18 @@ const ButtonRowInner = styled.div`
 `;
 
 export default function NavBar({
-  currentPlotId,
   shiftPlotId,
   goToPlot,
   nextPlot,
   prevPlot,
   setPlotAnswer,
 }) {
-  const [plotNumberToGo, setPlotNumberToGo] = useState(null);
 
+  const [currentPlotId, setCurrentPlotId] = useAtom(currentPlotIdAtom);
+  const [currentPlotNumber, setCurrentPlotNumber] = useAtom(currentPlotNumberAtom);
   const { t } = useTranslation();
 
-  const currentPlotNumber = () => {
-    let num = plotNumberToGo || currentPlotId - shiftPlotId + 1;
-    return num <= 0 ? "1" : `${num}`;
-  };
-
+  // TODO display message when trying to go to invalid plot number 
   const renderGoToPlot = () => (
     <>
       <InputNumber
@@ -66,35 +65,26 @@ export default function NavBar({
         min="1"
         max="none"
         onChange={(e) => {
-          console.log("changed");
-          setPlotNumberToGo(e.target.value);
+          setCurrentPlotNumber(parseInt(e.target.value));
         }}
         onKeyDown={(e) => {
           if (e.key === "Enter") {
-            goToPlot(currentPlotNumber());
-            setPlotNumberToGo(null);
+            goToPlot();
           }
         }}
-        value={currentPlotNumber()}
+        value={currentPlotNumber + ""}
         // TODO this increases the number in the input but doesn't actually change the plot number to go to
         onClickIncrease={() => {
-          const e = new Event("change");
-          const plotIdInput = document.getElementById("plotIdInput");
-          plotIdInput.stepUp();
-          plotIdInput.dispatchEvent(e);
+          setCurrentPlotNumber(currentPlotNumber + 1);
         }}
         onClickDecrease={() => {
-          const e = new Event("change");
-          const plotIdInput = document.getElementById("plotIdInput");
-          plotIdInput.stepDown();
-          plotIdInput.dispatchEvent(e);
+          setCurrentPlotNumber(currentPlotNumber - 1);
         }}
         extraStyle={{ marginRight: "0.5rem" }}
       />
       <Button
         onClick={() => {
-          goToPlot(currentPlotNumber());
-          setPlotNumberToGo(null);
+          goToPlot();
         }}
         extraStyle={{
           font: "var(--unnamed-font-style-normal) var(--unnamed-font-weight-bold) var(--unnamed-font-size-18)/21px Roboto Condensed",

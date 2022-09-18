@@ -1,7 +1,7 @@
 import React, { useEffect, useState, Suspense } from "react";
 import ReactDOM from "react-dom";
 import { last } from "lodash";
-import { useAtom, useAtomValue } from "jotai";
+import { useAtom, useAtomValue, atom } from "jotai";
 import { useTranslation } from "react-i18next";
 import styled from "@emotion/styled";
 
@@ -56,6 +56,9 @@ const LogoGitVersion = styled.a`
   text-decoration: none;
 `;
 
+export const currentPlotIdAtom = atom(-1);
+export const currentPlotNumberAtom = atom(-1);
+
 const CollectContent = ({ projectId }) => {
   // State
   const [visiblePanel, setVisiblePanel] = useAtom(visiblePanelAtom);
@@ -65,10 +68,11 @@ const CollectContent = ({ projectId }) => {
   const myHeight = useAtomValue(myHeightAtom);
   const mapboxToken = useAtomValue(mapboxTokenAtom);
   const versionDeployed = useAtomValue(versionDeployedAtom);
+  const [currentPlotId, setCurrentPlotId] = useAtom(currentPlotIdAtom);
+  const [currentPlotNumber, setCurrentPlotNumber] = useAtom(currentPlotNumberAtom);
 
   const [projectDetails, setProjectDetails] = useState([]);
   const [projectPlots, setProjectPlots] = useState([]);
-  const [currentPlotId, setCurrentPlotId] = useState(-1);
   const [nicfiLayers, setNicfiLayers] = useState([]);
 
   const { t } = useTranslation();
@@ -133,9 +137,10 @@ const CollectContent = ({ projectId }) => {
     currentPlotId === nextPlot.id ? alert(t("home.noMorePlots")) : setCurrentPlotId(nextPlot.id);
   };
 
-  const goToPlot = (number) => {
-    if (number > 0 && number <= projectPlots.length) {
-      const nextPlot = projectPlots[number - 1];
+  const goToPlot = (n) => {
+    const currentPlotNumber = n || setCurrentPlotNumber;
+    if (currentPlotNumber > 0 && currentPlotNumber <= projectPlots.length) {
+      const nextPlot = projectPlots[currentPlotNumber - 1];
       setCurrentPlotId(nextPlot.id);
     }
   };
@@ -170,7 +175,6 @@ const CollectContent = ({ projectId }) => {
         projectPlots={projectPlots}
       />
       <NavBar
-        currentPlotId={currentPlotId}
         goToPlot={goToPlot}
         nextPlot={nextPlot}
         prevPlot={prevPlot}

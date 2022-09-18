@@ -4,6 +4,7 @@ import extent from "turf-extent";
 import styled from "@emotion/styled";
 import "mapbox-gl/dist/mapbox-gl.css";
 import { useAtom, useAtomValue, atom } from "jotai";
+import { currentPlotNumberAtom } from "../collect";
 
 // TODO: rename this to a generic name
 import { homeMapAtom as collectMapAtom } from "../home/HomeMap";
@@ -22,6 +23,7 @@ export default function CollectMap({ boundary, projectPlots, goToPlot, currentPl
   const [mouseCoords, setMouseCoords] = useState(null);
   const mapboxToken = useAtomValue(mapboxTokenAtom);
   const extraMapParams = useAtomValue(extraMapParamsAtom);
+  const [currentPlotNumber, setCurrentPlotNumber] = useAtom(currentPlotNumberAtom);
 
   const [mapIsLoaded, setMapIsLoaded] = useState(false);
 
@@ -228,7 +230,8 @@ export default function CollectMap({ boundary, projectPlots, goToPlot, currentPl
           "text-color": color,
         },
       });
-      collectMap.on("click", p.id + "", (e) => {
+      collectMap.on("click", p.id + "plotLabel", (e) => {
+        setCurrentPlotNumber(number);
         goToPlot(number);
       });
     });
