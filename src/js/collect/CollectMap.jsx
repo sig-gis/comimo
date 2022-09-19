@@ -177,7 +177,7 @@ export default function CollectMap({ boundary, projectPlots, goToPlot, currentPl
       features: projectPlots.map((p) => ({
         type: "Feature",
         properties: { id: p.id },
-        geometry: { type: "Point", coordinates: [p.lat, p.lon] }, // TODO rename it to p.lng 
+        geometry: { type: "Point", coordinates: [p.lat, p.lng] },
       })),
     };
     collectMap.addSource("plotLabels", {
