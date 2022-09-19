@@ -13,12 +13,6 @@ import LatLngHud from "../components/LatLngHud";
 import { jsonRequest, toPrecision } from "../utils";
 import { attributions, THEME, URLS } from "../constants";
 
-
-
-
-
-export const collectMapAtom = atom(null);
-
 export default function CollectMap({ boundary, projectPlots, goToPlot, currentPlot }) {
   const [collectMap, setCollectMap] = useAtom(collectMapAtom);
   const [mouseCoords, setMouseCoords] = useState(null);
@@ -33,9 +27,6 @@ export default function CollectMap({ boundary, projectPlots, goToPlot, currentPl
   const [zoom, _setZoom] = useState(5);
 
   const mapContainer = useRef(null);
-
-  // TODO duplicate?
-  const isLayerVisible = (layer) => collectMap.getLayer(layer).visibility === "visible";
 
   const mapOnLoad = (map) => {
     addLayerSources(map, ["NICFI"]);
@@ -80,7 +71,7 @@ export default function CollectMap({ boundary, projectPlots, goToPlot, currentPl
     for (const layer of Object.keys(extraMapParams)) {
       getLayerUrl(layer);
     }
-  }
+  };
 
   const addLayerSources = (map, list) => {
     list.forEach((name) => {
@@ -148,8 +139,8 @@ export default function CollectMap({ boundary, projectPlots, goToPlot, currentPl
     answer === "Mina"
       ? THEME.mina.background
       : answer === "No Mina"
-        ? THEME.noMina.background
-        : THEME.map.unanswered;
+      ? THEME.noMina.background
+      : THEME.map.unanswered;
 
   const addPlots = () => {
     // Helper function to add plot sources
@@ -196,9 +187,6 @@ export default function CollectMap({ boundary, projectPlots, goToPlot, currentPl
       const number = p.id - shiftId + 1;
       const color = plotColor(p.answer);
 
-      // Add each individual plot label
-
-
       // Add each individual plot boundary
       collectMap.addLayer({
         id: p.id + "", // mapbox needs a string
@@ -215,6 +203,7 @@ export default function CollectMap({ boundary, projectPlots, goToPlot, currentPl
         },
       });
 
+      // Add each individual plot label
       collectMap.addLayer({
         id: p.id + "plotLabel", // mapbox needs a string
         type: "symbol",
@@ -278,9 +267,9 @@ export default function CollectMap({ boundary, projectPlots, goToPlot, currentPl
       params == null
         ? url
         : url +
-        Object.entries(params)
-          .map(([k, v]) => `&${k}=${v}`)
-          .join("");
+          Object.entries(params)
+            .map(([k, v]) => `&${k}=${v}`)
+            .join("");
 
     setLayerUrl(layer, fullUrl);
   };

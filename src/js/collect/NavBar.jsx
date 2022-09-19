@@ -34,29 +34,14 @@ const ButtonRowInner = styled.div`
   align-items: center;
   display: inline-block;
   display: flex;
-
-  /* button {
-    margin-right: 1rem;
-
-    &:last-child {
-      margin-right: 0rem;
-    }
-  } */
 `;
 
-export default function NavBar({
-  shiftPlotId,
-  goToPlot,
-  nextPlot,
-  prevPlot,
-  setPlotAnswer,
-}) {
-
+export default function NavBar({ shiftPlotId, goToPlot, nextPlot, prevPlot, setPlotAnswer }) {
   const [currentPlotId, setCurrentPlotId] = useAtom(currentPlotIdAtom);
   const [currentPlotNumber, setCurrentPlotNumber] = useAtom(currentPlotNumberAtom);
   const { t } = useTranslation();
 
-  // TODO display message when trying to go to invalid plot number 
+  // TODO display message when trying to go to invalid plot number
   const renderGoToPlot = () => (
     <>
       <InputNumber
@@ -73,7 +58,6 @@ export default function NavBar({
           }
         }}
         value={currentPlotNumber + ""}
-        // TODO this increases the number in the input but doesn't actually change the plot number to go to
         onClickIncrease={() => {
           setCurrentPlotNumber(currentPlotNumber + 1);
         }}
