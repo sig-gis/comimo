@@ -134,7 +134,12 @@ const CollectContent = ({ projectId }) => {
   // Helper Functions
   const nextPlot = () => {
     const nextPlot = projectPlots.find((p) => p.id > currentPlotId) || projectPlots[0];
-    currentPlotId === nextPlot.id ? alert(t("home.noMorePlots")) : setCurrentPlotId(nextPlot.id);
+    if (currentPlotId === nextPlot.id) {
+      alert(t("home.noMorePlots"))
+    } else {
+      setCurrentPlotId(nextPlot.id);
+      setCurrentPlotNumber(nextPlot.id - projectPlots[0].id + 1)
+    }
   };
 
   const goToPlot = (n = currentPlotNumber) => {
@@ -147,7 +152,13 @@ const CollectContent = ({ projectId }) => {
   const prevPlot = () => {
     const plotsCopy = [...projectPlots].reverse();
     const prevPlot = plotsCopy.find((p) => p.id < currentPlotId) || plotsCopy[0];
-    currentPlotId === prevPlot.id ? alert(t("home.noMorePlots")) : setCurrentPlotId(prevPlot.id);
+    if (currentPlotId === prevPlot.id) {
+      alert(t("home.noMorePlots"))
+    } else {
+      setCurrentPlotId(prevPlot.id);
+      setCurrentPlotNumber(prevPlot.id - projectPlots[0].id + 1)
+    }
+
   };
 
   const setPlotAnswer = async (answer) => {
