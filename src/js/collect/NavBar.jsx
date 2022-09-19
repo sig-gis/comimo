@@ -134,6 +134,17 @@ export default function NavBar({ shiftPlotId, goToPlot, nextPlot, prevPlot, setP
                 icon="warning"
                 iconSize="20px"
                 onClick={() => setPlotAnswer("Mina")}
+                extraStyle={{ marginRight: "0.5rem" }}
+              />
+              <SvgButton
+                text={t("collect.clear")}
+                backgroundColor="var(--nav-bar-button)"
+                backgroundColorHover="var(--gray-1)"
+                fillColor="var(--white)"
+                fillColorHover="var(--white)"
+                icon="x"
+                iconSize="20px"
+                onClick={() => setPlotAnswer(null)}
                 extraStyle={{ marginRight: "2rem" }}
               />
               {renderGoToPlot()}
