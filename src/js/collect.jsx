@@ -57,7 +57,7 @@ const LogoGitVersion = styled.a`
 `;
 
 export const currentPlotIdAtom = atom(-1);
-export const currentPlotNumberAtom = atom(-1);
+export const currentPlotNumberAtom = atom(1);
 
 const CollectContent = ({ projectId }) => {
   // State
