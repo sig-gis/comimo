@@ -13,6 +13,9 @@ import LatLngHud from "../components/LatLngHud";
 import { jsonRequest, toPrecision } from "../utils";
 import { attributions, THEME, URLS } from "../constants";
 
+
+const collectMapAtom = atom(null);
+
 export default function CollectMap({ boundary, projectPlots, goToPlot, currentPlot }) {
   const [collectMap, setCollectMap] = useAtom(collectMapAtom);
   const [mouseCoords, setMouseCoords] = useState(null);
@@ -139,8 +142,8 @@ export default function CollectMap({ boundary, projectPlots, goToPlot, currentPl
     answer === "Mina"
       ? THEME.mina.background
       : answer === "No Mina"
-      ? THEME.noMina.background
-      : THEME.map.unanswered;
+        ? THEME.noMina.background
+        : THEME.map.unanswered;
 
   const addPlots = () => {
     // Helper function to add plot sources
@@ -267,9 +270,9 @@ export default function CollectMap({ boundary, projectPlots, goToPlot, currentPl
       params == null
         ? url
         : url +
-          Object.entries(params)
-            .map(([k, v]) => `&${k}=${v}`)
-            .join("");
+        Object.entries(params)
+          .map(([k, v]) => `&${k}=${v}`)
+          .join("");
 
     setLayerUrl(layer, fullUrl);
   };

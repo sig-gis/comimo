@@ -1,14 +1,15 @@
 import React, { useEffect, useState, Suspense } from "react";
 import ReactDOM from "react-dom";
 import styled from "@emotion/styled";
-import { ReactTabulator } from "react-tabulator";
 import { isEqual } from "lodash";
+import { ReactTabulator } from "react-tabulator";
+import 'react-tabulator/lib/styles.css'; // required styles
+import 'react-tabulator/lib/css/tabulator.min.css'; // theme
 
 import { PageLayout } from "./components/PageLayout";
 import TitledForm from "./components/TitledForm";
 import Button from "./components/Button";
-import "react-tabulator/lib/styles.css"; // required styles
-import "react-tabulator/lib/css/tabulator_bootstrap4.min.css"; // theme
+
 
 import { URLS } from "./constants";
 import { jsonRequest } from "./utils";
