@@ -137,10 +137,9 @@ const CollectContent = ({ projectId }) => {
     currentPlotId === nextPlot.id ? alert(t("home.noMorePlots")) : setCurrentPlotId(nextPlot.id);
   };
 
-  const goToPlot = (n) => {
-    const currentPlotNumber = n || setCurrentPlotNumber;
-    if (currentPlotNumber > 0 && currentPlotNumber <= projectPlots.length) {
-      const nextPlot = projectPlots[currentPlotNumber - 1];
+  const goToPlot = (n = currentPlotNumber) => {
+    if (n > 0 && n <= projectPlots.length) {
+      const nextPlot = projectPlots[n - 1];
       setCurrentPlotId(nextPlot.id);
     }
   };
