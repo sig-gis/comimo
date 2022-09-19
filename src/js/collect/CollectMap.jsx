@@ -73,7 +73,7 @@ export default function CollectMap({ boundary, projectPlots, goToPlot, currentPl
       addPlots();
       addBoundary();
     }
-  }, [collectMap, projectPlots, boundary, mapIsLoaded]);
+  }, [collectMap, projectPlots.length, boundary, mapIsLoaded]);
 
   const onDataGetLayers = (extraMapParams) => {
     for (const layer of Object.keys(extraMapParams)) {
