@@ -281,6 +281,8 @@
     "go": "Vamos",
     "exit": "Salida",
     "next": "Próxima",
-    "prev": "Previa"
+    "prev": "Previa",
+    "download": "Descargar Parcela KML",
+    "selectPlot": "Debe seleccionar una parcela para descargar su archivo KML."
   }
 }

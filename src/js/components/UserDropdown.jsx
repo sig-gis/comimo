@@ -5,7 +5,7 @@ import { useTranslation } from "react-i18next";
 import IconTextButton from "./IconTextButton";
 import DropDownMenu from "./DropDownMenu";
 
-export default function LanguageSelector({ username }) {
+export default function UserDropdown({ username }) {
   const [show, setShow] = useState(false);
   const { t } = useTranslation();
 

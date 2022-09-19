@@ -283,6 +283,8 @@
     "go": "Go",
     "exit": "Exit",
     "next": "Next",
-    "prev": "Previous"
+    "prev": "Prev",
+    "download": "Download Plot KML",
+    "selectPlot": "You must select a plot in order to download its KML file."
   }
 }

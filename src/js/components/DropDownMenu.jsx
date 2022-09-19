@@ -61,7 +61,7 @@ export default function DropDownMenu({ active, options, optionOnClick, selected 
     return (
       <>
         <Option selected={selected === value} onClick={() => optionOnClick(value)}>
-          <SvgIcon color="var(--gray-1)" icon={icon} size="2rem" />
+          <SvgIcon color="var(--gray-1)" icon={icon} size="32px" />
           <OptionText>{text}</OptionText>
         </Option>
         <Seperator selected={selected === value} />

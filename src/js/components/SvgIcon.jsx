@@ -2,26 +2,22 @@ import React from "react";
 import styled from "@emotion/styled";
 import PropTypes from "prop-types";
 
-const envelopeIcon = (
-  <svg viewBox="0 0 512 512">
-    <polygon points="339.392,258.624 512,367.744 512,144.896" />
-    <polygon points="0,144.896 0,367.744 172.608,258.624" />
-    <path d="M480,80H32C16.032,80,3.36,91.904,0.96,107.232L256,275.264l255.04-168.032C508.64,91.904,495.968,80,480,80z" />
-    <path
-      d="M310.08,277.952l-45.28,29.824c-2.688,1.76-5.728,2.624-8.8,2.624c-3.072,0-6.112-0.864-8.8-2.624l-45.28-29.856
-        L1.024,404.992C3.488,420.192,16.096,432,32,432h448c15.904,0,28.512-11.808,30.976-27.008L310.08,277.952z"
-    />
+const EnvelopeIcon = ({ size }) => (
+  <svg width={size} height={size} viewBox="0 0 512 512">
+    <path d="M339.392 258.624L512 367.744 512 144.896z"></path>
+    <path d="M0 144.896L0 367.744 172.608 258.624z"></path>
+    <path d="M480 80H32C16.032 80 3.36 91.904.96 107.232L256 275.264l255.04-168.032C508.64 91.904 495.968 80 480 80zM310.08 277.952l-45.28 29.824a15.983 15.983 0 01-8.8 2.624c-3.072 0-6.112-.864-8.8-2.624l-45.28-29.856L1.024 404.992C3.488 420.192 16.096 432 32 432h448c15.904 0 28.512-11.808 30.976-27.008L310.08 277.952z"></path>
   </svg>
 );
 
-const checkIcon = (
-  <svg viewBox="0 0 18.7 18.7">
+const CheckIcon = ({ size }) => (
+  <svg width={size} height={size} viewBox="0 0 18.7 18.7">
     <path d="M9.42 0C4.26-.04.04 4.11 0 9.28c-.04 5.16 4.11 9.38 9.28 9.42 5.16.04 9.38-4.11 9.42-9.28v-.07C18.72 4.21 14.56.02 9.42 0m-1.9 14.33L2.76 9.54 4.09 8.2l3.42 3.45 7.23-7.28 1.33 1.34-8.55 8.62z"></path>
   </svg>
 );
 
-const closeIcon = (
-  <svg viewBox="0 0 512 512">
+const CloseIcon = ({ size }) => (
+  <svg width={size} height={size} viewBox="0 0 512 512">
     <path
       d="M256,0C114.508,0,0,114.497,0,256c0,141.493,114.497,256,256,256c141.492,0,256-114.497,256-256
         C512,114.507,397.503,0,256,0z M256,472c-119.384,0-216-96.607-216-216c0-119.385,96.607-216,216-216
@@ -36,14 +32,14 @@ const closeIcon = (
   </svg>
 );
 
-const searchIcon = (
-  <svg viewBox="0 0 22 22">
+const SearchIcon = ({ size }) => (
+  <svg width={size} height={size} viewBox="0 0 22 22">
     <path d="M16.11 13.19c2.49-4.1 1.18-9.44-2.92-11.93S3.75.08 1.26 4.18.08 13.62 4.18 16.11a8.684 8.684 0 009.01 0L19.08 22 22 19.08l-5.89-5.89zm-7.4.88c-2.96 0-5.36-2.4-5.35-5.36 0-2.96 2.4-5.36 5.36-5.35 2.96 0 5.36 2.4 5.35 5.36 0 2.96-2.4 5.35-5.36 5.35z"></path>
   </svg>
 );
 
-const plusIcon = (
-  <svg viewBox="0 0 448 448">
+const PlusIcon = ({ size }) => (
+  <svg width={size} height={size} viewBox="0 0 448 448">
     <path
       d="m408 184h-136c-4.417969 0-8-3.582031-8-8v-136c0-22.089844-17.910156-40-40-40s-40 17.910156-40 40v136c0
         4.417969-3.582031 8-8 8h-136c-22.089844 0-40 17.910156-40 40s17.910156 40 40 40h136c4.417969 0 8 3.582031 8
@@ -53,14 +49,14 @@ const plusIcon = (
   </svg>
 );
 
-const minusIcon = (
-  <svg viewBox="0 0 124 124">
+const MinusIcon = ({ size }) => (
+  <svg width={size} height={size} viewBox="0 0 124 124">
     <path d="M112,50H12C5.4,50,0,55.4,0,62c0,6.6,5.4,12,12,12h100c6.6,0,12-5.4,12-12C124,55.4,118.6,50,112,50z" />
   </svg>
 );
 
-const statsIcon = (
-  <svg viewBox="0 0 30 30">
+const StatsIcon = ({ size }) => (
+  <svg width={size} height={size} viewBox="0 0 30 30">
     <path d="M0 0v30h30v-3.33H3.33V0H0z"></path>
     <path d="M6.67 13.37H9.99V23.32H6.67z"></path>
     <path d="M13.34 3.32H16.66V23.22H13.34z"></path>
@@ -69,8 +65,8 @@ const statsIcon = (
   </svg>
 );
 
-const filterIcon = (
-  <svg viewBox="0 0 512 512">
+const FilterIcon = ({ size }) => (
+  <svg width={size} height={size} viewBox="0 0 512 512">
     <g>
       <path
         d="m187.304 252.717c8.045 11.642 5.64 1.941 5.64 233.997 0 20.766 23.692 32.651 40.39 20.23 71.353-53.797
@@ -84,30 +80,33 @@ const filterIcon = (
   </svg>
 );
 
-const downloadIcon = (
-  <svg viewBox="0 0 30 30">
+const DownloadIcon = ({ size }) => (
+  <svg width={size} height={size} viewBox="0 0 30 30">
     <path d="M12.66 0h4.69c.77 0 1.4.62 1.41 1.4v9.85h5.14c.65 0 1.17.52 1.17 1.17 0 .31-.12.61-.34.83l-8.91 8.92c-.44.44-1.16.44-1.6 0l-8.94-8.92c-.46-.46-.46-1.2 0-1.65.22-.22.52-.34.83-.34h5.14V1.41c0-.78.62-1.41 1.4-1.41zM30 22.03v6.56c0 .77-.62 1.4-1.4 1.41H1.41A1.4 1.4 0 010 28.6v-6.56c0-.77.62-1.4 1.4-1.41H10l2.87 2.87a3 3 0 004.24.01l.01-.01 2.87-2.87h8.59c.77 0 1.4.62 1.41 1.4zm-7.27 5.16c0-.65-.52-1.17-1.17-1.17s-1.17.52-1.17 1.17.52 1.17 1.17 1.17c.65 0 1.17-.53 1.17-1.17zm3.75 0c0-.65-.52-1.17-1.17-1.17s-1.17.52-1.17 1.17.52 1.17 1.17 1.17c.65 0 1.17-.53 1.17-1.17z"></path>
   </svg>
 );
 
-const infoIcon = (
-  <svg viewBox="0 0 45.999 45.999">
-    <path
-      d="M39.264,6.736c-8.982-8.981-23.545-8.982-32.528,0c-8.982,8.982-8.981,23.545,0,32.528c8.982,8.98,23.545,8.981,32.528,0
+function InfoIcon({ size }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 45.999 45.999">
+      <path
+        d="M39.264,6.736c-8.982-8.981-23.545-8.982-32.528,0c-8.982,8.982-8.981,23.545,0,32.528c8.982,8.98,23.545,8.981,32.528,0
         C48.245,30.281,48.244,15.719,39.264,6.736z M25.999,33c0,1.657-1.343,3-3,3s-3-1.343-3-3V21c0-1.657,1.343-3,3-3s3,1.343,3,3V33z
         M22.946,15.872c-1.728,0-2.88-1.224-2.844-2.735c-0.036-1.584,1.116-2.771,2.879-2.771c1.764,0,2.88,1.188,2.917,2.771
         C25.897,14.648,24.746,15.872,22.946,15.872z"
-    />
-  </svg>
-);
+      />
+    </svg>
+  );
+}
 
-const layerIcon = (
-  <svg viewBox="0 0 18.84 18.84">
+
+const LayerIcon = ({ size }) => (
+  <svg width={size} height={size} viewBox="0 0 18.84 18.84">
     <path d="M.46 5.45l8.57 3.89c.25.11.53.11.78 0l8.57-3.89c.41-.2.57-.69.37-1.1a.828.828 0 00-.37-.37L9.81.09a.963.963 0 00-.78 0L.46 3.97c-.41.2-.57.69-.37 1.1.08.16.21.29.37.37zM18.38 8.7l-2.14-.97-5.95 2.7c-.56.25-1.2.25-1.76 0l-5.94-2.7-2.14.97c-.41.2-.57.69-.37 1.1.08.16.21.29.37.37l8.57 3.89c.25.11.53.11.78 0l8.57-3.89c.41-.2.57-.69.37-1.1a.828.828 0 00-.37-.37zm0 4.7l-2.13-.97-5.96 2.7c-.56.25-1.2.25-1.76 0l-5.95-2.7-2.13.97c-.41.2-.57.69-.37 1.1.08.16.21.29.37.37l8.57 3.89c.25.11.53.11.78 0l8.57-3.89c.41-.2.57-.69.37-1.1a.828.828 0 00-.37-.37z" />
   </svg>
 );
 
-const downIcon = (
+const DownIcon = ({ size }) => (
   <svg viewBox="0 0 512 512">
     <path
       d="M98.9,184.7l1.8,2.1l136,156.5c4.6,5.3,11.5,8.6,19.2,8.6c7.7,0,14.6-3.4,19.2-8.6L411,187.1l2.3-2.6
@@ -116,14 +115,14 @@ const downIcon = (
   </svg>
 );
 
-const userIcon = (
-  <svg viewBox="0 0 16.2 16.2">
+const UserIcon = ({ size }) => (
+  <svg width={size} height={size} viewBox="0 0 16.2 16.2">
     <path d="M8.1 8.1c2.24 0 4.05-1.81 4.05-4.05C12.15 1.82 10.34 0 8.1 0S4.05 1.81 4.05 4.05c0 2.23 1.82 4.04 4.05 4.05zm0 2.03c-2.68 0-8.1 1.37-8.1 4.05v2.03h16.2v-2.02c0-2.68-5.42-4.05-8.1-4.05z"></path>
   </svg>
 );
 
-const mineIcon = (
-  <svg viewBox="0 0 512 512">
+const MineIcon = ({ size }) => (
+  <svg width={size} height={size} viewBox="0 0 512 512">
     <path
       d="M501.856,267.118c-11.311-38.168-31.9-73.311-59.634-101.848l8.224-8.224c5.768-5.768,5.768-15.12,0-20.888
         l-74.602-74.602c-5.767-5.768-15.12-5.768-20.888,0l-8.224,8.224c-28.538-27.735-63.681-48.324-101.849-59.635
@@ -140,8 +139,8 @@ const mineIcon = (
   </svg>
 );
 
-const adminIcon = (
-  <svg viewBox="0 0 20 20">
+const AdminIcon = ({ size }) => (
+  <svg width={size} height={size} viewBox="0 0 20 20">
     <path
       fill="#fff"
       d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z"
@@ -149,8 +148,8 @@ const adminIcon = (
   </svg>
 );
 
-const languageIcon = (
-  <svg viewBox="0 0 18 18">
+const LanguageIcon = ({ size }) => (
+  <svg width={size} height={size} viewBox="0 0 18 18">
     <path
       id="uuid-aa08bb1a-3b46-4c6f-9522-6d369ff9458f"
       d="M8.99,0C4.02,0,0,4.04,0,9.01s4.04,9,9.01,8.99c4.97,0,8.99-4.03,8.99-9C18,4.03,13.97,0,9,0c0,0,0,0,0,0Zm6.24,5.4h-2.66c-.28-1.11-.7-2.19-1.24-3.2,1.64,.56,3.02,1.7,3.9,3.2ZM9,1.84c.76,1.09,1.34,2.29,1.72,3.56h-3.44c.38-1.27,.96-2.47,1.72-3.56ZM2.03,10.8c-.31-1.18-.31-2.42,0-3.6h3.04c-.08,.6-.12,1.2-.13,1.8,0,.6,.05,1.2,.13,1.8H2.03Zm.74,1.8h2.66c.28,1.11,.7,2.19,1.24,3.2-1.64-.56-3.03-1.7-3.9-3.2Zm2.66-7.2H2.77c.87-1.5,2.26-2.64,3.9-3.2-.54,1.01-.96,2.09-1.24,3.2Zm3.57,10.76c-.76-1.09-1.34-2.29-1.72-3.56h3.44c-.38,1.27-.96,2.47-1.72,3.56Zm2.11-5.36H6.89c-.09-.6-.14-1.2-.14-1.8,0-.6,.05-1.2,.14-1.8h4.21c.09,.6,.14,1.2,.14,1.8,0,.6-.06,1.2-.14,1.8Zm.23,5c.54-1.01,.96-2.09,1.24-3.2h2.66c-.87,1.5-2.26,2.64-3.9,3.2h0Zm1.59-5c.08-.6,.12-1.2,.13-1.8,0-.6-.05-1.2-.13-1.8h3.04c.31,1.18,.31,2.42,0,3.6h-3.04Z"
@@ -158,8 +157,8 @@ const languageIcon = (
   </svg>
 );
 
-const englishLanguageIcon = (
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 21 20.01">
+const EnglishLanguageIcon = ({ size }) => (
+  <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 21 20.01">
     <defs>
       <clipPath id="uuid-8da2f490-c0bd-4237-928e-98abf32e05a9">
         <path fill="none" d="M0.03 0.01H20.03V19.01H0.03z"></path>
@@ -201,8 +200,8 @@ const englishLanguageIcon = (
   </svg>
 );
 
-const spanishLangaugeIcon = (
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 21 20.01">
+const SpanishLangaugeIcon = ({ size }) => (
+  <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 21 20.01">
     <defs>
       <clipPath id="uuid-c0f33bb3-d8cd-4a76-840c-dff64916b8f4">
         <path fill="none" d="M0.03 0.72H20.34V20.009999999999998H0.03z"></path>
@@ -240,17 +239,14 @@ const spanishLangaugeIcon = (
   </svg>
 );
 
-const redXIcon = (
-  <svg viewBox="0 0 20 20">
-    <path
-      fill="red"
-      d="M10 6.9L14.34 0h5.48l-6.74 9.92L20 20h-5.55L10 12.99 5.55 20H0L6.92 9.92.18 0h5.48L10 6.9z"
-    ></path>
+const XIcon = ({ size }) => (
+  <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 20 20">
+    <path d="M10 6.9L14.34 0h5.48l-6.74 9.92L20 20h-5.55L10 12.99 5.55 20H0L6.92 9.92.18 0h5.48L10 6.9z"></path>
   </svg>
 );
 
-const settingsIcon = (
-  <svg viewBox="0 0 20 20">
+const SettingsIcon = ({ size }) => (
+  <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 20 20">
     <path
       fill="#fff"
       d="M17.6 11c.04-.33.06-.67.05-1 0-.35-.05-.65-.05-1l2.15-1.65c.21-.15.25-.43.11-.64l-2.05-3.45a.497.497 0 00-.61-.2l-2.56 1c-.53-.41-1.12-.75-1.74-1L12.54.41a.546.546 0 00-.51-.4h-4.1c-.24 0-.45.17-.51.4l-.41 2.65c-.62.26-1.2.6-1.74 1l-2.56-1a.47.47 0 00-.61.2L.05 6.7c-.1.22-.06.47.1.65L2.35 9c0 .35-.05.65-.05 1s.05.65.05 1L.21 12.65c-.21.15-.25.43-.11.64l2.05 3.45c.13.21.39.29.61.2l2.56-1c.53.41 1.12.75 1.74 1l.41 2.65c.05.24.27.41.51.4h4.09c.24 0 .45-.17.51-.4l.41-2.65c.62-.26 1.2-.6 1.74-1l2.56 1c.23.1.49.02.61-.2l2.05-3.45c.1-.22.06-.47-.1-.65l-2.25-1.65zm-7.62 2.5c-1.93-.04-3.46-1.65-3.42-3.58a3.5 3.5 0 017 .08c0 1.94-1.59 3.51-3.54 3.5h-.04z"
@@ -258,32 +254,62 @@ const settingsIcon = (
   </svg>
 );
 
+const NextIcon = ({ size }) => (
+  <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 48 48">
+    <path d="M37.324 20.026l-22-12.412a4.685 4.685 0 00-4.711.036 4.528 4.528 0 00-2.28 3.938v24.824a4.528 4.528 0 002.28 3.938 4.687 4.687 0 004.711.036l22-12.412a4.543 4.543 0 000-7.948z"></path>
+  </svg>
+);
+
+const PrevIcon = ({ size }) => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width={size} height={size}
+    transform="rotate(180)"
+    viewBox="0 0 48 48"
+  >
+    <path d="M37.324 20.026l-22-12.412a4.685 4.685 0 00-4.711.036 4.528 4.528 0 00-2.28 3.938v24.824a4.528 4.528 0 002.28 3.938 4.687 4.687 0 004.711.036l22-12.412a4.543 4.543 0 000-7.948z"></path>
+  </svg>
+);
+
+const WarningIcon = ({ size }) => (
+  <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 512 512">
+    <path d="M505.403 406.394L295.389 58.102c-8.274-13.721-23.367-22.245-39.39-22.245s-31.116 8.524-39.391 22.246L6.595 406.394c-8.551 14.182-8.804 31.95-.661 46.37 8.145 14.42 23.491 23.378 40.051 23.378h420.028c16.56 0 31.907-8.958 40.052-23.379 8.143-14.421 7.89-32.189-.662-46.369zm-28.364 29.978a12.684 12.684 0 01-11.026 6.436H45.985a12.68 12.68 0 01-11.025-6.435 12.683 12.683 0 01.181-12.765L245.156 75.316A12.732 12.732 0 01256 69.192c4.41 0 8.565 2.347 10.843 6.124l210.013 348.292a12.677 12.677 0 01.183 12.764z"></path>
+    <path d="M256.154 173.005c-12.68 0-22.576 6.804-22.576 18.866 0 36.802 4.329 89.686 4.329 126.489.001 9.587 8.352 13.607 18.248 13.607 7.422 0 17.937-4.02 17.937-13.607 0-36.802 4.329-89.686 4.329-126.489 0-12.061-10.205-18.866-22.267-18.866zm.311 180.301c-13.607 0-23.814 10.824-23.814 23.814 0 12.68 10.206 23.814 23.814 23.814 12.68 0 23.505-11.134 23.505-23.814 0-12.99-10.826-23.814-23.505-23.814z"></path>
+  </svg>
+);
+
 const iconMap = {
-  envelope: envelopeIcon,
-  check: checkIcon,
-  close: closeIcon,
-  search: searchIcon,
-  plus: plusIcon,
-  minus: minusIcon,
-  stats: statsIcon,
-  filter: filterIcon,
-  download: downloadIcon,
-  info: infoIcon,
-  layer: layerIcon,
-  down: downIcon,
-  user: userIcon,
-  mine: mineIcon,
-  admin: adminIcon,
-  language: languageIcon,
-  english: englishLanguageIcon,
-  spanish: spanishLangaugeIcon,
-  redX: redXIcon,
-  settings: settingsIcon,
+  envelope: EnvelopeIcon,
+  check: CheckIcon,
+  close: CloseIcon,
+  search: SearchIcon,
+  plus: PlusIcon,
+  minus: MineIcon,
+  stats: StatsIcon,
+  filter: FilterIcon,
+  download: DownloadIcon,
+  info: InfoIcon,
+  layer: LayerIcon,
+  down: DownIcon,
+  user: UserIcon,
+  mine: MineIcon,
+  admin: AdminIcon,
+  language: LanguageIcon,
+  english: EnglishLanguageIcon,
+  spanish: SpanishLangaugeIcon,
+  x: XIcon,
+  settings: SettingsIcon,
+  next: NextIcon,
+  prev: PrevIcon,
+  warning: WarningIcon,
 };
 
 const SvgIconContainer = styled.div`
+  align-items: center;
+  overflow: hidden;
   color: ${(props) => props.color};
   cursor: ${(props) => props.cursor};
+  display: flex;
   fill: ${(props) => props.color};
   height: ${(props) => props.size};
   max-height: ${(props) => props.size};
@@ -291,7 +317,7 @@ const SvgIconContainer = styled.div`
   padding: 2px;
   width: ${(props) => props.size};
   vertical-align: ${(props) => props.verticalAlign};
-
+  
   &:hover {
     color: ${(props) => props.hoverColor};
     fill: ${(props) => props.hoverFill};
@@ -300,7 +326,7 @@ const SvgIconContainer = styled.div`
 function SvgIcon({
   color,
   cursor,
-  extraStyles,
+  extraStyle,
   hoverColor,
   hoverFill,
   icon,
@@ -308,6 +334,8 @@ function SvgIcon({
   size,
   verticalAlign,
 }) {
+  const Icon = iconMap[icon];
+
   return (
     <SvgIconContainer
       color={color}
@@ -317,9 +345,9 @@ function SvgIcon({
       size={size}
       verticalAlign={verticalAlign}
       onClick={onClick}
-      style={{ ...extraStyles }}
+      style={{ ...extraStyle }}
     >
-      {iconMap[icon]}
+      <Icon size={size} />
     </SvgIconContainer>
   );
 }
@@ -327,7 +355,7 @@ function SvgIcon({
 SvgIcon.propTypes = {
   color: PropTypes.string,
   cursor: PropTypes.string,
-  extraStyles: PropTypes.object,
+  extraStyle: PropTypes.object,
   hoverColor: PropTypes.string,
   hoverFill: PropTypes.string,
   icon: PropTypes.oneOf(Object.keys(iconMap)).isRequired,
@@ -339,7 +367,7 @@ SvgIcon.propTypes = {
 SvgIcon.defaultProps = {
   color: "currentColor",
   cursor: "pointer",
-  extraStyles: {},
+  extraStyle: {},
   verticalAlign: "middle",
 };
 
