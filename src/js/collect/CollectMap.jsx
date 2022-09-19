@@ -4,11 +4,8 @@ import extent from "turf-extent";
 import styled from "@emotion/styled";
 import "mapbox-gl/dist/mapbox-gl.css";
 import { useAtom, useAtomValue, atom } from "jotai";
+
 import { currentPlotNumberAtom } from "../collect";
-
-// TODO: rename this to a generic name
-import { homeMapAtom as collectMapAtom } from "../home/HomeMap";
-
 import { extraMapParamsAtom } from "../home";
 import { mapboxTokenAtom } from "../components/PageLayout";
 import LatLngHud from "../components/LatLngHud";
@@ -16,7 +13,11 @@ import LatLngHud from "../components/LatLngHud";
 import { jsonRequest, toPrecision } from "../utils";
 import { attributions, THEME, URLS } from "../constants";
 
-// export const collectMapAtom = atom(null);
+
+
+
+
+export const collectMapAtom = atom(null);
 
 export default function CollectMap({ boundary, projectPlots, goToPlot, currentPlot }) {
   const [collectMap, setCollectMap] = useAtom(collectMapAtom);
