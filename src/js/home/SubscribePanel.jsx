@@ -12,7 +12,7 @@ import { usernameAtom } from "../components/PageLayout";
 import { URLS } from "../constants";
 import { jsonRequest } from "../utils";
 import { useAtomValue } from "jotai";
-import { selectedRegionAtom } from "./HomeMap";
+import { homeMapAtom, selectedRegionAtom } from "./HomeMap";
 import { useTranslation } from "react-i18next";
 
 export default function SubscribePanel({
@@ -25,6 +25,7 @@ export default function SubscribePanel({
   const [subsLoaded, setSubsLoaded] = useState(false);
   const selectedRegion = useAtomValue(selectedRegionAtom);
   const username = useAtomValue(usernameAtom);
+  const homeMap = useAtomValue(homeMapAtom);
 
   const { t } = useTranslation();
 
@@ -128,7 +129,12 @@ export default function SubscribePanel({
             >
               {t("subscribe.addNew")}
             </HeaderLabel>
-            <Search isPanel={false} featureNames={featureNames} mapquestKey={mapquestKey}></Search>
+            <Search
+              isPanel={false}
+              featureNames={featureNames}
+              theMap={homeMap}
+              mapquestKey={mapquestKey}
+            ></Search>
             {
               // TODO: inform user (either in UI or alert that is region already been subscribed to and can't add it twice)
               selectedRegion && !subscribedList.includes(selectedRegion) && (
