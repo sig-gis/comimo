@@ -138,7 +138,7 @@ export default function NavBar({ shiftPlotId, goToPlot, nextPlot, prevPlot, setP
               />
               <SvgButton
                 text={t("collect.clear")}
-                backgroundColor="var(--nav-bar-button)"
+                backgroundColor="var(--unanswered)"
                 backgroundColorHover="var(--gray-1)"
                 fillColor="var(--white)"
                 fillColorHover="var(--white)"
