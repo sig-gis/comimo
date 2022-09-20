@@ -57,7 +57,7 @@ export default function DownloadPanel({ active, featureNames, mapquestKey, selec
 
   return (
     <ToolCard title={t("download.title")} active={active}>
-      {showModal && <LoadingModal message="Getting URL" />}
+      {showModal && <LoadingModal message={t("download.gettingUrl")} />}
       <div style={{ display: "flex", flexDirection: "column" }}>
         <Label>{`${t("validate.typeLabel")}:`}</Label>
         <Select
@@ -75,41 +75,47 @@ export default function DownloadPanel({ active, featureNames, mapquestKey, selec
             id="completeData"
             checked={clipOption === 1}
             name="downloadRegion"
-            onChange={() => setClipOption(1)}
+            onChange={() => {
+              setClipOption(1);
+              setDownloadURL(false);
+            }}
             type="radio"
           />
           <label style={{ cursor: "pointer" }} htmlFor="completeData">
             {t("download.allRadio")}
           </label>
         </div>
-        {/* TODO: disabled-group is not defined yet */}
-        <div
-          className={selectedRegion ? "" : "disabled-group"}
-          style={{ cursor: "pointer", marginTop: ".25rem" }}
-        >
+        <div style={{ cursor: "pointer", marginTop: ".25rem" }}>
           <input
             id="selectedMunicipality"
             style={{ cursor: "pointer" }}
             checked={clipOption === 2}
             name="downloadRegion"
-            onChange={() => setClipOption(2)}
+            onChange={() => {
+              setClipOption(2);
+              setDownloadURL(false);
+            }}
             type="radio"
           />
           <label style={{ cursor: "pointer" }} htmlFor="selectedMunicipality">
             {t("download.selectedRadio")}
           </label>
         </div>
-        <Divider />
-        <div>
-          <Search
-            isPanel={false}
-            featureNames={featureNames}
-            theMap={homeMap}
-            mapquestKey={mapquestKey}
-          ></Search>
-        </div>
-        {/* TODO download text is too large for button sometimes, either truncate it or wrap the text */}
-        {selectedDates && (
+        {clipOption === 2 && (
+          <>
+            <Divider />
+            <div>
+              <Search
+                isPanel={false}
+                featureNames={featureNames}
+                theMap={homeMap}
+                mapquestKey={mapquestKey}
+              ></Search>
+            </div>
+          </>
+        )}
+        {((clipOption === 1 && selectedDates) ||
+          (clipOption === 2 && selectedDates && selectedRegion)) && (
           <Button
             onClick={getDownloadUrl}
             extraStyle={{ marginTop: "0.25rem" }}
@@ -119,7 +125,8 @@ export default function DownloadPanel({ active, featureNames, mapquestKey, selec
         {fetching ? (
           <p>{`${t("download.fetching")}...`}</p>
         ) : (
-          downloadURL && (
+          downloadURL &&
+          downloadURL[0] && (
             <p>
               <span>
                 <a href={downloadURL[2]}>
@@ -127,7 +134,7 @@ export default function DownloadPanel({ active, featureNames, mapquestKey, selec
                     ` ${
                       downloadURL[0] === "all"
                         ? t("download.completeData")
-                        : t("download.munData") + downloadURL[0]
+                        : t("download.munData") + downloadURL[0].split("_").slice(1).join(", ")
                     }` +
                     ` ${t("download.prep")}` +
                     ` ${downloadURL[1]}.`}

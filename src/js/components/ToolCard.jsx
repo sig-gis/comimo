@@ -15,7 +15,7 @@ const PanelOuter = styled.div`
   max-height: calc(100% - (2 * var(--bar-height)));
   position: absolute;
   top: ${({ isInverted }) => isInverted && "var(--bar-height)"};
-  width: 33vw;
+  width: 28vw;
   z-index: 100;
   text-align: left;
 `;

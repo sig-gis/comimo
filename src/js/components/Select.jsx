@@ -36,32 +36,42 @@ export default function Select({
   defaultOption = "",
 }) {
   return (
-    <div style={{ marginBottom: "0.5rem" }}>
-      <Label htmlFor={id}>{label}</Label>
-      <select
-        style={{ width: "100%", cursor: "pointer", padding: "0.25rem", marginTop: "0.25rem" }}
-        disabled={disabled}
-        id={id}
-        onChange={onChange}
-        value={value}
-      >
-        <Option
-          key="defaultOption"
-          disabled
-          labelKey={labelKey}
-          option={[-1, defaultOption]}
-          valueKey={valueKey}
-        />
-        {Array.isArray(options)
-          ? options.map((o, i) => (
-              /* eslint-disable-next-line react/no-array-index-key */
-              <Option key={i} labelKey={labelKey} option={o} valueKey={valueKey} />
-            ))
-          : Object.values(options).map((o, i) => (
-              /* eslint-disable-next-line react/no-array-index-key */
-              <Option key={i} labelKey={labelKey} option={o} valueKey={valueKey} />
-            ))}
-      </select>
+    <div
+      style={{
+        marginBottom: "0.5rem",
+        cursor: disabled && "not-allowed",
+      }}
+    >
+      <div style={{ pointerEvents: disabled && "none" }}>
+        <Label htmlFor={id}>{label}</Label>
+        <select
+          style={{
+            width: "100%",
+            cursor: !disabled && "pointer",
+            padding: "0.25rem",
+            marginTop: "0.25rem",
+          }}
+          disabled={disabled}
+          id={id}
+          onChange={onChange}
+          value={value}
+        >
+          <Option
+            key="defaultOption"
+            disabled
+            labelKey={labelKey}
+            option={[-1, defaultOption]}
+            valueKey={valueKey}
+          />
+          {Array.isArray(options)
+            ? options.map((o, i) => (
+                <Option key={i} labelKey={labelKey} option={o} valueKey={valueKey} />
+              ))
+            : Object.values(options).map((o, i) => (
+                <Option key={i} labelKey={labelKey} option={o} valueKey={valueKey} />
+              ))}
+        </select>
+      </div>
     </div>
   );
 }

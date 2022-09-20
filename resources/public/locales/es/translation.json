@@ -59,12 +59,13 @@
     "allRadio": "Datos completos",
     "selectedRadio": "Municipio seleccionado",
     "getUrl": "Obtener URL de descarga para",
-    "fetching": "Obteniendo URL de descarga",
+    "fetching": "Obteniendo URL de descarga...",
     "clickHere": "Haga clic aquí para descargar los",
     "completeData": " datos completos ",
     "munData": " datos dentro de ",
     "prep": "del",
-    "selectMuni": "Seleccione un municipio"
+    "selectMuni": "Seleccione un municipio",
+    "gettingUrl": "Obtener URL..."
   },
   "filter": {
     "title": "Filtrar datos",
@@ -157,7 +158,9 @@
     "subscribedTo": "Estás suscrito a alertas para los siguientes municipios",
     "subscribeTo": "Suscribirse a",
     "loginAction": "Suscripciones",
-    "addNew": "Agregar Nueva Suscripción"
+    "addNew": "Agregar Nueva Suscripción",
+    "delete": "Eliminar Suscripción"
+
   },
   "validate": {
     "errorDate": "Seleccionar una fecha.",

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "@emotion/styled";
 
 import Button from "./Button";
@@ -8,8 +8,9 @@ import TextInput from "./TextInput";
 import { jsonRequest } from "../utils";
 import { URLS } from "../constants";
 import { fitMap, selectedRegionAtom } from "../home/HomeMap";
-import { useSetAtom } from "jotai";
+import { useAtomValue, useSetAtom } from "jotai";
 import { useTranslation } from "react-i18next";
+import { visiblePanelAtom } from "../home";
 
 const SearchResults = styled.div`
   &:active {
@@ -27,6 +28,17 @@ export default function Search({ theMap, featureNames, mapquestKey, isPanel }) {
   // State
 
   const setSelectedRegion = useSetAtom(selectedRegionAtom);
+  const visiblePanel = useAtomValue(visiblePanelAtom);
+
+  useEffect(() => {
+    if (visiblePanel === "search-header") {
+      setSelectedRegion(null);
+      setSelectedL1(-1);
+      setSelectedL2(-1);
+      setSearchText("");
+      setLatLngText("");
+    }
+  }, [visiblePanel]);
 
   const [geoCodedSearch, setGeoCodedSearch] = useState(null);
   const [selectedL1, setSelectedL1] = useState(-1);
@@ -82,9 +94,11 @@ export default function Search({ theMap, featureNames, mapquestKey, isPanel }) {
                 setSelectedL1(state);
                 setSelectedL2(mun);
                 fitMap(theMap, "bbox", featureNames[state][mun], t);
-                setSelectedRegion(
-                  `mun_${item.adminArea3.toUpperCase()}_${item.adminArea4.toUpperCase()}`
-                );
+                // We don't want to set the selected region on the header Search tool
+                !isPanel &&
+                  setSelectedRegion(
+                    `mun_${item.adminArea3.toUpperCase()}_${item.adminArea4.toUpperCase()}`
+                  );
               }}
               style={{ display: "flex", flexDirection: "column" }}
             >
@@ -137,13 +151,21 @@ export default function Search({ theMap, featureNames, mapquestKey, isPanel }) {
           const coords = activeMuns[l2Name];
           setSelectedL2(l2Name);
           if (Array.isArray(coords)) fitMap(theMap, "bbox", coords, t);
-          setSelectedRegion("mun_" + selectedL1 + "_" + l2Name);
+          // We don't want to set the selected region on the header Search tool
+          !isPanel && setSelectedRegion("mun_" + selectedL1 + "_" + l2Name);
         }}
         options={l2names}
         value={selectedL2}
       />
     ) : (
-      ""
+      <Select
+        defaultOption={t("search.defaultMun")}
+        disabled={true}
+        id="selectL2"
+        label={t("search.munLabel")}
+        options={[t("search.defaultMun")]}
+        value={t("search.defaultMun")}
+      />
     );
 
   // Render

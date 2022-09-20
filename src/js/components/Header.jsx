@@ -85,17 +85,17 @@ export default function Header({ showSearch, theMap, username }) {
         {showSearch && (
           <>
             <IconTextButton
-              active={visiblePanel === "search"}
+              active={visiblePanel === "search-header"}
               hasBackground={true}
               icon="search"
               invertBorderRadius={true}
-              onClick={() => togglePanel("search")}
+              onClick={() => togglePanel("search-header")}
               text={t("home.searchTitle")}
             />
             <ToolCard
               title={t("home.searchTitle")}
               isInverted={true}
-              active={visiblePanel === "search"}
+              active={visiblePanel === "search-header"}
             >
               <Search
                 isPanel={true}
