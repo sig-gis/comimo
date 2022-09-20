@@ -99,7 +99,6 @@ function InfoIcon({ size }) {
   );
 }
 
-
 const LayerIcon = ({ size }) => (
   <svg width={size} height={size} viewBox="0 0 18.84 18.84">
     <path d="M.46 5.45l8.57 3.89c.25.11.53.11.78 0l8.57-3.89c.41-.2.57-.69.37-1.1a.828.828 0 00-.37-.37L9.81.09a.963.963 0 00-.78 0L.46 3.97c-.41.2-.57.69-.37 1.1.08.16.21.29.37.37zM18.38 8.7l-2.14-.97-5.95 2.7c-.56.25-1.2.25-1.76 0l-5.94-2.7-2.14.97c-.41.2-.57.69-.37 1.1.08.16.21.29.37.37l8.57 3.89c.25.11.53.11.78 0l8.57-3.89c.41-.2.57-.69.37-1.1a.828.828 0 00-.37-.37zm0 4.7l-2.13-.97-5.96 2.7c-.56.25-1.2.25-1.76 0l-5.95-2.7-2.13.97c-.41.2-.57.69-.37 1.1.08.16.21.29.37.37l8.57 3.89c.25.11.53.11.78 0l8.57-3.89c.41-.2.57-.69.37-1.1a.828.828 0 00-.37-.37z" />
@@ -255,19 +254,19 @@ const SettingsIcon = ({ size }) => (
 );
 
 const NextIcon = ({ size }) => (
-  <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 48 48">
-    <path d="M37.324 20.026l-22-12.412a4.685 4.685 0 00-4.711.036 4.528 4.528 0 00-2.28 3.938v24.824a4.528 4.528 0 002.28 3.938 4.687 4.687 0 004.711.036l22-12.412a4.543 4.543 0 000-7.948z"></path>
+  <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 32 32">
+    <path d="M26.17 12.37L9 2.45A3.23 3.23 0 007.38 2 3.38 3.38 0 004 5.38v21.29a3.33 3.33 0 005.1 2.82l17.19-10.86a3.65 3.65 0 00-.12-6.26z"></path>
   </svg>
 );
 
 const PrevIcon = ({ size }) => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    width={size} height={size}
-    transform="rotate(180)"
-    viewBox="0 0 48 48"
-  >
-    <path d="M37.324 20.026l-22-12.412a4.685 4.685 0 00-4.711.036 4.528 4.528 0 00-2.28 3.938v24.824a4.528 4.528 0 002.28 3.938 4.687 4.687 0 004.711.036l22-12.412a4.543 4.543 0 000-7.948z"></path>
+  <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 32 32">
+    <g transform="rotate(-180 16.002 16)">
+      <path
+        xmlns="http://www.w3.org/2000/svg"
+        d="M26.17 12.37L9 2.45A3.23 3.23 0 007.38 2 3.38 3.38 0 004 5.38v21.29a3.33 3.33 0 005.1 2.82l17.19-10.86a3.65 3.65 0 00-.12-6.26z"
+      ></path>
+    </g>
   </svg>
 );
 
@@ -317,7 +316,7 @@ const SvgIconContainer = styled.div`
   padding: 2px;
   width: ${(props) => props.size};
   vertical-align: ${(props) => props.verticalAlign};
-  
+
   &:hover {
     color: ${(props) => props.hoverColor};
     fill: ${(props) => props.hoverFill};

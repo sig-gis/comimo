@@ -193,9 +193,10 @@
     "cMines": "Confirmed mines",
     "nMines": "New predictions",
     "pMines": "Current predictions",
-    "validatedTitle": "All validated",
-    "validated": "All plots have been validated",
-    "invalidPlot": "Invalid plot number"
+    "validatedTitle": "All Plots Validated",
+    "validated": "All plots have been validated.",
+    "invalidPlotTitle": "Invalid Plot Number",
+    "invalidPlot": "You tried to navigate to a plot that does not exist. Please select a different plot number."
   },
   "users": {
     "toView": "Login to view",

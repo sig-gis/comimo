@@ -80,7 +80,11 @@ export default function NavBar({
       <Button
         onClick={() => {
           if (currentPlotNumber < 1 || currentPlotNumber > maxPlotNumber) {
-            alert(t("validate.invalidPlot"));
+            showAlert({
+              body: t("validate.invalidPlot"),
+              closeText: t("users.close"),
+              title: t("validate.invalidPlotTitle"),
+            });
           }
           goToPlot();
         }}

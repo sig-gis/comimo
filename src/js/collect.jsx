@@ -31,7 +31,14 @@ import NavBar from "./collect/NavBar";
 export const currentPlotIdAtom = atom(-1);
 export const currentPlotNumberAtom = atom(1);
 export const projectPlotsAtom = atom([]);
-export const areAllPlotsValidatedAtom = atom((get) => get(projectPlotsAtom).every((p) => p.answer));
+export const areAllPlotsValidatedAtom = atom((get) => {
+  const projectPlots = get(projectPlotsAtom);
+  const areAllPlotsValidated =
+    projectPlots.length > 0 &&
+    projectPlots.every((p) => p.answer === "Mina" || p.answer === "No Mina");
+  console.log("areAllPlotsValidated", areAllPlotsValidated);
+  return areAllPlotsValidated;
+});
 
 const CollectContent = ({ projectId }) => {
   // State
@@ -105,15 +112,8 @@ const CollectContent = ({ projectId }) => {
       const projectPlots = await jsonRequest(URLS.PROJ_PLOTS, {
         projectId: projectId,
       });
-
       const startingPlotIndex = projectPlots.findIndex((p) => !p.answer);
-
-      // TODO we might need to go plot directly
-      // const startingPlotId = projectPlots[startingPlotIndex]?.id
-      // setCurrentPlotId(startingPlotId);
-
       setProjectPlots(projectPlots);
-
       setCurrentPlotNumber(startingPlotIndex === -1 ? 1 : startingPlotIndex + 1);
 
       const nicfiLayers = await jsonRequest(URLS.NICFI_DATES);
@@ -124,18 +124,19 @@ const CollectContent = ({ projectId }) => {
       const nicfiDate = nicfiLayers.find(
         (l) => [...l.matchAll(dateRegex)].length === 1 && l.includes(projectDate)
       );
-
       setParams("NICFI", { ...extraMapParams.NICFI, dataLayer: nicfiDate || nicfiLayers[0] });
-
-      if (areAllPlotsValidated) {
-        showAlert({
-          body: t("validate.validated"),
-          closeText: t("users.close"),
-          title: t("validate.validatedTitle"),
-        });
-      }
     })();
   }, []);
+
+  useEffect(() => {
+    if (areAllPlotsValidated) {
+      showAlert({
+        body: t("validate.validated"),
+        closeText: t("users.close"),
+        title: t("validate.validatedTitle"),
+      });
+    }
+  }, [areAllPlotsValidated]);
 
   // Helper Functions
   const nextPlot = () => {

@@ -191,9 +191,10 @@
     "cMines": "Minas confirmadas",
     "nMines": "Nuevas predicciones",
     "pMines": "Predicciones actuales",
-    "validatedTitle": "Todo validado",
-    "validated": "Todas las parcelas han sido validadas",
-    "invalidPlot": "Número de parcela no válido"
+    "validatedTitle": "Todas las Parcelas Validadas",
+    "validated": "Todas las parcelas han sido validadas.",
+    "invalidPlotTitle": "Número de Parcela no Válido",
+    "invalidPlot": "Intentaste navegar a una parcela que no existe. Seleccione un número de parcela diferente."
   },
   "users": {
     "toView": "Iniciar sesión para ver",
