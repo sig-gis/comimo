@@ -18,6 +18,13 @@ export const mapboxTokenAtom = atom("");
 export const mapquestKeyAtom = atom("");
 export const versionDeployedAtom = atom("");
 export const usernameAtom = atom(null);
+export const visibleDropdownMenuAtom = atom(null);
+export const activeDropDownMenuAtom = atom(
+  (get) => get(visibleDropdownMenuAtom),
+  (get, set, menuKey) => {
+    set(visibleDropdownMenuAtom, menuKey === get(visibleDropdownMenuAtom) ? null : menuKey);
+  }
+);
 
 // TODO: remove me after refactoring collect
 export const MainContext = React.createContext({});
@@ -40,6 +47,7 @@ export function PageLayout({
   const setMapquestKey = useSetAtom(mapquestKeyAtom);
   const setVersionDeployed = useSetAtom(versionDeployedAtom);
   const setUsername = useSetAtom(usernameAtom);
+  const [activeDropDownMenu, setActiveDropDownMenu] = useAtom(activeDropDownMenuAtom);
 
   const { t } = useTranslation();
 
@@ -51,6 +59,20 @@ export function PageLayout({
   };
 
   // API Call
+
+  useEffect(() => {
+    const handleClick = (e) => {
+      if (activeDropDownMenu) {
+        setActiveDropDownMenu(null);
+      }
+    };
+
+    window.addEventListener("click", handleClick);
+
+    return () => {
+      window.removeEventListener("click", handleClick);
+    };
+  }, [activeDropDownMenu]);
 
   useEffect(() => {
     const getDefaultLang = async () => {

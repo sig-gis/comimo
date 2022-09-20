@@ -1,8 +1,63 @@
-import React from "react";
+import React, { useEffect } from "react";
 import styled from "@emotion/styled";
 import PropTypes from "prop-types";
 import { requiredBy } from "airbnb-prop-types";
 import Button from "../components/Button";
+
+/**
+ * Component for a generic modal.
+ * To display a confirm button, use `confirmLabel` and `onConfirm`
+ *
+ * @example
+ * <Modal title={title} onClose={() => setState({showModal: false})}>
+ *   <p>Your changes have been saved</p>
+ * </Modal>
+ */
+export default function Modal({ title, children, closeText, confirmText, onClose, onConfirm }) {
+  useEffect(() => {
+    const handleEscapeKey = (e) => {
+      if (e.keyCode === 27 || (!onConfirm && e.keyCode === 13)) {
+        // escape pressed or enter pressed when no onConfirm
+        onClose();
+      }
+      if (onConfirm && e.keyCode === 13) {
+        // enter pressed
+        onConfirm();
+      }
+    };
+    window.addEventListener("keydown", handleEscapeKey);
+
+    return () => {
+      window.removeEventListener("keydown", handleEscapeKey);
+    };
+  }, []);
+
+  return (
+    <ModalWrapper id="confirmModal" onClick={onClose}>
+      <ModalContainer onClick={(e) => e.stopPropagation()} role="document">
+        <ModalContent id="confirmModalContent">
+          <ModalTitle>
+            <Label id="confirmModalTitle">{title}</Label>
+            <CloseButton aria-label="Close" onClick={onClose} type="button">
+              &times;
+            </CloseButton>
+          </ModalTitle>
+          <ModalBody>{children}</ModalBody>
+          <ButtonContainer>
+            <Button onClick={onClose} secondaryButton={true}>
+              {closeText}
+            </Button>
+            {typeof onConfirm === "function" && (
+              <Button onClick={onConfirm} extraStyle={{ marginLeft: "1rem" }}>
+                {confirmText}
+              </Button>
+            )}
+          </ButtonContainer>
+        </ModalContent>
+      </ModalContainer>
+    </ModalWrapper>
+  );
+}
 
 /**
  * Style functions for the Modal component
@@ -93,45 +148,6 @@ const ButtonContainer = styled.div`
   justify-content: flex-end;
   padding: 0.75rem;
 `;
-
-/**
- * Component for a generic modal.
- * To display a confirm button, use `confirmLabel` and `onConfirm`
- *
- * @example
- * <Modal title={title} onClose={() => setState({showModal: false})}>
- *   <p>Your changes have been saved</p>
- * </Modal>
- */
-
-export default function Modal({ title, children, closeText, confirmText, onClose, onConfirm }) {
-  return (
-    <ModalWrapper id="confirmModal" onClick={onClose}>
-      <ModalContainer onClick={(e) => e.stopPropagation()} role="document">
-        <ModalContent id="confirmModalContent">
-          <ModalTitle>
-            <Label id="confirmModalTitle">{title}</Label>
-            <CloseButton aria-label="Close" onClick={onClose} type="button">
-              &times;
-            </CloseButton>
-          </ModalTitle>
-          <ModalBody>{children}</ModalBody>
-          <ButtonContainer>
-            <Button onClick={onClose} secondaryButton={true}>
-              {closeText}
-            </Button>
-            {typeof onConfirm === "function" && (
-              <Button onClick={onConfirm} extraStyle={{ marginLeft: "1rem" }}>
-                {confirmText}
-              </Button>
-            )}
-          </ButtonContainer>
-        </ModalContent>
-      </ModalContainer>
-    </ModalWrapper>
-  );
-}
-
 Modal.propTypes = {
   closeText: PropTypes.string,
   confirmText: requiredBy("onConfirm", PropTypes.string),

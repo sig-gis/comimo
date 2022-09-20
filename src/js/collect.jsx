@@ -36,7 +36,6 @@ export const areAllPlotsValidatedAtom = atom((get) => {
   const areAllPlotsValidated =
     projectPlots.length > 0 &&
     projectPlots.every((p) => p.answer === "Mina" || p.answer === "No Mina");
-  console.log("areAllPlotsValidated", areAllPlotsValidated);
   return areAllPlotsValidated;
 });
 

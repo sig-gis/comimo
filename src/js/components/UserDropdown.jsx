@@ -1,12 +1,14 @@
 import React, { useState } from "react";
 import styled from "@emotion/styled";
 import { useTranslation } from "react-i18next";
+import { useAtom } from "jotai";
 
 import IconTextButton from "./IconTextButton";
 import DropDownMenu from "./DropDownMenu";
+import { activeDropDownMenuAtom } from "./PageLayout";
 
 export default function UserDropdown({ username }) {
-  const [show, setShow] = useState(false);
+  const [activeDropdownMenu, setActiveDropdownMenu] = useAtom(activeDropDownMenuAtom);
   const { t } = useTranslation();
 
   const options = {
@@ -24,21 +26,29 @@ export default function UserDropdown({ username }) {
 
   const onClickUserDropdown = (page) => {
     window.location.assign(page);
-    setShow(false);
+    setActiveDropdownMenu(null);
   };
 
   return (
     <div>
       <IconTextButton
-        active={show}
+        active={activeDropdownMenu === "user"}
         extraStyle={{ marginRight: "20px" }}
         hasBackground={false}
         icon="user"
         iconSize="26px"
-        onClick={() => setShow(!show)}
+        onClick={(e) => {
+          setActiveDropdownMenu("user");
+          e.stopPropagation();
+        }}
         text={username}
       />
-      <DropDownMenu active={show} options={options} optionOnClick={onClickUserDropdown} />
+      <DropDownMenu
+        active={activeDropdownMenu === "user"}
+        options={options}
+        optionOnClick={onClickUserDropdown}
+        setActiveDropdownMenu={setActiveDropdownMenu}
+      />
     </div>
   );
 }

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import styled from "@emotion/styled";
 
 import SvgIcon from "./SvgIcon";
@@ -55,7 +55,27 @@ const Seperator = styled.hr`
   }
 `;
 
-export default function DropDownMenu({ active, options, optionOnClick, selected }) {
+export default function DropDownMenu({
+  active,
+  options,
+  optionOnClick,
+  selected,
+  setActiveDropdownMenu,
+}) {
+  useEffect(() => {
+    const handleEscapeKey = (e) => {
+      if (e.keyCode === 27) {
+        setActiveDropdownMenu(null);
+      }
+    };
+
+    window.addEventListener("keydown", handleEscapeKey);
+
+    return () => {
+      window.removeEventListener("keydown", handleEscapeKey);
+    };
+  }, [active]);
+
   const renderOption = (val) => {
     const { icon, value, text } = val;
     return (
