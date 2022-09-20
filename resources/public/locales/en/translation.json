@@ -60,13 +60,14 @@
     "allRadio": "Complete data",
     "selectedRadio": "Selected municipality",
     "getUrl": "Get download URL for",
-    "fetching": "Fetching download URL",
+    "fetching": "Fetching download URL...",
     "clickHere": "Click here to download the",
     "completeData": " complete data ",
     "munData": " data within ",
     "prep": "for",
     "note": "The above forms the sentence 'Click here to download the complete data for 2012-11-11.' (do not translate 'note'",
-    "selectMuni": "Select a municipality"
+    "selectMuni": "Select a municipality",
+    "gettingUrl": "Getting URL..."
   },
   "filter": {
     "title": "Filter data",
@@ -149,7 +150,7 @@
   },
   "subscribe": {
     "munLabel": "Municipality",
-    "existing": "You are already subscribed to the municipality.",
+    "existing": "You are already subscribed to this municipality.",
     "delConfirm1": "Are you sure you want to stop subscribing to",
     "delConfirm2": "You will stop receiving alerts for this municipality.",
     "shortDelete": "Del",
@@ -159,7 +160,8 @@
     "subscribedTo": "You are subscribed to alerts from the following municipalities",
     "subscribeTo": "Subscribe to",
     "loginAction": "subscriptions",
-    "addNew": "Add New Subscription"
+    "addNew": "Add New Subscription",
+    "delete": "Remove Subscription"
   },
   "validate": {
     "errorDate": "Please select a date.",

@@ -7,7 +7,7 @@ const DeleteButton = ({ onClick }) => (
     extraStyle={{ borderColor: "red" }}
     bgColorHover="#ff40409e"
     color="var(--error-red)"
-    size="15px"
+    size="12px"
     icon="x"
     tooltip="remove"
     onClick={onClick}

@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 import styled from "@emotion/styled";
+import { css } from "@emotion/react";
+import _ from "lodash";
 
 import LoginMessage from "./LoginMessage";
 import Button from "../components/Button";
@@ -11,7 +13,7 @@ import HeaderLabel from "../components/HeaderLabel";
 import { usernameAtom } from "../components/PageLayout";
 import { URLS } from "../constants";
 import { jsonRequest } from "../utils";
-import { useAtomValue } from "jotai";
+import { useAtom, useAtomValue } from "jotai";
 import { homeMapAtom, selectedRegionAtom } from "./HomeMap";
 import { useTranslation } from "react-i18next";
 
@@ -23,7 +25,8 @@ export default function SubscribePanel({
   active,
 }) {
   const [subsLoaded, setSubsLoaded] = useState(false);
-  const selectedRegion = useAtomValue(selectedRegionAtom);
+  const [selectedRegion, setSelectedRegion] = useAtom(selectedRegionAtom);
+
   const username = useAtomValue(usernameAtom);
   const homeMap = useAtomValue(homeMapAtom);
 
@@ -36,7 +39,7 @@ export default function SubscribePanel({
   const subsResult = (result) => {
     if (Array.isArray(result)) {
       setSubsLoaded(true);
-      setSubscribedList(result.sort());
+      setSubscribedList(result);
     } else {
       alert(t(`subscribe${result}`));
     }
@@ -61,7 +64,7 @@ export default function SubscribePanel({
   };
 
   const delSubs = (region) => {
-    const arr = region.split("_");
+    const arr = region.split("_").slice(1);
     const delConfirm = confirm(
       `${t("subscribe.delConfirm1")} ${arr.reverse().join(", ")}? ${t("subscribe.delConfirm2")}`
     );
@@ -74,38 +77,91 @@ export default function SubscribePanel({
     }
   };
 
+  const ListContainer = styled.div`
+    display: flex;
+    flex-wrap: wrap;
+  `;
+
+  const borderRadius = `6px`;
+
+  const Region = styled.div`
+    margin: 5px;
+    display: flex;
+    flex-direction: row;
+    // /* border-radius: ${borderRadius}; */
+    font: var(--unnamed-font-style-normal) normal var(--unnamed-font-weight-normal) 14px/16px
+      var(--unnamed-font-family-roboto);
+
+    letter-spacing: var(--unnamed-character-spacing-0);
+    text-align: left;
+  `;
+
+  const RegionLabel = styled.span`
+    border-radius: 8px 0px 0px 8px;
+    border: 1px solid #000000;
+    border-right: 0;
+    padding: 3px 6px;
+
+    &:hover {
+      background: #e1ebf0;
+    }
+  `;
+
+  const DelButton = styled.button`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 17px;
+    height: 100%;
+    background: var(--orange-4);
+    border: 1px solid #000000;
+    border-radius: 0px 8px 8px 0px;
+    cursor: pointer;
+    opacity: 1;
+
+    &:hover {
+      background: var(--gray-1);
+      color: var(--white);
+    }
+  `;
+
   const renderSubscribedTable = (subscribedList) => {
     return (
-      <table style={{ width: "100%", textAlign: "left", fontSize: "1rem" }}>
-        <thead>
-          <tr>
-            <th style={{ width: "20px" }}>#</th>
-            <th style={{ width: "calc(100% - 50px)" }}>{t("subscribe.munLabel")}</th>
-            <th style={{ width: "30px" }}>{t("subscribe.shortDelete")}</th>
-          </tr>
-        </thead>
-        <tbody>
-          {subscribedList.map((region, idx) => {
-            const arr = region.split("_");
-            return (
-              <tr key={region}>
-                <td style={{ width: "20px" }}>{idx + 1}</td>
-                <td style={{ width: "calc(100% - 50px)" }}>
-                  {arr[2] + ", "}
-                  <i>{arr[1]}</i>
-                </td>
-                <td style={{ width: "30px", display: "flex", justifyContent: "center" }}>
-                  <DeleteButton onClick={() => delSubs(region)} />
-                </td>
-              </tr>
-            );
-          })}
-        </tbody>
-      </table>
+      <ListContainer>
+        {subscribedList.map((region, idx) => {
+          const a = region.split("_");
+          const municipality = a[2];
+          const state = a[1];
+          const name = state + ", " + municipality;
+          return (
+            <Region key={idx} id="regionLabel">
+              <RegionLabel title={state}>{municipality}</RegionLabel>
+              <DelButton onClick={() => delSubs(region)} title={t("subscribe.delete")}>
+                x
+              </DelButton>
+            </Region>
+          );
+        })}
+      </ListContainer>
     );
   };
-
   const parsedRegion = selectedRegion && selectedRegion.split("_");
+
+  const renderAddMunicipality = () => {
+    if (!selectedRegion) {
+      return "";
+    } else if (!subscribedList.includes(selectedRegion)) {
+      return (
+        <div style={{ textAlign: "center", width: "100%" }}>
+          <Button extraStyle={{ margin: "1rem 0" }} onClick={() => addSubs(selectedRegion)}>{`${t(
+            "subscribe.subscribeTo"
+          )} ${parsedRegion[2]}, ${parsedRegion[1]}`}</Button>
+        </div>
+      );
+    } else {
+      return <span>{t("subscribe.existing")}</span>;
+    }
+  };
 
   return (
     <ToolCard title={t("subscribe.title")} active={active}>
@@ -135,17 +191,8 @@ export default function SubscribePanel({
               theMap={homeMap}
               mapquestKey={mapquestKey}
             ></Search>
-            {
-              // TODO: inform user (either in UI or alert that is region already been subscribed to and can't add it twice)
-              selectedRegion && !subscribedList.includes(selectedRegion) && (
-                <div style={{ textAlign: "center", width: "100%" }}>
-                  <Button
-                    extraStyle={{ margin: "1rem 0" }}
-                    onClick={() => addSubs(selectedRegion)}
-                  >{`${t("subscribe.subscribeTo")} ${parsedRegion[2]}, ${parsedRegion[1]}`}</Button>
-                </div>
-              )
-            }
+
+            {renderAddMunicipality()}
           </div>
         </>
       ) : (
