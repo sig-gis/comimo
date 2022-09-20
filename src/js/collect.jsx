@@ -32,9 +32,8 @@ import NavBar from "./collect/NavBar";
 
 export const currentPlotIdAtom = atom(-1);
 export const currentPlotNumberAtom = atom(1);
-export const projectPlotsAtom = atom([])
-export const areAllPlotsValidatedAtom = atom((get) => get(projectPlotsAtom).every(p => p.answer))
-
+export const projectPlotsAtom = atom([]);
+export const areAllPlotsValidatedAtom = atom((get) => get(projectPlotsAtom).every((p) => p.answer));
 
 const CollectContent = ({ projectId }) => {
   // State
@@ -57,7 +56,6 @@ const CollectContent = ({ projectId }) => {
   const { t } = useTranslation();
 
   const currentPlot = projectPlots.find((p) => p.id === currentPlotId);
-
 
   const showAlert = (messageBox) => setMessageBox(messageBox);
 
@@ -99,7 +97,7 @@ const CollectContent = ({ projectId }) => {
         projectId: projectId,
       });
 
-      const startingPlotIndex = projectPlots.findIndex(p => !p.answer);
+      const startingPlotIndex = projectPlots.findIndex((p) => !p.answer);
 
       // TODO we might need to go plot directly
       // const startingPlotId = projectPlots[startingPlotIndex]?.id
@@ -134,10 +132,10 @@ const CollectContent = ({ projectId }) => {
   const nextPlot = () => {
     const nextPlot = projectPlots.find((p) => p.id > currentPlotId) || projectPlots[0];
     if (currentPlotId === nextPlot.id) {
-      alert(t("home.noMorePlots"))
+      alert(t("home.noMorePlots"));
     } else {
       setCurrentPlotId(nextPlot.id);
-      setCurrentPlotNumber(nextPlot.id - projectPlots[0].id + 1)
+      setCurrentPlotNumber(nextPlot.id - projectPlots[0].id + 1);
     }
   };
 
@@ -152,12 +150,11 @@ const CollectContent = ({ projectId }) => {
     const plotsCopy = [...projectPlots].reverse();
     const prevPlot = plotsCopy.find((p) => p.id < currentPlotId) || plotsCopy[0];
     if (currentPlotId === prevPlot.id) {
-      alert(t("home.noMorePlots"))
+      alert(t("home.noMorePlots"));
     } else {
       setCurrentPlotId(prevPlot.id);
-      setCurrentPlotNumber(prevPlot.id - projectPlots[0].id + 1)
+      setCurrentPlotNumber(prevPlot.id - projectPlots[0].id + 1);
     }
-
   };
 
   const setPlotAnswer = async (answer) => {
@@ -167,11 +164,6 @@ const CollectContent = ({ projectId }) => {
         p.id === currentPlotId ? { ...p, answer } : p
       );
       setProjectPlots(newProjectPlots);
-
-
-
-
-
     } catch {
       console.error("Error Saving plot");
     }
@@ -194,6 +186,7 @@ const CollectContent = ({ projectId }) => {
         </Modal>
       )}
       <NavBar
+        showAlert={showAlert}
         goToPlot={goToPlot}
         nextPlot={nextPlot}
         prevPlot={prevPlot}

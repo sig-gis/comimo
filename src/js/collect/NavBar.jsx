@@ -36,7 +36,15 @@ const ButtonRowInner = styled.div`
   display: flex;
 `;
 
-export default function NavBar({ shiftPlotId, goToPlot, nextPlot, prevPlot, setPlotAnswer, maxPlotNumber }) {
+export default function NavBar({
+  shiftPlotId,
+  showAlert,
+  goToPlot,
+  nextPlot,
+  prevPlot,
+  setPlotAnswer,
+  maxPlotNumber,
+}) {
   const [currentPlotId, setCurrentPlotId] = useAtom(currentPlotIdAtom);
   const [currentPlotNumber, setCurrentPlotNumber] = useAtom(currentPlotNumberAtom);
 
@@ -151,7 +159,15 @@ export default function NavBar({ shiftPlotId, goToPlot, nextPlot, prevPlot, setP
                 fillColorHover="var(--white)"
                 icon="x"
                 iconSize="20px"
-                onClick={() => window.location.assign("/")}
+                onClick={() => {
+                  showAlert({
+                    body: t("collect.leaveCollect"),
+                    closeText: t("report.cancel"),
+                    confirmText: t("report.imSure"),
+                    onConfirm: () => window.location.assign("/"),
+                    title: t("collect.returnHome"),
+                  });
+                }}
                 extraStyle={{ marginLeft: "2rem" }}
               />
             </>
