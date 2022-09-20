@@ -192,7 +192,11 @@
     "typeLabel": "Select Prediction Type",
     "cMines": "Confirmed mines",
     "nMines": "New predictions",
-    "pMines": "Current predictions"
+    "pMines": "Current predictions",
+    "validatedTitle": "All Plots Validated",
+    "validated": "All plots have been validated.",
+    "invalidPlotTitle": "Invalid Plot Number",
+    "invalidPlot": "You tried to navigate to a plot that does not exist. Please select a different plot number."
   },
   "users": {
     "toView": "Login to view",
@@ -286,6 +290,8 @@
     "next": "Next",
     "prev": "Prev",
     "download": "Download Plot KML",
-    "selectPlot": "You must select a plot in order to download its KML file."
+    "selectPlot": "You must select a plot in order to download its KML file.",
+    "leaveCollect": "Are you sure you wish to leave the Collect page?",
+    "returnHome": "Return Home"
   }
 }

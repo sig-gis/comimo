@@ -22,7 +22,7 @@ import StatsPanel from "./home/StatsPanel";
 import SubscribePanel from "./home/SubscribePanel";
 import ValidatePanel from "./home/ValidatePanel";
 
-import HomeMap, { mapPopupAtom, selectedLatLngAtom } from "./home/HomeMap";
+import HomeMap, { homeMapAtom, mapPopupAtom, selectedLatLngAtom } from "./home/HomeMap";
 import { URLS } from "./constants";
 import { jsonRequest } from "./utils";
 

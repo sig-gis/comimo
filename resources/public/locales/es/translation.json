@@ -190,7 +190,11 @@
     "typeLabel": "Seleccione el tipo de predicción",
     "cMines": "Minas confirmadas",
     "nMines": "Nuevas predicciones",
-    "pMines": "Predicciones actuales"
+    "pMines": "Predicciones actuales",
+    "validatedTitle": "Todas las Parcelas Validadas",
+    "validated": "Todas las parcelas han sido validadas.",
+    "invalidPlotTitle": "Número de Parcela no Válido",
+    "invalidPlot": "Intentaste navegar a una parcela que no existe. Seleccione un número de parcela diferente."
   },
   "users": {
     "toView": "Iniciar sesión para ver",
@@ -278,12 +282,14 @@
   "collect": {
     "mina": "Mina",
     "noMina": "No Mina",
+    "go": "Ir",
     "clear": "Limpiar",
-    "go": "Vamos",
     "exit": "Salida",
     "next": "Próxima",
     "prev": "Previa",
     "download": "Descargar Parcela KML",
-    "selectPlot": "Debe seleccionar una parcela para descargar su archivo KML."
+    "selectPlot": "Debe seleccionar una parcela para descargar su archivo KML.",
+    "leaveCollect": "¿Estás segura de que deseas salir de la página Recolectar?",
+    "returnHome": "Volver a Casa"
   }
 }

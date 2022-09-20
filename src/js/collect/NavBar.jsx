@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useAtom } from "jotai";
+import { useAtom, useAtomValue } from "jotai";
 import styled from "@emotion/styled";
 import { useTranslation } from "react-i18next";
 
@@ -36,9 +36,18 @@ const ButtonRowInner = styled.div`
   display: flex;
 `;
 
-export default function NavBar({ shiftPlotId, goToPlot, nextPlot, prevPlot, setPlotAnswer }) {
+export default function NavBar({
+  shiftPlotId,
+  showAlert,
+  goToPlot,
+  nextPlot,
+  prevPlot,
+  setPlotAnswer,
+  maxPlotNumber,
+}) {
   const [currentPlotId, setCurrentPlotId] = useAtom(currentPlotIdAtom);
   const [currentPlotNumber, setCurrentPlotNumber] = useAtom(currentPlotNumberAtom);
+
   const { t } = useTranslation();
 
   // TODO display message when trying to go to invalid plot number
@@ -59,15 +68,24 @@ export default function NavBar({ shiftPlotId, goToPlot, nextPlot, prevPlot, setP
         }}
         value={currentPlotNumber + ""}
         onClickIncrease={() => {
-          setCurrentPlotNumber(currentPlotNumber + 1);
+          const newNumber = currentPlotNumber + 1;
+          if (newNumber <= maxPlotNumber) setCurrentPlotNumber(newNumber);
         }}
         onClickDecrease={() => {
-          setCurrentPlotNumber(currentPlotNumber - 1);
+          const newNumber = currentPlotNumber - 1;
+          if (newNumber > 0) setCurrentPlotNumber(currentPlotNumber - 1);
         }}
         extraStyle={{ marginRight: "0.5rem" }}
       />
       <Button
         onClick={() => {
+          if (currentPlotNumber < 1 || currentPlotNumber > maxPlotNumber) {
+            showAlert({
+              body: t("validate.invalidPlot"),
+              closeText: t("users.close"),
+              title: t("validate.invalidPlotTitle"),
+            });
+          }
           goToPlot();
         }}
         extraStyle={{
@@ -156,7 +174,15 @@ export default function NavBar({ shiftPlotId, goToPlot, nextPlot, prevPlot, setP
                 fillColorHover="var(--white)"
                 icon="x"
                 iconSize="20px"
-                onClick={() => window.location.assign("/")}
+                onClick={() => {
+                  showAlert({
+                    body: t("collect.leaveCollect"),
+                    closeText: t("report.cancel"),
+                    confirmText: t("report.imSure"),
+                    onConfirm: () => window.location.assign("/"),
+                    title: t("collect.returnHome"),
+                  });
+                }}
                 extraStyle={{ marginLeft: "2rem" }}
               />
             </>

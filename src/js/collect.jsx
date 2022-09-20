@@ -14,6 +14,7 @@ import {
 } from "./components/PageLayout";
 import IconButton from "./components/IconButton";
 import LoadingModal from "./components/LoadingModal";
+import Modal from "./components/Modal";
 import FooterBar from "./components/FooterBar";
 import IconTextButton from "./components/IconTextButton";
 
@@ -27,35 +28,17 @@ import { visiblePanelAtom, extraMapParamsAtom, showModalAtom } from "./home";
 import CollectMap, { collectMapAtom } from "./collect/CollectMap";
 import NavBar from "./collect/NavBar";
 
-const BarItem = styled.div`
-  margin: 0 2rem;
-`;
-
-const Buttons = styled.div`
-  display: flex;
-  flex: 3;
-  justify-content: flex-start;
-`;
-
-const Logo = styled.div`
-  align-items: center;
-  display: flex;
-  flex: 1;
-  justify-content: space-evenly;
-  padding: 5px 0;
-`;
-
-const LogoGitVersion = styled.a`
-  color: var(--white);
-  cursor: pointer;
-  font-size: 12px;
-  letter-spacing: 0px;
-  text-align: left;
-  text-decoration: none;
-`;
-
 export const currentPlotIdAtom = atom(-1);
 export const currentPlotNumberAtom = atom(1);
+export const projectPlotsAtom = atom([]);
+export const areAllPlotsValidatedAtom = atom((get) => {
+  const projectPlots = get(projectPlotsAtom);
+  const areAllPlotsValidated =
+    projectPlots.length > 0 &&
+    projectPlots.every((p) => p.answer === "Mina" || p.answer === "No Mina");
+  console.log("areAllPlotsValidated", areAllPlotsValidated);
+  return areAllPlotsValidated;
+});
 
 const CollectContent = ({ projectId }) => {
   // State
@@ -70,14 +53,18 @@ const CollectContent = ({ projectId }) => {
   const versionDeployed = useAtomValue(versionDeployedAtom);
   const [currentPlotId, setCurrentPlotId] = useAtom(currentPlotIdAtom);
   const [currentPlotNumber, setCurrentPlotNumber] = useAtom(currentPlotNumberAtom);
+  const areAllPlotsValidated = useAtomValue(areAllPlotsValidatedAtom);
 
   const [projectDetails, setProjectDetails] = useState([]);
-  const [projectPlots, setProjectPlots] = useState([]);
+  const [projectPlots, setProjectPlots] = useAtom(projectPlotsAtom);
   const [nicfiLayers, setNicfiLayers] = useState([]);
+  const [messageBox, setMessageBox] = useState(null);
 
   const { t } = useTranslation();
 
   const currentPlot = projectPlots.find((p) => p.id === currentPlotId);
+
+  const showAlert = (messageBox) => setMessageBox(messageBox);
 
   // TODO: repetitive in home
   const setParams = (param, value) => {
@@ -125,7 +112,9 @@ const CollectContent = ({ projectId }) => {
       const projectPlots = await jsonRequest(URLS.PROJ_PLOTS, {
         projectId: projectId,
       });
+      const startingPlotIndex = projectPlots.findIndex((p) => !p.answer);
       setProjectPlots(projectPlots);
+      setCurrentPlotNumber(startingPlotIndex === -1 ? 1 : startingPlotIndex + 1);
 
       const nicfiLayers = await jsonRequest(URLS.NICFI_DATES);
       setNicfiLayers(nicfiLayers);
@@ -135,10 +124,19 @@ const CollectContent = ({ projectId }) => {
       const nicfiDate = nicfiLayers.find(
         (l) => [...l.matchAll(dateRegex)].length === 1 && l.includes(projectDate)
       );
-
       setParams("NICFI", { ...extraMapParams.NICFI, dataLayer: nicfiDate || nicfiLayers[0] });
     })();
   }, []);
+
+  useEffect(() => {
+    if (areAllPlotsValidated) {
+      showAlert({
+        body: t("validate.validated"),
+        closeText: t("users.close"),
+        title: t("validate.validatedTitle"),
+      });
+    }
+  }, [areAllPlotsValidated]);
 
   // Helper Functions
   const nextPlot = () => {
@@ -192,12 +190,19 @@ const CollectContent = ({ projectId }) => {
         goToPlot={goToPlot}
         projectPlots={projectPlots}
       />
+      {messageBox && (
+        <Modal {...messageBox} onClose={() => setMessageBox(null)}>
+          <p>{messageBox.body}</p>
+        </Modal>
+      )}
       <NavBar
+        showAlert={showAlert}
         goToPlot={goToPlot}
         nextPlot={nextPlot}
         prevPlot={prevPlot}
         setPlotAnswer={setPlotAnswer}
         shiftPlotId={projectPlots[0]?.id}
+        maxPlotNumber={projectPlots?.length || 1}
       />
       <FooterBar>
         <Buttons>
@@ -256,6 +261,33 @@ const CollectContent = ({ projectId }) => {
     </>
   );
 };
+
+const BarItem = styled.div`
+  margin: 0 2rem;
+`;
+
+const Buttons = styled.div`
+  display: flex;
+  flex: 3;
+  justify-content: flex-start;
+`;
+
+const Logo = styled.div`
+  align-items: center;
+  display: flex;
+  flex: 1;
+  justify-content: space-evenly;
+  padding: 5px 0;
+`;
+
+const LogoGitVersion = styled.a`
+  color: var(--white);
+  cursor: pointer;
+  font-size: 12px;
+  letter-spacing: 0px;
+  text-align: left;
+  text-decoration: none;
+`;
 
 export function pageInit(args) {
   ReactDOM.render(
