@@ -236,13 +236,13 @@ export const fitMap = (map, type, coords, t) => {
       // center takes coords in the order of [lng, lat]
       map.flyTo({ center: coords, essential: true });
     } catch (err) {
-      console.error(t("home.errorCoordinates"));
+      alert(t("home.errorCoordinates"));
     }
   } else if (type === "bbox") {
     try {
       map.fitBounds(coords);
     } catch (error) {
-      console.error(t("home.errorBounds"));
+      alert(t("home.errorBounds"));
     }
   }
 };
