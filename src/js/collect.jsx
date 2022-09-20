@@ -1,13 +1,12 @@
 import React, { useEffect, useState, Suspense } from "react";
 import ReactDOM from "react-dom";
 import { last } from "lodash";
-import { useAtom, useAtomValue, atom } from "jotai";
+import { useAtom, useAtomValue, useSetAtom, atom } from "jotai";
 import { useTranslation } from "react-i18next";
 import styled from "@emotion/styled";
 
 import {
   PageLayout,
-  MainContext,
   myHeightAtom,
   mapboxTokenAtom,
   showInfoAtom,
@@ -17,12 +16,11 @@ import IconButton from "./components/IconButton";
 import LoadingModal from "./components/LoadingModal";
 import FooterBar from "./components/FooterBar";
 import IconTextButton from "./components/IconTextButton";
-import NICFIControl from "./components/NICFIControl";
-import ToolCard from "./components/ToolCard";
 
 import LayersPanel from "./home/LayersPanel";
 import CollectDownload from "./collect/CollectDownload";
 
+import { featureNamesAtom } from "./home";
 import { jsonRequest } from "./utils";
 import { URLS } from "./constants";
 import { visiblePanelAtom, extraMapParamsAtom, showModalAtom } from "./home";
@@ -61,6 +59,7 @@ export const currentPlotNumberAtom = atom(1);
 
 const CollectContent = ({ projectId }) => {
   // State
+  const setFeatureNames = useSetAtom(featureNamesAtom);
   const [visiblePanel, setVisiblePanel] = useAtom(visiblePanelAtom);
   const [showModal, setShowModal] = useAtom(showModalAtom);
   const [extraMapParams, setExtraMapParams] = useAtom(extraMapParamsAtom);
@@ -92,6 +91,15 @@ const CollectContent = ({ projectId }) => {
   };
 
   // Effects
+  useEffect(() => {
+    const getFeatureNames = async () => {
+      const features = await jsonRequest(URLS.FEATURE_NAMES);
+      setFeatureNames(features);
+    };
+
+    getFeatureNames().catch(console.error);
+  }, []);
+
   useEffect(() => {
     const handleEscapeKey = (e) => {
       if (e.keyCode === 27) {
@@ -135,10 +143,10 @@ const CollectContent = ({ projectId }) => {
   const nextPlot = () => {
     const nextPlot = projectPlots.find((p) => p.id > currentPlotId) || projectPlots[0];
     if (currentPlotId === nextPlot.id) {
-      alert(t("home.noMorePlots"))
+      alert(t("home.noMorePlots"));
     } else {
       setCurrentPlotId(nextPlot.id);
-      setCurrentPlotNumber(nextPlot.id - projectPlots[0].id + 1)
+      setCurrentPlotNumber(nextPlot.id - projectPlots[0].id + 1);
     }
   };
 
@@ -153,12 +161,11 @@ const CollectContent = ({ projectId }) => {
     const plotsCopy = [...projectPlots].reverse();
     const prevPlot = plotsCopy.find((p) => p.id < currentPlotId) || plotsCopy[0];
     if (currentPlotId === prevPlot.id) {
-      alert(t("home.noMorePlots"))
+      alert(t("home.noMorePlots"));
     } else {
       setCurrentPlotId(prevPlot.id);
-      setCurrentPlotNumber(prevPlot.id - projectPlots[0].id + 1)
+      setCurrentPlotNumber(prevPlot.id - projectPlots[0].id + 1);
     }
-
   };
 
   const setPlotAnswer = async (answer) => {
@@ -256,6 +263,7 @@ export function pageInit(args) {
         username={args.username}
         mapboxToken={args.mapboxToken}
         mapquestKey={args.mapquestKey}
+        theMap="collectMap"
         versionDeployed={args.versionDeployed}
         showSearch={true}
       >

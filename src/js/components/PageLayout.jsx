@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { atom, useAtom, useSetAtom } from "jotai";
+import { atom, useAtom, useSetAtom, useAtomValue } from "jotai";
 import { useTranslation } from "react-i18next";
 
 import { ThemeProvider } from "@emotion/react";
@@ -9,6 +9,8 @@ import Header from "./Header";
 import i18n from "../i18n";
 import { getLanguage, jsonRequest } from "../utils";
 import { THEME } from "../constants";
+import { homeMapAtom } from "../home/HomeMap";
+import { collectMapAtom } from "../collect/CollectMap";
 
 export const myHeightAtom = atom(0);
 export const showInfoAtom = atom(false);
@@ -26,9 +28,12 @@ export function PageLayout({
   children,
   mapboxToken,
   mapquestKey,
+  theMap,
   versionDeployed,
   showSearch,
 }) {
+  const homeMap = useAtomValue(homeMapAtom);
+  const collectMap = useAtomValue(collectMapAtom);
   const [myHeight, setMyHeight] = useAtom(myHeightAtom);
   const [showInfo, setShowInfo] = useAtom(showInfoAtom);
   const setMapboxToken = useSetAtom(mapboxTokenAtom);
@@ -83,7 +88,11 @@ export function PageLayout({
           flexDirection: "column",
         }}
       >
-        <Header showSearch={showSearch} username={username} />
+        <Header
+          showSearch={showSearch}
+          theMap={theMap === "homeMap" ? homeMap : collectMap}
+          username={username}
+        />
         {children}
       </div>
     </ThemeProvider>

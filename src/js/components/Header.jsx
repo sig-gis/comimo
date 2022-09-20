@@ -68,7 +68,7 @@ const LoggedInUsername = styled.span`
   }
 `;
 
-export default function Header({ showSearch, username }) {
+export default function Header({ showSearch, theMap, username }) {
   const featureNames = useAtomValue(featureNamesAtom);
   const mapquestKey = useAtomValue(mapquestKeyAtom);
   const [visiblePanel, setVisiblePanel] = useAtom(visiblePanelAtom);
@@ -88,7 +88,6 @@ export default function Header({ showSearch, username }) {
               active={visiblePanel === "search"}
               hasBackground={true}
               icon="search"
-              // iconSize="26px"
               invertBorderRadius={true}
               onClick={() => togglePanel("search")}
               text={t("home.searchTitle")}
@@ -98,7 +97,12 @@ export default function Header({ showSearch, username }) {
               isInverted={true}
               active={visiblePanel === "search"}
             >
-              <Search isPanel={true} featureNames={featureNames} mapquestKey={mapquestKey}></Search>
+              <Search
+                isPanel={true}
+                featureNames={featureNames}
+                theMap={theMap}
+                mapquestKey={mapquestKey}
+              ></Search>
             </ToolCard>
           </>
         )}
