@@ -278,6 +278,7 @@
   "collect": {
     "mina": "Mina",
     "noMina": "No Mina",
+    "clear": "Limpiar",
     "go": "Vamos",
     "exit": "Salida",
     "next": "Próxima",

@@ -22,7 +22,7 @@ import StatsPanel from "./home/StatsPanel";
 import SubscribePanel from "./home/SubscribePanel";
 import ValidatePanel from "./home/ValidatePanel";
 
-import HomeMap, { homeMapAtom, mapPopupAtom, selectedLatLngAtom } from "./home/HomeMap";
+import HomeMap, { mapPopupAtom, selectedLatLngAtom } from "./home/HomeMap";
 import { URLS } from "./constants";
 import { jsonRequest } from "./utils";
 
@@ -284,6 +284,7 @@ export function pageInit(args) {
         username={args.username}
         mapboxToken={args.mapboxToken}
         mapquestKey={args.mapquestKey}
+        theMap="homeMap"
         versionDeployed={args.versionDeployed}
         showSearch={true}
       >

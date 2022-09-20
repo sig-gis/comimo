@@ -7,8 +7,8 @@ import TextInput from "./TextInput";
 
 import { jsonRequest } from "../utils";
 import { URLS } from "../constants";
-import { fitMap, selectedRegionAtom, homeMapAtom } from "../home/HomeMap";
-import { useAtom, useAtomValue, useSetAtom } from "jotai";
+import { fitMap, selectedRegionAtom } from "../home/HomeMap";
+import { useSetAtom } from "jotai";
 import { useTranslation } from "react-i18next";
 
 const SearchResults = styled.div`
@@ -23,10 +23,9 @@ const SearchResults = styled.div`
   }
 `;
 
-export default function Search({ featureNames, mapquestKey, isPanel }) {
+export default function Search({ theMap, featureNames, mapquestKey, isPanel }) {
   // State
 
-  const homeMap = useAtomValue(homeMapAtom);
   const setSelectedRegion = useSetAtom(selectedRegionAtom);
 
   const [geoCodedSearch, setGeoCodedSearch] = useState(null);
@@ -63,7 +62,7 @@ export default function Search({ featureNames, mapquestKey, isPanel }) {
   const processLatLng = () => {
     const pair = latLngText.split(",");
     const [lat, lng] = pair.map((a) => parseFloat(a)).slice(0, 2);
-    fitMap(homeMap, "point", [lng, lat], t);
+    fitMap(theMap, "point", [lng, lat], t);
   };
 
   // Helper render functions
@@ -82,7 +81,7 @@ export default function Search({ featureNames, mapquestKey, isPanel }) {
                 const mun = item.adminArea4.toUpperCase();
                 setSelectedL1(state);
                 setSelectedL2(mun);
-                fitMap(homeMap, "bbox", featureNames[state][mun], t);
+                fitMap(theMap, "bbox", featureNames[state][mun], t);
                 setSelectedRegion(
                   `mun_${item.adminArea3.toUpperCase()}_${item.adminArea4.toUpperCase()}`
                 );
@@ -137,7 +136,7 @@ export default function Search({ featureNames, mapquestKey, isPanel }) {
           const l2Name = e.target.value;
           const coords = activeMuns[l2Name];
           setSelectedL2(l2Name);
-          if (Array.isArray(coords)) fitMap(homeMap, "bbox", coords, t);
+          if (Array.isArray(coords)) fitMap(theMap, "bbox", coords, t);
           setSelectedRegion("mun_" + selectedL1 + "_" + l2Name);
         }}
         options={l2names}

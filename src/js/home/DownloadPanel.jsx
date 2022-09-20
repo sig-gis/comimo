@@ -104,9 +104,8 @@ export default function DownloadPanel({ active, featureNames, mapquestKey, selec
           <Search
             isPanel={false}
             featureNames={featureNames}
-            map={homeMap}
+            theMap={homeMap}
             mapquestKey={mapquestKey}
-            setSelectedRegion={setSelectedRegion}
           ></Search>
         </div>
         {/* TODO download text is too large for button sometimes, either truncate it or wrap the text */}

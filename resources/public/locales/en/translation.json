@@ -280,6 +280,7 @@
   "collect": {
     "mina": "Mine",
     "noMina": "No Mine",
+    "clear": "Clear",
     "go": "Go",
     "exit": "Exit",
     "next": "Next",

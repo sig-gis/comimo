@@ -27,7 +27,7 @@ export default function CollectDownload({ active, currentPlot, currentPlotId, pr
   };
 
   return (
-    <ToolCard title={t("layers.title")} active={active}>
+    <ToolCard title={t("download.title")} active={active}>
       {currentPlot?.geom ? (
         // TODO change to <Button> component
         <a
