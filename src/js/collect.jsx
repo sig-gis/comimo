@@ -24,7 +24,7 @@ import { featureNamesAtom } from "./home";
 import { jsonRequest } from "./utils";
 import { URLS } from "./constants";
 import { visiblePanelAtom, extraMapParamsAtom, showModalAtom } from "./home";
-import CollectMap from "./collect/CollectMap";
+import CollectMap, { collectMapAtom } from "./collect/CollectMap";
 import NavBar from "./collect/NavBar";
 
 const BarItem = styled.div`
@@ -59,6 +59,7 @@ export const currentPlotNumberAtom = atom(1);
 
 const CollectContent = ({ projectId }) => {
   // State
+  const collectMap = useAtomValue(collectMapAtom);
   const setFeatureNames = useSetAtom(featureNamesAtom);
   const [visiblePanel, setVisiblePanel] = useAtom(visiblePanelAtom);
   const [showModal, setShowModal] = useAtom(showModalAtom);
@@ -213,6 +214,7 @@ const CollectContent = ({ projectId }) => {
               active={visiblePanel === "layers"}
               nicfiLayers={nicfiLayers}
               nicfiOnly={true}
+              theMap={collectMap}
             />
           </BarItem>
 
