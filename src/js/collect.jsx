@@ -26,7 +26,7 @@ import CollectDownload from "./collect/CollectDownload";
 import { jsonRequest } from "./utils";
 import { URLS } from "./constants";
 import { visiblePanelAtom, extraMapParamsAtom, showModalAtom } from "./home";
-import CollectMap from "./collect/CollectMap";
+import CollectMap, { collectMapAtom } from "./collect/CollectMap";
 import NavBar from "./collect/NavBar";
 
 const BarItem = styled.div`
@@ -61,6 +61,7 @@ export const currentPlotNumberAtom = atom(1);
 
 const CollectContent = ({ projectId }) => {
   // State
+  const collectMap = useAtomValue(collectMapAtom);
   const [visiblePanel, setVisiblePanel] = useAtom(visiblePanelAtom);
   const [showModal, setShowModal] = useAtom(showModalAtom);
   const [extraMapParams, setExtraMapParams] = useAtom(extraMapParamsAtom);
@@ -135,10 +136,10 @@ const CollectContent = ({ projectId }) => {
   const nextPlot = () => {
     const nextPlot = projectPlots.find((p) => p.id > currentPlotId) || projectPlots[0];
     if (currentPlotId === nextPlot.id) {
-      alert(t("home.noMorePlots"))
+      alert(t("home.noMorePlots"));
     } else {
       setCurrentPlotId(nextPlot.id);
-      setCurrentPlotNumber(nextPlot.id - projectPlots[0].id + 1)
+      setCurrentPlotNumber(nextPlot.id - projectPlots[0].id + 1);
     }
   };
 
@@ -153,12 +154,11 @@ const CollectContent = ({ projectId }) => {
     const plotsCopy = [...projectPlots].reverse();
     const prevPlot = plotsCopy.find((p) => p.id < currentPlotId) || plotsCopy[0];
     if (currentPlotId === prevPlot.id) {
-      alert(t("home.noMorePlots"))
+      alert(t("home.noMorePlots"));
     } else {
       setCurrentPlotId(prevPlot.id);
-      setCurrentPlotNumber(prevPlot.id - projectPlots[0].id + 1)
+      setCurrentPlotNumber(prevPlot.id - projectPlots[0].id + 1);
     }
-
   };
 
   const setPlotAnswer = async (answer) => {
@@ -206,6 +206,7 @@ const CollectContent = ({ projectId }) => {
               active={visiblePanel === "layers"}
               nicfiLayers={nicfiLayers}
               nicfiOnly={true}
+              theMap={collectMap}
             />
           </BarItem>
 

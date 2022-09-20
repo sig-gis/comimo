@@ -9,7 +9,6 @@ import Divider from "../components/Divider";
 import HeaderLabel from "../components/HeaderLabel";
 import { extraMapParamsAtom } from "../home";
 import { startVisible, availableLayers, miningLayers, layerColors } from "../constants";
-import { homeMapAtom } from "./HomeMap";
 import { useTranslation } from "react-i18next";
 
 const Label = styled.label`
@@ -53,11 +52,10 @@ const LayerSlider = styled.input`
   }
 `;
 
-export default function LayersPanel({ nicfiLayers, active, nicfiOnly }) {
+export default function LayersPanel({ nicfiLayers, active, theMap, nicfiOnly }) {
   const [visible, setVisible] = useState(null);
   const [extraMapParams, setExtraMapParams] = useAtom(extraMapParamsAtom);
   const [opacity, setOpacity] = useState(null);
-  const homeMap = useAtomValue(homeMapAtom);
 
   const { t } = useTranslation();
 
@@ -80,12 +78,12 @@ export default function LayersPanel({ nicfiLayers, active, nicfiOnly }) {
   }, []);
 
   const setLayerVisible = (name, layerVisible) => {
-    homeMap.setLayoutProperty(name, "visibility", layerVisible ? "visible" : "none");
+    theMap.setLayoutProperty(name, "visibility", layerVisible ? "visible" : "none");
     setVisible({ ...visible, [name]: layerVisible });
   };
 
   const setLayerOpacity = (name, newOpacity) => {
-    homeMap.setPaintProperty(name, "raster-opacity", newOpacity / 100);
+    theMap.setPaintProperty(name, "raster-opacity", newOpacity / 100);
     setOpacity({ ...opacity, [name]: newOpacity });
   };
 

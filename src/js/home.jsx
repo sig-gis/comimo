@@ -46,6 +46,7 @@ export const processModal = (callBack, setShowModal) => {
 };
 
 function HomeContents() {
+  const homeMap = useAtomValue(homeMapAtom);
   const [visiblePanel, setVisiblePanel] = useAtom(visiblePanelAtom);
   const [selectedDates, setSelectedDates] = useAtom(selectedDatesAtom);
   const [homeMapPoupup, setHomeMapPoupup] = useAtom(mapPopupAtom);
@@ -145,9 +146,10 @@ function HomeContents() {
               text={t("home.layersTitle")}
             />
             <LayersPanel
-              nicfiOnly={false}
               active={visiblePanel === "layers"}
               nicfiLayers={nicfiLayers}
+              nicfiOnly={false}
+              theMap={homeMap}
             />
           </BarItem>
 
