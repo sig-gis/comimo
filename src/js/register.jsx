@@ -11,6 +11,7 @@ import LoadingModal from "./components/LoadingModal";
 import LanguageButtons from "./components/LanguageButtons";
 import Button from "./components/Button";
 import AccountForm from "./components/AccountForm";
+import Modal from "./components/Modal";
 import Select from "./components/Select";
 import TextInput from "./components/TextInput";
 import { PageLayout } from "./components/PageLayout";
@@ -51,9 +52,12 @@ function Register() {
   const [password, setPassword] = useState("");
   const [passwordConfirmation, setPasswordConfirmation] = useState("");
   const [defaultLang, setDefaultLang] = useState(getLanguage(["en", "es"]));
+  const [messageBox, setMessageBox] = useState(null);
 
   const [showModal, setShowModal] = useAtom(showModalAtom);
   const { t } = useTranslation();
+
+  const showAlert = (messageBox) => setMessageBox(messageBox);
 
   // API calls
   const verifyInputs = () => {
@@ -70,7 +74,11 @@ function Register() {
   const registerUser = () => {
     const errors = verifyInputs();
     if (errors.length > 0) {
-      alert(errors.map((e) => " - " + e).join("\n"));
+      showAlert({
+        body: errors.map((e) => " - " + e).join("\n"),
+        closeText: t("users.close"),
+        title: t("users.errorRegister"),
+      });
     } else {
       processModal(async () => {
         const data = await jsonRequest("/register", {
@@ -83,11 +91,19 @@ function Register() {
           username: username,
         });
         if (data === "") {
-          alert(t("users.registered"));
+          showAlert({
+            body: t("users.registered"),
+            closeText: t("users.close"),
+            title: t("users.successRegister"),
+          });
           window.location = "/";
         } else {
-          console.error(t("users.[data]"));
-          alert(t("users.[data]") || t("users.errorCreating"));
+          console.error(t(`users.${data}`));
+          showAlert({
+            body: t(`users.${data}` || t("users.errorCreating")),
+            closeText: t("users.close"),
+            title: t("users.errorRegister"),
+          });
         }
       }, setShowModal);
     }
@@ -123,7 +139,18 @@ function Register() {
     <ThemeProvider theme={THEME}>
       <PageContainer>
         {showModal && <LoadingModal message={t("users.modalMessage")} />}
-        <AccountForm header={t("users.registerTitle")} submitFn={registerUser}>
+        <AccountForm
+          header={t("users.registerTitle")}
+          submitFn={() => {
+            showAlert({
+              body: t("users.confirmRegister"),
+              closeText: t("users.cancel"),
+              confirmText: t("users.confirmText"),
+              onConfirm: () => registerUser(),
+              title: t("users.register"),
+            });
+          }}
+        >
           <div
             css={css`
               display: flex;
@@ -163,6 +190,11 @@ function Register() {
             <Button extraStyle={{ marginTop: "0.5rem" }}>{t("users.register")}</Button>
           </div>
         </AccountForm>
+        {messageBox && (
+          <Modal {...messageBox} onClose={() => setMessageBox(null)}>
+            <p>{messageBox.body}</p>
+          </Modal>
+        )}
       </PageContainer>
     </ThemeProvider>
   );
