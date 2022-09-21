@@ -16,7 +16,6 @@
                          (call-sql "select_project_plots" project-id)))))
 
 (defn save-user-answer [{:keys [params]}]
-  (println "params are" params)
   (let [plot-id       (tc/val->int (:plotId params))
         answer        (:answer params)
         answer-number (:answerNumber params)]
