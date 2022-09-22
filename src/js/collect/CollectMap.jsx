@@ -104,7 +104,11 @@ export default function CollectMap({ boundary, projectPlots, goToPlot, currentPl
       }
     } else if (type === "bbox") {
       try {
-        collectMap.fitBounds(arg, { padding: { top: 16, bottom: 94, left: 16, right: 16 } });
+        collectMap.fitBounds(arg, {
+          padding: { top: 16, bottom: 94, left: 16, right: 16 },
+          linear: false,
+          speed: 2.75,
+        });
       } catch (error) {
         console.error(error);
       }
