@@ -74,9 +74,9 @@ export default function InfoPopupContent({ map, lat, lng, selectedDates }) {
     protectedAreas: protectedAreas && (
       <PopupMapInfo key="protectedAreas">
         <span>
-          <strong>{t("home.protectedAreasPopup")}:</strong>
-          {t("home.protectedAreasCategory")}:{protectedAreas[0]}
-          {t("home.protectedAreasName")}: {protectedAreas[1]}
+          <strong>{t("home.protectedAreasPopup")}: </strong>
+          {t("home.protectedAreasCategory")}: {protectedAreas[0]}, {t("home.protectedAreasName")}:{" "}
+          {protectedAreas[1]}
         </span>
       </PopupMapInfo>
     ),
