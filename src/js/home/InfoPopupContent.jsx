@@ -118,8 +118,7 @@ export default function InfoPopupContent({ map, lat, lng, selectedDates }) {
     <div style={{ display: "flex", flexDirection: "column", marginRight: "0.5rem" }}>
       <PopupMapInfo key="latlng">
         <span>
-          <strong>Lat: </strong> {toPrecision(lat, 4)} , <strong>Lng: </strong>{" "}
-          {toPrecision(lng, 4)}
+          <strong>Lat, Long: </strong> {toPrecision(lat, 4)}, {toPrecision(lng, 4)}
         </span>
       </PopupMapInfo>
       {visibleLayers.map((l) => layerToInfo[l])}
