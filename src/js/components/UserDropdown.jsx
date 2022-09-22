@@ -22,6 +22,11 @@ export default function UserDropdown({ username }) {
       value: "/admin",
       text: t("users.admin"),
     },
+    logout: {
+      icon: "logout",
+      value: "/logout",
+      text: t("users.logout"),
+    },
   };
 
   const onClickUserDropdown = (page) => {
