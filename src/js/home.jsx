@@ -247,7 +247,7 @@ function HomeContents() {
                 />
                 <StatsPanel
                   active={visiblePanel === "stats"}
-                  selectedDate={selectedDates?.cMines}
+                  selectedDate={selectedDates.cMines}
                   subscribedList={subscribedList}
                 />
               </BarItem>
