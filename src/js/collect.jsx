@@ -168,7 +168,17 @@ const CollectContent = ({ projectId }) => {
 
   const setPlotAnswer = async (answer) => {
     try {
-      await jsonRequest(URLS.SAVE_ANSWER, { plotId: currentPlotId, answer });
+      let answerNumber = null;
+      if (answer === "Mina") {
+        answerNumber = 1;
+      } else if (answer === "No Mina") {
+        answerNumber = 2;
+      }
+      await jsonRequest(URLS.SAVE_ANSWER, {
+        plotId: currentPlotId,
+        answer,
+        answerNumber,
+      });
       const newProjectPlots = projectPlots.map((p) =>
         p.id === currentPlotId ? { ...p, answer } : p
       );

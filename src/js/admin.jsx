@@ -3,13 +3,12 @@ import ReactDOM from "react-dom";
 import styled from "@emotion/styled";
 import { isEqual } from "lodash";
 import { ReactTabulator } from "react-tabulator";
-import 'react-tabulator/lib/styles.css'; // required styles
-import 'react-tabulator/lib/css/tabulator.min.css'; // theme
+import "react-tabulator/lib/styles.css"; // required styles
+import "react-tabulator/lib/css/tabulator.min.css"; // theme
 
 import { PageLayout } from "./components/PageLayout";
 import TitledForm from "./components/TitledForm";
 import Button from "./components/Button";
-
 
 import { URLS } from "./constants";
 import { jsonRequest } from "./utils";
@@ -159,9 +158,9 @@ const UserMines = makeAdminTableComponent(
   [
     { title: "Username", field: "username", headerFilterPlaceholder: "Filter" },
     { title: "Email", field: "email", headerFilterPlaceholder: "Filter" },
-    { title: "Organization", field: "institution", headerFilterPlaceholder: "Filter" },
+    { title: "Institution", field: "institution", headerFilterPlaceholder: "Filter" },
     { title: "Latitude", field: "lat", headerFilterPlaceholder: "Filter" },
-    { title: "Longitude", field: "lon", headerFilterPlaceholder: "Filter" },
+    { title: "Longitude", field: "lng", headerFilterPlaceholder: "Filter" },
     { title: "Reported date", field: "reportedDate", headerFilterPlaceholder: "Filter" },
   ],
   "user-mines"
@@ -172,12 +171,13 @@ const Predictions = makeAdminTableComponent(
   [
     { title: "Username", field: "username", headerFilterPlaceholder: "Filter" },
     { title: "Email", field: "email", headerFilterPlaceholder: "Filter" },
-    { title: "Organization", field: "institution", headerFilterPlaceholder: "Filter" },
+    { title: "Institution", field: "institution", headerFilterPlaceholder: "Filter" },
     { title: "Project name", field: "projectName", headerFilterPlaceholder: "Filter" },
     { title: "Latitude", field: "lat", headerFilterPlaceholder: "Filter" },
-    { title: "Longitude", field: "lon", headerFilterPlaceholder: "Filter" },
+    { title: "Longitude", field: "lng", headerFilterPlaceholder: "Filter" },
     { title: "Data layer", field: "dataLayer", headerFilterPlaceholder: "Filter" },
     { title: "Mine", field: "answer", headerFilterPlaceholder: "Filter" },
+    { title: "Label", field: "answerNumber", headerFilterPlaceholder: "Filter" },
   ],
   "validated-predictions"
 );

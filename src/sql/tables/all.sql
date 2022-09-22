@@ -63,7 +63,8 @@ CREATE TABLE plots (
     lat            float,
     lng            float,
     geom           geometry(geometry,4326),
-    answer         text
+    answer         text,
+    answer_number  integer
 );
 CREATE INDEX plots_projects_rid ON plots (project_rid);
 
