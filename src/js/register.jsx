@@ -192,7 +192,9 @@ function Register() {
         </AccountForm>
         {messageBox && (
           <Modal {...messageBox} onClose={() => setMessageBox(null)}>
-            <p>{messageBox.body}</p>
+            {messageBox.body.split("\n").map((p, i) => (
+              <p key={i}>{p}</p>
+            ))}
           </Modal>
         )}
       </PageContainer>
