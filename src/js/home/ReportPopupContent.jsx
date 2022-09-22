@@ -5,17 +5,11 @@ import PopupMapInfo from "../components/PopupMapInfo";
 import { toPrecision } from "../utils";
 
 export default function ReportPopupContent({ lat, lng }) {
-  const { t } = useTranslation();
   return (
-    <PopupMapInfo>
-      <label>
-        <b>{t("report.latitude")}</b>:
-      </label>
-      <label>{toPrecision(lat, 4)}</label>
-      <label>
-        <b>{t("report.longitude")}</b>:
-      </label>
-      <label>{toPrecision(lng, 4)}</label>
+    <PopupMapInfo style={{ marginRight: "0.5rem", marginTop: "1rem" }}>
+      <span>
+        <strong>Lat, Long: </strong> {toPrecision(lat, 4)}, {toPrecision(lng, 4)}
+      </span>
     </PopupMapInfo>
   );
 }

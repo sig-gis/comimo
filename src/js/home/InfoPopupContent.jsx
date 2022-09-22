@@ -39,94 +39,94 @@ export default function InfoPopupContent({ map, lat, lng, selectedDates }) {
   const layerToInfo = {
     nMines: (
       <PopupMapInfo key="nMines">
-        <label>
-          <strong>{t("home.nMines")}: </strong>
-        </label>
-        <label>{nMines ? t("home.eeLayerDetected") : t("home.eeLayerNotDetected")}</label>
+        <span>
+          <strong>{t("home.nMines")}: </strong>{" "}
+          {nMines ? t("home.eeLayerDetected") : t("home.eeLayerNotDetected")}
+        </span>
       </PopupMapInfo>
     ),
     pMines: (
       <PopupMapInfo key="pMines">
-        <label>
+        <span>
           <strong>{t("home.pMines")}: </strong>
-        </label>
-        <label>{pMines ? t("home.eeLayerDetected") : t("home.eeLayerNotDetected")}</label>
+          {pMines ? t("home.eeLayerDetected") : t("home.eeLayerNotDetected")}
+        </span>
       </PopupMapInfo>
     ),
     cMines: (
       <PopupMapInfo key="cMines">
-        <label>
+        <span>
           <strong>{t("home.cMines")}: </strong>
-        </label>
-        <label>{cMines ? t("home.eeLayerDetected") : t("home.eeLayerNotDetected")}</label>
+          {cMines ? t("home.eeLayerDetected") : t("home.eeLayerNotDetected")}
+        </span>
       </PopupMapInfo>
     ),
     municipalBounds: (
       <PopupMapInfo key="municipalBounds">
-        <label>
+        <span>
           <strong>{t("home.municipalBoundsPopup")}: </strong>
-        </label>
-        <label>
           {municipalBounds
             ? municipalBounds[0] + ", " + municipalBounds[1]
             : t("home.municipalBoundsNotFound")}
-        </label>
+        </span>
       </PopupMapInfo>
     ),
     protectedAreas: protectedAreas && (
       <PopupMapInfo key="protectedAreas">
-        <label>
-          {" "}
-          <strong>{t("home.protectedAreasPopup")}:</strong>
-        </label>
-        <label>{t("home.protectedAreasCategory")}:</label>
-        <label> {protectedAreas[0]}</label>
-        <label>{t("home.protectedAreasName")}:</label>
-        <label>{protectedAreas[1]}</label>
+        <span>
+          <strong>{t("home.protectedAreasPopup")}: </strong>
+          {t("home.protectedAreasCategory")}: {protectedAreas[0]}, {t("home.protectedAreasName")}:{" "}
+          {protectedAreas[1]}
+        </span>
       </PopupMapInfo>
     ),
     otherAuthorizations: otherAuthorizations && (
       <PopupMapInfo key="otherAuthorizations">
-        <label>
+        <span>
           <strong>{t("home.otherAuthorizationsPopup")}: </strong>
-        </label>
-        <label>{otherAuthorizations}</label>
+          {otherAuthorizations}
+        </span>
       </PopupMapInfo>
     ),
     legalMines: legalMines && (
       <PopupMapInfo key="legalMines">
-        <label>
+        <span>
           <strong>{t("home.legalMinesPopup")}: </strong>
-        </label>
-        <label>{legalMines}</label>
+          {legalMines}
+        </span>
       </PopupMapInfo>
     ),
     tierrasDeCom: tierrasDeCom && (
       <PopupMapInfo key="tierrasDeCom">
-        <label>
+        <span>
           <strong>{t("home.tierrasDeComPopup")}: </strong>
-        </label>
-        <label>{tierrasDeCom}</label>
+          {tierrasDeCom}
+        </span>
       </PopupMapInfo>
     ),
     resguardos: resguardos && (
       <PopupMapInfo key="visibleLayers">
-        <label>
+        <span>
           <strong>{t("home.resguardosPopup")}: </strong>
-        </label>
-        <label>{resguardos}</label>
+          {resguardos}
+        </span>
       </PopupMapInfo>
     ),
   };
 
   return Object.keys(layerInfo).length === visibleLayers.length ? (
-    <div style={{ display: "flex", flexDirection: "column", marginRight: "0.5rem" }}>
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        marginRight: "0.5rem",
+        marginTop: "1rem",
+      }}
+    >
       <PopupMapInfo key="latlng">
-        <label>
-          <strong>Lat: </strong> {toPrecision(lat, 4)}
-          <span>, </span>
-          <strong>Lng: </strong> {toPrecision(lng, 4)}
-        </label>
+        <span>
+          <strong>Lat, Long: </strong> {toPrecision(lat, 4)}, {toPrecision(lng, 4)}
+        </span>
       </PopupMapInfo>
       {visibleLayers.map((l) => layerToInfo[l])}
     </div>
