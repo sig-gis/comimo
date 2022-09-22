@@ -4,8 +4,6 @@ import ToolCard from "../components/ToolCard";
 import Button from "../components/Button";
 import Select from "../components/Select";
 
-import { MainContext } from "../components/PageLayout";
-import { useSetAtom } from "jotai";
 import { useTranslation } from "react-i18next";
 
 export default function FilterPanel({
@@ -17,7 +15,7 @@ export default function FilterPanel({
 }) {
   const [newSelectedDates, setNewSelectedDates] = useState({});
 
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
 
   const setSelectedDate = (type, date) => {
     setNewSelectedDates({ ...newSelectedDates, [type]: date });

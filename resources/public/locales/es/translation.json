@@ -68,9 +68,9 @@
     "gettingUrl": "Obtener URL..."
   },
   "filter": {
-    "title": "Filtrar datos",
+    "title": "Filtrar Datos",
     "selectLabel": "Seleccionar fechas para",
-    "updateMap": "Actualizar mapa"
+    "updateMap": "Actualizar Mapa"
   },
   "layers": {
     "title": "Seleccionar capas",
@@ -168,10 +168,13 @@
     "errorNoName": "Ingresa un nombre para el proyecto.",
     "errorDubName": "Ya existe un proyecto con ese nombre. Elije un nombre diferente.",
     "errorUnknown": "Error desconocido.",
+    "errorTitle": "Error",
     "errorClose": "No se pudo cerrar el proyecto.",
     "confirmQuestion": "¿Continuar con la siguiente configuración?\nFecha de predicción = {%date}\nNombre del proyecto = {%name}\nMunicipios = {%region}",
+    "closeTitle": "Cerrar Proyecto",
     "closeConfirm": "¿Estás seguro de que quieres cerrar este proyecto? Al cerrar el proyecto ya no podrás validar las predicciones a menos que crees uno nuevo.",
     "predictionLabel": "Fecha de predicción",
+    "createTitle": "Crear Proyecto",
     "createdLabel": "Fecha de creación",
     "regionsLabel": "Municipios",
     "loading": "Cargando",
@@ -186,8 +189,8 @@
     "customRadio": "Municipios personalizados",
     "createButton": "Crear nuevo proyecto para",
     "errorNewProject": "Error al crear un nuevo proyecto",
-    "projectExists": "Proyecto ya existe",
-    "projectWithNoPlots": "Error al crear proyecto sin parcelas",
+    "projectExists": "Este proyecto ya existe. Asegúrese de que este proyecto no sea un duplicado de ningún proyecto existente.",
+    "projectWithNoPlots": "Error al crear proyecto sin parcelas. Asegúrese de que los municipios de este proyecto tengan parcelas.",
     "loginAction": "proyectos",
     "typeLabel": "Seleccione el tipo de predicción",
     "cMines": "Minas confirmadas",

@@ -70,9 +70,9 @@
     "gettingUrl": "Getting URL..."
   },
   "filter": {
-    "title": "Filter data",
+    "title": "Filter Data",
     "selectLabel": "Select the dates of prediction",
-    "updateMap": "Update map"
+    "updateMap": "Update Map"
   },
   "layers": {
     "title": "Select Layers",
@@ -170,8 +170,11 @@
     "errorNoName": "Please enter a project name.",
     "errorDubName": "A project with that name already exists. Please choose a different name.",
     "errorUnknown": "Unknown Error.",
+    "errorTitle": "Error",
     "errorClose": "Could not close project.",
     "confirmQuestion": "Proceed with the following configuration?\nPrediction date = {%date}\nProject name = {%name}\nMunicipalities = {%region}",
+    "createTitle": "Create Project",
+    "closeTitle": "Close Project",
     "closeConfirm": "Are you sure you want to close this project? Closing the project means you will no longer be able to validate the predictions unless you set up another project.",
     "predictionLabel": "Prediction date",
     "createdLabel": "Created date",
@@ -183,8 +186,8 @@
     "name": "Name",
     "createProject": "Create a New Project",
     "errorNewProject": "Error creating new project",
-    "projectExists": "Project already exists",
-    "projectWithNoPlots": "Error creating project with no plots",
+    "projectExists": "This project already exists. Make sure that this project is not a duplicate of any existing projects.",
+    "projectWithNoPlots": "Error creating project with no plots. Make sure the municiplaites in this project have plots.",
     "projectName": "Enter Project Name",
     "projectRegion": "Select Project Municipalities",
     "subscribedRadio": "Subscribed municipalities",
