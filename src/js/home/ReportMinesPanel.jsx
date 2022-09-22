@@ -5,7 +5,7 @@ import styled from "@emotion/styled";
 import Button from "../components/Button";
 import ToolCard from "../components/ToolCard";
 import TextInput from "../components/TextInput";
-import Modal from "../components/Modal";
+import { renderMessageBox } from "../components/Modal";
 
 import { homeMapAtom, mapPopupAtom } from "./HomeMap";
 import { visiblePanelAtom, selectedDatesAtom } from "../home";
@@ -153,11 +153,7 @@ export default function ReportMinesPanel({ active }) {
       ) : (
         <span style={{ fontStyle: "italic" }}>{t("report.noLocation")}</span>
       )}
-      {messageBox && (
-        <Modal {...messageBox} onClose={() => setMessageBox(null)}>
-          <p>{messageBox.body}</p>
-        </Modal>
-      )}
+      {renderMessageBox(messageBox, () => setMessageBox(null))}
     </ToolCard>
   );
 }

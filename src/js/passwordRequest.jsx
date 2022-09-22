@@ -10,7 +10,7 @@ import Button from "./components/Button";
 import AccountForm from "./components/AccountForm";
 import TextInput from "./components/TextInput";
 import { PageLayout } from "./components/PageLayout";
-import Modal from "./components/Modal";
+import { renderMessageBox } from "./components/Modal";
 
 import { showModalAtom, processModal } from "./home";
 
@@ -77,11 +77,7 @@ function PasswordForgot() {
             <Button>{t("users.request")}</Button>
           </div>
         </AccountForm>
-        {messageBox && (
-          <Modal {...messageBox} onClose={() => setMessageBox(null)}>
-            <p>{messageBox.body}</p>
-          </Modal>
-        )}
+        {renderMessageBox(messageBox, () => setMessageBox(null))}
       </PageContainer>
     </ThemeProvider>
   );

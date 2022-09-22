@@ -10,7 +10,7 @@ import ProjectCard from "../components/ProjectCard";
 import Select from "../components/Select";
 import TextInput from "../components/TextInput";
 import HeaderLabel from "../components/HeaderLabel";
-import Modal from "../components/Modal";
+import { renderMessageBox } from "../components/Modal";
 import LoadingModal from "../components/LoadingModal";
 import { usernameAtom } from "../components/PageLayout";
 
@@ -258,13 +258,7 @@ export default function ValidatePanel({ subscribedList, featureNames, selectedDa
       ) : (
         <LoginMessage actionText={t("validate.loginAction")} />
       )}
-      {messageBox && (
-        <Modal {...messageBox} onClose={() => setMessageBox(null)}>
-          {messageBox.body.split("\n").map((p, i) => (
-            <p key={i}>{p}</p>
-          ))}
-        </Modal>
-      )}
+      {renderMessageBox(messageBox, () => setMessageBox(null))}
     </ToolCard>
   );
 }

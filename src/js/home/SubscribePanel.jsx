@@ -11,7 +11,7 @@ import Button from "../components/Button";
 import Search from "../components/Search";
 import ToolCard from "../components/ToolCard";
 import HeaderLabel from "../components/HeaderLabel";
-import Modal from "../components/Modal";
+import { renderMessageBox } from "../components/Modal";
 import { usernameAtom } from "../components/PageLayout";
 
 import { URLS } from "../constants";
@@ -218,13 +218,7 @@ export default function SubscribePanel({
       ) : (
         <LoginMessage actionText={t("subscribe.loginAction")} />
       )}
-      {messageBox && (
-        <Modal {...messageBox} onClose={() => setMessageBox(null)}>
-          {messageBox.body.split("\n").map((p, i) => (
-            <p key={i}>{p}</p>
-          ))}
-        </Modal>
-      )}
+      {renderMessageBox(messageBox, () => setMessageBox(null))}
     </ToolCard>
   );
 }

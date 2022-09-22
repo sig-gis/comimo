@@ -8,7 +8,7 @@ import AccountForm from "./components/AccountForm";
 import Button from "./components/Button";
 import LanguageButtons from "./components/LanguageButtons";
 import LoadingModal from "./components/LoadingModal";
-import Modal from "./components/Modal";
+import { renderMessageBox } from "./components/Modal";
 import Select from "./components/Select";
 import TextInput from "./components/TextInput";
 import Divider from "./components/Divider";
@@ -218,11 +218,7 @@ function UserAccount() {
             </div>
           </div>
         </AccountForm>
-        {messageBox && (
-          <Modal {...messageBox} onClose={() => setMessageBox(null)}>
-            <p>{messageBox.body}</p>
-          </Modal>
-        )}
+        {renderMessageBox(messageBox, () => setMessageBox(null))}
       </PageContainer>
     </ThemeProvider>
   );

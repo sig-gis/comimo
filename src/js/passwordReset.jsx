@@ -7,7 +7,7 @@ import Button from "./components/Button";
 import AccountForm from "./components/AccountForm";
 import TextInput from "./components/TextInput";
 import { PageLayout } from "./components/PageLayout";
-import Modal from "./components/Modal";
+import { renderMessageBox } from "./components/Modal";
 
 import { jsonRequest, validatePassword } from "./utils";
 import { THEME } from "./constants";
@@ -98,13 +98,7 @@ function PasswordReset({ email, token }) {
           <Button>{t("users.resetTitle")}</Button>
         </div>
       </AccountForm>
-      {messageBox && (
-        <Modal {...messageBox} onClose={() => setMessageBox(null)}>
-          {messageBox.body.split("\n").map((p, i) => (
-            <p key={i}>{p}</p>
-          ))}
-        </Modal>
-      )}
+      {renderMessageBox(messageBox, () => setMessageBox(null))}
     </ThemeProvider>
   );
 }

@@ -8,7 +8,7 @@ import { PageLayout } from "./components/PageLayout";
 import AccountForm from "./components/AccountForm";
 import Button from "./components/Button";
 import TextInput from "./components/TextInput";
-import Modal from "./components/Modal";
+import { renderMessageBox } from "./components/Modal";
 
 import { jsonRequest } from "./utils";
 import { THEME } from "./constants";
@@ -88,11 +88,7 @@ function Login() {
             </div>
           </div>
         </AccountForm>
-        {messageBox && (
-          <Modal {...messageBox} onClose={() => setMessageBox(null)}>
-            <p>{messageBox.body}</p>
-          </Modal>
-        )}
+        {renderMessageBox(messageBox, () => setMessageBox(null))}
       </PageContainer>
     </ThemeProvider>
   );
