@@ -26,7 +26,7 @@ function VerifyUser({ token, email }) {
         console.log("error, ", res);
         console.log("translation, ", `users.${res}`);
         alert(t(`users.${res}`) || t("users.errorCreating"));
-        window.location = "/password-forgot";
+        window.location = "/password-request";
       }
     };
 
@@ -36,7 +36,7 @@ function VerifyUser({ token, email }) {
   return (
     <ThemeProvider theme={THEME}>
       <AccountForm header={t("users.verifyUser")}>
-        <label>{t("uers.verifying")}...</label>
+        <label>{t("users.verifying")}...</label>
       </AccountForm>
     </ThemeProvider>
   );
