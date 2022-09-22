@@ -74,6 +74,7 @@ function Register() {
   const registerUser = () => {
     const errors = verifyInputs();
     if (errors.length > 0) {
+      console.error(errors.map((e) => " - " + e).join("\n"));
       showAlert({
         body: errors.map((e) => " - " + e).join("\n"),
         closeText: t("users.close"),
@@ -95,8 +96,9 @@ function Register() {
             body: t("users.registered"),
             closeText: t("users.close"),
             title: t("users.successRegister"),
+            confirmText: t("users.okText"),
+            onConfirm: () => window.location.assign("/"),
           });
-          window.location = "/";
         } else {
           console.error(t(`users.${data}`));
           showAlert({

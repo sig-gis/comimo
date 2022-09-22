@@ -1,12 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useAtom, useAtomValue } from "jotai";
+import styled from "@emotion/styled";
 
 import Button from "../components/Button";
 import ToolCard from "../components/ToolCard";
 import TextInput from "../components/TextInput";
 import Modal from "../components/Modal";
-import ReportPopupContent from "./ReportPopupContent";
-import InfoPopupContent from "./InfoPopupContent";
 
 import { homeMapAtom, mapPopupAtom } from "./HomeMap";
 import { visiblePanelAtom, selectedDatesAtom } from "../home";
@@ -104,9 +103,9 @@ export default function ReportMinesPanel({ active }) {
 
   return (
     <ToolCard title={t("report.title")} active={active}>
-      {t("report.subTitle")}
+      <span>{t("report.subTitle")}</span>
       <TextInput
-        style={{ marginTop: "3rem" }}
+        extraStyle={{ marginTop: "1.5rem" }}
         id="inputCoords"
         label={t("report.coordLabel")}
         onChange={(e) => setLatLngText(e.target.value)}
@@ -116,7 +115,7 @@ export default function ReportMinesPanel({ active }) {
         render={() => <Button onClick={processLatLng}>{t("report.goButton")}</Button>}
         value={latLngText}
       />
-      <h3 style={{ marginTop: "1rem" }}>{t("report.selectedLocation")}</h3>
+      <Title>{t("report.selectedLocation")}</Title>
       {selectedLatLng ? (
         <>
           <div style={{ display: "flex", flexDirection: "column" }}>
@@ -162,3 +161,10 @@ export default function ReportMinesPanel({ active }) {
     </ToolCard>
   );
 }
+
+const Title = styled.div`
+  font: var(--unnamed-font-style-normal) var(--unnamed-font-weight-medium)
+    var(--unnamed-font-size-16) / var(--unnamed-line-spacing-19) var(--unnamed-font-family-roboto);
+  letter-spacing: var(--unnamed-character-spacing-0);
+  margin-top: 1.5rem;
+`;

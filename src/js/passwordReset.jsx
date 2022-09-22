@@ -7,35 +7,49 @@ import Button from "./components/Button";
 import AccountForm from "./components/AccountForm";
 import TextInput from "./components/TextInput";
 import { PageLayout } from "./components/PageLayout";
+import Modal from "./components/Modal";
 
-import { getLanguage, jsonRequest, validatePassword } from "./utils";
+import { jsonRequest, validatePassword } from "./utils";
 import { THEME } from "./constants";
 
 function PasswordReset({ email, token }) {
   const [password, setPassword] = useState("");
   const [passwordConfirmation, setPasswordConfirmation] = useState("");
+  const [messageBox, setMessageBox] = useState(null);
+
   const { t } = useTranslation();
+
+  const showAlert = (messageBox) => setMessageBox(messageBox);
 
   const verifyInputs = () => {
     return [
       email.length === 0 && t("users.errorEmailReq"),
       !validatePassword(password) && t("users.errorPassword"),
       password !== passwordConfirmation && t("users.errorPassMatch"),
-    ];
+    ].filter((e) => e);
   };
 
   const resetPassword = () => {
     const errors = verifyInputs();
     if (errors.length > 0) {
-      alert(errors.map((e) => " - " + e).join("\n"));
+      console.error(errors.map((e) => " - " + e).join("\n"));
+      showAlert({
+        body: errors.map((e) => " - " + e).join("\n"),
+        closeText: t("users.close"),
+        title: t("users.tokenSentErrorTitle"),
+      });
     } else {
       jsonRequest("/password-reset", { email, token, password })
         .then((resp) => {
           if (resp === "") {
             window.location = "/login";
           } else {
-            console.error(resp);
-            alert(t(`users.${resp}`) || t("users.errorCreating"));
+            console.error(t(`users.${resp}`));
+            showAlert({
+              body: t(`users.${resp}`) || t("users.errorCreating"),
+              closeText: t("users.close"),
+              title: t("users.tokenSentErrorTitle"),
+            });
           }
         })
         .catch((err) => console.error(err));
@@ -84,6 +98,13 @@ function PasswordReset({ email, token }) {
           <Button>{t("users.resetTitle")}</Button>
         </div>
       </AccountForm>
+      {messageBox && (
+        <Modal {...messageBox} onClose={() => setMessageBox(null)}>
+          {messageBox.body.split("\n").map((p, i) => (
+            <p key={i}>{p}</p>
+          ))}
+        </Modal>
+      )}
     </ThemeProvider>
   );
 }
