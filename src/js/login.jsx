@@ -4,12 +4,13 @@ import styled from "@emotion/styled";
 import { ThemeProvider } from "@emotion/react";
 import { useTranslation } from "react-i18next";
 
-import { PageLayout, MainContext } from "./components/PageLayout";
+import { PageLayout } from "./components/PageLayout";
 import AccountForm from "./components/AccountForm";
 import Button from "./components/Button";
 import TextInput from "./components/TextInput";
+import Modal from "./components/Modal";
 
-import { getLanguage, jsonRequest } from "./utils";
+import { jsonRequest } from "./utils";
 import { THEME } from "./constants";
 
 const PageContainer = styled.div`
@@ -26,8 +27,11 @@ const PageContainer = styled.div`
 function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [messageBox, setMessageBox] = useState(null);
 
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
+
+  const showAlert = (messageBox) => setMessageBox(messageBox);
 
   const requestLogin = async () => {
     const data = await jsonRequest("/login", { username, password }).catch(console.error);
@@ -35,7 +39,11 @@ function Login() {
       window.location = "/";
     } else {
       console.error(data);
-      alert(t("users.errorCreating"));
+      showAlert({
+        body: t(`users.${data}` || t("users.loginErrorBody")),
+        closeText: t("users.close"),
+        title: t("users.loginError"),
+      });
     }
   };
 
@@ -80,6 +88,11 @@ function Login() {
             </div>
           </div>
         </AccountForm>
+        {messageBox && (
+          <Modal {...messageBox} onClose={() => setMessageBox(null)}>
+            <p>{messageBox.body}</p>
+          </Modal>
+        )}
       </PageContainer>
     </ThemeProvider>
   );

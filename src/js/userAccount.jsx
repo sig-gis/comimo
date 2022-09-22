@@ -47,8 +47,6 @@ function UserAccount() {
   const [fullName, setFullName] = useState("");
   const [institution, setInstitution] = useState("");
   const [sector, setSector] = useState("academic");
-  const [password, setPassword] = useState("");
-  const [passwordConfirmation, setPasswordConfirmation] = useState("");
   const [defaultLang, setDefaultLang] = useState(getLanguage(["en", "es"]));
   const [messageBox, setMessageBox] = useState(null);
 
@@ -102,7 +100,6 @@ function UserAccount() {
           i18n.changeLanguage(defaultLang, (err) => {
             if (err) return console.log("something went wrong loading", err);
           });
-
           showAlert({
             body: t("users.successUpdate"),
             closeText: t("users.close"),
