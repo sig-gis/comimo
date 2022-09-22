@@ -161,7 +161,9 @@
     "subscribeTo": "Subscribe to",
     "loginAction": "subscriptions",
     "addNew": "Add New Subscription",
-    "delete": "Remove Subscription"
+    "delete": "Remove Subscription",
+    "successTitle": "Successfully Subscribed",
+    "successBody": "You have successfully subscribed to the selected municipality."
   },
   "validate": {
     "errorDate": "Please select a date.",

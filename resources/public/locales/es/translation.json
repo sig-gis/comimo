@@ -159,7 +159,9 @@
     "subscribeTo": "Suscribirse a",
     "loginAction": "Suscripciones",
     "addNew": "Agregar Nueva Suscripción",
-    "delete": "Eliminar Suscripción"
+    "delete": "Eliminar Suscripción",
+    "successTitle": "Suscrita Exitosamente",
+    "successBody": "Te has suscrito con éxito al municipio seleccionado."
   },
   "validate": {
     "errorDate": "Seleccionar una fecha.",
