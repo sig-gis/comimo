@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import styled from "@emotion/styled";
 
 import ToolCard from "../components/ToolCard";
 import Divider from "../components/Divider";
@@ -13,7 +14,7 @@ export default function StatsPanel({ active, selectedDate, subscribedList }) {
   const [chartsLoaded, setChartsLoaded] = useState(false);
   const [fetchedFor, setFetchedFor] = useState(false);
 
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
 
   // Lifecycle
 
@@ -28,11 +29,7 @@ export default function StatsPanel({ active, selectedDate, subscribedList }) {
     if (chartsLoaded && selectedDate && fetchedFor !== selectedDate) {
       updateStats(selectedDate);
     }
-  }, []);
-
-  useEffect(() => {
-    updateStats(selectedDate);
-  }, [subscribedList]);
+  }, [chartsLoaded, selectedDate, subscribedList, fetchedFor]);
 
   // Helper Functions
 
@@ -107,17 +104,24 @@ export default function StatsPanel({ active, selectedDate, subscribedList }) {
   // Render
 
   return (
-    <ToolCard title={t("stats.regionTitle")} active={active}>
+    <ToolCard title={t("home.statisticsTitle")} active={active}>
       <div>
+        <Title>{t("stats.regionTitle")}</Title>
+        <div style={{ display: "flex", justifyContent: "center" }} id="stats1" />
         <p style={{ lineHeight: "1rem", fontSize: ".75rem" }}>{t("stats.regionSubTitle")}</p>
-        <div id="stats1" />
         {!chartsLoaded && <div>{`${t("stats.loading")}...`}</div>}
         <Divider />
-        <h3>{t("stats.dateTitle")}</h3>
-        <div id="stats2" />
+        <Title>{t("stats.dateTitle")}</Title>
+        <div style={{ display: "flex", justifyContent: "center" }} id="stats2" />
         {!chartsLoaded && <div>{`${t("stats.loading")}...`}</div>}
         <p style={{ lineHeight: "1rem", fontSize: ".75rem" }}>{t("stats.areaWarning")}</p>
       </div>
     </ToolCard>
   );
 }
+
+const Title = styled.div`
+  font: var(--unnamed-font-style-normal) var(--unnamed-font-weight-medium) 16px/19px
+    var(--unnamed-font-family-roboto);
+  margin-bottom: 1rem;
+`;
