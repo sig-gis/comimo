@@ -205,17 +205,19 @@ export default function ValidatePanel({ subscribedList, featureNames, selectedDa
             value={mineType}
           />
           <Label>{`${t("validate.projectRegion")}:`}</Label>
-          <span style={{ marginTop: ".25rem" }}>
+          <label htmlFor="subscribed" style={{ marginTop: ".25rem", cursor: "pointer" }}>
             <input
+              id="subscribed"
               checked={regionType === 1}
               name="projectRegion"
               onChange={() => setRegionType(1)}
               type="radio"
             />
             {t("validate.subscribedRadio")}
-          </span>
-          <span style={{ marginTop: ".25rem" }}>
+          </label>
+          <label htmlFor="custom" style={{ marginTop: ".25rem", cursor: "pointer" }}>
             <input
+              id="custom"
               checked={regionType === 2}
               name="projectRegion"
               onChange={() => setRegionType(2)}
@@ -223,7 +225,7 @@ export default function ValidatePanel({ subscribedList, featureNames, selectedDa
               value={2}
             />
             {t("validate.customRadio")}
-          </span>
+          </label>
           {regionType === 2 && renderCustomRegions()}
           <Button
             extraStyle={{ marginTop: "1rem" }}
