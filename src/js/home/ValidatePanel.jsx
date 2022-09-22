@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import { useAtom, useAtomValue } from "jotai";
 import styled from "@emotion/styled";
+import { css } from "@emotion/react";
 
 import LoginMessage from "./LoginMessage";
 import Button from "../components/Button";
@@ -34,7 +35,10 @@ export default function ValidatePanel({ subscribedList, featureNames, selectedDa
   const [regionType, setRegionType] = useState(1);
   const [customRegions, setCustomRegions] = useState([]);
   const [mineType, setMineType] = useState("pMines");
-  const [errorMsg, setErrorMsg] = useState(false);
+  const [errorMsg, setErrorMsg] = useState(null);
+  const msgRef = useRef(null);
+
+  const scrollToErrorMsg = () => msgRef.current.scrollIntoView({ behavior: "smooth" });
 
   const { t } = useTranslation();
 
@@ -43,6 +47,10 @@ export default function ValidatePanel({ subscribedList, featureNames, selectedDa
       getProjects();
     }
   }, [username]);
+
+  useEffect(() => {
+    errorMsg && scrollToErrorMsg();
+  }, [errorMsg]);
 
   const getProjects = async () => {
     const res = await jsonRequest(URLS.USER_PROJ).catch(console.error);
@@ -55,13 +63,13 @@ export default function ValidatePanel({ subscribedList, featureNames, selectedDa
       selected.length === 0 &&
         (type === 1 ? t("validate.errorNoSubscribe") : t("validate.errorNoRegion")),
       !projectName && t("validate.errorNoName"),
-      projects.find((pr) => pr[4] === projectName) && t("validate.errorDubName"),
+      projects.find((pr) => pr.name === projectName) && t("validate.errorDubName"),
     ].filter((e) => e);
     return errors.length === 0 || setErrorMsg(errors.join("\n\n"));
   };
 
   const createProject = (dataLayer) => {
-    setErrorMsg(false);
+    setErrorMsg(null);
     const selectedArr = regionType === 1 ? subscribedList : customRegions.map((x) => "mun_" + x);
     const regions = selectedArr
       .map((r) => {
@@ -73,29 +81,27 @@ export default function ValidatePanel({ subscribedList, featureNames, selectedDa
       .replace("{%date}", dataLayer)
       .replace("{%name}", projectName)
       .replace("{%region}", regions);
-
     if (
       checkProjectErrors(dataLayer, selectedArr, projectName, projects, regionType) &&
       confirm(question)
     ) {
-      processModal(
-        () =>
-          jsonRequest(URLS.CREATE_PROJ, { dataLayer, name: projectName, regions: selectedArr })
-            .then((res) => {
-              if (res === "") {
-                getProjects();
-              } else {
-                const [alertError, logError] = res.split(", ");
-                logError && console.log(logError);
-                alert(t(`validate.${alertError}`));
-              }
-            })
-            .catch((err) => {
-              console.error(err);
-              alert(t("validate.errorUnknown"));
-            }),
-        setShowModal
-      );
+      processModal(async () => {
+        const res = await jsonRequest(URLS.CREATE_PROJ, {
+          dataLayer,
+          name: projectName,
+          regions: selectedArr,
+        }).catch((error) => {
+          console.error(error);
+          alert(t("validate.errorUnknown"));
+        });
+        if (res === "") {
+          getProjects();
+        } else {
+          const [alertError, logError] = res.split(", ");
+          logError && console.log(logError);
+          alert(t(`validate.${alertError}`));
+        }
+      }, setShowModal);
     }
   };
 
@@ -223,7 +229,17 @@ export default function ValidatePanel({ subscribedList, featureNames, selectedDa
             extraStyle={{ marginTop: "1rem" }}
             onClick={() => createProject(selectedDates?.[mineType] || "2022-01-01-N")}
           >{`${t("validate.createButton")} ${selectedDates?.[mineType]}`}</Button>
-          {errorMsg && <p>{errorMsg}</p>}
+          <div ref={msgRef}>
+            {errorMsg && (
+              <p
+                css={css`
+                  color: var(--red-2);
+                `}
+              >
+                {errorMsg}
+              </p>
+            )}
+          </div>
         </div>
       ) : (
         <LoginMessage actionText={t("validate.loginAction")} />
