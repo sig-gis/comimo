@@ -94,18 +94,11 @@ export default function HomeMap({}) {
   }, [homeMap, visiblePanel]);
 
   useEffect(() => {
-    if (homeMap && selectedDates) {
-      // For all non-mining layers (since the mining layers are the first 3 in availableLayers)
-      getLayerUrl(homeMap, availableLayers.slice(3), selectedDates, extraMapParams);
-    }
-  }, [selectedDates]);
-
-  useEffect(() => {
     if (homeMap && !isEmptyMap(selectedDates)) {
-      Object.keys(selectedDates).length > 0 &&
-        getLayerUrl(homeMap, Object.keys(selectedDates), selectedDates, extraMapParams);
+      getLayerUrl(homeMap, availableLayers.slice(3), selectedDates, extraMapParams);
+      getLayerUrl(homeMap, Object.keys(selectedDates), selectedDates, extraMapParams);
     }
-  }, [selectedDates]);
+  }, [homeMap, selectedDates, extraMapParams]);
 
   useEffect(() => {
     if (homeMap && !isEmptyMap(selectedDates)) {
