@@ -1,62 +1,52 @@
-import React from "react";
+import React, { Suspense, useEffect } from "react";
 import ReactDOM from "react-dom";
+import { useTranslation } from "react-i18next";
 import { ThemeProvider } from "@emotion/react";
 
 import AccountForm from "./components/AccountForm";
 
-import { getLanguage, jsonRequest } from "./utils";
+import i18n from "./i18n"; // to init localization...
+import { jsonRequest } from "./utils";
 import { THEME } from "./constants";
 
-class PasswordReset extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      localeText: {},
+function VerifyUser({ token, email }) {
+  const { t } = useTranslation();
+
+  useEffect(() => {
+    const verifyEmail = async () => {
+      const res = await jsonRequest("/verify-email", {
+        token,
+        email,
+      });
+      if (res === "") {
+        alert(t("users.verified"));
+        window.location = "/login";
+      } else {
+        console.error(res);
+        console.log("error, ", res);
+        console.log("translation, ", `users.${res}`);
+        alert(t(`users.${res}`) || t("users.errorCreating"));
+        window.location = "/password-request";
+      }
     };
-  }
 
-  componentDidMount() {
-    Promise.all([this.getLocale(), this.verifyEmail()])
-      .then(([_, res]) => {
-        if (res === "") {
-          alert(this.state.localeText.verified);
-          window.location = "/login";
-        } else {
-          console.error(res);
-          alert(this.state.localeText[res] || this.state.localeText.errorCreating);
-          window.location = "/password-forgot";
-        }
-      })
-      .catch((error) => console.error(error));
-  }
+    verifyEmail().catch(console.error);
+  }, []);
 
-  getLocale = () => {
-    jsonRequest(`/locale/${getLanguage(["en", "es"])}.json`, null, "GET")
-      .then((data) => this.setState({ localeText: data.users }))
-      .catch((err) => console.error(err));
-  };
-
-  verifyEmail = () =>
-    jsonRequest("/verify-email", {
-      token: this.props.token,
-      email: this.props.email,
-    });
-
-  render() {
-    const { localeText } = this.state;
-    return (
-      <ThemeProvider theme={THEME}>
-        <AccountForm header={localeText.verifyUser}>
-          <label>{localeText.verifying}...</label>
-        </AccountForm>
-      </ThemeProvider>
-    );
-  }
+  return (
+    <ThemeProvider theme={THEME}>
+      <AccountForm header={t("users.verifyUser")}>
+        <label>{t("users.verifying")}...</label>
+      </AccountForm>
+    </ThemeProvider>
+  );
 }
 
 export function pageInit(args) {
   ReactDOM.render(
-    <PasswordReset email={args.email || ""} token={args.token || ""} />,
+    <Suspense fallback="">
+      <VerifyUser email={args.email || ""} token={args.token || ""} />
+    </Suspense>,
     document.getElementById("main-container")
   );
 }
