@@ -62,9 +62,9 @@ function Login() {
 
           <TextInput
             id="password"
-            label={t("users.username")}
+            label={t("users.password")}
             onChange={(e) => setPassword(e.target.value)}
-            placeholder={`Enter ${(t("users.username") || "").toLowerCase()}`}
+            placeholder={`Enter ${(t("users.password") || "").toLowerCase()}`}
             type="password"
             value={password}
           />
