@@ -14,6 +14,11 @@ const PanelOuter = styled.div`
   position: absolute;
   top: var(--bar-height);
   z-index: 99;
+
+  @media only screen and (max-width: 675px) {
+    right: 0;
+    width: 50vw;
+  }
 `;
 
 const Option = styled.div`
@@ -31,6 +36,10 @@ const Option = styled.div`
 
   &:hover {
     background-color: "var(--gray-1)";
+  }
+
+  @media only screen and (max-width: 675px) {
+    width: 50vw;
   }
 `;
 

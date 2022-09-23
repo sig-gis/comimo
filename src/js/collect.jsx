@@ -296,6 +296,10 @@ const LogoGitVersion = styled.a`
   letter-spacing: 0px;
   text-align: left;
   text-decoration: none;
+
+  @media only screen and (max-width: 1000px) {
+    display: none;
+  }
 `;
 
 export function pageInit(args) {

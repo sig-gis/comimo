@@ -18,6 +18,15 @@ const PanelOuter = styled.div`
   width: 28vw;
   z-index: 100;
   text-align: left;
+
+  @media only screen and (max-width: 1000px) {
+    width: 40vw;
+  }
+
+  @media only screen and (max-width: 675px) {
+    left: 0;
+    width: 100vw;
+  }
 `;
 
 const Title = styled.div`

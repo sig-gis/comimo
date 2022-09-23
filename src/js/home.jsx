@@ -299,6 +299,10 @@ const Buttons = styled.div`
   display: flex;
   flex: 3;
   justify-content: space-around;
+
+  @media only screen and (max-width: 1000px) {
+    flex: 5;
+  }
 `;
 
 const Logo = styled.div`
@@ -307,6 +311,10 @@ const Logo = styled.div`
   flex: 1;
   justify-content: space-evenly;
   padding: 5px 0;
+
+  @media only screen and (max-width: 1000px) {
+    flex: 1;
+  }
 `;
 
 const LogoGitVersion = styled.a`
@@ -316,6 +324,10 @@ const LogoGitVersion = styled.a`
   letter-spacing: 0px;
   text-align: left;
   text-decoration: none;
+
+  @media only screen and (max-width: 1000px) {
+    display: none;
+  }
 `;
 
 const BarItem = styled.div``;
