@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import { useAtom, useAtomValue } from "jotai";
 import styled from "@emotion/styled";
+import { css } from "@emotion/react";
 
 import LoginMessage from "./LoginMessage";
 
@@ -35,8 +36,11 @@ export default function ValidatePanel({ subscribedList, featureNames, selectedDa
   const [regionType, setRegionType] = useState(1);
   const [customRegions, setCustomRegions] = useState([]);
   const [mineType, setMineType] = useState("pMines");
-  const [errorMsg, setErrorMsg] = useState(false);
+  const [errorMsg, setErrorMsg] = useState(null);
   const [messageBox, setMessageBox] = useState(null);
+  const msgRef = useRef(null);
+
+  const scrollToRef = (ref) => ref && ref.current.scrollIntoView({ behavior: "smooth" });
 
   const { t } = useTranslation();
 
@@ -47,6 +51,10 @@ export default function ValidatePanel({ subscribedList, featureNames, selectedDa
       getProjects();
     }
   }, [username]);
+
+  useEffect(() => {
+    errorMsg && scrollToRef(msgRef);
+  }, [errorMsg]);
 
   const getProjects = async () => {
     const res = await jsonRequest(URLS.USER_PROJ).catch(console.error);
@@ -59,13 +67,13 @@ export default function ValidatePanel({ subscribedList, featureNames, selectedDa
       selected.length === 0 &&
         (type === 1 ? t("validate.errorNoSubscribe") : t("validate.errorNoRegion")),
       !projectName && t("validate.errorNoName"),
-      projects.find((pr) => pr[4] === projectName) && t("validate.errorDubName"),
+      projects.find((pr) => pr.name === projectName) && t("validate.errorDubName"),
     ].filter((e) => e);
     return errors.length === 0 || setErrorMsg(errors.join("\n\n"));
   };
 
   const createProject = (dataLayer) => {
-    setErrorMsg(false);
+    setErrorMsg(null);
     const selectedArr = regionType === 1 ? subscribedList : customRegions.map((x) => "mun_" + x);
     const regions = selectedArr
       .map((r) => {
@@ -85,32 +93,30 @@ export default function ValidatePanel({ subscribedList, featureNames, selectedDa
         closeText: t("users.cancel"),
         confirmText: t("users.confirmText"),
         onConfirm: () => {
-          processModal(
-            () =>
-              jsonRequest(URLS.CREATE_PROJ, { dataLayer, name: projectName, regions: selectedArr })
-                .then((res) => {
-                  if (res === "") {
-                    getProjects();
-                  } else {
-                    const [alertError, logError] = res.split(", ");
-                    logError && console.log(logError);
-                    showAlert({
-                      body: t(`validate.${alertError}`),
-                      closeText: t("users.close"),
-                      title: t("validate.errorTitle"),
-                    });
-                  }
-                })
-                .catch((err) => {
-                  console.error(err);
-                  showAlert({
-                    body: t("validate.errorUnknown"),
-                    closeText: t("users.close"),
-                    title: t("validate.errorTitle"),
-                  });
-                }),
-            setShowModal
-          );
+          processModal(async () => {
+            const res = await jsonRequest(URLS.CREATE_PROJ, {
+              dataLayer,
+              name: projectName,
+              regions: selectedArr,
+            }).catch((error) => {
+              console.error(error);
+              showAlert({
+                body: t("validate.errorUnknown"),
+                closeText: t("users.close"),
+                title: t("validate.errorTitle"),
+              });
+            });
+            if (res === "") {
+              getProjects();
+            } else {
+              const [alertError, logError] = res.split(", ");
+              logError && console.log(logError);
+              showAlert({
+                body: t(`validate.${alertError}`),
+                title: t("validate.errorTitle"),
+              });
+            }
+          }, setShowModal);
           setMessageBox(null);
         },
       });
@@ -229,17 +235,19 @@ export default function ValidatePanel({ subscribedList, featureNames, selectedDa
             value={mineType}
           />
           <Label>{`${t("validate.projectRegion")}:`}</Label>
-          <span style={{ marginTop: ".25rem" }}>
+          <label htmlFor="subscribed" style={{ marginTop: ".25rem", cursor: "pointer" }}>
             <input
+              id="subscribed"
               checked={regionType === 1}
               name="projectRegion"
               onChange={() => setRegionType(1)}
               type="radio"
             />
             {t("validate.subscribedRadio")}
-          </span>
-          <span style={{ marginTop: ".25rem" }}>
+          </label>
+          <label htmlFor="custom" style={{ marginTop: ".25rem", cursor: "pointer" }}>
             <input
+              id="custom"
               checked={regionType === 2}
               name="projectRegion"
               onChange={() => setRegionType(2)}
@@ -247,13 +255,23 @@ export default function ValidatePanel({ subscribedList, featureNames, selectedDa
               value={2}
             />
             {t("validate.customRadio")}
-          </span>
+          </label>
           {regionType === 2 && renderCustomRegions()}
           <Button
             extraStyle={{ marginTop: "1rem" }}
             onClick={() => createProject(selectedDates?.[mineType] || "2022-01-01-N")}
           >{`${t("validate.createButton")} ${selectedDates?.[mineType]}`}</Button>
-          {errorMsg && <p style={{ color: "var(--error-red)" }}>{errorMsg}</p>}
+          <div ref={msgRef}>
+            {errorMsg && (
+              <p
+                css={css`
+                  color: var(--red-2);
+                `}
+              >
+                {errorMsg}
+              </p>
+            )}
+          </div>
         </div>
       ) : (
         <LoginMessage actionText={t("validate.loginAction")} />

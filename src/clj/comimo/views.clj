@@ -145,7 +145,8 @@
                    :key   line}
                line])
             announcement)
-       [:button {:style  {:background-color "transparent"
+       [:button {:style  {:align-items      "center"
+                          :background-color "transparent"
                           :border-color     "#ffffff"
                           :border-radius    "50%"
                           :border-style     "solid"
@@ -159,7 +160,7 @@
                           :top              "5px"
                           :width            "25px"}
                  :onClick "document.getElementById('banner').style.display='none'"}
-        [:svg {:viewBox "0 0 48 48" :fill "#ffffff"}
+        [:svg {:width "24px" :height "24px" :viewBox "0 0 48 48" :fill "#ffffff"}
          [:path {:d "M38 12.83l-2.83-2.83-11.17 11.17-11.17-11.17-2.83 2.83 11.17 11.17-11.17 11.17 2.83 2.83
                      11.17-11.17 11.17 11.17 2.83-2.83-11.17-11.17z"}]]]])))
 
