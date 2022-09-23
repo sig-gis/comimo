@@ -1,21 +1,21 @@
 import React, { useEffect, useState } from "react";
 import styled from "@emotion/styled";
-import { css } from "@emotion/react";
 import _ from "lodash";
+import { useAtom, useAtomValue } from "jotai";
+import { useTranslation } from "react-i18next";
 
 import LoginMessage from "./LoginMessage";
+import { homeMapAtom, selectedRegionAtom } from "./HomeMap";
+
 import Button from "../components/Button";
 import Search from "../components/Search";
 import ToolCard from "../components/ToolCard";
-import DeleteButton from "../components/DeleteButton";
 import HeaderLabel from "../components/HeaderLabel";
-
+import { renderMessageBox } from "../components/Modal";
 import { usernameAtom } from "../components/PageLayout";
+
 import { URLS } from "../constants";
 import { jsonRequest } from "../utils";
-import { useAtom, useAtomValue } from "jotai";
-import { homeMapAtom, selectedRegionAtom } from "./HomeMap";
-import { useTranslation } from "react-i18next";
 
 export default function SubscribePanel({
   featureNames,
@@ -25,12 +25,15 @@ export default function SubscribePanel({
   active,
 }) {
   const [subsLoaded, setSubsLoaded] = useState(false);
-  const [selectedRegion, setSelectedRegion] = useAtom(selectedRegionAtom);
+  const selectedRegion = useAtomValue(selectedRegionAtom);
+  const [messageBox, setMessageBox] = useState(null);
 
   const username = useAtomValue(usernameAtom);
   const homeMap = useAtomValue(homeMapAtom);
 
   const { t } = useTranslation();
+
+  const showAlert = (messageBox) => setMessageBox(messageBox);
 
   useEffect(() => {
     getSubs();
@@ -41,7 +44,11 @@ export default function SubscribePanel({
       setSubsLoaded(true);
       setSubscribedList(result);
     } else {
-      alert(t(`subscribe${result}`));
+      showAlert({
+        title: t("validate.errorTitle"),
+        body: t(`subscribe${result}`),
+        closeText: t("users.close"),
+      });
     }
   };
 
@@ -58,6 +65,11 @@ export default function SubscribePanel({
       jsonRequest(URLS.ADD_SUBS, { region })
         .then((result) => {
           subsResult(result);
+          showAlert({
+            title: t("subscribe.successTitle"),
+            body: t("subscribe.successBody"),
+            closeText: t("users.close"),
+          });
         })
         .catch((err) => console.error(err));
     }
@@ -65,16 +77,24 @@ export default function SubscribePanel({
 
   const delSubs = (region) => {
     const arr = region.split("_").slice(1);
-    const delConfirm = confirm(
-      `${t("subscribe.delConfirm1")} ${arr.reverse().join(", ")}? ${t("subscribe.delConfirm2")}`
-    );
-    if (delConfirm) {
-      jsonRequest(URLS.DEL_SUBS, { region })
-        .then((result) => {
-          subsResult(result);
-        })
-        .catch((err) => console.error(err));
-    }
+    const body = `${t("subscribe.delConfirm1")} ${arr.reverse().join(", ")}? ${t(
+      "subscribe.delConfirm2"
+    )}`;
+
+    showAlert({
+      title: t("subscribe.delete"),
+      body: body,
+      closeText: t("users.cancel"),
+      confirmText: t("users.confirmText"),
+      onConfirm: () => {
+        jsonRequest(URLS.DEL_SUBS, { region })
+          .then((result) => {
+            subsResult(result);
+          })
+          .catch((err) => console.error(err));
+        setMessageBox(null);
+      },
+    });
   };
 
   const ListContainer = styled.div`
@@ -198,6 +218,7 @@ export default function SubscribePanel({
       ) : (
         <LoginMessage actionText={t("subscribe.loginAction")} />
       )}
+      {renderMessageBox(messageBox, () => setMessageBox(null))}
     </ToolCard>
   );
 }

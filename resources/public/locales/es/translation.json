@@ -68,9 +68,9 @@
     "gettingUrl": "Obtener URL..."
   },
   "filter": {
-    "title": "Filtrar datos",
+    "title": "Filtrar Datos",
     "selectLabel": "Seleccionar fechas para",
-    "updateMap": "Actualizar mapa"
+    "updateMap": "Actualizar Mapa"
   },
   "layers": {
     "title": "Seleccionar capas",
@@ -159,7 +159,9 @@
     "subscribeTo": "Suscribirse a",
     "loginAction": "Suscripciones",
     "addNew": "Agregar Nueva Suscripción",
-    "delete": "Eliminar Suscripción"
+    "delete": "Eliminar Suscripción",
+    "successTitle": "Suscrita Exitosamente",
+    "successBody": "Te has suscrito con éxito al municipio seleccionado."
   },
   "validate": {
     "errorDate": "Seleccionar una fecha.",
@@ -168,10 +170,13 @@
     "errorNoName": "Ingresa un nombre para el proyecto.",
     "errorDubName": "Ya existe un proyecto con ese nombre. Elije un nombre diferente.",
     "errorUnknown": "Error desconocido.",
+    "errorTitle": "Error",
     "errorClose": "No se pudo cerrar el proyecto.",
     "confirmQuestion": "¿Continuar con la siguiente configuración?\nFecha de predicción = {%date}\nNombre del proyecto = {%name}\nMunicipios = {%region}",
+    "closeTitle": "Cerrar Proyecto",
     "closeConfirm": "¿Estás seguro de que quieres cerrar este proyecto? Al cerrar el proyecto ya no podrás validar las predicciones a menos que crees uno nuevo.",
     "predictionLabel": "Fecha de predicción",
+    "createTitle": "Crear Proyecto",
     "createdLabel": "Fecha de creación",
     "regionsLabel": "Municipios",
     "loading": "Cargando",
@@ -186,8 +191,8 @@
     "customRadio": "Municipios personalizados",
     "createButton": "Crear nuevo proyecto para",
     "errorNewProject": "Error al crear un nuevo proyecto",
-    "projectExists": "Proyecto ya existe",
-    "projectWithNoPlots": "Error al crear proyecto sin parcelas",
+    "projectExists": "Este proyecto ya existe. Asegúrese de que este proyecto no sea un duplicado de ningún proyecto existente.",
+    "projectWithNoPlots": "Error al crear proyecto sin parcelas. Asegúrese de que los municipios de este proyecto tengan parcelas.",
     "loginAction": "proyectos",
     "typeLabel": "Seleccione el tipo de predicción",
     "cMines": "Minas confirmadas",
@@ -225,11 +230,14 @@
     "ngo": "Sociedad civil",
     "allRequired": "Todos los campos son requeridos.",
     "confirm": "Confirmar Contraseña",
-    "resetTitle": "Restablecer contraseña",
-    "requestTitle": "Solicitar restablecimiento de contraseña",
+    "resetTitle": "Restablecer Contraseña",
+    "requestTitle": "Solicitar Restablecimiento de Contraseña",
     "request": "Solicitar",
     "registered": "Te has registrado exitosamente. Valida tu cuenta a través del link que recibiste en tu email.",
+    "tokenSentTitle": "Restablecimiento de Contraseña Enviado",
     "tokenSent": "Recibirás un código de recuperación en tu correo electrónico. Por favor, ingresa a tu buzón y haz clic en el enlace para restablecer la contraseña.",
+    "tokenSentError": "Hubo un error al enviar el enlace de restablecimiento de contraseña. Por favor, contactar con soporte.",
+    "tokenSentErrorTitle": "Error de Restablecimiento de Contraseña",
     "verifyUser": "Verificar cuenta",
     "verifying": "Verificando email",
     "verified": "Cuenta verificada. Por favor accede con tu usuario y clave para continuar.",
@@ -242,6 +250,7 @@
     "updateTitle": "Cuenta Actualizada",
     "error": "Error",
     "confirmText": "Sí",
+    "okText": "OK",
     "logOutBody": "¿Estás segura de que quieres cerrar sesión?",
     "updateBody": "¿Está seguro de que desea actualizar la configuración de su cuenta?",
     "download": "Descargar datos validados",

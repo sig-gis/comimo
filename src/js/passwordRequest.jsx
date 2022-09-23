@@ -10,6 +10,7 @@ import Button from "./components/Button";
 import AccountForm from "./components/AccountForm";
 import TextInput from "./components/TextInput";
 import { PageLayout } from "./components/PageLayout";
+import { renderMessageBox } from "./components/Modal";
 
 import { showModalAtom, processModal } from "./home";
 
@@ -29,18 +30,30 @@ const PageContainer = styled.div`
 function PasswordForgot() {
   const [email, setEmail] = useState("");
   const [showModal, setShowModal] = useAtom(showModalAtom);
+  const [messageBox, setMessageBox] = useState(null);
+
   const { t } = useTranslation();
+
+  const showAlert = (messageBox) => setMessageBox(messageBox);
 
   const requestPassword = () =>
     processModal(async () => {
       const data = await jsonRequest("/password-request", { email: email }).catch(console.error);
       if (data === "") {
-        alert(t("users.tokenSent"));
-        window.location = "/";
+        showAlert({
+          body: t("users.tokenSent"),
+          closeText: t("users.close"),
+          title: t("users.tokenSentTitle"),
+          confirmText: t("users.okText"),
+          onConfirm: () => window.location.assign("/"),
+        });
       } else {
-        console.log("t(users.enterEmail)", t("users.enterEmail"));
         console.error(t(`users.${data}`));
-        alert(t(`users.${data}`) || t("users.errorCreating"));
+        showAlert({
+          body: t(`users.${data}`) || t("users.tokenSentError"),
+          closeText: t("users.close"),
+          title: t("users.tokenSentErrorTitle"),
+        });
       }
     }, setShowModal);
 
@@ -64,6 +77,7 @@ function PasswordForgot() {
             <Button>{t("users.request")}</Button>
           </div>
         </AccountForm>
+        {renderMessageBox(messageBox, () => setMessageBox(null))}
       </PageContainer>
     </ThemeProvider>
   );

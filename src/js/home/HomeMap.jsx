@@ -94,18 +94,11 @@ export default function HomeMap({}) {
   }, [homeMap, visiblePanel]);
 
   useEffect(() => {
-    if (homeMap && selectedDates) {
-      // For all non-mining layers (since the mining layers are the first 3 in availableLayers)
-      getLayerUrl(homeMap, availableLayers.slice(3), selectedDates, extraMapParams);
-    }
-  }, [selectedDates]);
-
-  useEffect(() => {
     if (homeMap && !isEmptyMap(selectedDates)) {
-      Object.keys(selectedDates).length > 0 &&
-        getLayerUrl(homeMap, Object.keys(selectedDates), selectedDates, extraMapParams);
+      getLayerUrl(homeMap, availableLayers.slice(3), selectedDates, extraMapParams);
+      getLayerUrl(homeMap, Object.keys(selectedDates), selectedDates, extraMapParams);
     }
-  }, [selectedDates]);
+  }, [homeMap, selectedDates, extraMapParams]);
 
   useEffect(() => {
     if (homeMap && !isEmptyMap(selectedDates)) {
@@ -256,7 +249,7 @@ const MapBoxWrapper = styled.div`
 
   .mapboxgl-popup-close-button {
     font-size: 1.75rem;
-    padding: 3px 3px 8px 8px;
+    padding: 0.25rem;
     line-height: 1.25rem;
   }
   .mapboxgl-popup-content {

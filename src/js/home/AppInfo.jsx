@@ -3,7 +3,7 @@ import styled from "@emotion/styled";
 import { useTranslation } from "react-i18next";
 
 import InfoModal from "../components/InfoModal";
-import Modal from "../components/Modal";
+import { renderMessageBox } from "../components/Modal";
 
 const Links = styled.div`
   display: flex;
@@ -21,8 +21,6 @@ export default function AppInfo({ onClose }) {
   const showAlert = (newMessageBox) => {
     setMessageBox({ ...newMessageBox });
   };
-
-  const hideAlert = () => setMessageBox(null);
 
   const extLink = (link, text) => (
     <a
@@ -49,16 +47,7 @@ export default function AppInfo({ onClose }) {
         {extLink(t("appInfo.methodUrl"), t("appInfo.viewMethod"))}
         {extLink(t("appInfo.manualUrl"), t("appInfo.viewManual"))}
       </Links>
-      {messageBox && (
-        <Modal
-          {...messageBox}
-          onClose={() => {
-            hideAlert();
-          }}
-        >
-          <p>{messageBox.body}</p>
-        </Modal>
-      )}
+      {renderMessageBox(messageBox, () => setMessageBox(null))}
     </InfoModal>
   );
 }
