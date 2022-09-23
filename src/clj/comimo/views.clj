@@ -145,7 +145,8 @@
                    :key   line}
                line])
             announcement)
-       [:button {:style  {:background-color "transparent"
+       [:button {:style  {:align-items      "center"
+                          :background-color "transparent"
                           :border-color     "#ffffff"
                           :border-radius    "50%"
                           :border-style     "solid"
