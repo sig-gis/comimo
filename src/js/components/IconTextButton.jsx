@@ -20,6 +20,10 @@ const Container = styled.div`
   &:hover {
     text-decoration: underline;
   }
+
+  @media only screen and (max-width: 1000px) {
+    background-color: transparent;
+  }
 `;
 
 const Label = styled.span`
@@ -29,6 +33,10 @@ const Label = styled.span`
   letter-spacing: 0px;
   padding: 0 0.5rem;
   text-align: left;
+
+  @media only screen and (max-width: 1000px) {
+    display: none;
+  }
 `;
 
 export default function IconTextButton({
