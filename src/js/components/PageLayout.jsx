@@ -76,12 +76,12 @@ export function PageLayout({
 
   useEffect(() => {
     const getDefaultLang = async () => {
-      const resp = await jsonRequest("/user-information");
+      const resp = await jsonRequest("/user-information").catch(console.error);
       i18n.changeLanguage(resp?.defaultLang || "en", (err, t) => {
         if (err) return console.log("something went wrong loading", err);
       });
     };
-    getDefaultLang();
+    username && getDefaultLang();
     updateWindow();
     window.addEventListener("touchend", updateWindow);
     window.addEventListener("resize", updateWindow);
