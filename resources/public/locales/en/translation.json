@@ -70,9 +70,9 @@
     "gettingUrl": "Getting URL..."
   },
   "filter": {
-    "title": "Filter data",
+    "title": "Filter Data",
     "selectLabel": "Select the dates of prediction",
-    "updateMap": "Update map"
+    "updateMap": "Update Map"
   },
   "layers": {
     "title": "Select Layers",
@@ -161,7 +161,9 @@
     "subscribeTo": "Subscribe to",
     "loginAction": "subscriptions",
     "addNew": "Add New Subscription",
-    "delete": "Remove Subscription"
+    "delete": "Remove Subscription",
+    "successTitle": "Successfully Subscribed",
+    "successBody": "You have successfully subscribed to the selected municipality."
   },
   "validate": {
     "errorDate": "Please select a date.",
@@ -170,8 +172,11 @@
     "errorNoName": "Please enter a project name.",
     "errorDubName": "A project with that name already exists. Please choose a different name.",
     "errorUnknown": "Unknown Error.",
+    "errorTitle": "Error",
     "errorClose": "Could not close project.",
     "confirmQuestion": "Proceed with the following configuration?\nPrediction date = {%date}\nProject name = {%name}\nMunicipalities = {%region}",
+    "createTitle": "Create Project",
+    "closeTitle": "Close Project",
     "closeConfirm": "Are you sure you want to close this project? Closing the project means you will no longer be able to validate the predictions unless you set up another project.",
     "predictionLabel": "Prediction date",
     "createdLabel": "Created date",
@@ -183,8 +188,8 @@
     "name": "Name",
     "createProject": "Create a New Project",
     "errorNewProject": "Error creating new project",
-    "projectExists": "Project already exists",
-    "projectWithNoPlots": "Error creating project with no plots",
+    "projectExists": "This project already exists. Make sure that this project is not a duplicate of any existing projects.",
+    "projectWithNoPlots": "Error creating project with no plots. Make sure the municiplaites in this project have plots.",
     "projectName": "Enter Project Name",
     "projectRegion": "Select Project Municipalities",
     "subscribedRadio": "Subscribed municipalities",
@@ -227,11 +232,14 @@
     "ngo": "Civil",
     "allRequired": "All fields are required.",
     "confirm": "Confirm Password",
-    "resetTitle": "Reset password",
-    "requestTitle": "Request password reset",
+    "resetTitle": "Reset Password",
+    "requestTitle": "Request Password Reset",
     "request": "Request",
     "registered": "You have successfully registered for a new account.  Please check your email for a link to verify your account.",
+    "tokenSentTitle": "Password Reset Sent",
     "tokenSent": "An email has been sent with a password reset link. Please check your email and click the link to reset your password.",
+    "tokenSentError": "There was an error sending your password reset link. Please contact support.",
+    "tokenSentErrorTitle": "Password Reset Error",
     "verifyUser": "Verify user",
     "verifying": "Verifying email",
     "verified": "Account has been verified.  Please log in to continue.",
@@ -244,6 +252,7 @@
     "updateTitle": "Account Updated",
     "error": "Error",
     "confirmText": "Yes",
+    "okText": "OK",
     "logOutBody": "Are you sure you want to log out?",
     "updateBody": "Are you sure you want to update your account settings?",
     "download": "Download validated data",

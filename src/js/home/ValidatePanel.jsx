@@ -3,18 +3,19 @@ import { useAtom, useAtomValue } from "jotai";
 import styled from "@emotion/styled";
 
 import LoginMessage from "./LoginMessage";
+
 import Button from "../components/Button";
 import ToolCard from "../components/ToolCard";
 import ProjectCard from "../components/ProjectCard";
 import Select from "../components/Select";
 import TextInput from "../components/TextInput";
 import HeaderLabel from "../components/HeaderLabel";
-
-import { homeMapAtom, mapPopupAtom } from "./HomeMap";
+import { renderMessageBox } from "../components/Modal";
+import LoadingModal from "../components/LoadingModal";
 import { usernameAtom } from "../components/PageLayout";
+
 import { jsonRequest } from "../utils";
 import { URLS } from "../constants";
-import LoadingModal from "../components/LoadingModal";
 import { showModalAtom, processModal } from "../home";
 import { useTranslation } from "react-i18next";
 
@@ -35,8 +36,11 @@ export default function ValidatePanel({ subscribedList, featureNames, selectedDa
   const [customRegions, setCustomRegions] = useState([]);
   const [mineType, setMineType] = useState("pMines");
   const [errorMsg, setErrorMsg] = useState(false);
+  const [messageBox, setMessageBox] = useState(null);
 
   const { t } = useTranslation();
+
+  const showAlert = (messageBox) => setMessageBox(messageBox);
 
   useEffect(() => {
     if (username) {
@@ -68,51 +72,77 @@ export default function ValidatePanel({ subscribedList, featureNames, selectedDa
         const es = r.split("_");
         return es[2] + ", " + es[1];
       })
-      .join(";");
+      .join("; ");
     const question = t("validate.confirmQuestion")
       .replace("{%date}", dataLayer)
       .replace("{%name}", projectName)
       .replace("{%region}", regions);
 
-    if (
-      checkProjectErrors(dataLayer, selectedArr, projectName, projects, regionType) &&
-      confirm(question)
-    ) {
-      processModal(
-        () =>
-          jsonRequest(URLS.CREATE_PROJ, { dataLayer, name: projectName, regions: selectedArr })
-            .then((res) => {
-              if (res === "") {
-                getProjects();
-              } else {
-                const [alertError, logError] = res.split(", ");
-                logError && console.log(logError);
-                alert(t(`validate.${alertError}`));
-              }
-            })
-            .catch((err) => {
-              console.error(err);
-              alert(t("validate.errorUnknown"));
-            }),
-        setShowModal
-      );
+    if (checkProjectErrors(dataLayer, selectedArr, projectName, projects, regionType)) {
+      showAlert({
+        title: t("validate.createTitle"),
+        body: question,
+        closeText: t("users.cancel"),
+        confirmText: t("users.confirmText"),
+        onConfirm: () => {
+          processModal(
+            () =>
+              jsonRequest(URLS.CREATE_PROJ, { dataLayer, name: projectName, regions: selectedArr })
+                .then((res) => {
+                  if (res === "") {
+                    getProjects();
+                  } else {
+                    const [alertError, logError] = res.split(", ");
+                    logError && console.log(logError);
+                    showAlert({
+                      body: t(`validate.${alertError}`),
+                      closeText: t("users.close"),
+                      title: t("validate.errorTitle"),
+                    });
+                  }
+                })
+                .catch((err) => {
+                  console.error(err);
+                  showAlert({
+                    body: t("validate.errorUnknown"),
+                    closeText: t("users.close"),
+                    title: t("validate.errorTitle"),
+                  });
+                }),
+            setShowModal
+          );
+          setMessageBox(null);
+        },
+      });
     }
   };
 
   const closeProject = (projectId) => {
-    if (confirm(t("validate.closeConfirm"))) {
-      jsonRequest(URLS.CLOSE_PROJ, { projectId })
-        .then((res) => {
-          if (res === "") {
-            getProjects();
-          } else {
-            alert(t("validate.errorClose"));
-          }
-        })
-        .catch((err) => {
-          console.error(err);
-        });
-    }
+    showAlert({
+      title: t("validate.closeTitle"),
+      body: t("validate.closeConfirm"),
+      closeText: t("users.cancel"),
+      confirmText: t("users.confirmText"),
+      onConfirm: () => {
+        jsonRequest(URLS.CLOSE_PROJ, { projectId })
+          .then((res) => {
+            if (res === "") {
+              setMessageBox(null);
+              getProjects();
+            } else {
+              console.error(t("validate.errorClose"));
+              showAlert({
+                body: t("validate.errorClose"),
+                closeText: t("users.close"),
+                title: t("validate.errorTitle"),
+              });
+            }
+          })
+          .catch((err) => {
+            console.error(err);
+          });
+      },
+    });
   };
 
   const customSelect = (val) => {
@@ -223,11 +253,12 @@ export default function ValidatePanel({ subscribedList, featureNames, selectedDa
             extraStyle={{ marginTop: "1rem" }}
             onClick={() => createProject(selectedDates?.[mineType] || "2022-01-01-N")}
           >{`${t("validate.createButton")} ${selectedDates?.[mineType]}`}</Button>
-          {errorMsg && <p>{errorMsg}</p>}
+          {errorMsg && <p style={{ color: "var(--error-red)" }}>{errorMsg}</p>}
         </div>
       ) : (
         <LoginMessage actionText={t("validate.loginAction")} />
       )}
+      {renderMessageBox(messageBox, () => setMessageBox(null))}
     </ToolCard>
   );
 }

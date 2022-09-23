@@ -11,7 +11,7 @@ import LoadingModal from "./components/LoadingModal";
 import LanguageButtons from "./components/LanguageButtons";
 import Button from "./components/Button";
 import AccountForm from "./components/AccountForm";
-import Modal from "./components/Modal";
+import { renderMessageBox } from "./components/Modal";
 import Select from "./components/Select";
 import TextInput from "./components/TextInput";
 import { PageLayout } from "./components/PageLayout";
@@ -74,6 +74,7 @@ function Register() {
   const registerUser = () => {
     const errors = verifyInputs();
     if (errors.length > 0) {
+      console.error(errors.map((e) => " - " + e).join("\n"));
       showAlert({
         body: errors.map((e) => " - " + e).join("\n"),
         closeText: t("users.close"),
@@ -95,8 +96,9 @@ function Register() {
             body: t("users.registered"),
             closeText: t("users.close"),
             title: t("users.successRegister"),
+            confirmText: t("users.okText"),
+            onConfirm: () => window.location.assign("/"),
           });
-          window.location = "/";
         } else {
           console.error(t(`users.${data}`));
           showAlert({
@@ -190,13 +192,7 @@ function Register() {
             <Button extraStyle={{ marginTop: "0.5rem" }}>{t("users.register")}</Button>
           </div>
         </AccountForm>
-        {messageBox && (
-          <Modal {...messageBox} onClose={() => setMessageBox(null)}>
-            {messageBox.body.split("\n").map((p, i) => (
-              <p key={i}>{p}</p>
-            ))}
-          </Modal>
-        )}
+        {renderMessageBox(messageBox, () => setMessageBox(null))}
       </PageContainer>
     </ThemeProvider>
   );

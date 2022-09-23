@@ -60,6 +60,21 @@ export default function Modal({ title, children, closeText, confirmText, onClose
 }
 
 /**
+ *  Helper function for rendering the messageBox
+ */
+export function renderMessageBox(messageBox, onClose) {
+  return (
+    messageBox && (
+      <Modal {...messageBox} onClose={onClose}>
+        {messageBox.body.split("\n").map((p, i) => (
+          <p key={i}>{p}</p>
+        ))}
+      </Modal>
+    )
+  );
+}
+
+/**
  * Style functions for the Modal component
  */
 

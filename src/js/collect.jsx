@@ -14,7 +14,7 @@ import {
 } from "./components/PageLayout";
 import IconButton from "./components/IconButton";
 import LoadingModal from "./components/LoadingModal";
-import Modal from "./components/Modal";
+import { renderMessageBox } from "./components/Modal";
 import FooterBar from "./components/FooterBar";
 import IconTextButton from "./components/IconTextButton";
 
@@ -199,11 +199,7 @@ const CollectContent = ({ projectId }) => {
         goToPlot={goToPlot}
         projectPlots={projectPlots}
       />
-      {messageBox && (
-        <Modal {...messageBox} onClose={() => setMessageBox(null)}>
-          <p>{messageBox.body}</p>
-        </Modal>
-      )}
+      {renderMessageBox(messageBox, () => setMessageBox(null))}
       <NavBar
         showAlert={showAlert}
         goToPlot={goToPlot}
