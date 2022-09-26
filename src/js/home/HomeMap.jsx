@@ -97,15 +97,10 @@ export default function HomeMap({}) {
     if (homeMap && !isEmptyMap(selectedDates)) {
       getLayerUrl(homeMap, availableLayers.slice(3), selectedDates, extraMapParams);
       getLayerUrl(homeMap, Object.keys(selectedDates), selectedDates, extraMapParams);
-    }
-  }, [homeMap, selectedDates, extraMapParams]);
-
-  useEffect(() => {
-    if (homeMap && !isEmptyMap(selectedDates)) {
       Object.keys(extraMapParams).length > 0 &&
         getLayerUrl(homeMap, Object.keys(extraMapParams), selectedDates, extraMapParams);
     }
-  }, [extraMapParams, selectedDates]);
+  }, [homeMap, selectedDates, extraMapParams]);
 
   // useEffect(() => {
   //   map && setTimeout(() => map.resize(), 50);
