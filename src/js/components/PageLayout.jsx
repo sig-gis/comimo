@@ -7,7 +7,7 @@ import AppInfo from "../home/AppInfo";
 import Header from "./Header";
 
 import i18n from "../i18n";
-import { getLanguage, jsonRequest } from "../utils";
+import { jsonRequest } from "../utils";
 import { THEME } from "../constants";
 import { homeMapAtom } from "../home/HomeMap";
 import { collectMapAtom } from "../collect/CollectMap";

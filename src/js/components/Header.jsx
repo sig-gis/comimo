@@ -46,25 +46,11 @@ const UserSettings = styled.div`
   align-items: center;
   display: flex;
   flex: 1;
+  gap: 20px;
   justify-content: center;
-`;
 
-const LoggedInUserPanel = styled.div`
-  align-items: center;
-  cursor: pointer;
-  display: flex;
-`;
-
-const LoggedInUsername = styled.span`
-  text-align: left;
-  font-size: 18px;
-  font-weight: var(--unnamed-font-weight-medium);
-  letter-spacing: 0px;
-  color: var(--white);
-  padding: 0 0.5rem;
-
-  &:hover {
-    text-decoration: underline;
+  @media only screen and (max-width: 675px) {
+    gap: 5px;
   }
 `;
 
@@ -119,7 +105,6 @@ export default function Header({ showSearch, theMap, username }) {
           <UserDropdown username={username} />
         ) : (
           <Button
-            extraStyle={{ marginRight: "20px" }}
             onClick={() => {
               window.location.assign("/login");
             }}

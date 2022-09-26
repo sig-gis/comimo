@@ -12,7 +12,7 @@ const OuterContainer = styled.div`
   position: fixed;
   top: 0;
   width: 100%;
-  z-index: 100;
+  z-index: 101;
 
   &.p {
     white-space: pre-wrap;
@@ -30,10 +30,12 @@ const InnerContainer = styled.div`
   left: 0;
   margin: 50px auto;
   max-width: 980px;
+  overflow: auto;
   padding: 1.5rem;
   position: relative;
   right: 0;
   width: 90%;
+  z-index: 101;
 `;
 
 const Header = styled.h1`

@@ -62,7 +62,12 @@ export default function IconTextButton({
       style={extraStyle}
       title={tooltip}
     >
-      <IconButton active={hover || active} icon={icon} size={iconSize} />
+      <IconButton
+        active={hover || active}
+        extraStyle={{ marginLeft: "5px" }}
+        icon={icon}
+        size={iconSize}
+      />
       <Label $active={hover}>{text}</Label>
     </Container>
   );
