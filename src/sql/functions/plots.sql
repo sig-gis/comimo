@@ -17,7 +17,7 @@ $$ LANGUAGE SQL;
 CREATE OR REPLACE FUNCTION calc_plot_geom(_project_id integer, _m_buffer real)
  RETURNS void AS $$
 
-    UPDATE plots SET geom = add_buffer(ST_MakePoint(lat, lon), _m_buffer)
+    UPDATE plots SET geom = add_buffer(ST_MakePoint(lat, lng), _m_buffer)
     WHERE project_rid = _project_id
 
 $$ LANGUAGE SQL;
@@ -26,14 +26,14 @@ CREATE OR REPLACE FUNCTION select_project_plots(_project_id integer)
  RETURNS table (
     plot_id    integer,
     lat        float,
-    lon        float,
+    lng        float,
     geom       text,
     answer     text
  ) AS $$
 
     SELECT plot_uid,
         lat,
-        lon,
+        lng,
         ST_AsGeoJSON(geom),
         answer
     FROM plots
@@ -42,11 +42,11 @@ CREATE OR REPLACE FUNCTION select_project_plots(_project_id integer)
 
 $$ LANGUAGE SQL;
 
-CREATE OR REPLACE FUNCTION save_user_answer(_plot_id integer, _answer text)
+CREATE OR REPLACE FUNCTION save_user_answer(_plot_id integer, _answer text, _answer_number integer)
  RETURNS void AS $$
 
     UPDATE plots
-    SET answer = _answer
+    SET answer = _answer, answer_number = _answer_number
     WHERE plot_uid = _plot_id
 
 $$ LANGUAGE SQL;
@@ -75,12 +75,13 @@ CREATE OR REPLACE FUNCTION get_predictions(_data_layer text)
  RETURNS table (
     username        text,
     email           text,
-    organization    text,
+    institution    text,
     project_name    text,
     data_layer      text,
     lat             float,
-    lon             float,
-    answer          text
+    lng             float,
+    answer          text,
+    answer_number   integer
  ) AS $$
 
     SELECT username,
@@ -88,9 +89,10 @@ CREATE OR REPLACE FUNCTION get_predictions(_data_layer text)
         institution,
         name,
         data_layer,
-        lon,
+        lng,
         lat,
-        answer
+        answer,
+        answer_number
     FROM projects, users, plots
     WHERE user_uid = user_rid
         AND project_uid = project_rid
@@ -103,16 +105,16 @@ CREATE OR REPLACE FUNCTION get_user_mines(_year_month text)
  RETURNS table (
     username         text,
     email            text,
-    organization     text,
+    institution      text,
     lat              float,
-    lon              float,
+    lng              float,
     reported_date    text
  ) AS $$
 
     SELECT username,
         email,
         institution,
-        lon,
+        lng,
         lat,
         to_char(reported_date, 'YYYY-MM-DD')
     FROM user_mines, users

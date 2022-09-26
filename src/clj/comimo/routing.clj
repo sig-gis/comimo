@@ -10,9 +10,6 @@
 (def routes
   {;; Page Routes
    [:get  "/"]                    {:handler     (render-page "/home")}
-   [:get  "/download-data"]       {:handler     (render-page "/download-data")
-                                   :auth-type   :admin
-                                   :auth-action :redirect}
    [:get  "/user-account"]        {:handler     (render-page "/user-account")
                                    :auth-type   :user
                                    :auth-action :redirect}
@@ -25,6 +22,7 @@
                                    :auth-action :redirect}
    [:get  "/login"]               {:handler     (render-page "/login")}
    [:get  "/logout"]              {:handler     users/logout}
+   [:get  "/page-not-found"]      {:handler     (render-page "/page-not-found")}
    [:get  "/password-request"]    {:handler     (render-page "/password-request")}
    [:get  "/password-reset"]      {:handler     (render-page "/password-reset")}
    [:get  "/register"]            {:handler     (render-page "/register")}

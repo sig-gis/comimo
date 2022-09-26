@@ -31,12 +31,13 @@ $$ LANGUAGE SQL;
 
 
 -- Checks if a new project already exists maybe under a different name
-CREATE OR REPLACE FUNCTION project_exists(_data_layer text, _regions varchar[])
+CREATE OR REPLACE FUNCTION project_exists(_user_id integer, _data_layer text, _regions varchar[])
   RETURNS boolean AS $$
 
   SELECT EXISTS(SELECT 1
                   FROM projects
-                 WHERE data_layer = _data_layer
+                 WHERE user_rid = _user_id
+                   AND data_layer = _data_layer
                    AND regions = _regions
                    AND status = 'active')
 
@@ -94,7 +95,7 @@ CREATE OR REPLACE FUNCTION calc_project_boundary(_project_id integer, _m_buffer 
 
     UPDATE projects SET boundary = b
     FROM (
-        SELECT add_buffer(ST_SetSRID(ST_Extent(ST_MakePoint(lat, lon)), 4326), _m_buffer) AS b
+        SELECT add_buffer(ST_SetSRID(ST_Extent(ST_MakePoint(lat, lng)), 4326), _m_buffer) AS b
         FROM plots
         WHERE project_rid = _project_id
     ) bb

@@ -1,24 +1,77 @@
 export const THEME = {
-  disabled: {
-    background: "#f8f8f8",
-    color: "#999"
+  default: {
+    standardButton: {
+      backgroundColor: "var(--orange-4)",
+      borderColor: "var(--black)",
+      fillColor: "var(--black)",
+    },
+    secondaryButton: {
+      backgroundColor: "var(--gray-2)",
+      borderColor: "var(--white)",
+      fillColor: "var(--white)",
+    },
+    iconButton: {
+      backgroundColor: "var(--white)",
+      borderColor: "var(--orange-2)",
+      fillColor: "var(--gray-1)",
+    },
   },
-  primary: {
-    background: "#f8b556",
-    color: "#eee"
+  hover: {
+    standardButton: {
+      backgroundColor: "var(--gray-2)",
+      borderColor: "var(--white)",
+      fillColor: "var(--white)",
+    },
+    secondaryButton: {
+      backgroundColor: "var(--orange-4)",
+      borderColor: "var(--black)",
+      fillColor: "var(--black)",
+    },
+    iconButton: {
+      backgroundColor: "var(--orange-2)",
+      borderColor: "var(--white)",
+      fillColor: "var(--gray-1)",
+    },
+  },
+  active: {
+    standardButton: {
+      backgroundColor: "var(--gray-2)",
+      borderColor: "var(--white)",
+      fillColor: "var(--white)",
+    },
+    secondaryButton: {
+      backgroundColor: "var(--orange-4)",
+      borderColor: "var(--black)",
+      fillColor: "var(--black)",
+    },
+    iconButton: {
+      backgroundColor: "var(--orange-2)",
+      borderColor: "var(--white)",
+      fillColor: "var(--gray-1)",
+    },
+  },
+  disabled: {
+    backgroundColor: "var(--white)",
+    borderColor: "var(--gray-3)",
+    fillColor: "var(--gray-3)",
+  },
+  error: {
+    backgroundColor: "var(--white)",
+    borderColor: "var(--error-red)",
+    fillColor: "var(--error-red)",
   },
   mina: {
-    background: "#fb8072", // red
-    color: "#eee"
+    background: "#ff6654", // red
+    color: "#eee",
   },
   noMina: {
-    background: "#8dd3c7", // green
-    color: "#eee"
+    background: "#00dca0", // green
+    color: "#eee",
   },
   map: {
-    boundary: "#ffffb3", // yellow
-    unanswered: "#bebada" // blue
-  }
+    boundary: "#ffff7b", // yellow
+    unanswered: "#8175d2", // blue
+  },
 };
 
 export const URLS = {
@@ -45,8 +98,10 @@ export const URLS = {
   USER_MINES: "download-user-mines",
   USER_SUBS: "user-subscriptions",
   USER_PROJ: "user-projects",
-  USERS: "get-users-list"
+  USERS: "get-users-list",
 };
+
+export const miningLayers = ["cMines", "nMines", "pMines"];
 
 export const availableLayers = [
   "cMines",
@@ -58,14 +113,25 @@ export const availableLayers = [
   "tierrasDeCom",
   "resguardos",
   "protectedAreas",
-  "NICFI"
+  "NICFI",
 ];
 
-export const startVisible = [
-  "cMines",
-  "NICFI"
-];
+export const layerColors = {
+  cMines: "#800080",
+  nMines: "#FF0000",
+  pMines: "#FFA500",
+  municipalBounds: "#E2615B",
+  legalMines: "#ECEE0D",
+  otherAuthorizations: "#094876",
+  tierrasDeCom: "#EDD18F",
+  resguardos: "#DB99DB",
+  protectedAreas: "#30CE97",
+  NICFI: "#159ebf",
+};
+
+export const startVisible = ["cMines", "NICFI"];
 
 export const attributions = {
-  "NICFI": "<a target=\"_top\" rel=\"noopener\" href=\"https://www.planet.com/nicfi/\">Imagery ©2021 Planet Labs Inc</a>. <a target=\"_top\" rel=\"noopener\" href=\"https://assets.planet.com/docs/Planet_ParticipantLicenseAgreement_NICFI.pdf\">All use subject to the Participant License Agreement</a>"
+  NICFI:
+    '<a target="_top" rel="noopener" href="https://www.planet.com/nicfi/">Imagery ©2021 Planet Labs Inc</a>. <a target="_top" rel="noopener" href="https://assets.planet.com/docs/Planet_ParticipantLicenseAgreement_NICFI.pdf">All use subject to the Participant License Agreement</a>',
 };

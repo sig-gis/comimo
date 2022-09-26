@@ -6,13 +6,16 @@ announcement.txt
 
 # Build Directories and Files
 .cpcache/
+.clj-kondo/
+.lsp/
 logs
 static
 node_modules/
-target/
+dist/
 package-lock.json
 __pycache__
-classes
+classes/
 .nrepl-port
 .log/
 .DS_Store
+resources/public/js/

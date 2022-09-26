@@ -1,31 +1,40 @@
 ## Purpose
+
 <!-- Description of what has been added/changed -->
 
 ## Related Issues
+
 Closes SER-###
 
 ## Submission Checklist
+
 - [ ] Included Jira issue in the PR title (e.g. `SER-### Did something here`)
-- [ ] Code passes linter rules (`npm run lint`)
+- [ ] Code passes linter rules for each file you updated. To lint all files at once, run `npm run lint`. To just lint one specific file run `npx quick-lint-js src/js/<file-you-changed> --snarky`.
 - [ ] No new reflection warnings (`clojure -M:check-reflection`)
 
 ## Testing
-#### Module Impacted
+
+### Module Impacted
+
 <!-- List the Module > Submodule impacted by this test (e.g. Validation > Project Boundary or Subscriptions > Add) -->
 <!-- The current list of all Modules is: Account, Home, Subscriptions, Stats, Validation, Reporting, and Admin. -->
 
-#### Role
+### Role
+
 <!-- Admin, User, or Visitor -->
 
-#### Steps
+### Steps
+
 <!-- All steps needed to test this PR -->
+
 1.
 
-#### Desired Outcome
+### Desired Outcome
 
 ---
 
 <!-- If needed, add more tests using the format above (Module Impacted, Role, Steps, Desired Outcome) here. -->
 
 ## Screenshots
+
 <!-- Add a screen shot when UI changes are included -->

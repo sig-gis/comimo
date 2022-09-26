@@ -16,9 +16,10 @@
                          (call-sql "select_project_plots" project-id)))))
 
 (defn save-user-answer [{:keys [params]}]
-  (let [plot-id (tc/val->int (:plotId params))
-        answer  (:answer params)]
-    (call-sql "save_user_answer" plot-id answer)
+  (let [plot-id       (tc/val->int (:plotId params))
+        answer        (:answer params)
+        answer-number (:answerNumber params)]
+    (call-sql "save_user_answer" plot-id answer answer-number)
     (data-response "")))
 
 ;;;
@@ -32,12 +33,13 @@
 (defn download-predictions [{:keys [params]}]
   (let [data-layer (:dataLayer params)]
     (->> (call-sql "get_predictions" data-layer)
-         (mapv #(set/rename-keys % {:project_name :projectName
-                                    :data_layer   :dataLayer}))
+         (mapv #(set/rename-keys % {:project_name  :projectName
+                                    :data_layer    :dataLayer
+                                    :answer_number :answerNumber}))
          (data-response))))
 
 (defn download-user-mines [{:keys [params]}]
-  (let [year-month (:yearMonth params)]
-    (->> (call-sql "get_user_mines" year-month)
+  (let [data-layer (:dataLayer params)]
+    (->> (call-sql "get_user_mines" data-layer)
          (mapv #(set/rename-keys % {:reported_date :reportedDate}))
          (data-response))))

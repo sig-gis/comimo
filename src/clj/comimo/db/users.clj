@@ -1,12 +1,12 @@
 (ns comimo.db.users
-  (:import java.util.UUID)
   (:require [clojure.set :as set]
             [ring.util.response :refer [redirect]]
             [triangulum.type-conversion :as tc]
             [triangulum.database        :refer [call-sql sql-primitive]]
             [triangulum.config          :refer [get-config]]
             [comimo.email               :refer [send-new-user-mail send-reset-mail]]
-            [comimo.views               :refer [data-response]]))
+            [comimo.views               :refer [data-response]])
+  (:import java.util.UUID))
 
 (defn is-admin? [user-id]
   (sql-primitive (call-sql "is_user_admin" {:log? false} user-id)))
@@ -121,7 +121,7 @@
 
         :else nil))
 
-(defn password-reset [{:keys [params]}]=
+(defn password-reset [{:keys [params]}]
   (let [email    (:email params)
         token    (:token params)
         password (:password params)
@@ -139,7 +139,7 @@
     (if-let [error-msg (get-verify-errors user token)]
       (data-response error-msg)
       (do
-        (call-sql "user_verified" (:user_id user))
+        (call-sql "set_user_verified" (:user_id user))
         (data-response "")))))
 
 (defn get-users-list [_]

@@ -36,9 +36,9 @@ CREATE TABLE user_mines (
     user_mine_uid    SERIAL PRIMARY KEY,
     user_rid         integer NOT NULL REFERENCES users (user_uid) ON DELETE CASCADE ON UPDATE CASCADE,
     lat              float,
-    lon              float,
+    lng              float,
     reported_date    timestamp DEFAULT now(),
-    CONSTRAINT per_user_mine UNIQUE(user_rid, lat, lon)
+    CONSTRAINT per_user_mine UNIQUE(user_rid, lat, lng)
 );
 CREATE INDEX user_mines_user_rid ON user_mines (user_rid);
 
@@ -61,9 +61,10 @@ CREATE TABLE plots (
     plot_uid       SERIAL PRIMARY KEY,
     project_rid    integer NOT NULL REFERENCES projects (project_uid) ON DELETE CASCADE ON UPDATE CASCADE,
     lat            float,
-    lon            float,
+    lng            float,
     geom           geometry(geometry,4326),
-    answer         text
+    answer         text,
+    answer_number  integer
 );
 CREATE INDEX plots_projects_rid ON plots (project_rid);
 
