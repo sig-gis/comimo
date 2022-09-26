@@ -1,5 +1,4 @@
-import React, { useState } from "react";
-import styled from "@emotion/styled";
+import React from "react";
 import { useTranslation } from "react-i18next";
 import { useAtom } from "jotai";
 
@@ -38,7 +37,6 @@ export default function UserDropdown({ username }) {
     <div>
       <IconTextButton
         active={activeDropdownMenu === "user"}
-        extraStyle={{ marginRight: "20px" }}
         hasBackground={false}
         icon="user"
         iconSize="26px"

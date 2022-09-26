@@ -14,7 +14,7 @@ const StyledButton = styled.button`
   border-width: 1px;
   cursor: pointer;
   height: fit-content;
-  margin: 5px 0 5px 10px;
+  margin: 5px 0;
   padding: 0;
   transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out,
     border-color 0.15s ease-in-out;
