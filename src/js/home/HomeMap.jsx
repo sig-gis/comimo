@@ -22,6 +22,7 @@ export const selectedRegionAtom = atom(null);
 
 export default function HomeMap({}) {
   const [mouseCoords, setMouseCoords] = useState(null);
+  const [mapIsLoaded, setMapIsLoaded] = useState(false);
 
   const extraMapParams = useAtomValue(extraMapParamsAtom);
   const selectedDates = useAtomValue(selectedDatesAtom);
@@ -63,6 +64,8 @@ export default function HomeMap({}) {
           const lng = toPrecision(e.lngLat.lng, 4);
           setMouseCoords({ lat, lng });
         });
+
+        setMapIsLoaded(true);
       });
 
       setHomeMap(map);
@@ -97,10 +100,11 @@ export default function HomeMap({}) {
     if (homeMap && !isEmptyMap(selectedDates)) {
       getLayerUrl(homeMap, availableLayers.slice(3), selectedDates, extraMapParams);
       getLayerUrl(homeMap, Object.keys(selectedDates), selectedDates, extraMapParams);
-      Object.keys(extraMapParams).length > 0 &&
+      mapIsLoaded &&
+        Object.keys(extraMapParams).length > 0 &&
         getLayerUrl(homeMap, Object.keys(extraMapParams), selectedDates, extraMapParams);
     }
-  }, [homeMap, selectedDates, extraMapParams]);
+  }, [mapIsLoaded, homeMap, selectedDates, extraMapParams]);
 
   // useEffect(() => {
   //   map && setTimeout(() => map.resize(), 50);
