@@ -1,3 +1,5 @@
+const getCssColorVar = (v) => getComputedStyle(document.body).getPropertyValue(v);
+
 export const THEME = {
   default: {
     standardButton: {
@@ -61,11 +63,11 @@ export const THEME = {
     fillColor: "var(--error-red)",
   },
   mina: {
-    background: "#ff6654", // red
+    background: getCssColorVar("--mina"), // red
     color: "#eee",
   },
   noMina: {
-    background: "#00dca0", // green
+    background: getCssColorVar("--no-mina"), // gray
     color: "#eee",
   },
   map: {
