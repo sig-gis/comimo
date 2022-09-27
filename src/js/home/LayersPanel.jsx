@@ -24,10 +24,10 @@ const LayerCheckbox = styled.input`
 `;
 
 const sliderThumb = (layerColor) => css`
-  background: ${layerColor || "var(--teal-1)"};
-  border: 2px solid;
-  border-color: var(--white);
-  border-radius: 50%;
+  background: var(--white);
+  border: 4px solid;
+  border-radius: 0;
+  border-color: ${layerColor || "var(--teal - 1)"};
   box-shadow: 0px 3px 2px #00000040;
   cursor: ew-resize;
   height: 18px;
