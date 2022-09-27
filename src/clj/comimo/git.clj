@@ -1,5 +1,6 @@
 (ns comimo.git
-  (:require [clojure.string     :as str]
+  (:require [triangulum.logging :refer [log-str]]
+            [clojure.string     :as str]
             [clojure.data.json  :as json]
             [clj-http.client    :as client]))
 
@@ -18,7 +19,7 @@
     (let [{:keys [status body]} (client/get tags-url)]
       (when (= 200 status)
         (json/read-str body :key-fn keyword)))
-    (catch Exception _)))
+    (catch Exception e (log-str e))))
 
 (defn- latest-prod-tag []
   (->> (get-all-tags)

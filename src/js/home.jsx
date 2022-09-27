@@ -263,7 +263,7 @@ function HomeContents() {
           <LogoGitVersion
             href={
               versionDeployed
-                ? `https://github.com/sig-gis/comimo/tags/${versionDeployed}`
+                ? `https://github.com/sig-gis/comimo/releases/tag/${versionDeployed}`
                 : "https://github.com/sig-gis/comimo"
             }
             target="/blank"
