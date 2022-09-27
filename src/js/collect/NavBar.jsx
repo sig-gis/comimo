@@ -172,7 +172,7 @@ export default function NavBar({
                 backgroundColorHover="var(--gray-1)"
                 fillColor="var(--white)"
                 fillColorHover="var(--white)"
-                icon="xCircle"
+                icon="returnExit"
                 iconSize="20px"
                 onClick={() => {
                   showAlert({
