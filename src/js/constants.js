@@ -72,7 +72,7 @@ export const THEME = {
   },
   map: {
     boundary: "#ffff7b", // yellow
-    unanswered: "#8175d2", // blue
+    unanswered: getCssColorVar("--unanswered"), // blue
   },
 };
 
