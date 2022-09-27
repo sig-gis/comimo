@@ -26,6 +26,7 @@ const LayerCheckbox = styled.input`
 const sliderThumb = (layerColor) => css`
   background: var(--white);
   border: 4px solid;
+  border-radius: 0;
   border-color: ${layerColor || "var(--teal - 1)"};
   box-shadow: 0px 3px 2px #00000040;
   cursor: ew-resize;
