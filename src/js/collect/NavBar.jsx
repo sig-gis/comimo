@@ -138,7 +138,7 @@ export default function NavBar({
                 backgroundColorHover="var(--white)"
                 fillColor="var(--white)"
                 fillColorHover="var(--no-mina)"
-                icon="check"
+                icon="xMark"
                 iconSize="20px"
                 onClick={() => setPlotAnswer("No Mina")}
                 extraStyle={{ marginRight: "0.5rem" }}
@@ -149,7 +149,7 @@ export default function NavBar({
                 backgroundColorHover="var(--white)"
                 fillColor="var(--white)"
                 fillColorHover="var(--mina)"
-                icon="warning"
+                icon="checkMark"
                 iconSize="20px"
                 onClick={() => setPlotAnswer("Mina")}
                 extraStyle={{ marginRight: "0.5rem" }}
@@ -160,7 +160,7 @@ export default function NavBar({
                 backgroundColorHover="var(--gray-1)"
                 fillColor="var(--white)"
                 fillColorHover="var(--white)"
-                icon="x"
+                icon="trash"
                 iconSize="20px"
                 onClick={() => setPlotAnswer(null)}
                 extraStyle={{ marginRight: "2rem" }}
@@ -172,7 +172,7 @@ export default function NavBar({
                 backgroundColorHover="var(--gray-1)"
                 fillColor="var(--white)"
                 fillColorHover="var(--white)"
-                icon="x"
+                icon="returnExit"
                 iconSize="20px"
                 onClick={() => {
                   showAlert({
