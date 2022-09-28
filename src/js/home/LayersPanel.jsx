@@ -23,11 +23,14 @@ const LayerCheckbox = styled.input`
   accent-color: ${({ layerColor }) => layerColor || "var(--teal-1)"};
 `;
 
-const sliderThumb = (layerColor) => css`
-  background: var(--white);
+const sliderThumb = (layerColor, sliderShape, isSliderColorInverted) => css`
   border: 4px solid;
-  border-radius: 0;
-  border-color: ${layerColor || "var(--teal - 1)"};
+  border-radius: ${sliderShape === "square" ? "0" : "50%"};
+  ${isSliderColorInverted
+    ? `background: ${layerColor || "var(--teal - 1)"};
+       border-color: var(--white);`
+    : `background: var(--white);
+       border-color: ${layerColor || "var(--teal - 1)"};`};
   box-shadow: 0px 3px 2px #00000040;
   cursor: ew-resize;
   height: 18px;
@@ -43,12 +46,14 @@ const LayerSlider = styled.input`
   /* Chrome/Safari */
   &::-webkit-slider-thumb {
     -webkit-appearance: none;
-    ${({ layerColor }) => sliderThumb(layerColor)}
+    ${({ layerColor, sliderShape, isSliderColorInverted }) =>
+      sliderThumb(layerColor, sliderShape, isSliderColorInverted)}
   }
 
   /* Firefox */
   &::-moz-range-thumb {
-    ${({ layerColor }) => sliderThumb(layerColor)}
+    ${({ layerColor, sliderShape, isSliderColorInverted }) =>
+      sliderThumb(layerColor, sliderShape, isSliderColorInverted)}
   }
 `;
 
@@ -88,6 +93,8 @@ export default function LayersPanel({ nicfiLayers, active, theMap, nicfiOnly }) 
   };
 
   const renderControl = (name) => {
+    const sliderShape = miningLayers.includes(name) ? "square" : "circle";
+    const isSliderColorInverted = sliderShape === "square" || name === "NICFI";
     const layerColor = layerColors[name];
     const layerVisible = visible[name];
     return (
@@ -115,6 +122,8 @@ export default function LayersPanel({ nicfiLayers, active, theMap, nicfiOnly }) 
         </div>
         <LayerSlider
           layerColor={layerColor}
+          sliderShape={sliderShape}
+          isSliderColorInverted={isSliderColorInverted}
           max="100"
           min="0"
           onChange={(e) => setLayerOpacity(name, parseInt(e.target.value))}
