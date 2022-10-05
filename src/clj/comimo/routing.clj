@@ -11,8 +11,6 @@
             [ring.util.response         :refer [redirect]]
             [triangulum.type-conversion :as tc]))
 
-
-
 (def routes
   {;; Page Routes
    [:get  "/"]                 {:handler (render-page "/home")}
@@ -121,10 +119,11 @@
                        "&flash_message=You must login to see "
                        full-url))))))
 
+;; TODO: Move this to triangulum
 (defn- no-cross-traffic? [{:strs [referer host]}]
   (and referer host (str/includes? referer host)))
 
-;; TODO: get it from triangulum
+;; TODO: Move this to triangulum
 (defn- forbidden-response [_]
   (data-response "Forbidden" {:status 403}))
 
