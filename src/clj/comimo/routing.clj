@@ -128,7 +128,7 @@
 (defn- forbidden-response [_]
   (data-response "Forbidden" {:status 403}))
 
-(defn routing-handler [{:keys [uri request-method params headers] :as request}]
+(defn handler [{:keys [uri request-method params headers] :as request}]
   (let [{:keys [auth-type auth-action handler] :as route} (get routes [request-method uri])
         user-id                                           (:userId params -1)
         project-id                                        (tc/val->int (:projectId params))
