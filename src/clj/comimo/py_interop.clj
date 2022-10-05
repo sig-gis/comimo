@@ -69,10 +69,10 @@
                     :nMines (filter #(re-matches #"\d{4}-\d{2}-\d{2}-N" %) image-list)
                     :pMines (filter #(re-matches #"\d{4}-\d{2}-\d{2}-P" %) image-list)})))
 
-(def image-options {"NICFI"  {:source-type :wms :source "get-nicfi-tiles?z={z}&x={x}&y={y}"}
-                    "cMines" {:source-type :image :source-base image-location :color "purple"}
-                    "nMines" {:source-type :image :source-base image-location :color "red"}
-                    "pMines" {:source-type :image :source-base image-location :color "orange"}
+(def image-options {"NICFI"               {:source-type :wms :source "get-nicfi-tiles?z={z}&x={x}&y={y}"}
+                    "cMines"              {:source-type :image :source-base image-location :color "purple"}
+                    "nMines"              {:source-type :image :source-base image-location :color "red"}
+                    "pMines"              {:source-type :image :source-base image-location :color "orange"}
                     "municipalBounds"     {:source-type :vector
                                            :source      "users/comimoapp/Shapes/Municipal_Bounds"
                                            :info-cols   ["MPIO_CNMBR" "DPTO_CNMBR"]
@@ -111,11 +111,11 @@
           :vector (let [{:keys [source line fill]} opts]
                     (py-wrapper utils/getVectorUrl source line fill))
 
-          :image  (let [data-layer (:dataLayer params)
-                        {:keys [source-base color]} opts]
-                    (py-wrapper utils/getImageUrl (str source-base "/" data-layer) color))
+          :image (let [data-layer                  (:dataLayer params)
+                       {:keys [source-base color]} opts]
+                   (py-wrapper utils/getImageUrl (str source-base "/" data-layer) color))
 
-          :wms    (:source opts)
+          :wms (:source opts)
 
           "")
         (data-response))))

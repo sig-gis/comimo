@@ -17,14 +17,16 @@
         ring/ring-json            {:mvn/version "0.5.0"}
         ring/ring-ssl             {:mvn/version "0.3.0"}
         seancorfield/next.jdbc    {:mvn/version "1.1.613"}
-        sig-gis/triangulum        {:git/url "https://github.com/sig-gis/triangulum"
-                                   :sha     "de62563078ed93b56c53ed675a46f528c2012a7d"}}
+        #_#_sig-gis/triangulum    {:git/url "https://github.com/sig-gis/triangulum"
+                                   :sha     "de62563078ed93b56c53ed675a46f528c2012a7d"}
+
+        sig-gis/triangulum {:local/root "../triangulum"}}
 
  :aliases {:build-db         {:main-opts ["-m" "triangulum.build-db"]}
            :config           {:main-opts ["-m" "triangulum.config"]}
            :https            {:main-opts ["-m" "triangulum.https"]}
            :migrate          {:main-opts ["-m" "comimo.migrate"]}
-           :server           {:main-opts ["-m" "comimo.server"]
+           :server           {:main-opts ["-m" "triangulum.server"]
                               :jvm-opts  ["--add-modules=jdk.incubator.foreign"
                                           "--enable-native-access=ALL-UNNAMED"]}
            :systemd          {:main-opts ["-m" "triangulum.systemd"]}
@@ -37,5 +39,5 @@
                                           "--enable-native-access=ALL-UNNAMED"]}
            :check-deps       {:extra-deps {olical/depot {:mvn/version "1.8.4"}}
                               :main-opts  ["-m" "depot.outdated.main"]}
-           :nrepl-client     {:deps {nrepl/nrepl {:mvn/version "0.9.0"}}
+           :nrepl-client     {:deps      {nrepl/nrepl {:mvn/version "0.9.0"}}
                               :main-opts ["-m" "nrepl.cmdline" "--connect" "--host" "127.0.0.1" "--port" "5555"]}}}
