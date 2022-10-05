@@ -14,7 +14,7 @@
                 :mode      "dev"
                 :log-dir   "logs"
                 :handler   comimo.routing/handler
-                :workers   {:scheduler {:start comimo.jobs/start-scheduling-service!
+                :workers   {:scheduler {:start comimo.jobs/start-scheduled-jobs!
                                         :stop  comimo.jobs/stop-scheduled-jobs! }}}
  :ga-id        nil
  :session-key  "changeme12345678"

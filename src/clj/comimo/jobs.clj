@@ -1,7 +1,7 @@
 (ns comimo.jobs
-  (:require [triangulum.database     :refer [call-sql]]
+  (:require [comimo.db.subscriptions :refer [send-email-alerts]]
             [triangulum.logging      :refer [log-str]]
-            [comimo.db.subscriptions :refer [send-email-alerts]]))
+            [triangulum.database     :refer [call-sql]]))
 
 (def ^:private expires-in "1 day in msecs" (* 1000 60 60 24))
 
