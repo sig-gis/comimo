@@ -1,19 +1,15 @@
 (ns comimo.routing
-  (:require
-   [clojure.string :as str]
-   [comimo.db.plots         :as plots]
-   [comimo.db.projects      :as projects :refer [can-collect?]]
-   [comimo.db.subscriptions :as subscriptions]
-   [comimo.db.users         :as users :refer [is-admin?]]
-   [comimo.proxy            :as proxy]
-   [comimo.py-interop       :as py]
-   [comimo.views            :refer [render-page data-response not-found-page]]
-   [ring.util.codec                    :refer [url-encode]]
-   [ring.util.response                 :refer [redirect]]
-   [triangulum.type-conversion         :as tc]
-
-
-   ))
+  (:require  [clojure.string             :as str]
+             [comimo.db.plots            :as plots]
+             [comimo.db.projects         :as projects :refer [can-collect?]]
+             [comimo.db.subscriptions    :as subscriptions]
+             [comimo.db.users            :as users :refer [is-admin?]]
+             [comimo.proxy               :as proxy]
+             [comimo.py-interop          :as py]
+             [comimo.views               :refer [render-page data-response not-found-page]]
+             [ring.util.codec            :refer [url-encode]]
+             [ring.util.response         :refer [redirect]]
+             [triangulum.type-conversion :as tc]))
 
 
 

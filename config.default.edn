@@ -10,10 +10,10 @@
                 :port           587
                 :base-url       "https://my.domain/"
                 :auto-validate? false}
- :server       {:http-port   8080
-                :mode        "dev"
-                :log-dir     "logs"
-                #_#_:routing 'comimo/routing}
+ :server       {:http-port 8080
+                :mode      "dev"
+                :log-dir   "logs"
+                :routing   comimo.routing/routing-handler}
  :ga-id        nil
  :session-key  "changeme12345678"
  :gee          {:ee-account  ""
