@@ -18,7 +18,7 @@
         ring/ring-ssl             {:mvn/version "0.3.0"}
         seancorfield/next.jdbc    {:mvn/version "1.1.613"}
         sig-gis/triangulum        {:git/url "https://github.com/sig-gis/triangulum"
-                                   :sha     "cb4b45a2ecfc95f0fa31dae29748b84a6dbb441c"}}
+                                   :sha     "6fdf4512c3d7a9efa5dae8784b69042d8c74a9b8"}}
 
  :aliases {:build-db         {:main-opts ["-m" "triangulum.build-db"]}
            :config           {:main-opts ["-m" "triangulum.config"]}
