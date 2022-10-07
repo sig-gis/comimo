@@ -1,9 +1,9 @@
 (ns comimo.proxy
-  (:require [clojure.data.json :as json]
-            [clojure.string    :as str]
-            [clj-http.client   :as client]
-            [triangulum.config :refer [get-config]]
-            [comimo.views      :refer [data-response]]))
+  (:require [clojure.data.json  :as json]
+            [clojure.string     :as str]
+            [clj-http.client    :as client]
+            [triangulum.config  :refer [get-config]]
+            [triangulum.handler :refer [data-response]]))
 
 ;;; Option cache
 

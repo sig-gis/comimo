@@ -3,11 +3,11 @@
             [libpython-clj2.require :refer [require-python]]
             [libpython-clj2.python  :refer [py. get-attr ->jvm]]
             [libpython-clj2.python.copy :refer [*item-tuple-cutoff*]]
-            [triangulum.type-conversion :as tc]
-            [triangulum.logging :refer [log-str]]
             [triangulum.config :refer [get-config]]
-            [comimo.views :refer [data-response]]
-            [triangulum.database :refer [call-sql]]))
+            [triangulum.database :refer [call-sql]]
+            [triangulum.logging :refer [log-str]]
+            [triangulum.type-conversion :as tc]
+            [triangulum.handler :refer [data-response]]))
 
 ;;; Constants
 

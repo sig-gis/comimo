@@ -1,15 +1,15 @@
 (ns comimo.routing
-  (:require [clojure.string             :as str]
-            [comimo.db.plots            :as plots]
+  (:require [comimo.db.plots            :as plots]
             [comimo.db.projects         :as projects :refer [can-collect?]]
             [comimo.db.subscriptions    :as subscriptions]
             [comimo.db.users            :as users :refer [is-admin?]]
             [comimo.proxy               :as proxy]
             [comimo.py-interop          :as py]
-            [comimo.views               :refer [render-page data-response not-found-page]]
+            [triangulum.views           :refer [render-page not-found-page]]
             [ring.util.codec            :refer [url-encode]]
             [ring.util.response         :refer [redirect]]
-            [triangulum.type-conversion :as tc]))
+            [triangulum.type-conversion :as tc]
+            [triangulum.handler         :refer [data-response no-cross-traffic? forbidden-response]]))
 
 (def routes
   {;; Page Routes
@@ -118,14 +118,6 @@
                        full-url
                        "&flash_message=You must login to see "
                        full-url))))))
-
-;; TODO: Move this to triangulum
-(defn- no-cross-traffic? [{:strs [referer host]}]
-  (and referer host (str/includes? referer host)))
-
-;; TODO: Move this to triangulum
-(defn- forbidden-response [_]
-  (data-response "Forbidden" {:status 403}))
 
 (defn handler [{:keys [uri request-method params headers] :as request}]
   (let [{:keys [auth-type auth-action handler] :as route} (get routes [request-method uri])

@@ -2,7 +2,7 @@
   (:require [clojure.set                :as set]
             [triangulum.type-conversion :as tc]
             [triangulum.database        :refer [call-sql sql-primitive]]
-            [comimo.views               :refer [data-response]]
+            [triangulum.handler         :refer [data-response]]
             [comimo.db.projects         :refer [create-project!]]
             [comimo.email               :refer [send-alert-mail get-base-url]]
             [comimo.py-interop          :refer [location-in-country get-image-list]]))
