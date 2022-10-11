@@ -1,26 +1,32 @@
-{:database     {:host     "localhost"
-                :port     5432
-                :dbname   "comimo"
-                :user     "comimo"
-                :password "comimo"}
- :mail         {:host           "smtp.gmail.com"
-                :user           ""
-                :pass           ""
-                :tls            true
-                :port           587
-                :base-url       "https://my.domain/"
-                :auto-validate? false}
- :server       {:http-port     8080
-                :mode          "dev"
-                :log-dir       "logs"
-                :handler       comimo.routing/handler
-                :workers       {:scheduler {:start comimo.jobs/start-scheduled-jobs!
-                                            :stop  comimo.jobs/stop-scheduled-jobs!}}
-                :response-type :json}
- :ga-id        nil
- :session-key  "changeme12345678"
- :gee          {:ee-account  ""
-                :ee-key-path ""}
- :mapbox-token ""
- :mapquest-key ""
- :nicfi-key    ""}
+{:database    {:host     "localhost"
+               :port     5432
+               :dbname   "comimo"
+               :user     "comimo"
+               :password "comimo"}
+ :mail        {:host           "smtp.gmail.com"
+               :user           ""
+               :pass           ""
+               :tls            true
+               :port           587
+               :base-url       "https://my.domain/"
+               :auto-validate? false}
+ :server      {:http-port     8080
+               :mode          "dev"
+               :log-dir       "logs"
+               :handler       comimo.routing/handler
+               :workers       {:scheduler {:start comimo.jobs/start-scheduled-jobs!
+                                           :stop  comimo.jobs/stop-scheduled-jobs!}}
+               :response-type :json}
+ :app         {:tags-url    "https://api.github.com/repos/sig-gis/comimo/tags"
+               ;; in resources/public folder
+               :views       {:css-files ["/css/comimo_global.cs"]
+                             :js-files  ["https://www.gstatic.com/charts/loader.js"
+                                         "/js/jquery-3.4.1.min.js"]}
+               :title       {:en "Colombian Mining Monitoring"
+                             :es "Monitoreo Minero Colombiano"}
+               :description {:en "Colombian Mining Monitoring (CoMiMo) is an online mining monitoring application."
+                             :es "Monitoreo Minero Colombiano (CoMiMo) es una aplicación de monitoreo minero en línea."}
+               :keywords    {:en "colombian mining monitoring, comimo, satellite imagery, illegal mining."
+                             :es "monitoreo minero colombiano, comimo, imágenes satelitales, minería illegal."}}
+ :ga-id       nil
+ :session-key "changeme12345678" }

@@ -18,32 +18,31 @@
             [ring.middleware.session            :refer [wrap-session]]
             [ring.middleware.session.cookie     :refer [cookie-store]]
             [ring.middleware.ssl                :refer [wrap-ssl-redirect]]
-            [ring.middleware.x-headers          :refer [wrap-frame-options wrap-content-type-options wrap-xss-protection]]
+            [ring.middleware.x-headers          :refer [wrap-frame-options
+                                                        wrap-content-type-options
+                                                        wrap-xss-protection]]
             [ring.util.response                 :refer [redirect]]
             [ring.util.codec                    :refer [url-encode]]
             [triangulum.logging                 :refer [log-str]]
             [triangulum.config                  :refer [get-config]]
+            [triangulum.handler                 :refer [nil-on-error
+                                                        forbidden-response
+                                                        no-cross-traffic?]]
             [triangulum.type-conversion         :as tc]
             [comimo.routing                     :refer [routes]]
             [triangulum.views                   :refer [not-found-page data-response]]
             [comimo.db.projects                 :refer [can-collect?]]
             [comimo.db.users                    :refer [is-admin?]]))
 
-(defmacro nil-on-error
-  [& body]
-  `(try ~@body (catch Exception e# nil)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Routing Handler
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defn forbidden-response [_]
-  (data-response "Forbidden" {:status 403}))
-
 (defn- redirect-auth [user-id]
   (fn [request]
     (let [{:keys [query-string uri]} request
-          full-url (url-encode (str uri (when query-string (str "?" query-string))))]
+          full-url                   (url-encode (str uri (when query-string (str "?" query-string))))]
       (if (pos? user-id)
         (redirect (str "/home?flash_message=You do not have permission to access "
                        full-url))
@@ -52,26 +51,23 @@
                        "&flash_message=You must login to see "
                        full-url))))))
 
-(defn- no-cross-traffic? [{:strs [referer host]}]
-  (and referer host (str/includes? referer host)))
-
 (defn authenticated-routing-handler [{:keys [uri request-method params headers] :as request}]
   (let [{:keys [auth-type auth-action handler] :as route} (get routes [request-method uri])
-        user-id      (:userId params -1)
-        project-id   (tc/val->int (:projectId params))
-        plot-id      (tc/val->int (:plotId params))
-        next-handler (if route
-                       (if (condp = auth-type
-                             :user     (pos? user-id)
-                             :collect  (can-collect? user-id project-id plot-id)
-                             :admin    (is-admin? user-id)
-                             :no-cross (no-cross-traffic? headers)
-                             true)
-                         handler
-                         (if (= :redirect auth-action)
-                           (redirect-auth user-id)
-                           forbidden-response))
-                       not-found-page)]
+        user-id                                           (:userId params -1)
+        project-id                                        (tc/val->int (:projectId params))
+        plot-id                                           (tc/val->int (:plotId params))
+        next-handler                                      (if route
+                                                            (if (condp = auth-type
+                                                                  :user     (pos? user-id)
+                                                                  :collect  (can-collect? user-id project-id plot-id)
+                                                                  :admin    (is-admin? user-id)
+                                                                  :no-cross (no-cross-traffic? headers)
+                                                                  true)
+                                                              handler
+                                                              (if (= :redirect auth-action)
+                                                                (redirect-auth user-id)
+                                                                forbidden-response))
+                                                            not-found-page)]
     (next-handler request)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
