@@ -31,8 +31,13 @@ export function jsonRequest(url, jsonBody = {}, method = "POST") {
 }
 
 export function titleCase(str) {
-  return str
-    .split(" ")
-    .map((word) => word[0].toUpperCase() + word.slice(1).toLowerCase())
-    .join(" ");
+  return (
+    str &&
+    str?.length > 0 &&
+    str
+      .trim()
+      .split(" ")
+      .map((word) => word[0].toUpperCase() + word.slice(1).toLowerCase())
+      .join(" ")
+  );
 }
