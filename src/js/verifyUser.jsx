@@ -47,6 +47,6 @@ export function pageInit(args) {
     <Suspense fallback="">
       <VerifyUser email={args.email || ""} token={args.token || ""} />
     </Suspense>,
-    document.getElementById("main-container")
+      document.getElementById("app")
   );
 }

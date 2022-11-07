@@ -313,6 +313,6 @@ export function pageInit(args) {
         <CollectContent projectId={parseInt(args.projectId || 0)} />
       </PageLayout>
     </Suspense>,
-    document.getElementById("main-container")
+    document.getElementById("app")
   );
 }

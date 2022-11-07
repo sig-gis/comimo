@@ -236,6 +236,6 @@ export function pageInit(args) {
         <UserAccount />
       </PageLayout>
     </Suspense>,
-    document.getElementById("main-container")
+      document.getElementById("app")
   );
 }

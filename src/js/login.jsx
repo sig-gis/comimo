@@ -106,6 +106,6 @@ export function pageInit(args) {
         <Login />
       </PageLayout>
     </Suspense>,
-    document.getElementById("main-container")
+    document.getElementById("app")
   );
 }

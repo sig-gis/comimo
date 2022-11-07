@@ -291,7 +291,7 @@ export function pageInit(args) {
         <HomeContents />
       </PageLayout>
     </Suspense>,
-    document.getElementById("main-container")
+      document.getElementById("app")
   );
 }
 

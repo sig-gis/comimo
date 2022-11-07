@@ -95,6 +95,6 @@ export function pageInit(args) {
         <PasswordForgot />
       </PageLayout>
     </Suspense>,
-    document.getElementById("main-container")
+    document.getElementById("app")
   );
 }

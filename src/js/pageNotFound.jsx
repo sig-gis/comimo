@@ -61,6 +61,6 @@ export function pageInit(args) {
         <PageNotFound />
       </PageLayout>
     </Suspense>,
-    document.getElementById("main-container")
+    document.getElementById("app")
   );
 }

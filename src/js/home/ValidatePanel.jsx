@@ -154,8 +154,8 @@ export default function ValidatePanel({ subscribedList, featureNames, selectedDa
   const customSelect = (val) => {
     const newRegions = customRegions.includes(val)
       ? customRegions.filter((r) => r !== val)
-      : [...customRegions, val];
-    setCustomRegions(newRegions);
+          : [...customRegions, val];
+      setCustomRegions(newRegions);
   };
 
   const renderCustomRegions = () => {

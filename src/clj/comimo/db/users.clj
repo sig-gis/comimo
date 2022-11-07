@@ -1,11 +1,12 @@
 (ns comimo.db.users
-  (:require [comimo.email               :refer [send-new-user-mail send-reset-mail]]
+  (:require [clojure.set :as set]
             [ring.util.response         :refer [redirect]]
-            [triangulum.config          :refer [get-config]]
-            [triangulum.database        :refer [call-sql sql-primitive]]
             [triangulum.type-conversion :as tc]
-            [triangulum.handler         :refer [data-response]]
-            [clojure.set                :as set])
+            [triangulum.database        :refer [call-sql sql-primitive]]
+            [triangulum.config          :refer [get-config]]
+            [triangulum.errors          :refer [nil-on-error]]
+            [comimo.email               :refer [send-new-user-mail send-reset-mail]]
+            [triangulum.handler         :refer [data-response]])
   (:import java.util.UUID))
 
 (defn is-admin? [user-id]
@@ -38,6 +39,12 @@
                     :sector      (:sector user)
                     :institution (:institution user)
                     :defaultLang (:default_lang user)})))
+
+(defn get-user-lang [request]
+  (let [user-id (-> request :params :userId)
+        user    (nil-on-error
+                 (first (call-sql "get_user_information" user-id)))]
+    (:default_lang user :en)))
 
 (defn- get-register-errors [username email]
   (cond (sql-primitive (call-sql "username_taken" username))

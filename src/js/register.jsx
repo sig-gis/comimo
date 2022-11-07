@@ -210,6 +210,6 @@ export function pageInit(args) {
         <Register />
       </PageLayout>
     </Suspense>,
-    document.getElementById("main-container")
+    document.getElementById("app")
   );
 }

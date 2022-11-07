@@ -115,6 +115,6 @@ export function pageInit(args) {
         <PasswordReset email={args.email || ""} token={args.token || ""} />
       </PageLayout>
     </Suspense>,
-    document.getElementById("main-container")
+    document.getElementById("app")
   );
 }

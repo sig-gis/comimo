@@ -435,6 +435,6 @@ export function pageInit(args) {
         <AdminContent />
       </PageLayout>
     </Suspense>,
-    document.getElementById("main-container")
+    document.getElementById("app")
   );
 }
