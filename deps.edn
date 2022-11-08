@@ -9,9 +9,8 @@
         org.clojure/tools.cli     {:mvn/version "1.0.194"}
         org.postgresql/postgresql {:mvn/version "42.2.18"}
         seancorfield/next.jdbc    {:mvn/version "1.1.613"}
-        #_#_sig-gis/triangulum    {:git/url "https://github.com/sig-gis/triangulum"
-                                   :sha     "86ccc94b5697741914a8e36a9c77e48c8a2a6fdb"}
-        sig-gis/triangulum        {:local/root "../triangulum"}}
+        sig-gis/triangulum        {:git/url "https://github.com/sig-gis/triangulum"
+                                   :sha     "76aa5c7b9c249853e500911ea8d046510eac9443"}}
 
  :aliases {:build-db         {:main-opts ["-m" "triangulum.build-db"]}
            :config           {:main-opts ["-m" "triangulum.config"]}

@@ -6,7 +6,7 @@
                                                 sql-primitive
                                                 insert-rows!]]
             [triangulum.type-conversion :as tc]
-            [triangulum.handler         :refer [data-response]]
+            [triangulum.response        :refer [data-response]]
             [triangulum.errors          :refer [try-catch-throw]]
             [comimo.py-interop          :refer [get-points-within]]))
 

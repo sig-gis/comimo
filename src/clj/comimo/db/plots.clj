@@ -2,7 +2,7 @@
   (:require [clojure.set :as set]
             [triangulum.database :refer [call-sql]]
             [triangulum.type-conversion :as tc]
-            [triangulum.handler :refer [data-response]]))
+            [triangulum.response :refer [data-response]]))
 
 ;;;
 ;;; Collection

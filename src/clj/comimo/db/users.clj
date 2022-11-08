@@ -6,7 +6,7 @@
             [triangulum.config          :refer [get-config]]
             [triangulum.errors          :refer [nil-on-error]]
             [comimo.email               :refer [send-new-user-mail send-reset-mail]]
-            [triangulum.handler         :refer [data-response]])
+            [triangulum.response         :refer [data-response]])
   (:import java.util.UUID))
 
 (defn is-admin? [user-id]

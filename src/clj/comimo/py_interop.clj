@@ -7,7 +7,7 @@
             [triangulum.database :refer [call-sql]]
             [triangulum.logging :refer [log-str]]
             [triangulum.type-conversion :as tc]
-            [triangulum.handler :refer [data-response]]))
+            [triangulum.response :refer [data-response]]))
 
 ;;; Constants
 

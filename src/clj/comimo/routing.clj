@@ -9,7 +9,7 @@
             [ring.util.codec            :refer [url-encode]]
             [ring.util.response         :refer [redirect]]
             [triangulum.type-conversion :as tc]
-            [triangulum.handler         :refer [data-response no-cross-traffic? forbidden-response]]))
+            [triangulum.response         :refer [data-response no-cross-traffic? forbidden-response]]))
 
 (def routes
   {;; Page Routes
