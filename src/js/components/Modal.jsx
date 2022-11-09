@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import styled from "@emotion/styled";
 import PropTypes from "prop-types";
-import { requiredBy } from "airbnb-prop-types";
+// import { requiredBy } from "airbnb-prop-types";
 import Button from "../components/Button";
 
 /**
@@ -163,16 +163,17 @@ const ButtonContainer = styled.div`
   justify-content: flex-end;
   padding: 0.75rem;
 `;
-Modal.propTypes = {
-  closeText: PropTypes.string,
-  confirmText: requiredBy("onConfirm", PropTypes.string),
-  onClose: PropTypes.func.isRequired,
-  onConfirm: PropTypes.func,
-  title: PropTypes.string.isRequired,
-};
 
-Modal.defaultProps = {
-  closeText: "OK",
-  confirmText: null,
-  onConfirm: null,
-};
+// Modal.propTypes = {
+//   closeText: PropTypes.string,
+//   confirmText: requiredBy("onConfirm", PropTypes.string),
+//   onClose: PropTypes.func.isRequired,
+//   onConfirm: PropTypes.func,
+//   title: PropTypes.string.isRequired,
+// };
+
+// Modal.defaultProps = {
+//   closeText: "OK",
+//   confirmText: null,
+//   onConfirm: null,
+// };

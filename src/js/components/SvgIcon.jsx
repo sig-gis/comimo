@@ -446,23 +446,23 @@ function SvgIcon({
   );
 }
 
-SvgIcon.propTypes = {
-  color: PropTypes.string,
-  cursor: PropTypes.string,
-  extraStyle: PropTypes.object,
-  hoverColor: PropTypes.string,
-  hoverFill: PropTypes.string,
-  icon: PropTypes.oneOf(Object.keys(iconMap)).isRequired,
-  onClick: PropTypes.func,
-  size: PropTypes.string.isRequired,
-  verticalAlign: PropTypes.string,
-};
+// SvgIcon.propTypes = {
+//   color: PropTypes.string,
+//   cursor: PropTypes.string,
+//   extraStyle: PropTypes.object,
+//   hoverColor: PropTypes.string,
+//   hoverFill: PropTypes.string,
+//   icon: PropTypes.oneOf(Object.keys(iconMap)).isRequired,
+//   onClick: PropTypes.func,
+//   size: PropTypes.string.isRequired,
+//   verticalAlign: PropTypes.string,
+// };
 
-SvgIcon.defaultProps = {
-  color: "currentColor",
-  cursor: "pointer",
-  extraStyle: {},
-  verticalAlign: "middle",
-};
+// SvgIcon.defaultProps = {
+//   color: "currentColor",
+//   cursor: "pointer",
+//   extraStyle: {},
+//   verticalAlign: "middle",
+// };
 
 export default SvgIcon;

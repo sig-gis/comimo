@@ -16,7 +16,6 @@
   "dependencies": {
     "@emotion/react": "^11.10.5",
     "@emotion/styled": "^11.10.5",
-    "airbnb-prop-types": "^2.16.0",
     "email-validator": "^2.0.4",
     "i18next": "^22.0.4",
     "i18next-browser-languagedetector": "^7.0.1",
