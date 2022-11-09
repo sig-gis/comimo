@@ -19,7 +19,7 @@ export default defineConfig({
     sourcemap: true,
     plugins: [resolve(), babel({ exclude: "node_modules/**" })],
     rollupOptions: {
-      external: ["react-dom/client"],
+      // external: ["react-dom/client"],
       preserveEntrySignatures: "exports-only",
       input: [
         // "node_modules/react-refresh/",

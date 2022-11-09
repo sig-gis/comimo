@@ -26,9 +26,6 @@ export const activeDropDownMenuAtom = atom(
   }
 );
 
-// TODO: remove me after refactoring collect
-export const MainContext = React.createContext({});
-
 export function PageLayout({
   role,
   username,
