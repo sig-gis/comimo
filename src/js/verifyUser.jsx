@@ -1,5 +1,5 @@
 import React, { Suspense, useEffect } from "react";
-import ReactDOM from "react-dom";
+import { createRoot } from "react-dom/client";
 import { useTranslation } from "react-i18next";
 import { ThemeProvider } from "@emotion/react";
 
@@ -43,10 +43,10 @@ function VerifyUser({ token, email }) {
 }
 
 export function pageInit(args) {
-  ReactDOM.render(
+  const root = createRoot(document.getElementById("app"));
+  root.render(
     <Suspense fallback="">
       <VerifyUser email={args.email || ""} token={args.token || ""} />
-    </Suspense>,
-      document.getElementById("app")
+    </Suspense>
   );
 }

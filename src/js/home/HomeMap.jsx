@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
-import ReactDOM from "react-dom";
+import { createRoot } from "react-dom/client";
 import styled from "@emotion/styled";
 import { atom, useAtom, useAtomValue, useSetAtom } from "jotai";
 import "mapbox-gl/dist/mapbox-gl.css";
@@ -168,13 +168,11 @@ export const addPopup = (
 
   // TODO: visiblePanel may not be needed when switching to Footer
   // TODO: update to use refs to clear the build warning...
+  const root = createRoot(document.getElementById(divId));
   if (visiblePanel === "report") {
-    ReactDOM.render(<ReportPopupContent lat={lat} lng={lng} />, document.getElementById(divId));
+    root.render(<ReportPopupContent lat={lat} lng={lng} />);
   } else {
-    ReactDOM.render(
-      <InfoPopupContent map={map} lat={lat} lng={lng} selectedDates={selectedDates} />,
-      document.getElementById(divId)
-    );
+    root.render(<InfoPopupContent map={map} lat={lat} lng={lng} selectedDates={selectedDates} />);
   }
   setMapPopup(popup);
 };

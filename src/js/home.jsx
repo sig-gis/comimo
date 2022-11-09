@@ -1,5 +1,5 @@
 import React, { useEffect, useState, Suspense } from "react";
-import ReactDOM from "react-dom";
+import { createRoot } from "react-dom/client";
 import { useAtom, useSetAtom, useAtomValue, atom } from "jotai";
 import styled from "@emotion/styled";
 import { useTranslation } from "react-i18next";
@@ -277,7 +277,8 @@ function HomeContents() {
 }
 
 export function pageInit(args) {
-  ReactDOM.render(
+  const root = createRoot(document.getElementById("app"));
+  root.render(
     <Suspense fallback="">
       <PageLayout
         role={args.role}
@@ -290,8 +291,7 @@ export function pageInit(args) {
       >
         <HomeContents />
       </PageLayout>
-    </Suspense>,
-      document.getElementById("app")
+    </Suspense>
   );
 }
 

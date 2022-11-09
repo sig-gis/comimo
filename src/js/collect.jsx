@@ -1,5 +1,5 @@
 import React, { useEffect, useState, Suspense } from "react";
-import ReactDOM from "react-dom";
+import { createRoot } from "react-dom/client";
 import { last } from "lodash";
 import { useAtom, useAtomValue, useSetAtom, atom } from "jotai";
 import { useTranslation } from "react-i18next";
@@ -299,7 +299,8 @@ const LogoGitVersion = styled.a`
 `;
 
 export function pageInit(args) {
-  ReactDOM.render(
+const root = createRoot(document.getElementById("app"));
+  root.render(
     <Suspense fallback="">
       <PageLayout
         role={args.role}
@@ -312,7 +313,6 @@ export function pageInit(args) {
       >
         <CollectContent projectId={parseInt(args.projectId || 0)} />
       </PageLayout>
-    </Suspense>,
-    document.getElementById("app")
+    </Suspense>
   );
 }

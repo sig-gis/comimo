@@ -1,5 +1,5 @@
 import React, { Suspense } from "react";
-import ReactDOM from "react-dom";
+import { createRoot } from "react-dom/client";
 import styled from "@emotion/styled";
 import { ThemeProvider } from "@emotion/react";
 import { useTranslation } from "react-i18next";
@@ -50,7 +50,8 @@ function PageNotFound() {
 }
 
 export function pageInit(args) {
-  ReactDOM.render(
+  const root = createRoot(document.getElementById("app"));
+  root.render(
     <Suspense fallback="">
       <PageLayout
         role={args.role}
@@ -60,7 +61,6 @@ export function pageInit(args) {
       >
         <PageNotFound />
       </PageLayout>
-    </Suspense>,
-    document.getElementById("app")
+    </Suspense>
   );
 }

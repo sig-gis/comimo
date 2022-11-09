@@ -1,5 +1,5 @@
 import React, { useEffect, useState, Suspense } from "react";
-import ReactDOM from "react-dom";
+import { createRoot } from "react-dom/client";
 import styled from "@emotion/styled";
 import { isEqual } from "lodash";
 import { ReactTabulator } from "react-tabulator";
@@ -424,7 +424,8 @@ function AdminContent() {
 }
 
 export function pageInit(args) {
-  ReactDOM.render(
+  const root = createRoot(document.getElementById("app"));
+  root.render(
     <Suspense fallback="">
       <PageLayout
         role={args.role}
@@ -434,7 +435,6 @@ export function pageInit(args) {
       >
         <AdminContent />
       </PageLayout>
-    </Suspense>,
-    document.getElementById("app")
+    </Suspense>
   );
 }

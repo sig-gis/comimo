@@ -1,5 +1,5 @@
 import React, { useState, Suspense } from "react";
-import ReactDOM from "react-dom";
+import { createRoot } from "react-dom/client";
 import styled from "@emotion/styled";
 import { css } from "@emotion/react";
 import { ThemeProvider } from "@emotion/react";
@@ -225,7 +225,8 @@ function UserAccount() {
 }
 
 export function pageInit(args) {
-  ReactDOM.render(
+  const root = createRoot(document.getElementById("app"));
+  root.render(
     <Suspense fallback="">
       <PageLayout
         role={args.role}
@@ -235,7 +236,6 @@ export function pageInit(args) {
       >
         <UserAccount />
       </PageLayout>
-    </Suspense>,
-      document.getElementById("app")
+    </Suspense>
   );
 }
