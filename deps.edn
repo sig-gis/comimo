@@ -16,7 +16,7 @@
            :config           {:main-opts ["-m" "triangulum.config"]}
            :https            {:main-opts ["-m" "triangulum.https"]}
            :migrate          {:main-opts ["-m" "comimo.migrate"]}
-           :server           {:main-opts ["-m" "triangulum.servern"]
+           :server           {:main-opts ["-m" "triangulum.server"]
                               :jvm-opts  ["--add-modules=jdk.incubator.foreign"
                                           "--enable-native-access=ALL-UNNAMED"]}
            :systemd          {:main-opts ["-m" "triangulum.systemd"]}
