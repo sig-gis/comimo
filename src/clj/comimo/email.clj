@@ -69,7 +69,7 @@
         title {:en "CoMiMo: mine alert"
                :es "CoMiMo: alerta minera"}
         body  {:text {:en (format (str "Mine Alert\n\n"
-                                       "We have detected possible mining sites in the areas to which it is subscribed.\n\n"
+                                       "We have detected possible mining sites in the areas to which you are subscribed.\n\n"
                                        "You can see the new validations listed in CoMiMo here: %s\n\n"
                                        "To validate this information, go to the validation panel in the application or go directly to CoMiMo: %s&locale=en")
                                   (get-base-url)
@@ -82,9 +82,9 @@
                                   project-url)}
                :html {:en (format (str "<html><body>"
                                        "<h3>Mine Alert</h3>"
-                                       "<p>We have detected possible mining sites in the areas to which it is subscribed.</p>"
-                                       "<p>You can see the new validations listed in CoMiMo <a href='%s'>here.</a>.</p>"
-                                       "<p>To validate this information, go to the validation panel in the application or go directly to"
+                                       "<p>We have detected possible mining sites in the areas to which you are subscribed.</p>"
+                                       "<p>You can see the new validations listed in CoMiMo <a href='%s'>here</a>.</p>"
+                                       "<p>To validate this information, go to the validation panel in the application or go directly to "
                                        "<a href='%s&locale=en'>CoMiMo</a>.</p>"
                                        "</body></html>")
                                   (get-base-url)
@@ -93,7 +93,7 @@
                                        "<h3>¡Alerta!</h3>"
                                        "<p>Hemos detectado posibles sitios de explotación minera en las áreas a las cuales se encuentra suscrito.</p>"
                                        "<p>Puede visualizar estas áreas <a href='%s'>aquí</a>.</p>"
-                                       "<p>Para validar esta información, diríjase al panel de validación en la aplicación o acceda directamente a"
+                                       "<p>Para validar esta información, diríjase al panel de validación en la aplicación o acceda directamente a "
                                        "<a href='%s&locale=es'>CoMiMo</a>.</p>"
                                        "</body></html>")
                                   (get-base-url)
