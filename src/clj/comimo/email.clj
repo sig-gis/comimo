@@ -22,8 +22,8 @@
                :content body}]}))
 
 (defn send-mail [to-addresses cc-addresses bcc-addresses subject body content-type]
-  (let [mime                    {:text "text/plain"
-                                 :html "text/html"}
+  (let [mime                    {:text "text/plain; charset=UTF-8"
+                                 :html "text/html; charset=UTF-8"}
         {:keys [message error]} (send-postal to-addresses
                                              cc-addresses
                                              bcc-addresses
