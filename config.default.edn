@@ -3,12 +3,12 @@
                 :dbname   "comimo"
                 :user     "comimo"
                 :password "comimo"}
- :mail         {:host     "smtp.gmail.com"
-                :user     ""
-                :pass     ""
-                :tls      true
-                :port     587
-                :base-url "https://my.domain/"
+ :mail         {:host           "smtp.gmail.com"
+                :user           ""
+                :pass           ""
+                :tls            true
+                :port           587
+                :base-url       "https://my.domain/"
                 :auto-validate? false}
  :server       {:http-port 8080
                 :mode      "dev"
