@@ -53,7 +53,7 @@
                 action      (if project-id "Created" "Failed")
                 project-url (str (get-base-url) "/collect?projectId=" project-id)]
             (when (= action "Created")
-              (send-alert-mail email project-url default_lang)
+              (send-alert-mail email project-url default_lang :type :html)
               (println "email sent to " email))
             (call-sql "log_email_alert" user_id action msg regions)
             (println "called log email alert sql")
