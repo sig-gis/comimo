@@ -57,9 +57,23 @@
 (defn location-in-country [lat lng]
   (py-wrapper utils/locationInCountry lat lng))
 
-;; For now this isnt generic.
+;;; Image Cache
+
+(defonce image-max-age         (* 60 1000)) ; Once an hour
+(defonce image-cache           (atom nil))
+(defonce image-cache-timestamp (atom 0))
+
+(defn- image-cached? []
+  (and (< (- (System/currentTimeMillis) @image-cache-timestamp) image-max-age)
+       (seq @image-cache)))
+
+(defn- reset-image-cache! []
+    (reset! image-cache (py-wrapper utils/getImageList image-location)))
+
 (defn get-image-list []
-  (py-wrapper utils/getImageList image-location))
+  (when-not (image-cached?)
+    (reset-image-cache!))
+  @image-cache)
 
 ;;; Routes
 
