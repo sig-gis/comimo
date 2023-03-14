@@ -68,7 +68,8 @@
        (seq @image-cache)))
 
 (defn- reset-image-cache! []
-    (reset! image-cache (py-wrapper utils/getImageList image-location)))
+  (reset! image-cache-timestamp (System/currentTimeMillis))
+  (reset! image-cache (py-wrapper utils/getImageList image-location)))
 
 (defn get-image-list []
   (when-not (image-cached?)
