@@ -20,4 +20,4 @@ classes/
 .DS_Store
 resources/public/js/
 .calva/
-
+.rebel_readline_history
