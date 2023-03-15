@@ -15,6 +15,22 @@
 (def point-location "users/comimoapp/ValidationPoints")
 (def image-location "users/comimoapp/Images")
 
+;;; Macros
+
+(defmacro run-with-timeout
+  "Run a function (`body`) while waiting a specific amount of time (`wait-ms`).
+   If the body takes longer that the provided amount of time, `:timeout-reached` is returned.
+   Example usage:
+   (run-with-timeout 2000 (+ 1 2)) ;=> 3
+   (run-with-timeout 2000 (Thread/sleep 1000) (+ 1 2)) ;=> 3
+   (run-with-timeout 2000 (Thread/sleep 3000) (+ 1 2)) ;=> :timeout-reached"
+  [wait-ms & body]
+  `(let [f#      (future ~@body)
+         result# (deref f# ~wait-ms :timeout-reached)]
+     (when (= result# :timeout-reached)
+       (future-cancel f#))
+     result#))
+
 ;;; GEE Python interface
 
 (require-python '[sys :bind-ns])
@@ -41,13 +57,14 @@
                    (str/join ": "))}))
 
 (defn- py-wrapper [py-fn & params]
-  (check-initialized)
-  (binding [*item-tuple-cutoff* 0]
-    (try (->jvm (apply py-fn params))
-         (catch Exception e
-           (let [parsed (parse-py-errors e)]
-             (log-str parsed)
-             parsed)))))
+  (run-with-timeout 3000
+                    (check-initialized)
+                    (binding [*item-tuple-cutoff* 0]
+                      (try (->jvm (apply py-fn params))
+                           (catch Exception e
+                             (let [parsed (parse-py-errors e)]
+                               (log-str parsed)
+                               parsed))))))
 
 ;;; Utils
 
@@ -57,9 +74,24 @@
 (defn location-in-country [lat lng]
   (py-wrapper utils/locationInCountry lat lng))
 
-;; For now this isnt generic.
+;;; Image Cache
+
+(defonce image-max-age         (* 60 1000)) ; Once an hour
+(defonce image-cache           (atom nil))
+(defonce image-cache-timestamp (atom 0))
+
+(defn- image-cached? []
+  (and (< (- (System/currentTimeMillis) @image-cache-timestamp) image-max-age)
+       (seq @image-cache)))
+
+(defn- reset-image-cache! []
+  (reset! image-cache-timestamp (System/currentTimeMillis))
+  (reset! image-cache (py-wrapper utils/getImageList image-location)))
+
 (defn get-image-list []
-  (py-wrapper utils/getImageList image-location))
+  (when-not (image-cached?)
+    (reset-image-cache!))
+  @image-cache)
 
 ;;; Routes
 
