@@ -13,14 +13,22 @@ import { useTranslation } from "react-i18next";
 import { visiblePanelAtom } from "../home";
 
 const SearchResults = styled.div`
+  background: var(--gray-3);
+  border-radius: 5px;
+  padding: 0.5rem;
+
   &:active {
-    background: #ddd;
+    background: var(--orange-4);
     cursor: pointer;
   }
 
   &:hover {
-    background: #eee;
+    background: var(--orange-4);
     cursor: pointer;
+  }
+
+  &:last-child {
+    margin-bottom: 15px;
   }
 `;
 
@@ -49,8 +57,7 @@ export default function Search({ theMap, featureNames, mapquestKey, isPanel }) {
   const { t } = useTranslation();
 
   const searchGeocode = () => {
-    const url =
-      URLS.MAPQUEST + "?key=" + mapquestKey + "&county=" + searchText + "&country=colombia";
+    const url = URLS.MAPQUEST + "?key=" + mapquestKey + "&location=" + searchText + ",Columbia";
     jsonRequest(url, null, "GET")
       .then((result) => {
         setGeoCodedSearch(
@@ -58,8 +65,7 @@ export default function Search({ theMap, featureNames, mapquestKey, isPanel }) {
             try {
               return (
                 l.adminArea1 === "CO" &&
-                featureNames[l.adminArea3.toUpperCase()][l.adminArea4.toUpperCase()] &&
-                !l.adminArea5 &&
+                featureNames[l.adminArea4.toUpperCase()][l.adminArea5.toUpperCase()] &&
                 !l.adminArea6
               );
             } catch (err) {
@@ -89,15 +95,16 @@ export default function Search({ theMap, featureNames, mapquestKey, isPanel }) {
             <SearchResults
               key={item.adminArea3}
               onClick={() => {
-                const state = item.adminArea3.toUpperCase();
-                const mun = item.adminArea4.toUpperCase();
+                const state = item.adminArea4.toUpperCase();
+                const mun = item.adminArea5.toUpperCase();
                 setSelectedL1(state);
                 setSelectedL2(mun);
                 fitMap(theMap, "bbox", featureNames[state][mun], t);
                 // We don't want to set the selected region on the header Search tool
                 !isPanel &&
                   setSelectedRegion(
-                    `mun_${item.adminArea3.toUpperCase()}_${item.adminArea4.toUpperCase()}`
+                    // adminArea4 is "county", adminArea5 is "city"
+                    `mun_${item.adminArea5.toUpperCase()}_${item.adminArea4.toUpperCase()}`
                   );
               }}
               style={{ display: "flex", flexDirection: "column" }}
@@ -105,7 +112,7 @@ export default function Search({ theMap, featureNames, mapquestKey, isPanel }) {
               <span>
                 <b>{item.adminArea1}</b>&nbsp;
                 <i>
-                  {item.adminArea4}, {item.adminArea3}
+                  {item.adminArea5}, {item.adminArea4}
                 </i>
               </span>
               <span>
