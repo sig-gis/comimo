@@ -91,7 +91,7 @@ export const URLS = {
   IMG_DATES: "get-image-names",
   LOGS: "get-log-list",
   NICFI_DATES: "get-nicfi-dates",
-  MAPQUEST: "https://open.mapquestapi.com/geocoding/v1/address",
+  MAPQUEST: "https://www.mapquestapi.com/geocoding/v1/address",
   PROJ_DATA: "get-project-by-id",
   PROJ_PLOTS: "get-project-plots",
   PREDICTIONS: "download-predictions",
