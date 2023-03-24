@@ -114,32 +114,32 @@
                                            :source      "users/comimoapp/Shapes/Legal_Mines"
                                            :info-cols   ["ID"]
                                            :line        "#ff0"
-                                           :fill        "#ffff0011"}
+                                           :fill        "#ffff0022"}
                     "otherAuthorizations" {:source-type :vector
                                            :source      "users/comimoapp/Shapes/Solicitudes_de_Legalizacion_2010"
                                            :info-cols   ["ID"]
                                            :line        "#047"
-                                           :fill        "#00447711"}
+                                           :fill        "#00447722"}
                     "tierrasDeCom"        {:source-type :vector
                                            :source      "users/comimoapp/Shapes/Tierras_de_comunidades_negras"
                                            :info-cols   ["NOMBRE"]
                                            :line        "#fd9"
-                                           :fill        "#ffdd9911"}
+                                           :fill        "#ffdd9922"}
                     "resguardos"          {:source-type :vector
                                            :source      "users/comimoapp/Shapes/Resguardos_Indigenas"
                                            :info-cols   ["NOMBRE"]
                                            :line        "#d9d"
-                                           :fill        "#dd99dd11"}
+                                           :fill        "#dd99dd22"}
                     "protectedAreas"      {:source-type :vector
                                            :source      "users/comimoapp/Shapes/RUNAP"
                                            :info-cols   ["categoria" "nombre"]
                                            :line        "#35f0ab"
-                                           :fill        "#dd99dd11"}
+                                           :fill        "#35f0ab22"}
                     "licensedMining"      {:source-type :vector
                                            :source      "users/comimoapp/Shapes/ANLA_Mineria_Licenciada"
                                            :info-cols   ["operador"]
                                            :line        "#86CAFF"
-                                           :fill        "#dd99dd11"}})
+                                           :fill        "#86CAFF22"}})
 
 (defn get-image-url [{:keys [params]}]
   (let [image-type (:type params)
