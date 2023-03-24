@@ -21,4 +21,4 @@ classes/
 resources/public/js/
 .calva/
 .rebel_readline_history
-.vscode
+.vscode/
