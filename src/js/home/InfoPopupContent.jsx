@@ -34,6 +34,7 @@ export default function InfoPopupContent({ map, lat, lng, selectedDates }) {
     legalMines,
     tierrasDeCom,
     resguardos,
+    licensedMining,
   } = layerInfo;
 
   const layerToInfo = {
@@ -109,6 +110,14 @@ export default function InfoPopupContent({ map, lat, lng, selectedDates }) {
         <span>
           <strong>{t("home.resguardosPopup")}: </strong>
           {resguardos}
+        </span>
+      </PopupMapInfo>
+    ),
+    licensedMining: licensedMining && (
+      <PopupMapInfo key="licensedMining">
+        <span>
+          <strong>{t("home.licensedMiningPopup")}: </strong>
+          {licensedMining}
         </span>
       </PopupMapInfo>
     ),
