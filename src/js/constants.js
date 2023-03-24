@@ -115,6 +115,7 @@ export const availableLayers = [
   "tierrasDeCom",
   "resguardos",
   "protectedAreas",
+  "licensedMining",
   "NICFI",
 ];
 
@@ -128,6 +129,7 @@ export const layerColors = {
   tierrasDeCom: "#EDD18F",
   resguardos: "#DB99DB",
   protectedAreas: "#30CE97",
+  licensedMining: "#86CAFF",
   NICFI: "#159ebf",
 };
 

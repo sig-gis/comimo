@@ -134,6 +134,11 @@
                                            :source      "users/comimoapp/Shapes/RUNAP"
                                            :info-cols   ["categoria" "nombre"]
                                            :line        "#35f0ab"
+                                           :fill        "#dd99dd11"}
+                    "licensedMining"      {:source-type :vector
+                                           :source      "users/comimoapp/Shapes/ANLA_Mineria_Licenciada"
+                                           :info-cols   ["operador"]
+                                           :line        "#86CAFF"
                                            :fill        "#dd99dd11"}})
 
 (defn get-image-url [{:keys [params]}]
