@@ -199,16 +199,6 @@ export default function ValidatePanel({ subscribedList, featureNames, selectedDa
           };
         })}
         ref={selectRef}
-        styles={{
-          menu: (baseStyles, state) => ({
-            ...baseStyles,
-            marginBottom: "0.5rem",
-          }),
-          menuPortal: (baseStyles, state) => ({
-            ...baseStyles,
-            marginBottom: "40px",
-          }),
-        }}
       />
     );
   };
