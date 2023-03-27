@@ -2,13 +2,13 @@ import React, { useRef, useEffect, useState } from "react";
 import { useAtom, useAtomValue } from "jotai";
 import styled from "@emotion/styled";
 import { css } from "@emotion/react";
+import Select from "react-select";
 
 import LoginMessage from "./LoginMessage";
 
 import Button from "../components/Button";
 import ToolCard from "../components/ToolCard";
 import ProjectCard from "../components/ProjectCard";
-import Select from "../components/Select";
 import TextInput from "../components/TextInput";
 import HeaderLabel from "../components/HeaderLabel";
 import { renderMessageBox } from "../components/Modal";
@@ -39,6 +39,7 @@ export default function ValidatePanel({ subscribedList, featureNames, selectedDa
   const [errorMsg, setErrorMsg] = useState(null);
   const [messageBox, setMessageBox] = useState(null);
   const msgRef = useRef(null);
+  const selectRef = useRef(null);
 
   const scrollToRef = (ref) => ref && ref.current.scrollIntoView({ behavior: "smooth" });
 
@@ -160,32 +161,45 @@ export default function ValidatePanel({ subscribedList, featureNames, selectedDa
 
   const renderCustomRegions = () => {
     const states = Object.keys(featureNames).sort();
+
+    const handleCloseSelect = () => {
+      selectRef.current.blur();
+    };
+
     return states.length === 0 ? (
       <option key="0" disabled>{`${t("validate.loading")}...`}</option>
     ) : (
-      <select
+      <Select
+        blurInputOnSelect={false} // to make sure the menu doesn't close on mobile select
+        className="basic-multi-select"
+        classNamePrefix="select"
+        closeMenuOnSelect={false}
+        defaultValue={customRegions.map((region) => {
+          // To match the convetion above, we use the value as "state_municipality"
+          // and the label as just the "municipality" (we split on the underscore)
+          return { value: region, label: region.split("_")[1] };
+        })}
         id="selectProjRegions"
-        multiple
-        onChange={() => null} // This is to squash the react warning
-        size="8"
-        style={{ width: "100%", float: "left", marginBottom: "10px" }}
-        value={customRegions}
-      >
-        {states.map((state) => (
-          <optgroup key={state} label={state}>
-            {Object.keys(featureNames[state])
-              .sort()
-              .map((mun) => {
-                const combined = state + "_" + mun;
-                return (
-                  <option key={mun} onClick={() => customSelect(combined)} value={combined}>
-                    {mun}
-                  </option>
-                );
-              })}
-          </optgroup>
-        ))}
-      </select>
+        isMulti
+        isSearchable={false}
+        onBlur={handleCloseSelect}
+        onChange={(e) => {
+          setCustomRegions(e.map((selection) => selection.value));
+        }}
+        // Because we're using a multi-select component, options need to be an array of objects.
+        // Here, each object is a different state where the label is the state and the options are all
+        // municipalities within that state. We use the convention "state_municipality" for value matching.
+        options={states.map((state) => {
+          const allMunicipalities = Object.keys(featureNames[state]).sort();
+          return {
+            label: state,
+            options: allMunicipalities.map((mun) => {
+              return { value: state + "_" + mun, label: mun };
+            }),
+          };
+        })}
+        ref={selectRef}
+      />
     );
   };
 
@@ -224,15 +238,25 @@ export default function ValidatePanel({ subscribedList, featureNames, selectedDa
             onChange={(e) => setProjectName(e.target.value)}
             value={projectName}
           />
+          <Label htmlFor="selectMineType">{`${t("validate.typeLabel")}:`}</Label>
           <Select
+            className="basic-single"
+            classNamePrefix="select"
+            defaultValue={{ value: mineType, label: t(`validate.${mineType}`) }}
             id="selectMineType"
-            label={`${t("validate.typeLabel")}:`}
-            onChange={(e) => setMineType(e.target.value)}
+            onChange={(e) => setMineType(e.value)}
             options={["pMines", "nMines", "cMines"].map((m) => ({
               value: m,
               label: t(`validate.${m}`),
             }))}
-            value={mineType}
+            styles={{
+              control: (baseStyles, state) => ({
+                ...baseStyles,
+                marginBottom: "0.5rem",
+                marginTop: "0.5rem",
+                fontSize: "1rem",
+              }),
+            }}
           />
           <Label>{`${t("validate.projectRegion")}:`}</Label>
           <label htmlFor="subscribed" style={{ marginTop: ".25rem", cursor: "pointer" }}>

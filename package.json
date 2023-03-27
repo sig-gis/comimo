@@ -28,6 +28,7 @@
     "react": "^16.8.0",
     "react-dom": "^16.8.0",
     "react-i18next": "^11.18.5",
+    "react-select": "^5.7.2",
     "react-tabulator": "^0.18.1",
     "turf-extent": "^1.0.4"
   },
