@@ -63,7 +63,7 @@ export default function CollectMap({ boundary, projectPlots, goToPlot, currentPl
   }, [collectMap, mapIsLoaded, extraMapParams]);
 
   useEffect(() => {
-    if (collectMap && mapIsLoaded && boundary) {
+    if (collectMap && mapIsLoaded && boundary && projectPlots.length > 0) {
       addPlots();
       addBoundary();
     }
