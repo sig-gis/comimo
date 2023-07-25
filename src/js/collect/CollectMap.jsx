@@ -51,6 +51,13 @@ export default function CollectMap({ boundary, projectPlots, goToPlot, currentPl
         center: [lng, lat],
         zoom: zoom,
       });
+
+      // disable map rotation using right click + drag
+      map.dragRotate.disable();
+
+      // disable map rotation using touch rotation gesture
+      map.touchZoomRotate.disableRotation();
+
       map.on("load", () => mapOnLoad(map));
       setCollectMap(map);
     }
