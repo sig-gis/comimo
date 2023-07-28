@@ -57,8 +57,8 @@
                    (str/join ": "))}))
 
 (defn- py-wrapper [py-fn & params]
+  (check-initialized)
   (run-with-timeout 3000
-                    (check-initialized)
                     (binding [*item-tuple-cutoff* 0]
                       (try (->jvm (apply py-fn params))
                            (catch Exception e
@@ -97,6 +97,9 @@
 
 (defn get-image-names [_]
   (let [image-list (get-image-list)]
+    (log-str "sanity check")
+    (log-str image-list)
+    (log-str (check-initialized))    
     (data-response {:cMines (filter #(re-matches #"\d{4}-\d{2}-\d{2}-\d{4}-\d{2}-\d{2}-C" %) image-list)
                     :nMines (filter #(re-matches #"\d{4}-\d{2}-\d{2}-N" %) image-list)
                     :pMines (filter #(re-matches #"\d{4}-\d{2}-\d{2}-P" %) image-list)})))
