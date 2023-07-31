@@ -276,22 +276,22 @@ function HomeContents() {
   );
 }
 
-export function pageInit(args) {
+export function pageInit(args, session) {
   ReactDOM.render(
     <Suspense fallback="">
       <PageLayout
-        role={args.role}
-        username={args.username}
-        mapboxToken={args.mapboxToken}
-        mapquestKey={args.mapquestKey}
+        role={session.role}
+        username={session.username}
+        mapboxToken={session.mapboxToken}
+        mapquestKey={session.mapquestKey}
         theMap="homeMap"
-        versionDeployed={args.versionDeployed}
+        versionDeployed={session.versionDeployed}
         showSearch={true}
       >
         <HomeContents />
       </PageLayout>
     </Suspense>,
-    document.getElementById("main-container")
+    document.getElementById("app")
   );
 }
 

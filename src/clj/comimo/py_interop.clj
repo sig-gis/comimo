@@ -1,13 +1,13 @@
 (ns comimo.py-interop
-  (:require [clojure.string :as str]
-            [libpython-clj2.require :refer [require-python]]
-            [libpython-clj2.python  :refer [py. get-attr ->jvm]]
+  (:require [clojure.string             :as str]
+            [libpython-clj2.python      :refer [py. get-attr ->jvm]]
             [libpython-clj2.python.copy :refer [*item-tuple-cutoff*]]
-            [triangulum.type-conversion :as tc]
-            [triangulum.logging :refer [log-str]]
-            [triangulum.config :refer [get-config]]
-            [comimo.views :refer [data-response]]
-            [triangulum.database :refer [call-sql]]))
+            [libpython-clj2.require     :refer [require-python]]
+            [triangulum.config          :refer [get-config]]
+            [triangulum.database        :refer [call-sql]]
+            [triangulum.logging         :refer [log-str]]
+            [triangulum.response        :refer [data-response]]
+            [triangulum.type-conversion :as tc]))
 
 ;;; Constants
 
@@ -41,7 +41,8 @@
 
 (defn- check-initialized []
   (when (> (- (System/currentTimeMillis) @last-initialized) max-age)
-    (let [{:keys [ee-account ee-key-path]} (get-config :gee)]
+    (let [ee-account (get-config ::ee-account)
+          ee-key-path (get-config ::ee-key-path)]
       (utils/initialize ee-account ee-key-path)
       (reset! last-initialized (System/currentTimeMillis)))))
 

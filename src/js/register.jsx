@@ -198,18 +198,18 @@ function Register() {
   );
 }
 
-export function pageInit(args) {
+export function pageInit(args, session) {
   ReactDOM.render(
     <Suspense fallback="">
       <PageLayout
-        role={args.role}
-        username={args.username}
-        version={args.versionDeployed}
+        role={session.role}
+        username={session.username}
+        version={session.versionDeployed}
         showSearch={false}
       >
         <Register />
       </PageLayout>
     </Suspense>,
-    document.getElementById("main-container")
+    document.getElementById("app")
   );
 }

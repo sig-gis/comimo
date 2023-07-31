@@ -42,11 +42,11 @@ function VerifyUser({ token, email }) {
   );
 }
 
-export function pageInit(args) {
+export function pageInit(args, session) {
   ReactDOM.render(
     <Suspense fallback="">
       <VerifyUser email={args.email || ""} token={args.token || ""} />
     </Suspense>,
-    document.getElementById("main-container")
+    document.getElementById("app")
   );
 }

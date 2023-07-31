@@ -103,18 +103,18 @@ function PasswordReset({ email, token }) {
   );
 }
 
-export function pageInit(args) {
+export function pageInit(args, session) {
   ReactDOM.render(
     <Suspense fallback="">
       <PageLayout
-        role={args.role}
-        username={args.username}
-        version={args.versionDeployed}
+        role={session.role}
+        username={session.username}
+        version={session.versionDeployed}
         showSearch={false}
       >
         <PasswordReset email={args.email || ""} token={args.token || ""} />
       </PageLayout>
     </Suspense>,
-    document.getElementById("main-container")
+    document.getElementById("app")
   );
 }

@@ -1,11 +1,12 @@
 (ns comimo.db.subscriptions
   (:require [clojure.set                :as set]
-            [triangulum.type-conversion :as tc]
-            [triangulum.database        :refer [call-sql sql-primitive]]
-            [comimo.views               :refer [data-response]]
             [comimo.db.projects         :refer [create-project!]]
-            [comimo.email               :refer [send-alert-mail get-base-url]]
-            [comimo.py-interop          :refer [location-in-country get-image-list]]))
+            [comimo.email               :refer [send-alert-mail]]
+            [comimo.py-interop          :refer [location-in-country get-image-list]]
+            [triangulum.database        :refer [call-sql sql-primitive]]
+            [triangulum.email           :refer [get-base-url]]
+            [triangulum.response        :refer [data-response]]
+            [triangulum.type-conversion :as tc]))
 
 ;;;
 ;;; Subscription Management

@@ -423,7 +423,7 @@ function AdminContent() {
   );
 }
 
-export function pageInit(args) {
+export function pageInit(args, session) {
   ReactDOM.render(
     <Suspense fallback="">
       <PageLayout
@@ -435,6 +435,6 @@ export function pageInit(args) {
         <AdminContent />
       </PageLayout>
     </Suspense>,
-    document.getElementById("main-container")
+    document.getElementById("app")
   );
 }

@@ -1,7 +1,7 @@
 (ns comimo.db.plots
-  (:require [clojure.set :as set]
-            [comimo.views :refer [data-response]]
-            [triangulum.database :refer [call-sql]]
+  (:require [clojure.set                :as set]
+            [triangulum.response        :refer [data-response]]
+            [triangulum.database        :refer [call-sql]]
             [triangulum.type-conversion :as tc]))
 
 ;;;
