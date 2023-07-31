@@ -119,9 +119,9 @@
                     "&flash_message=You must login to see "
                     full-url))))))
 
-(defn handler [{:keys [uri request-method params headers] :as request}]
+(defn handler [{:keys [uri request-method params session headers] :as request}]
   (let [{:keys [auth-type auth-action handler] :as route} (get routes [request-method uri])
-        user-id      (:userId params -1)
+        user-id      (:userId session -1)
         project-id   (tc/val->int (:projectId params))
         plot-id      (tc/val->int (:plotId params))
         next-handler (if route

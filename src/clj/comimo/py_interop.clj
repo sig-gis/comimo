@@ -172,8 +172,8 @@
 (defn combine-stats [{:strs [names count]}]
   (zipmap names count))
 
-(defn get-stats-by-region [{:keys [params]}]
-  (let [user-id    (tc/val->int (:userId params))
+(defn get-stats-by-region [{:keys [params session]}]
+  (let [user-id    (tc/val->int (:userId session))
         data-layer (:dataLayer params)]
     (->> (py-wrapper utils/statsByRegion
                      (str image-location "/" data-layer)
@@ -182,8 +182,8 @@
          (filterv (fn [[_k v]] (> v 0.0)))
          (data-response))))
 
-(defn get-stat-totals [{:keys [params]}]
-  (let [user-id    (tc/val->int (:userId params))]
+(defn get-stat-totals [{:keys [params session]}]
+  (let [user-id    (tc/val->int (:userId session))]
     (->> (py-wrapper utils/statTotals
                      (str image-location)
                      (get-subscribed-regions user-id))

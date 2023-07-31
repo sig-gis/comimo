@@ -40,8 +40,8 @@
   (let [project-id (tc/val->int (:projectId params))]
     (data-response (single-project-by-id project-id))))
 
-(defn user-projects [{:keys [params]}]
-  (let [user-id (:userId params -1)]
+(defn user-projects [{:keys [session]}]
+  (let [user-id (:userId session -1)]
     (data-response (build-user-projects user-id))))
 
 ;;;
@@ -101,8 +101,8 @@
                     (str "errorNewProject, -" (str/join "\n-" causes))
                     (assoc result :msg "errorUnknown")))))))))
 
-(defn create-project [{:keys [params]}]
-  (let [user-id    (:userId params -1)
+(defn create-project [{:keys [params session]}]
+  (let [user-id    (:userId session -1)
         proj-name  (:name params)
         regions    (:regions params)
         data-layer (:dataLayer params)]
