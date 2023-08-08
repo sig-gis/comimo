@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import styled from "@emotion/styled";
-import { AutoComplete } from "primereact/autocomplete";
 
 import Divider from "../components/Divider";
 import SvgButton from "../collect/SvgButton";
