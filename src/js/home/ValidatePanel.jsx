@@ -314,9 +314,6 @@ export default function ValidatePanel({ subscribedList, featureNames, selectedDa
                 ? customRegions.map((x) => "mun_" + x).join("_")
                 : customProjectName;
               const _dataLayer = selectedDates?.[mineType] || "2022-01-01-N";
-
-              debugger;
-
               createProject(_projectName, _dataLayer);
             }}
           >{`${t("validate.createButton")} ${selectedDates?.[mineType]}`}</Button>
