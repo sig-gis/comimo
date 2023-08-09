@@ -234,7 +234,7 @@ export default function ValidatePanel({ subscribedList, featureNames, selectedDa
             {t("validate.createProject")}
           </HeaderLabel>
           <Label>{`${t("validate.projectRegion")}:`}</Label>
-          <Label>Project Name</Label>
+          <Label>{t("validate.projectNameLabel")}</Label>
           <label htmlFor="autoProjectName" style={{ marginTop: ".25rem", cursor: "pointer" }}>
             <input
               id="autoProjectName"
@@ -243,7 +243,7 @@ export default function ValidatePanel({ subscribedList, featureNames, selectedDa
               onChange={() => setAutoProjectName(true)}
               type="radio"
             />
-            Auto Generate
+            {t("validate.autoGenerate")}
           </label>
           <label htmlFor="customProjectName" style={{ marginTop: ".25rem", cursor: "pointer" }}>
             <input
@@ -254,7 +254,7 @@ export default function ValidatePanel({ subscribedList, featureNames, selectedDa
               type="radio"
               value={false}
             />
-            Custom Project Name
+            {t("validate.customProjectName")}
           </label>
           {!autoProjectName && (
             <TextInput

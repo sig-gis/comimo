@@ -274,6 +274,7 @@
     "verifying": "Verificando email"
   },
   "validate": {
+    "autoGenerate": "Generar automáticamente",
     "cMines": "Minas confirmadas",
     "closeConfirm": "¿Estás seguro/a de que quieres cerrar este proyecto? Al cerrar el proyecto ya no podrás validar las predicciones a menos que crees uno nuevo.",
     "closeTitle": "Cerrar Proyecto",
@@ -282,6 +283,7 @@
     "createProject": "Crea un Nuevo Proyecto",
     "createTitle": "Crear Proyecto",
     "createdLabel": "Fecha de creación",
+    "customProjectName": "Personaliza el Nombre del Proyecto",
     "customRadio": "Municipios personalizados",
     "errorClose": "No se pudo cerrar el proyecto.",
     "errorDate": "Seleccionar una fecha.",
@@ -302,7 +304,8 @@
     "pMines": "Predicciones actuales",
     "predictionLabel": "Fecha de predicción",
     "projectExists": "Ya existe un proyecto con esta configuración.",
-    "projectName": "Ingresa el Nombre del Proyecto",
+    "projectName": "Nombre del Proyecto",
+    "projectNameLabel": "Ingresa el Nombre del Proyecto",
     "projectRegion": "Selecciona los Municipios del Proyecto",
     "projectWithNoPlots": "No hay predicciones en los municipios seleccionados.",
     "regionsLabel": "Municipios",
