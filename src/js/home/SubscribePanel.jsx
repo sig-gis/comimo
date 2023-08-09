@@ -210,7 +210,7 @@ export default function SubscribePanel({
               featureNames={featureNames}
               theMap={homeMap}
               mapquestKey={mapquestKey}
-            ></Search>
+            />
 
             {renderAddMunicipality()}
           </div>

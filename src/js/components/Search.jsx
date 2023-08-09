@@ -48,10 +48,32 @@ const FormArea = styled.div`
 const FieldContainer = styled.div`
   padding-top: 2rem;
   margin-bottom: 2rem;
+
+  // Style child label
+  & > span {
+    color: ${({ $isDisabled }) => ($isDisabled ? "var(--gray)" : "var(--black)")};
+  }
+
+  // Style autocomplete dropdown
+  & .p-autocomplete {
+    display: block;
+    width: 100%;
+  }
+
+  // Style autocomplete input
+  & .p-autocomplete > input {
+    min-width: 80%;
+  }
+
+  // Style autocomplete dropdown button
+  & .p-button {
+    background: ${({ $isDisabled }) => ($isDisabled ? "var(--gray-3)" : "var(--orange-4)")};
+    border-color: ${({ $isDisabled }) => ($isDisabled ? "var(--gray-4)" : "var(--orange-3)")};
+    color: ${({ $isDisabled }) => ($isDisabled ? "var(--white)" : "var(--black)")};
+  }
 `;
 
 const Label = styled.span`
-  color: ${({ $isDisabled }) => ($isDisabled ? "var(--gray)" : "var(--black)")};
   font-size: 16px;
   font-weight: var(--unnamed-font-weight-medium);
   letter-spacing: 0px;
@@ -184,6 +206,8 @@ export default function Search({ theMap, featureNames = {}, mapquestKey, isPanel
     }
   };
 
+  const muniSelectionDisabled = listOfMunis.length <= 0;
+
   return (
     <ThemeProvider theme={THEME}>
       <div>
@@ -225,6 +249,7 @@ export default function Search({ theMap, featureNames = {}, mapquestKey, isPanel
             <FieldContainer>
               <Label>{t("search.defaultState")}</Label>
               <AutoComplete
+                autoFocus={true}
                 aria-label={t("search.stateLabel")}
                 dropdownAriaLabel={t("search.defaultState")}
                 value={selectedState}
@@ -234,24 +259,27 @@ export default function Search({ theMap, featureNames = {}, mapquestKey, isPanel
                 dropdown
               />
             </FieldContainer>
-            <FieldContainer>
-              <Label $isDisabled={listOfMunis.length <= 0}>{t("search.defaultMun")}</Label>
+            <FieldContainer $isDisabled={muniSelectionDisabled}>
+              <Label>{t("search.defaultMun")}</Label>
               <AutoComplete
+                autoFocus={true}
                 aria-label={t("search.munLabel")}
                 dropdownAriaLabel={t("search.defaultMun")}
                 value={selectedMuni}
-                disabled={listOfMunis.length <= 0}
+                disabled={muniSelectionDisabled}
                 suggestions={listOfMuniSuggestions}
                 onChange={(e) => setSelectedMuni(e.target.value)}
                 onSelect={(e) => {
                   const _selectedMuni = e.value;
                   setSelectedMuni(_selectedMuni);
+                  /*
                   const coords = featureNames[selectedState][_selectedMuni];
                   if (Array.isArray(coords)) {
                     fitMap(theMap, "bbox", coords, t);
                   }
+                  */
                   // We don't want to set the selected region on the header Search tool
-                  !isPanel && setSelectedRegion("mun_" + selectedState + "_" + selectedMuni);
+                  !isPanel && setSelectedRegion("mun_" + selectedState + "_" + _selectedMuni);
                 }}
                 completeMethod={filterListOfMunis}
                 dropdown
