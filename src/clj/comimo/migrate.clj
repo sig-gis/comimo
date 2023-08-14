@@ -2,7 +2,7 @@
   (:require [triangulum.cli      :refer [get-cli-options]]
             [triangulum.config   :refer [get-config]]
             [triangulum.database :refer [call-sql call-sqlite insert-rows!]])
-            [triangulum.email     :refer [get-base-url send-mail]]
+            [triangulum.email    :refer [get-base-url send-mail]]
   (:import java.util.UUID))
 
 (def MILLISECONDS 5000)
@@ -46,9 +46,9 @@
                                     "You can access the updated CoMiMo User Manual to answer any questions.\n\n"
                                     "Thank you,\n\n"
                                     "The CoMiMo Team")
-                            (get-base-url)
-                            token
-                            email)
+                                  (get-base-url)
+                                  token
+                                  email)
                       :es (format (str "Restablecimiento de contraseña\n\n"
                                     "La nueva versión de CoMiMo ya está disponible. "
                                     "Para restablecer su contraseña haga clic en el siguiente enlace e ingrese su nueva contraseña:\n\n"
@@ -56,9 +56,9 @@
                                     "Si tienes preguntas adicionales, puedes acceder al Manual de usuario de CoMiMo actualizado.\n\n"
                                     "Gracias,\n\n"
                                     "El equipo de CoMiMo")
-                            (get-base-url)
-                            token
-                            email)}}]
+                                  (get-base-url)
+                                  token
+                                  email)}}]
     (send-mail email nil nil (get title lang) (get-in body [type lang]) type)))
 
 (defn notify-users! [{:keys [milliseconds] :or {milliseconds MILLISECONDS}}]
@@ -94,8 +94,8 @@
                          (assoc :region (str level "_" region))
                          (update :last_alert_for #(java.sql.Timestamp/valueOf %))
                          (update :created_date #(java.sql.Timestamp/valueOf %))))))
-         (insert-rows! "subscriptions"))
-    (println "Finishing...")))
+              (insert-rows! "subscriptions"))
+         (println "Finishing...")))
 
 (def ^:private cli-actions
   {:move-users   {:description "Migrate user accounts with subscriptions."
