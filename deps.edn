@@ -7,8 +7,7 @@
            ring/ring                 {:mvn/version "1.8.2"}
            sig-gis/triangulum        {:git/url "https://github.com/sig-gis/triangulum"
                                       :git/sha "4a597e121996129b2a5a5cbf1b4822796d856714"
-                                      ;:git/tag "2023.08.10-4a597e1"
-                                      }}
+                                      :git/tag "2023.08.10-4a597e1"}}
 
  :aliases {:build-db         {:main-opts ["-m" "triangulum.build-db"]}
            :config           {:main-opts ["-m" "triangulum.config"]}
