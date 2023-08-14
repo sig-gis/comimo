@@ -41,7 +41,7 @@
 
 (defn- check-initialized []
   (when (> (- (System/currentTimeMillis) @last-initialized) max-age)
-    (let [ee-account (get-config ::ee-account)
+    (let [ee-account  (get-config ::ee-account)
           ee-key-path (get-config ::ee-key-path)]
       (utils/initialize ee-account ee-key-path)
       (reset! last-initialized (System/currentTimeMillis)))))

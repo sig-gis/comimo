@@ -1,12 +1,12 @@
 (ns comimo.db.projects
   (:require [clojure.set                :as set]
+            [clojure.string             :as str]
             [comimo.py-interop          :refer [get-points-within]]
             [triangulum.database        :refer [call-sql sql-primitive insert-rows!]]
             [triangulum.errors          :refer [try-catch-throw]]
             [triangulum.logging         :refer [log]]
             [triangulum.response        :refer [data-response]]
-            [triangulum.type-conversion :as tc]
-            [clojure.string             :as str]))
+            [triangulum.type-conversion :as tc]))
 
 ;;;
 ;;; Auth Functions
