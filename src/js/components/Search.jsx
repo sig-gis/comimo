@@ -92,6 +92,7 @@ export default function Search({ theMap, featureNames = {}, mapquestKey, isPanel
 
   const [listOfStates, setListOfStates] = useState([]);
   const [listOfStateSuggestions, setListOfStateSuggestions] = useState(null);
+  const [inputStateValue, setInputStateValue] = useState();
   const [selectedState, setSelectedState] = useState();
 
   const [listOfMunis, setListOfMunis] = useState([]);
@@ -185,7 +186,8 @@ export default function Search({ theMap, featureNames = {}, mapquestKey, isPanel
     );
 
   const filterListOfStates = (event) => {
-    if (!event.query.trim().length) {
+    const query = event.query.trim();
+    if (!query.length || listOfStates.includes(query)) {
       setListOfStateSuggestions(listOfStates);
     } else {
       const _filteredList = listOfStates.filter((stateString) => {
@@ -249,12 +251,28 @@ export default function Search({ theMap, featureNames = {}, mapquestKey, isPanel
             <FieldContainer>
               <Label>{t("search.defaultState")}</Label>
               <AutoComplete
-                autoFocus={true}
+                autoFocus={false}
                 aria-label={t("search.stateLabel")}
                 dropdownAriaLabel={t("search.defaultState")}
-                value={selectedState}
+                value={inputStateValue}
                 suggestions={listOfStateSuggestions}
-                onChange={(e) => setSelectedState(e.target.value)}
+                onChange={(e) => setInputStateValue(e.target.value)}
+                onSelect={(e) => {
+                  const _selectedState = e.value;
+
+                  // Guard against autocomplete cacellation where the autocomplete may only be partially filled
+                  if (listOfStates.includes(_selectedState)) {
+                    setSelectedState(_selectedState);
+                  }
+                }}
+                onDropdownClick={(e) => {
+                  const query = e.query;
+                  console.log(inputStateValue);
+                  if (!query || listOfStates.includes(query)) {
+                    setInputStateValue(undefined);
+                    setListOfStateSuggestions(listOfStates);
+                  }
+                }}
                 completeMethod={filterListOfStates}
                 dropdown
               />
