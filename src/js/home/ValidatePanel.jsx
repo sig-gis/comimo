@@ -310,9 +310,16 @@ export default function ValidatePanel({ subscribedList, featureNames, selectedDa
           <Button
             extraStyle={{ marginTop: "1rem" }}
             onClick={() => {
-              const _projectName = autoProjectName
-                ? customRegions.map((x) => "mun_" + x).join("_")
-                : customProjectName;
+              let _projectName;
+              if (autoProjectName) {
+                const comprisingStates = Array.from(
+                  new Set(customRegions.map((r) => r.split("_")[0]))
+                );
+                const today = new Date().toISOString().substring(0, 10);
+                _projectName = comprisingStates.join("_") + "_" + today;
+              } else {
+                _projectName = customProjectName;
+              }
               const _dataLayer = selectedDates?.[mineType] || "2022-01-01-N";
               createProject(_projectName, _dataLayer);
             }}
