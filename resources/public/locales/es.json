@@ -14,9 +14,11 @@
     "noData": "No hay datos disponibles para este mes. Por favor, intente con un mes diferente.",
     "predictions": "Predicciones recopiladas",
     "reload": "Recargar",
+    "reportingMonth": "Mes de Informe",
     "role": "Posición",
     "save": "Guardar",
     "selectDate": "Seleccione Fecha...",
+    "toggleUsersDownloadView": "Alternar vista de descarga",
     "userMines": "Minas reportadas por usuarios",
     "username": "Nombre de usuario",
     "users": "Usuarios"

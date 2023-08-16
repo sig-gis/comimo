@@ -14,9 +14,11 @@
     "noData": "There is no data available for this month. Please try another month.",
     "predictions": "Collected predictions",
     "reload": "Reload",
+    "reportingMonth": "Reporting Month",
     "role": "Role",
     "save": "Save",
     "selectDate": "Select Date...",
+    "toggleUsersDownloadView": "Toggle Download View",
     "userMines": "User reported mines",
     "username": "Username",
     "users": "Users"
