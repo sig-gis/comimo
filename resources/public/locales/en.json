@@ -274,6 +274,7 @@
     "verifying": "Verifying email"
   },
   "validate": {
+    "autoGenerate": "Auto Generate",
     "cMines": "Confirmed mines",
     "closeConfirm": "Are you sure you want to close this project? Closing the project means you will no longer be able to validate the predictions unless you set up another project.",
     "closeTitle": "Close Project",
@@ -282,6 +283,7 @@
     "createProject": "Create a New Project",
     "createTitle": "Create Project",
     "createdLabel": "Created date",
+    "customProjectName": "Custom Project Name",
     "customRadio": "Custom municipalities",
     "errorClose": "Could not close project.",
     "errorDate": "Please select a date.",
@@ -302,7 +304,8 @@
     "pMines": "Current predictions",
     "predictionLabel": "Prediction date",
     "projectExists": "This project already exists. Make sure that this project is not a duplicate of any existing projects.",
-    "projectName": "Enter Project Name",
+    "projectName": "Project Name",
+    "projectNameLabel": "Enter Project Name",
     "projectRegion": "Select Municipalities",
     "projectWithNoPlots": "Error creating project with no plots. Make sure the municipalities in this project have plots.",
     "regionsLabel": "Municipalities",
