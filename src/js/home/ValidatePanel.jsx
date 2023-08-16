@@ -32,7 +32,8 @@ export default function ValidatePanel({ subscribedList, featureNames, selectedDa
   const [showModal, setShowModal] = useAtom(showModalAtom);
   const username = useAtomValue(usernameAtom);
   const [projects, setProjects] = useState([]);
-  const [projectName, setProjectName] = useState("");
+  const [autoProjectName, setAutoProjectName] = useState(true);
+  const [customProjectName, setCustomProjectName] = useState("");
   const [regionType, setRegionType] = useState(1);
   const [customRegions, setCustomRegions] = useState([]);
   const [mineType, setMineType] = useState("pMines");
@@ -62,7 +63,7 @@ export default function ValidatePanel({ subscribedList, featureNames, selectedDa
     setProjects(res || []);
   };
 
-  const checkProjectErrors = (dataLayer, selected, projectName, projects, type) => {
+  const checkProjectErrors = (projectName, dataLayer, selected, projects, type) => {
     const errors = [
       !dataLayer && t("validate.errorDate"),
       selected.length === 0 &&
@@ -73,7 +74,7 @@ export default function ValidatePanel({ subscribedList, featureNames, selectedDa
     return errors.length === 0 || setErrorMsg(errors.join("\n\n"));
   };
 
-  const createProject = (dataLayer) => {
+  const createProject = (projectName, dataLayer) => {
     setErrorMsg(null);
     const selectedArr = regionType === 1 ? subscribedList : customRegions.map((x) => "mun_" + x);
     const regions = selectedArr
@@ -87,7 +88,7 @@ export default function ValidatePanel({ subscribedList, featureNames, selectedDa
       .replace("{%name}", projectName)
       .replace("{%region}", regions);
 
-    if (checkProjectErrors(dataLayer, selectedArr, projectName, projects, regionType)) {
+    if (checkProjectErrors(projectName, dataLayer, selectedArr, projects, regionType)) {
       showAlert({
         title: t("validate.createTitle"),
         body: question,
@@ -232,12 +233,37 @@ export default function ValidatePanel({ subscribedList, featureNames, selectedDa
           >
             {t("validate.createProject")}
           </HeaderLabel>
-          <TextInput
-            id="projectName"
-            label={`${t("validate.projectName")}:`}
-            onChange={(e) => setProjectName(e.target.value)}
-            value={projectName}
-          />
+          <Label>{`${t("validate.projectRegion")}:`}</Label>
+          <Label>{t("validate.projectNameLabel")}</Label>
+          <label htmlFor="autoProjectName" style={{ marginTop: ".25rem", cursor: "pointer" }}>
+            <input
+              id="autoProjectName"
+              checked={autoProjectName}
+              name="projectName"
+              onChange={() => setAutoProjectName(true)}
+              type="radio"
+            />
+            {t("validate.autoGenerate")}
+          </label>
+          <label htmlFor="customProjectName" style={{ marginTop: ".25rem", cursor: "pointer" }}>
+            <input
+              id="customProjectName"
+              checked={!autoProjectName}
+              name="projectName"
+              onChange={() => setAutoProjectName(false)}
+              type="radio"
+              value={false}
+            />
+            {t("validate.customProjectName")}
+          </label>
+          {!autoProjectName && (
+            <TextInput
+              id="projectName"
+              label={`${t("validate.projectName")}:`}
+              onChange={(e) => setCustomProjectName(e.target.value)}
+              value={customProjectName}
+            />
+          )}
           <Label htmlFor="selectMineType">{`${t("validate.typeLabel")}:`}</Label>
           <Select
             className="basic-single"
@@ -283,7 +309,20 @@ export default function ValidatePanel({ subscribedList, featureNames, selectedDa
           {regionType === 2 && renderCustomRegions()}
           <Button
             extraStyle={{ marginTop: "1rem" }}
-            onClick={() => createProject(selectedDates?.[mineType] || "2022-01-01-N")}
+            onClick={() => {
+              let _projectName;
+              if (autoProjectName) {
+                const comprisingStates = Array.from(
+                  new Set(customRegions.map((r) => r.split("_")[0]))
+                );
+                const today = new Date().toISOString().substring(0, 10);
+                _projectName = comprisingStates.join("_") + "_" + today;
+              } else {
+                _projectName = customProjectName;
+              }
+              const _dataLayer = selectedDates?.[mineType] || "2022-01-01-N";
+              createProject(_projectName, _dataLayer);
+            }}
           >{`${t("validate.createButton")} ${selectedDates?.[mineType]}`}</Button>
           <div ref={msgRef}>
             {errorMsg && (

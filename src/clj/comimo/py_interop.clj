@@ -11,7 +11,7 @@
 
 ;;; Constants
 
-(def ^:private max-age (* 24 60 1000)) ; Once a day
+(def ^:private max-age (* 24 60 60 1000)) ; Once a day
 (def point-location "users/comimoapp/ValidationPoints")
 (def image-location "users/comimoapp/Images")
 
@@ -58,7 +58,7 @@
                    (str/join ": "))}))
 
 (defn- py-wrapper [py-fn & params]
-  (run-with-timeout 3000
+  (run-with-timeout 6000
                     (check-initialized)
                     (binding [*item-tuple-cutoff* 0]
                       (try (->jvm (apply py-fn params))
@@ -77,7 +77,7 @@
 
 ;;; Image Cache
 
-(defonce image-max-age         (* 60 1000)) ; Once an hour
+(defonce image-max-age         (* 60 60 1000)) ; Once an hour
 (defonce image-cache           (atom nil))
 (defonce image-cache-timestamp (atom 0))
 
