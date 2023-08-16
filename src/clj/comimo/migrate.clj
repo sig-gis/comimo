@@ -1,8 +1,8 @@
 (ns comimo.migrate
   (:require [triangulum.cli      :refer [get-cli-options]]
             [triangulum.config   :refer [get-config]]
-            [triangulum.database :refer [call-sql call-sqlite insert-rows!]])
-            [triangulum.email    :refer [get-base-url send-mail]]
+            [triangulum.database :refer [call-sql call-sqlite insert-rows!]]
+            [triangulum.email    :refer [get-base-url send-mail]])
   (:import java.util.UUID))
 
 (def MILLISECONDS 5000)
@@ -40,22 +40,22 @@
         title {:en "CoMiMo password reset"
                :es "CoMiMo restablecimiento de contraseña"}
         body  {:text {:en (format (str "Password Reset\n\n"
-                                    "The updated CoMiMo site is now live. "
-                                    "To reset your password, please click the link below and enter your new password:\n\n"
-                                    "%s/password-reset?token=%s&email=%s\n\n"
-                                    "You can access the updated CoMiMo User Manual to answer any questions.\n\n"
-                                    "Thank you,\n\n"
-                                    "The CoMiMo Team")
+                                       "The updated CoMiMo site is now live. "
+                                       "To reset your password, please click the link below and enter your new password:\n\n"
+                                       "%s/password-reset?token=%s&email=%s\n\n"
+                                       "You can access the updated CoMiMo User Manual to answer any questions.\n\n"
+                                       "Thank you,\n\n"
+                                       "The CoMiMo Team")
                                   (get-base-url)
                                   token
                                   email)
                       :es (format (str "Restablecimiento de contraseña\n\n"
-                                    "La nueva versión de CoMiMo ya está disponible. "
-                                    "Para restablecer su contraseña haga clic en el siguiente enlace e ingrese su nueva contraseña:\n\n"
-                                    "%s/password-reset?token=%s&email=%s\n\n"
-                                    "Si tienes preguntas adicionales, puedes acceder al Manual de usuario de CoMiMo actualizado.\n\n"
-                                    "Gracias,\n\n"
-                                    "El equipo de CoMiMo")
+                                       "La nueva versión de CoMiMo ya está disponible. "
+                                       "Para restablecer su contraseña haga clic en el siguiente enlace e ingrese su nueva contraseña:\n\n"
+                                       "%s/password-reset?token=%s&email=%s\n\n"
+                                       "Si tienes preguntas adicionales, puedes acceder al Manual de usuario de CoMiMo actualizado.\n\n"
+                                       "Gracias,\n\n"
+                                       "El equipo de CoMiMo")
                                   (get-base-url)
                                   token
                                   email)}}]
@@ -88,14 +88,14 @@
 
     (->> (call-sqlite subs-sql sqlite-db)
          (map (fn [row] (let [level  (:level row)
-                           region (:region row)]
-                       (-> row
-                         (dissoc :level)
-                         (assoc :region (str level "_" region))
-                         (update :last_alert_for #(java.sql.Timestamp/valueOf %))
-                         (update :created_date #(java.sql.Timestamp/valueOf %))))))
-              (insert-rows! "subscriptions"))
-         (println "Finishing...")))
+                              region (:region row)]
+                          (-> row
+                              (dissoc :level)
+                              (assoc :region (str level "_" region))
+                              (update :last_alert_for #(java.sql.Timestamp/valueOf %))
+                              (update :created_date #(java.sql.Timestamp/valueOf %))))))
+         (insert-rows! "subscriptions"))
+    (println "Finishing...")))
 
 (def ^:private cli-actions
   {:move-users   {:description "Migrate user accounts with subscriptions."
