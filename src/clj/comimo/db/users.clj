@@ -1,15 +1,18 @@
 (ns comimo.db.users
-  (:require [clojure.set :as set]
-            [ring.util.response :refer [redirect]]
-            [triangulum.type-conversion :as tc]
-            [triangulum.database        :refer [call-sql sql-primitive]]
-            [triangulum.config          :refer [get-config]]
+  (:require [clojure.set                :as set]
             [comimo.email               :refer [send-new-user-mail send-reset-mail]]
-            [comimo.views               :refer [data-response]])
+            [ring.util.response         :refer [redirect]]
+            [triangulum.config          :refer [get-config]]
+            [triangulum.database        :refer [call-sql sql-primitive]]
+            [triangulum.response        :refer [data-response]]
+            [triangulum.type-conversion :as tc])
   (:import java.util.UUID))
 
 (defn is-admin? [user-id]
   (sql-primitive (call-sql "is_user_admin" {:log? false} user-id)))
+
+(defn get-user-lang [{:keys [session]}]
+  (data-response (get session :userLang :en)))
 
 (defn- get-login-errors [user]
   (cond (nil? user)
@@ -29,8 +32,8 @@
                                 :role     (:role user)
                                 :userLang (:default_lang user)}}))))
 
-(defn user-information [{:keys [params]}]
-  (let [user-id (tc/val->int (:userId params))
+(defn user-information [{:keys [session]}]
+  (let [user-id (tc/val->int (:userId session))
         user    (first (call-sql "get_user_information" user-id))]
     (data-response {:username    (:username user)
                     :email       (:email user)
@@ -83,8 +86,8 @@
   (-> (redirect "/")
       (assoc :session nil)))
 
-(defn update-account [{:keys [params]}]
-  (let [user-id      (tc/val->int (:userId params))
+(defn update-account [{:keys [params session]}]
+  (let [user-id      (tc/val->int (:userId session))
         full-name    (:fullName params)
         sector       (:sector params)
         institution  (:institution params)
@@ -147,9 +150,9 @@
        (mapv #(set/rename-keys % {:user_id :userId}))
        (data-response)))
 
-(defn update-user-role [{:keys [params]}]
+(defn update-user-role [{:keys [params session]}]
   (doseq [user (:updatedUserList params)]
-    (let [user-id (tc/val->int (:userId user))
+    (let [user-id (tc/val->int (:userId session))
           role    (:role user)]
       (call-sql "update_user_role" user-id role)))
   (data-response ""))

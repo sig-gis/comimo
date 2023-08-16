@@ -1,14 +1,12 @@
 (ns comimo.db.projects
-  (:require [clojure.string :as str]
-            [clojure.set    :as set]
-            [triangulum.logging  :refer [log]]
-            [triangulum.database :refer [call-sql
-                                         sql-primitive
-                                         insert-rows!]]
-            [triangulum.type-conversion :as tc]
-            [comimo.errors              :refer [try-catch-throw]]
+  (:require [clojure.set                :as set]
+            [clojure.string             :as str]
             [comimo.py-interop          :refer [get-points-within]]
-            [comimo.views               :refer [data-response]]))
+            [triangulum.database        :refer [call-sql sql-primitive insert-rows!]]
+            [triangulum.errors          :refer [try-catch-throw]]
+            [triangulum.logging         :refer [log]]
+            [triangulum.response        :refer [data-response]]
+            [triangulum.type-conversion :as tc]))
 
 ;;;
 ;;; Auth Functions
@@ -42,8 +40,8 @@
   (let [project-id (tc/val->int (:projectId params))]
     (data-response (single-project-by-id project-id))))
 
-(defn user-projects [{:keys [params]}]
-  (let [user-id (:userId params -1)]
+(defn user-projects [{:keys [session]}]
+  (let [user-id (:userId session -1)]
     (data-response (build-user-projects user-id))))
 
 ;;;
@@ -103,8 +101,8 @@
                     (str "errorNewProject, -" (str/join "\n-" causes))
                     (assoc result :msg "errorUnknown")))))))))
 
-(defn create-project [{:keys [params]}]
-  (let [user-id    (:userId params -1)
+(defn create-project [{:keys [params session]}]
+  (let [user-id    (:userId session -1)
         proj-name  (:name params)
         regions    (:regions params)
         data-layer (:dataLayer params)]

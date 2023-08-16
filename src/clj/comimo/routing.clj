@@ -1,11 +1,15 @@
 (ns comimo.routing
-  (:require [comimo.views            :refer [render-page]]
-            [comimo.db.plots         :as plots]
-            [comimo.db.projects      :as projects]
-            [comimo.db.subscriptions :as subscriptions]
-            [comimo.db.users         :as users]
-            [comimo.py-interop       :as py]
-            [comimo.proxy            :as proxy]))
+  (:require [comimo.db.plots            :as plots]
+            [comimo.db.projects         :as projects :refer [can-collect?]]
+            [comimo.db.subscriptions    :as subscriptions]
+            [comimo.db.users            :as users :refer [is-admin?]]
+            [comimo.proxy               :as proxy]
+            [comimo.py-interop          :as py]
+            [ring.util.codec            :refer [url-encode]]
+            [triangulum.response        :refer [forbidden-response no-cross-traffic?]]
+            [ring.util.response         :refer [redirect]]
+            [triangulum.type-conversion :as tc]
+            [triangulum.views           :refer [render-page not-found-page]]))
 
 (def routes
   {;; Page Routes
@@ -98,3 +102,38 @@
    [:get  "/get-nicfi-tiles"]     {:handler     proxy/get-nicfi-tiles
                                    :auth-type   :no-cross
                                    :auth-action :block}})
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Routing Handler
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defn- redirect-auth [user-id]
+  (fn [request]
+    (let [{:keys [query-string uri]} request
+          full-url                   (url-encode (str uri (when query-string (str "?" query-string))))]
+      (if (pos? user-id)
+        (redirect (str "/home?flash_message=You do not have permission to access "
+                    full-url))
+        (redirect (str "/login?returnurl="
+                    full-url
+                    "&flash_message=You must login to see "
+                    full-url))))))
+
+(defn handler [{:keys [uri request-method params session headers] :as request}]
+  (let [{:keys [auth-type auth-action handler] :as route} (get routes [request-method uri])
+        user-id      (:userId session -1)
+        project-id   (tc/val->int (:projectId params))
+        plot-id      (tc/val->int (:plotId params))
+        next-handler (if route
+                       (if (condp = auth-type
+                             :user     (pos? user-id)
+                             :collect  (can-collect? user-id project-id plot-id)
+                             :admin    (is-admin? user-id)
+                             :no-cross (no-cross-traffic? headers)
+                             true)
+                         handler
+                         (if (= :redirect auth-action)
+                           (redirect-auth user-id)
+                           forbidden-response))
+                       not-found-page)]
+    (next-handler request)))

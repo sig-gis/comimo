@@ -94,18 +94,18 @@ function Login() {
   );
 }
 
-export function pageInit(args) {
+export function pageInit(args, session) {
   ReactDOM.render(
     <Suspense fallback="">
       <PageLayout
-        role={args.role}
-        username={args.username}
-        versionDeployed={args.versionDeployed}
+        role={session.role}
+        username={session.username}
+        versionDeployed={session.versionDeployed}
         showSearch={false}
       >
         <Login />
       </PageLayout>
     </Suspense>,
-    document.getElementById("main-container")
+    document.getElementById("app")
   );
 }

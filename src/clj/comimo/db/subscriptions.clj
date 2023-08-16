@@ -1,11 +1,12 @@
 (ns comimo.db.subscriptions
   (:require [clojure.set                :as set]
-            [triangulum.type-conversion :as tc]
-            [triangulum.database        :refer [call-sql sql-primitive]]
-            [comimo.views               :refer [data-response]]
             [comimo.db.projects         :refer [create-project!]]
-            [comimo.email               :refer [send-alert-mail get-base-url]]
-            [comimo.py-interop          :refer [location-in-country get-image-list]]))
+            [comimo.email               :refer [send-alert-mail]]
+            [comimo.py-interop          :refer [location-in-country get-image-list]]
+            [triangulum.database        :refer [call-sql sql-primitive]]
+            [triangulum.email           :refer [get-base-url]]
+            [triangulum.response        :refer [data-response]]
+            [triangulum.type-conversion :as tc]))
 
 ;;;
 ;;; Subscription Management
@@ -15,12 +16,12 @@
   (data-response (->> (call-sql "get_user_subscriptions" user-id)
                       (map :region))))
 
-(defn user-subscriptions [{:keys [params]}]
-  (let [user-id (tc/val->int (:userId params))]
+(defn user-subscriptions [{:keys [session]}]
+  (let [user-id (tc/val->int (:userId session))]
     (return-user-subs user-id)))
 
-(defn add-subscription [{:keys [params]}]
-  (let [user-id (tc/val->int (:userId params))
+(defn add-subscription [{:keys [params session]}]
+  (let [user-id (tc/val->int (:userId session))
         region  (:region params)]
     (if (sql-primitive (call-sql "user_subscribed" user-id region))
       (data-response "existing")
@@ -28,8 +29,8 @@
         (call-sql "add_subscription" user-id region)
         (return-user-subs user-id)))))
 
-(defn remove-subscription [{:keys [params]}]
-  (let [user-id (tc/val->int (:userId params))
+(defn remove-subscription [{:keys [params session]}]
+  (let [user-id (tc/val->int (:userId session))
         region  (:region params)]
     (call-sql "remove_subscription" user-id region)
     (return-user-subs user-id)))
@@ -73,8 +74,8 @@
     (not (location-in-country lat lng))
     "Outside"))
 
-(defn report-mine [{:keys [params]}]
-  (let [user-id (tc/val->int (:userId params))
+(defn report-mine [{:keys [params session]}]
+  (let [user-id (tc/val->int (:userId session))
         lat     (tc/val->double (:lat params))
         lng     (tc/val->double (:lng params))]
     (if-let [error (report-errors user-id lat lng)]
