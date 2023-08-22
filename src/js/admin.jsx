@@ -233,7 +233,7 @@ function AdminContent() {
   const addCollectedData = (dataLayer, data) =>
     setCollectedData({ ...collectedData, [dataLayer]: data });
   const [filterStr, setFilterStr] = useState("");
-  const [showUsersDownloadView, setShowUsersDownloadView] = useState(false);
+  const [downloadViewActive, setDownloadViewActive] = useState(false);
 
   const { t } = useTranslation();
   useEffect(() => {
@@ -353,6 +353,17 @@ function AdminContent() {
       </>
     );
 
+  const renderUsersViewToggle = () => (
+    <Button
+      extraStyle={{ marginRight: "8px" }}
+      onClick={() => {
+        setDownloadViewActive(!downloadViewActive);
+      }}
+    >
+      {t(downloadViewActive ? "admin.editView" : "admin.downloadView")}
+    </Button>
+  );
+
   const renderButtons = (downloadData) => (
     <div
       style={{
@@ -361,6 +372,7 @@ function AdminContent() {
         width: "100%",
       }}
     >
+      {renderUsersViewToggle()}
       <Button onClick={() => downloadData("csv")} extraStyle={{ marginRight: "0.5rem" }}>
         {t("admin.downloadCSV")}
       </Button>
@@ -404,10 +416,12 @@ function AdminContent() {
           {userList.filter((row) => isRowIncluded(row)).map(renderUserRow)}
         </GridSection>
         <div style={{ margin: "1rem", display: "flex" }}>
-          <div style={{ display: "flex", flexGrow: "1" }} />
-          <Button onClick={updateUserRoles} isDisabled={!roleChanged}>
-            {t("admin.save")}
-          </Button>
+          <div style={{ display: "flex", justifyContent: "flex-end", flexGrow: "1" }}>
+            {renderUsersViewToggle()}
+            <Button onClick={updateUserRoles} isDisabled={!roleChanged}>
+              {t("admin.save")}
+            </Button>
+          </div>
         </div>
       </>
     ) : (
@@ -422,16 +436,8 @@ function AdminContent() {
     );
 
   const renderUsers = () => (
-    <div>
-      <Button
-        extraStyle={{ marginBottom: "9px" }}
-        onClick={() => {
-          setShowUsersDownloadView(!showUsersDownloadView);
-        }}
-      >
-        {t("admin.toggleUsersDownloadView")}
-      </Button>
-      {showUsersDownloadView ? (
+    <>
+      {downloadViewActive ? (
         <Users
           addCollectedData={addCollectedData}
           availableDates={[new Date().toISOString().substring(0, 10)]}
@@ -442,7 +448,7 @@ function AdminContent() {
       ) : (
         renderEditUsers()
       )}
-    </div>
+    </>
   );
 
   return (

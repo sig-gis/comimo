@@ -2,6 +2,8 @@
   "admin": {
     "downloadCSV": "Download CSV",
     "downloadJSON": "Download JSON",
+    "downloadView": "Download View",
+    "editView": "Edit View",
     "email": "Email",
     "emptyLogs": "There are no logs available at this time.",
     "emptyTable": "Please select a reporting month and click 'Load' to view results.",
@@ -18,7 +20,6 @@
     "role": "Role",
     "save": "Save",
     "selectDate": "Select Date...",
-    "toggleUsersDownloadView": "Toggle Download View",
     "userMines": "User reported mines",
     "username": "Username",
     "users": "Users"

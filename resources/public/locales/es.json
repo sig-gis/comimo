@@ -2,6 +2,8 @@
   "admin": {
     "downloadCSV": "Descargar CSV",
     "downloadJSON": "Descargar JSON",
+    "downloadView": "Vista de descarga",
+    "editView": "Vista de Editar",
     "email": "Email",
     "emptyLogs": "No hay registros disponibles en este momento.",
     "emptyTable": "Seleccione un mes y haga clic en 'Carga' para ver los resultados.",
@@ -18,7 +20,6 @@
     "role": "Posición",
     "save": "Guardar",
     "selectDate": "Seleccione Fecha...",
-    "toggleUsersDownloadView": "Alternar vista de descarga",
     "userMines": "Minas reportadas por usuarios",
     "username": "Nombre de usuario",
     "users": "Usuarios"
