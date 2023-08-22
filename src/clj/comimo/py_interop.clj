@@ -12,8 +12,8 @@
 ;;; Constants
 
 (def ^:private max-age (* 24 60 60 1000)) ; Once a day
-(def point-location "users/comimoapp/ValidationPoints")
-(def image-location "users/comimoapp/Images")
+(def validation-layers-location "users/comimoapp/offset_debug/validation-layers-location")
+(def prediction-layers-location "users/comimoapp/offset_debug/SquaresReproj")
 
 ;;; Macros
 
@@ -70,7 +70,7 @@
 ;;; Utils
 
 (defn get-points-within [data-layer regions]
-  (py-wrapper utils/getPointsWithin (str point-location "/" data-layer) regions))
+  (py-wrapper utils/getPointsWithin (str validation-layers-location "/" data-layer) regions))
 
 (defn location-in-country [lat lng]
   (py-wrapper utils/locationInCountry lat lng))
@@ -87,7 +87,7 @@
 
 (defn- reset-image-cache! []
   (reset! image-cache-timestamp (System/currentTimeMillis))
-  (reset! image-cache (py-wrapper utils/getImageList image-location)))
+  (reset! image-cache (py-wrapper utils/getImageList prediction-layers-location)))
 
 (defn get-image-list []
   (when-not (image-cached?)
@@ -102,66 +102,65 @@
                     :nMines (filter #(re-matches #"\d{4}-\d{2}-\d{2}-N" %) image-list)
                     :pMines (filter #(re-matches #"\d{4}-\d{2}-\d{2}-P" %) image-list)})))
 
-(def image-options {"NICFI"  {:source-type :wms :source "get-nicfi-tiles?z={z}&x={x}&y={y}"}
-                    "cMines" {:source-type :image :source-base image-location :color "purple"}
-                    "nMines" {:source-type :image :source-base image-location :color "red"}
-                    "pMines" {:source-type :image :source-base image-location :color "orange"}
-                    "municipalBounds"     {:source-type :vector
-                                           :source      "users/comimoapp/Shapes/Municipal_Bounds"
-                                           :info-cols   ["MPIO_CNMBR" "DPTO_CNMBR"]
-                                           :line        "#f66"
-                                           :fill        "#0000"}
-                    "legalMines"          {:source-type :vector
-                                           :source      "users/comimoapp/Shapes/Legal_Mines"
-                                           :info-cols   ["ID"]
-                                           :line        "#ff0"
-                                           :fill        "#ffff0022"}
-                    "otherAuthorizations" {:source-type :vector
-                                           :source      "users/comimoapp/Shapes/Solicitudes_de_Legalizacion_2010"
-                                           :info-cols   ["ID"]
-                                           :line        "#047"
-                                           :fill        "#00447722"}
-                    "tierrasDeCom"        {:source-type :vector
-                                           :source      "users/comimoapp/Shapes/Tierras_de_comunidades_negras"
-                                           :info-cols   ["NOMBRE"]
-                                           :line        "#fd9"
-                                           :fill        "#ffdd9922"}
-                    "resguardos"          {:source-type :vector
-                                           :source      "users/comimoapp/Shapes/Resguardos_Indigenas"
-                                           :info-cols   ["NOMBRE"]
-                                           :line        "#d9d"
-                                           :fill        "#dd99dd22"}
-                    "protectedAreas"      {:source-type :vector
-                                           :source      "users/comimoapp/Shapes/RUNAP"
-                                           :info-cols   ["categoria" "nombre"]
-                                           :line        "#35f0ab"
-                                           :fill        "#35f0ab22"}
-                    "licensedMining"      {:source-type :vector
-                                           :source      "users/comimoapp/Shapes/ANLA_Mineria_Licenciada"
-                                           :info-cols   ["operador"]
-                                           :line        "#86CAFF"
-                                           :fill        "#86CAFF22"}})
-
+(def vector-layers {:cMines              {:source     "users/comimoapp/offset_debug/SquaresReproj"
+                                          :info-cols   ["ID"]
+                                          :line        "purple"
+                                          :fill        "purple"}
+                    :nMines              {:source      "users/comimoapp/offset_debug/SquaresReproj"
+                                          :info-cols   ["ID"]
+                                          :line        "red"
+                                          :fill        "red"}
+                    :pMines              {:source      "users/comimoapp/offset_debug/SquaresReproj"
+                                          :info-cols   ["ID"]
+                                          :line        "orange"
+                                          :fill        "orange"}
+                    :municipalBounds     {:source      "users/comimoapp/Shapes/Municipal_Bounds"
+                                          :info-cols   ["MPIO_CNMBR" "DPTO_CNMBR"]
+                                          :line        "#f66"
+                                          :fill        "#0000"}
+                    :legalMines          {:source      "users/comimoapp/Shapes/Legal_Mines"
+                                          :info-cols   ["ID"]
+                                          :line        "#ff0"
+                                          :fill        "#ffff0022"}
+                    :otherAuthorizations {:source      "users/comimoapp/Shapes/Solicitudes_de_Legalizacion_2010"
+                                          :info-cols   ["ID"]
+                                          :line        "#047"
+                                          :fill        "#00447722"}
+                    :tierrasDeCom        {:source      "users/comimoapp/Shapes/Tierras_de_comunidades_negras"
+                                          :info-cols   ["NOMBRE"]
+                                          :line        "#fd9"
+                                          :fill        "#ffdd9922"}
+                    :resguardos          {:source      "users/comimoapp/Shapes/Resguardos_Indigenas"
+                                          :info-cols   ["NOMBRE"]
+                                          :line        "#d9d"
+                                          :fill        "#dd99dd22"}
+                    :protectedAreas      {:source      "users/comimoapp/Shapes/RUNAP"
+                                          :info-cols   ["categoria" "nombre"]
+                                          :line        "#35f0ab"
+                                          :fill        "#35f0ab22"}
+                    :licensedMining      {:source      "users/comimoapp/Shapes/ANLA_Mineria_Licenciada"
+                                          :info-cols   ["operador"]
+                                          :line        "#86CAFF"
+                                          :fill        "#86CAFF22"}})
+;; TODO we should return "" when not layer
 (defn get-image-url [{:keys [params]}]
-  (let [image-type (:type params)
-        opts       (get image-options image-type)]
-    (-> (case (:source-type opts)
-          :vector (let [{:keys [source line fill]} opts]
-                    (py-wrapper utils/getVectorUrl source line fill))
-
-          :image  (let [data-layer (:dataLayer params)
-                        {:keys [source-base color]} opts]
-                    (py-wrapper utils/getImageUrl (str source-base "/" data-layer) color))
-
-          :wms    (:source opts)
-
-          "")
-        (data-response))))
+  (let [layer-type (keyword (:type params))
+        opts       (layer-type vector-layers)
+        data-layer (:dataLayer params)]
+    (data-response  (if (= layer-type :NICFI) 
+                      "get-nicfi-tiles?z={z}&x={x}&y={y}"
+                      (if-not opts 
+                        ""
+                        (let [{:keys [source line fill]} opts]
+                          (py-wrapper utils/getVectorUrl 
+                            (if data-layer (str source "/" data-layer) source)
+                            line 
+                            fill)))))))
 
 (defn get-download-url [{:keys [params]}]
   (let [{:keys [region dataLayer]} params]
     (data-response (py-wrapper utils/getDownloadURL
-                               (str image-location "/" dataLayer)
+                               (str prediction-layers-location "/" dataLayer)
                                region
                                540))))
 
@@ -176,7 +175,7 @@
   (let [user-id    (tc/val->int (:userId session))
         data-layer (:dataLayer params)]
     (->> (py-wrapper utils/statsByRegion
-                     (str image-location "/" data-layer)
+                     (str prediction-layers-location "/" data-layer)
                      (get-subscribed-regions user-id))
          (combine-stats)
          (filterv (fn [[_k v]] (> v 0.0)))
@@ -185,7 +184,7 @@
 (defn get-stat-totals [{:keys [params session]}]
   (let [user-id    (tc/val->int (:userId session))]
     (->> (py-wrapper utils/statTotals
-                     (str image-location)
+                     (str prediction-layers-location)
                      (get-subscribed-regions user-id))
          (mapv (fn [[k v]]
                  (let [[a b _ c d] (str/split k #"-")
@@ -201,15 +200,6 @@
     (data-response (->> visible-layers
                         (pmap
                          (fn [v]
-                           [v (let [{:keys [source-type source source-base info-cols]} (get image-options v)]
-
-                                (case source-type
-                                  :image (py-wrapper utils/imagePointExists
-                                                     (str source-base "/" (get mine-dates (keyword v)))
-                                                     lat
-                                                     lng)
-
-                                  :vector (py-wrapper utils/vectorPointOverlaps source lat lng info-cols)
-
-                                  ""))]))
+                           [v (let [{:keys [source source-base info-cols]} (get vector-layers v)]
+                                (py-wrapper utils/vectorPointOverlaps source lat lng info-cols))]))
                         (into {})))))
