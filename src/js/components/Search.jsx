@@ -1,23 +1,18 @@
 import React, { useEffect, useRef, useState } from "react";
+import Select from "react-select";
 import styled from "@emotion/styled";
-import { AutoComplete } from "primereact/autocomplete";
 import { ThemeProvider } from "@emotion/react";
 import { useAtomValue, useSetAtom } from "jotai";
 import { useTranslation } from "react-i18next";
 
 import Button from "./Button";
-import Select from "./Select";
+import SimpleSelect from "./Select";
 import TextInput from "./TextInput";
 
 import { THEME, URLS } from "../constants";
 import { fitMap, selectedRegionAtom } from "../home/HomeMap";
 import { jsonRequest } from "../utils";
 import { visiblePanelAtom } from "../home";
-
-import "primereact/resources/themes/rhea/theme.css";
-import "primereact/resources/primereact.min.css";
-import "primeicons/primeicons.css";
-// import "./Search.css";
 
 const SearchResults = styled.div`
   background: var(--gray-3);
@@ -46,8 +41,8 @@ const FormArea = styled.div`
 `;
 
 const FieldContainer = styled.div`
-  padding-top: 2rem;
-  margin-bottom: 2rem;
+  padding-top: 1rem;
+  margin-bottom: 1rem;
 
   // Style child label
   & > span {
@@ -91,27 +86,28 @@ export default function Search({ theMap, featureNames = {}, mapquestKey, isPanel
   const [latLngText, setLatLngText] = useState("");
 
   const [listOfStates, setListOfStates] = useState([]);
-  const [listOfStateSuggestions, setListOfStateSuggestions] = useState(null);
-  const [inputStateValue, setInputStateValue] = useState();
-  const [selectedState, setSelectedState] = useState();
+  const [selectedState, setSelectedState] = useState("default");
 
   const [listOfMunis, setListOfMunis] = useState([]);
-  const [listOfMuniSuggestions, setListOfMuniSuggestions] = useState(null);
-  const [selectedMuni, setSelectedMuni] = useState();
+  const [activeMunis, setActiveMunis] = useState({});
+  const [selectedMuni, setSelectedMuni] = useState("default");
+  const muniRef = useRef(null);
 
   useEffect(() => {
     setListOfStates(Object.keys(featureNames).sort());
   }, [featureNames]);
 
   useEffect(() => {
-    setListOfMunis(Object.keys(featureNames[selectedState] || {}).sort());
+    const _activeMunis = featureNames[selectedState] || {};
+    setActiveMunis(_activeMunis);
+    setListOfMunis(Object.keys(_activeMunis).sort());
   }, [selectedState]);
 
   useEffect(() => {
     if (visiblePanel === "search-header") {
       setSelectedRegion(null);
-      setSelectedState("");
-      setSelectedMuni("");
+      setSelectedState("default");
+      setSelectedMuni("default");
       setSearchText("");
       setLatLngText("");
     }
@@ -185,29 +181,6 @@ export default function Search({ theMap, featureNames = {}, mapquestKey, isPanel
       )
     );
 
-  const filterListOfStates = (event) => {
-    const query = event.query.trim();
-    if (!query.length || listOfStates.includes(query)) {
-      setListOfStateSuggestions(listOfStates);
-    } else {
-      const _filteredList = listOfStates.filter((stateString) => {
-        return stateString.toLowerCase().startsWith(event.query.toLowerCase());
-      });
-      setListOfStateSuggestions(_filteredList);
-    }
-  };
-
-  const filterListOfMunis = (event) => {
-    if (!event.query.trim().length) {
-      setListOfMuniSuggestions(listOfMunis);
-    } else {
-      const _filteredList = listOfMunis.filter((muniString) => {
-        return muniString.toLowerCase().startsWith(event.query.toLowerCase());
-      });
-      setListOfMuniSuggestions(_filteredList);
-    }
-  };
-
   const muniSelectionDisabled = listOfMunis.length <= 0;
 
   return (
@@ -246,67 +219,61 @@ export default function Search({ theMap, featureNames = {}, mapquestKey, isPanel
             />
           </>
         )}
-        {listOfStates.length > 0 ? (
-          <FormArea>
-            <FieldContainer>
-              <Label>{t("search.defaultState")}</Label>
-              <AutoComplete
-                autoFocus={false}
-                aria-label={t("search.stateLabel")}
-                dropdownAriaLabel={t("search.defaultState")}
-                value={inputStateValue}
-                suggestions={listOfStateSuggestions}
-                onChange={(e) => setInputStateValue(e.target.value)}
-                onSelect={(e) => {
-                  const _selectedState = e.value;
 
-                  // Guard against autocomplete cacellation where the autocomplete may only be partially filled
-                  if (listOfStates.includes(_selectedState)) {
-                    setSelectedState(_selectedState);
-                  }
-                }}
-                onDropdownClick={(e) => {
-                  const query = e.query;
-                  console.log(inputStateValue);
-                  if (!query || listOfStates.includes(query)) {
-                    setInputStateValue(undefined);
-                    setListOfStateSuggestions(listOfStates);
-                  }
-                }}
-                completeMethod={filterListOfStates}
-                dropdown
-              />
-            </FieldContainer>
-            <FieldContainer $isDisabled={muniSelectionDisabled}>
-              <Label>{t("search.defaultMun")}</Label>
-              <AutoComplete
-                autoFocus={true}
-                aria-label={t("search.munLabel")}
-                dropdownAriaLabel={t("search.defaultMun")}
-                value={selectedMuni}
-                disabled={muniSelectionDisabled}
-                suggestions={listOfMuniSuggestions}
-                onChange={(e) => setSelectedMuni(e.target.value)}
-                onSelect={(e) => {
-                  const _selectedMuni = e.value;
-                  setSelectedMuni(_selectedMuni);
-                  /*
-                  const coords = featureNames[selectedState][_selectedMuni];
-                  if (Array.isArray(coords)) {
-                    fitMap(theMap, "bbox", coords, t);
-                  }
-                  */
-                  // We don't want to set the selected region on the header Search tool
-                  !isPanel && setSelectedRegion("mun_" + selectedState + "_" + _selectedMuni);
-                }}
-                completeMethod={filterListOfMunis}
-                dropdown
-              />
-            </FieldContainer>
-          </FormArea>
-        ) : (
-          t("search.loading") + "..."
-        )}
+        <FormArea>
+          {listOfStates.length > 0 ? (
+            <>
+              <FieldContainer>
+                <Label>{t("search.defaultState")}</Label>
+                <Select
+                  id="state-dropdown"
+                  classNamePrefix="select"
+                  defaultValue={{ label: t("search.defaultState"), value: "default" }}
+                  isSearchable={true}
+                  options={listOfStates.map((s) => ({
+                    label: s,
+                    value: s,
+                  }))}
+                  onChange={({ value }) => {
+                    setSelectedMuni("default");
+                    setListOfMunis([]);
+                    muniRef.current.setValue({
+                      label: t("search.defaultMun"),
+                      value: "default",
+                    });
+                    setSelectedRegion(null);
+                    setSelectedState(value);
+                  }}
+                />
+              </FieldContainer>
+
+              <FieldContainer $isDisabled={muniSelectionDisabled}>
+                <Label>{t("search.defaultMun")}</Label>
+                <Select
+                  ref={muniRef}
+                  id="municipality-dropdown"
+                  classNamePrefix="select"
+                  defaultValue={{ label: t("search.defaultMun"), value: "default" }}
+                  isDisabled={muniSelectionDisabled}
+                  isSearchable={true}
+                  options={listOfMunis.map((muni) => ({
+                    label: muni,
+                    value: muni,
+                  }))}
+                  onChange={({ value: _muni }) => {
+                    const coords = activeMunis[_muni];
+                    setSelectedMuni(_muni);
+                    if (Array.isArray(coords)) fitMap(theMap, "bbox", coords, t);
+                    // We don't want to set the selected region on the header Search tool
+                    !isPanel && setSelectedRegion("mun_" + selectedState + "_" + _muni);
+                  }}
+                />
+              </FieldContainer>
+            </>
+          ) : (
+            t("search.loading") + "..."
+          )}
+        </FormArea>
       </div>
     </ThemeProvider>
   );
