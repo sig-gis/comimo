@@ -5,9 +5,9 @@
  :triangulum.server/nrepl-bind      "127.0.0.1"
  :triangulum.server/nrepl-port      5555
 
- :triangulum.worker/workers           [{:triangulum.worker/name  "alerts"
-                                        :triangulum.worker/start comimo.jobs/start-scheduling-service!
-                                        :triangulum.worker/stop  comimo.jobs/stop-scheduling-service!}]
+ :triangulum.worker/workers         [{:triangulum.worker/name  "alerts"
+                                      :triangulum.worker/start comimo.jobs/start-scheduling-service!
+                                      :triangulum.worker/stop  comimo.jobs/stop-scheduling-service!}]
 
  :triangulum.handler/session-key    "DkaZJTXfoCnu8L8D"      ; update it
  :triangulum.response/response-type :json
