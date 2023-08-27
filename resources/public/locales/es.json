@@ -2,6 +2,8 @@
   "admin": {
     "downloadCSV": "Descargar CSV",
     "downloadJSON": "Descargar JSON",
+    "downloadView": "Vista de descarga",
+    "editView": "Vista de Editar",
     "email": "Email",
     "emptyLogs": "No hay registros disponibles en este momento.",
     "emptyTable": "Seleccione un mes y haga clic en 'Carga' para ver los resultados.",
@@ -14,6 +16,7 @@
     "noData": "No hay datos disponibles para este mes. Por favor, intente con un mes diferente.",
     "predictions": "Predicciones recopiladas",
     "reload": "Recargar",
+    "reportingMonth": "Mes de Informe",
     "role": "Posición",
     "save": "Guardar",
     "selectDate": "Seleccione Fecha...",

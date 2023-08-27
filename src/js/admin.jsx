@@ -80,7 +80,13 @@ const EmptyMessage = styled.div`
 `;
 
 function makeAdminTableComponent(dateDataURL, columnFields, tableRefDownloadURL) {
-  return ({ addCollectedData, availableDates, collectedData, renderButtons }) => {
+  return ({
+    addCollectedData,
+    availableDates,
+    collectedData,
+    renderButtons,
+    hideReportingPeriod = false,
+  }) => {
     // STATE
     const [selectedDate, setSelectedDate] = useState(-1);
     const [tableRef, setTableRef] = useState(null);
@@ -88,10 +94,19 @@ function makeAdminTableComponent(dateDataURL, columnFields, tableRefDownloadURL)
     const { t, i18n } = useTranslation();
 
     /// API ///
-    const loadDateData = (dataLayer) =>
+    const loadDateData = (dataLayer) => {
       jsonRequest(dateDataURL, { dataLayer })
         .then((data) => addCollectedData(dataLayer, data))
         .catch((err) => console.error(err));
+    };
+
+    useEffect(() => {
+      if (availableDates.length === 1) {
+        const onlyAvailableDate = availableDates[0];
+        setSelectedDate(onlyAvailableDate);
+        loadDateData(onlyAvailableDate);
+      }
+    }, []);
 
     /// Helper Functions ///
     const downloadData = (type) =>
@@ -99,29 +114,36 @@ function makeAdminTableComponent(dateDataURL, columnFields, tableRefDownloadURL)
 
     return (
       <>
-        <div>
-          <label htmlFor="project-date">Reporting month</label>
-          <select
-            id="project-date"
-            onChange={(e) => setSelectedDate(e.target.value)}
-            style={{ padding: ".25rem", borderRadius: "3px", margin: ".75rem" }}
-            value={selectedDate}
-          >
-            {selectedDate === -1 && (
-              <option key={-1} value={-1}>
-                {availableDates.length > 0 ? t("admin.selectDate") : t("admin.loadingDates")}
-              </option>
-            )}
-            {availableDates.map((d) => (
-              <option key={d} value={d}>
-                {d}
-              </option>
-            ))}
-          </select>
-          <Button onClick={() => loadDateData(selectedDate)} isDisabled={selectedDate === -1}>
-            {collectedData[selectedDate] ? t("admin.reload") : t("admin.load")}
-          </Button>
-        </div>
+        {!hideReportingPeriod && (
+          <div>
+            <label htmlFor="project-date">Reporting month</label>
+            <select
+              id="project-date"
+              onChange={(e) => setSelectedDate(e.target.value)}
+              style={{ padding: ".25rem", borderRadius: "3px", margin: ".75rem" }}
+              value={selectedDate}
+            >
+              {selectedDate === -1 && (
+                <option key={-1} value={-1}>
+                  {availableDates.length > 0 ? t("admin.selectDate") : t("admin.loadingDates")}
+                </option>
+              )}
+              {availableDates.map((d) => (
+                <option key={d} value={d}>
+                  {d}
+                </option>
+              ))}
+            </select>
+            <Button
+              onClick={() => {
+                loadDateData(selectedDate);
+              }}
+              isDisabled={selectedDate === -1}
+            >
+              {collectedData[selectedDate] ? t("admin.reload") : t("admin.load")}
+            </Button>
+          </div>
+        )}
         <div>
           {selectedDate === -1 && <EmptyMessage>{t("admin.emptyTable")}</EmptyMessage>}
           {collectedData[selectedDate]?.length > 0 && (
@@ -182,6 +204,17 @@ const Predictions = makeAdminTableComponent(
   "validated-predictions"
 );
 
+const Users = makeAdminTableComponent(
+  "get-users-list",
+  [
+    { title: "Username", field: "username", headerFilterPlaceholder: "Filter" },
+    { title: "Email", field: "email", headerFilterPlaceholder: "Filter" },
+    { title: "Role", field: "role", headerFilterPlaceholder: "Filter" },
+    { title: "User ID", field: "userId", headerFilterPlaceholder: "Filter" },
+  ],
+  "users"
+);
+
 const Filter = styled.input`
   margin: 0 0 1rem 1rem;
   padding-left: 0.5rem;
@@ -193,12 +226,14 @@ function AdminContent() {
   const [logList, setLogs] = useState([]);
   const [selectedPage, setPage] = useState("users");
   const [roleChanged, setRoleChanged] = useState(false);
+  const todayDate = new Date();
   const [availableDates, setAvailableDates] = useState({ predictions: [], userMines: [] });
   const [collectedData, setCollectedData] = useState({});
   const { predictions, userMines } = availableDates;
   const addCollectedData = (dataLayer, data) =>
     setCollectedData({ ...collectedData, [dataLayer]: data });
   const [filterStr, setFilterStr] = useState("");
+  const [downloadViewActive, setDownloadViewActive] = useState(false);
 
   const { t } = useTranslation();
   useEffect(() => {
@@ -275,40 +310,7 @@ function AdminContent() {
     );
   };
 
-  const renderUsers = () =>
-    userList.filter((row) => isRowIncluded(row)).map(renderUserRow).length ? (
-      <>
-        <Filter
-          onChange={(e) => setFilterStr(e.target.value)}
-          placeholder="Filter"
-          value={filterStr}
-        />
-        <GridSection>
-          {renderUserRow({
-            userId: t("admin.id"),
-            username: t("admin.username"),
-            email: t("admin.email"),
-            role: t("admin.role"),
-          })}
-          {userList.filter((row) => isRowIncluded(row)).map(renderUserRow)}
-        </GridSection>
-        <div style={{ margin: "1rem", display: "flex" }}>
-          <div style={{ display: "flex", flexGrow: "1" }} />
-          <Button onClick={updateUserRoles} isDisabled={!roleChanged}>
-            {t("admin.save")}
-          </Button>
-        </div>
-      </>
-    ) : (
-      <>
-        <Filter
-          onChange={(e) => setFilterStr(e.target.value)}
-          placeholder="Filter"
-          value={filterStr}
-        />
-        <EmptyMessage>{t("admin.emptyUsers")}</EmptyMessage>
-      </>
-    );
+  // const renderUsers = () =>
 
   const renderLogRow = ({ jobTime, username, finishStatus, finishMessage }) => (
     <GridRow
@@ -351,6 +353,17 @@ function AdminContent() {
       </>
     );
 
+  const renderUsersViewToggle = () => (
+    <Button
+      extraStyle={{ marginRight: "8px" }}
+      onClick={() => {
+        setDownloadViewActive(!downloadViewActive);
+      }}
+    >
+      {t(downloadViewActive ? "admin.editView" : "admin.downloadView")}
+    </Button>
+  );
+
   const renderButtons = (downloadData) => (
     <div
       style={{
@@ -359,6 +372,7 @@ function AdminContent() {
         width: "100%",
       }}
     >
+      {renderUsersViewToggle()}
       <Button onClick={() => downloadData("csv")} extraStyle={{ marginRight: "0.5rem" }}>
         {t("admin.downloadCSV")}
       </Button>
@@ -382,6 +396,59 @@ function AdminContent() {
       collectedData={collectedData}
       renderButtons={renderButtons}
     />
+  );
+
+  const renderEditUsers = () =>
+    userList.filter((row) => isRowIncluded(row)).map(renderUserRow).length ? (
+      <>
+        <Filter
+          onChange={(e) => setFilterStr(e.target.value)}
+          placeholder="Filter"
+          value={filterStr}
+        />
+        <GridSection>
+          {renderUserRow({
+            userId: t("admin.id"),
+            username: t("admin.username"),
+            email: t("admin.email"),
+            role: t("admin.role"),
+          })}
+          {userList.filter((row) => isRowIncluded(row)).map(renderUserRow)}
+        </GridSection>
+        <div style={{ margin: "1rem", display: "flex" }}>
+          <div style={{ display: "flex", justifyContent: "flex-end", flexGrow: "1" }}>
+            {renderUsersViewToggle()}
+            <Button onClick={updateUserRoles} isDisabled={!roleChanged}>
+              {t("admin.save")}
+            </Button>
+          </div>
+        </div>
+      </>
+    ) : (
+      <>
+        <Filter
+          onChange={(e) => setFilterStr(e.target.value)}
+          placeholder="Filter"
+          value={filterStr}
+        />
+        <EmptyMessage>{t("admin.emptyUsers")}</EmptyMessage>
+      </>
+    );
+
+  const renderUsers = () => (
+    <>
+      {downloadViewActive ? (
+        <Users
+          addCollectedData={addCollectedData}
+          availableDates={[new Date().toISOString().substring(0, 10)]}
+          collectedData={collectedData}
+          renderButtons={renderButtons}
+          hideReportingPeriod={true}
+        />
+      ) : (
+        renderEditUsers()
+      )}
+    </>
   );
 
   return (

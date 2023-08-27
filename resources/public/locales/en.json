@@ -2,6 +2,8 @@
   "admin": {
     "downloadCSV": "Download CSV",
     "downloadJSON": "Download JSON",
+    "downloadView": "Download View",
+    "editView": "Edit View",
     "email": "Email",
     "emptyLogs": "There are no logs available at this time.",
     "emptyTable": "Please select a reporting month and click 'Load' to view results.",
@@ -14,6 +16,7 @@
     "noData": "There is no data available for this month. Please try another month.",
     "predictions": "Collected predictions",
     "reload": "Reload",
+    "reportingMonth": "Reporting Month",
     "role": "Role",
     "save": "Save",
     "selectDate": "Select Date...",
