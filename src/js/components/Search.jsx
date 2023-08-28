@@ -1,15 +1,17 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
+import Select from "react-select";
 import styled from "@emotion/styled";
-
-import Button from "./Button";
-import Select from "./Select";
-import TextInput from "./TextInput";
-
-import { jsonRequest } from "../utils";
-import { URLS } from "../constants";
-import { fitMap, selectedRegionAtom } from "../home/HomeMap";
+import { ThemeProvider } from "@emotion/react";
 import { useAtomValue, useSetAtom } from "jotai";
 import { useTranslation } from "react-i18next";
+
+import Button from "./Button";
+import SimpleSelect from "./Select";
+import TextInput from "./TextInput";
+
+import { THEME, URLS } from "../constants";
+import { fitMap, selectedRegionAtom } from "../home/HomeMap";
+import { jsonRequest } from "../utils";
 import { visiblePanelAtom } from "../home";
 
 const SearchResults = styled.div`
@@ -32,29 +34,83 @@ const SearchResults = styled.div`
   }
 `;
 
-export default function Search({ theMap, featureNames, mapquestKey, isPanel }) {
-  // State
+const FormArea = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+`;
 
+const FieldContainer = styled.div`
+  margin-bottom: 1rem;
+
+  // Style child label
+  & > span {
+    color: ${({ $isDisabled }) => ($isDisabled ? "var(--gray)" : "var(--black)")};
+  }
+
+  // Style autocomplete dropdown
+  & .p-autocomplete {
+    display: block;
+    width: 100%;
+  }
+
+  // Style autocomplete input
+  & .p-autocomplete > input {
+    min-width: 80%;
+  }
+
+  // Style autocomplete dropdown button
+  & .p-button {
+    background: ${({ $isDisabled }) => ($isDisabled ? "var(--gray-3)" : "var(--orange-4)")};
+    border-color: ${({ $isDisabled }) => ($isDisabled ? "var(--gray-4)" : "var(--orange-3)")};
+    color: ${({ $isDisabled }) => ($isDisabled ? "var(--white)" : "var(--black)")};
+  }
+`;
+
+const Label = styled.span`
+  font-size: 16px;
+  font-weight: var(--unnamed-font-weight-medium);
+  letter-spacing: 0px;
+  padding: 0 0.5rem;
+  text-align: left; */
+`;
+
+export default function Search({ theMap, featureNames = {}, mapquestKey, isPanel }) {
+  // State
+  const { t } = useTranslation();
   const setSelectedRegion = useSetAtom(selectedRegionAtom);
   const visiblePanel = useAtomValue(visiblePanelAtom);
+  const [geoCodedSearch, setGeoCodedSearch] = useState(null);
+  const [searchText, setSearchText] = useState("");
+  const [latLngText, setLatLngText] = useState("");
+
+  const [listOfStates, setListOfStates] = useState([]);
+  const [selectedState, setSelectedState] = useState("default");
+
+  const [listOfMunis, setListOfMunis] = useState([]);
+  const [activeMunis, setActiveMunis] = useState({});
+  const [selectedMuni, setSelectedMuni] = useState("default");
+  const muniRef = useRef(null);
+
+  useEffect(() => {
+    setListOfStates(Object.keys(featureNames).sort());
+  }, [featureNames]);
+
+  useEffect(() => {
+    const _activeMunis = featureNames[selectedState] || {};
+    setActiveMunis(_activeMunis);
+    setListOfMunis(Object.keys(_activeMunis).sort());
+  }, [selectedState]);
 
   useEffect(() => {
     if (visiblePanel === "search-header") {
       setSelectedRegion(null);
-      setSelectedL1(-1);
-      setSelectedL2(-1);
+      setSelectedState("default");
+      setSelectedMuni("default");
       setSearchText("");
       setLatLngText("");
     }
   }, [visiblePanel]);
-
-  const [geoCodedSearch, setGeoCodedSearch] = useState(null);
-  const [selectedL1, setSelectedL1] = useState(-1);
-  const [selectedL2, setSelectedL2] = useState(-1);
-  const [searchText, setSearchText] = useState("");
-  const [latLngText, setLatLngText] = useState("");
-
-  const { t } = useTranslation();
 
   const searchGeocode = () => {
     const url = URLS.MAPQUEST + "?key=" + mapquestKey + "&location=" + searchText + ",Columbia";
@@ -97,8 +153,8 @@ export default function Search({ theMap, featureNames, mapquestKey, isPanel }) {
               onClick={() => {
                 const state = item.adminArea4.toUpperCase();
                 const mun = item.adminArea5.toUpperCase();
-                setSelectedL1(state);
-                setSelectedL2(mun);
+                setSelectedState(state);
+                setSelectedMuni(mun);
                 fitMap(theMap, "bbox", featureNames[state][mun], t);
                 // We don't want to set the selected region on the header Search tool
                 !isPanel &&
@@ -124,95 +180,100 @@ export default function Search({ theMap, featureNames, mapquestKey, isPanel }) {
       )
     );
 
-  const l1Names = Object.keys(featureNames).sort() || [];
+  const muniSelectionDisabled = listOfMunis.length <= 0;
 
-  const selectL1 =
-    l1Names.length > 0 ? (
-      <Select
-        defaultOption={t("search.defaultState")}
-        id="selectL1"
-        label={t("search.stateLabel")}
-        onChange={(e) => {
-          setSelectedL1(e.target.value);
-          setSelectedL2(-1);
-        }}
-        options={l1Names}
-        value={selectedL1}
-      />
-    ) : (
-      t("search.loading") + "..."
-    );
-
-  const activeMuns = featureNames[selectedL1] || {};
-
-  const l2names = Object.keys(activeMuns).sort();
-
-  const selectL2 =
-    l2names.length > 0 ? (
-      <Select
-        defaultOption={t("search.defaultMun")}
-        id="selectL2"
-        label={t("search.munLabel")}
-        onChange={(e) => {
-          const l2Name = e.target.value;
-          const coords = activeMuns[l2Name];
-          setSelectedL2(l2Name);
-          if (Array.isArray(coords)) fitMap(theMap, "bbox", coords, t);
-          // We don't want to set the selected region on the header Search tool
-          !isPanel && setSelectedRegion("mun_" + selectedL1 + "_" + l2Name);
-        }}
-        options={l2names}
-        value={selectedL2}
-      />
-    ) : (
-      <Select
-        defaultOption={t("search.defaultMun")}
-        disabled={true}
-        id="selectL2"
-        label={t("search.munLabel")}
-        options={[t("search.defaultMun")]}
-        value={t("search.defaultMun")}
-      />
-    );
-
-  // Render
   return (
-    <div>
-      {isPanel && (
-        <>
-          <TextInput
-            id="inputGeocode"
-            label={t("search.internetLabel")}
-            onChange={(e) => setSearchText(e.target.value)}
-            onKeyUp={(e) => {
-              if (e.key === "Enter") searchGeocode();
-            }}
-            render={() => (
-              <Button onClick={searchGeocode} extraStyle={{ marginLeft: "0.25rem" }}>
-                {t("search.goButton")}
-              </Button>
-            )}
-            value={searchText}
-          />
-          {geoSearchResults}
-          <TextInput
-            id="inputLatLng"
-            label={t("search.coordLabel")}
-            onChange={(e) => setLatLngText(e.target.value)}
-            onKeyUp={(e) => {
-              if (e.key === "Enter") processLatLng();
-            }}
-            render={() => (
-              <Button onClick={processLatLng} extraStyle={{ marginLeft: "0.25rem" }}>
-                {t("search.goButton")}
-              </Button>
-            )}
-            value={latLngText}
-          />
-        </>
-      )}
-      {selectL1}
-      {selectL2}
-    </div>
+    <ThemeProvider theme={THEME}>
+      <div>
+        {isPanel && (
+          <>
+            <TextInput
+              id="inputGeocode"
+              label={t("search.internetLabel")}
+              onChange={(e) => setSearchText(e.target.value)}
+              onKeyUp={(e) => {
+                if (e.key === "Enter") searchGeocode();
+              }}
+              render={() => (
+                <Button onClick={searchGeocode} extraStyle={{ marginLeft: "0.25rem" }}>
+                  {t("search.goButton")}
+                </Button>
+              )}
+              value={searchText}
+            />
+            {geoSearchResults}
+            <TextInput
+              id="inputLatLng"
+              label={t("search.coordLabel")}
+              onChange={(e) => setLatLngText(e.target.value)}
+              onKeyUp={(e) => {
+                if (e.key === "Enter") processLatLng();
+              }}
+              render={() => (
+                <Button onClick={processLatLng} extraStyle={{ marginLeft: "0.25rem" }}>
+                  {t("search.goButton")}
+                </Button>
+              )}
+              value={latLngText}
+            />
+          </>
+        )}
+
+        <FormArea>
+          {listOfStates.length > 0 ? (
+            <>
+              <FieldContainer>
+                <Label>{t("search.defaultState")}</Label>
+                <Select
+                  id="state-dropdown"
+                  classNamePrefix="select"
+                  defaultValue={{ label: t("search.defaultState"), value: "default" }}
+                  isSearchable={true}
+                  options={listOfStates.map((s) => ({
+                    label: s,
+                    value: s,
+                  }))}
+                  onChange={({ value }) => {
+                    setSelectedMuni("default");
+                    setListOfMunis([]);
+                    muniRef.current.setValue({
+                      label: t("search.defaultMun"),
+                      value: "default",
+                    });
+                    setSelectedRegion(null);
+                    setSelectedState(value);
+                  }}
+                />
+              </FieldContainer>
+
+              <FieldContainer $isDisabled={muniSelectionDisabled}>
+                <Label>{t("search.defaultMun")}</Label>
+                <Select
+                  ref={muniRef}
+                  id="municipality-dropdown"
+                  classNamePrefix="select"
+                  defaultValue={{ label: t("search.defaultMun"), value: "default" }}
+                  isDisabled={muniSelectionDisabled}
+                  isSearchable={true}
+                  options={listOfMunis.map((muni) => ({
+                    label: muni,
+                    value: muni,
+                  }))}
+                  onChange={({ value: _muni }) => {
+                    const coords = activeMunis[_muni];
+                    setSelectedMuni(_muni);
+                    if (Array.isArray(coords)) fitMap(theMap, "bbox", coords, t);
+                    // We don't want to set the selected region on the header Search tool
+                    !isPanel && setSelectedRegion("mun_" + selectedState + "_" + _muni);
+                  }}
+                />
+              </FieldContainer>
+            </>
+          ) : (
+            t("search.loading") + "..."
+          )}
+        </FormArea>
+      </div>
+    </ThemeProvider>
   );
 }

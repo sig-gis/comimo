@@ -182,7 +182,7 @@ export default function ValidatePanel({ subscribedList, featureNames, selectedDa
         })}
         id="selectProjRegions"
         isMulti
-        isSearchable={false}
+        isSearchable={true}
         onBlur={handleCloseSelect}
         onChange={(e) => {
           setCustomRegions(e.map((selection) => selection.value));
