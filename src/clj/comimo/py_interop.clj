@@ -147,14 +147,14 @@
   (let [layer-type (keyword (:type params))
         opts       (layer-type vector-layers)
         data-layer (:dataLayer params)]
-    (data-response  (if (= layer-type :NICFI) 
+    (data-response  (if (= layer-type :NICFI)
                       "get-nicfi-tiles?z={z}&x={x}&y={y}"
-                      (if-not opts 
+                      (if-not opts
                         ""
                         (let [{:keys [source line fill]} opts]
-                          (py-wrapper utils/getVectorUrl 
+                          (py-wrapper utils/getVectorUrl
                             (if data-layer (str source "/" data-layer) source)
-                            line 
+                            line
                             fill)))))))
 
 (defn get-download-url [{:keys [params]}]
