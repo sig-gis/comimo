@@ -41,7 +41,6 @@ const FormArea = styled.div`
 `;
 
 const FieldContainer = styled.div`
-  padding-top: 1rem;
   margin-bottom: 1rem;
 
   // Style child label
