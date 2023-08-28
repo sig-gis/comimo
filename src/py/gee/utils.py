@@ -31,14 +31,6 @@ def getVectorUrl(source, color, fill):
     return mapid
 
 
-def getImageUrl(source, color):
-    img = ee.Image(source)
-    img = img.select(0).selfMask()
-    mapid = ee.data.getTileUrl(img.getMapId({"palette": [color]}), 0, 0, 0)[
-        :-5] + "{z}/{x}/{y}"
-    return mapid
-
-
 def subscribedRegionsToFC(regions):
     regionsFC = ee.FeatureCollection([])
     for region in regions:
@@ -63,14 +55,6 @@ def getDownloadURL(source, region, scale):
                      540,
                      bestEffort=True).getInfo()
     return img.toByte().getDownloadURL({"region": regionFC.geometry(), "scale": scale})
-
-
-def imagePointExists(source, lat, lon):
-    point = ee.Geometry.Point(lon, lat)
-    pointFeature = ee.Feature(point)
-    image = ee.Image(source).select([0], ["cval"])
-    pt = image.sampleRegions(pointFeature)
-    return pt.size().gt(0).getInfo() == 1
 
 
 def vectorPointOverlaps(source, lat, lon, cols):
