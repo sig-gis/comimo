@@ -12,7 +12,7 @@
 ;;; Constants
 
 (def ^:private max-age (* 24 60 60 1000)) ; Once a day
-(def validation-layers-location "users/comimoapp/offset_debug/validation-layers-location")
+(def validation-layers-location "users/comimoapp/offset_debug/ValidationPointReproj")
 (def prediction-layers-location "users/comimoapp/offset_debug/SquaresReproj")
 
 ;;; Macros
