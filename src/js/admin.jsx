@@ -372,7 +372,7 @@ function AdminContent() {
         width: "100%",
       }}
     >
-      {renderUsersViewToggle()}
+      {selectedPage === "users" && renderUsersViewToggle()}
       <Button onClick={() => downloadData("csv")} extraStyle={{ marginRight: "0.5rem" }}>
         {t("admin.downloadCSV")}
       </Button>
