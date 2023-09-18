@@ -46,8 +46,8 @@
  :triangulum.views/gtag-id          "G-BDLCXBE457"          ; update it
  :triangulum.views/static-css-files ["/css/comimo_global.css"] ; in resources/public/
  :triangulum.views/static-js-files  ["/js/jquery-3.4.1.min.js"
-                                     "/js/google-charts-loader.js"
-                                     "/js/tabulator-4.5.3.min.js"]
+                                     "/js/tabulator-4.5.3.min.js"
+                                     "https://www.gstatic.com/charts/loader.js"]
  :triangulum.views/get-user-lang    comimo.db.users/get-user-lang
  :triangulum.views/client-keys      {:mapboxToken "pk.syJ1IjoiY29taW1vIiwiYSI8ImNsN9lkMXQxYTARb3MzDHBmdW16ODRwZGwifQ.7dCyAC3arawmtSPgw_CPww" ; update it
                                      :mapquestKey "MFOFF0YwZjZ1o5CvaXhfEKdixhfXWZFv"} ; update it
