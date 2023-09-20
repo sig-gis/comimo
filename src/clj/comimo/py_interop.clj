@@ -102,15 +102,15 @@
                     :nMines (filter #(re-matches #"\d{4}-\d{2}-\d{2}-N" %) image-list)
                     :pMines (filter #(re-matches #"\d{4}-\d{2}-\d{2}-P" %) image-list)})))
 
-(def vector-layers {:cMines              {:source     "users/comimoapp/offset_debug/SquaresReproj"
+(def vector-layers {:cMines              {:source     "users/comimoapp/ValidationPlots"
                                           :info-cols   ["ID"]
                                           :line        "purple"
                                           :fill        "purple"}
-                    :nMines              {:source      "users/comimoapp/offset_debug/SquaresReproj"
+                    :nMines              {:source      "users/comimoapp/ValidationPlots"
                                           :info-cols   ["ID"]
                                           :line        "red"
                                           :fill        "red"}
-                    :pMines              {:source      "users/comimoapp/offset_debug/SquaresReproj"
+                    :pMines              {:source      "users/comimoapp/ValidationPlots"
                                           :info-cols   ["ID"]
                                           :line        "orange"
                                           :fill        "orange"}
