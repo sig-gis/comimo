@@ -1,6 +1,6 @@
 { ;; server (server)
  :triangulum.server/http-port   8080
- :triangulum.server/mode        "prod"
+ :triangulum.server/mode        "prod" ; FIXME: switch to "dev"
  :triangulum.server/log-dir     ""
  :triangulum.server/handler     triangulum.handler/authenticated-routing-handler
  :triangulum.server/nrepl-bind  "127.0.0.1"
