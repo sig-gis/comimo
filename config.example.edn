@@ -1,43 +1,59 @@
-{:triangulum.server/http-port            8080
- :triangulum.server/mode                 "prod"
- :triangulum.server/log-dir              ""
- :triangulum.server/handler              triangulum.handler/authenticated-routing-handler
+{ ;; server (server)
+ :triangulum.server/http-port   8080
+ :triangulum.server/mode        "prod"
+ :triangulum.server/log-dir     ""
+ :triangulum.server/handler     triangulum.handler/authenticated-routing-handler
+ :triangulum.server/nrepl-bind  "127.0.0.1"
+ :triangulum.server/nrepl-port  5555
+ :triangulum.server/nrepl       false
+ :triangulum.server/cider-nrepl true
 
- :triangulum.handler/not-found-handler   comimo.handlers/home-page-handler
+ ;; build-db (database)
+ :triangulum.build-db/admin-pass ""
+ :triangulum.build-db/dev-data   true
+ :triangulum.build-db/file       "db-backup.custom"
+ :triangulum.build-db/verbose    true
+
+ ;; database (database)
+ :triangulum.database/host     "localhost"
+ :triangulum.database/port     5432
+ :triangulum.database/dbname   "comimo"
+ :triangulum.database/user     "comimo"
+ :triangulum.database/password "comimo"
+
+ ;; email (mail)
+ :triangulum.email/host     "smtp.gmail.com"
+ :triangulum.email/user     "subs.comimo@gmail.com"
+ :triangulum.email/pass     "" ; REVIEW
+ :triangulum.email/tls      true
+ :triangulum.email/port     587
+ :triangulum.email/base-url "http://localhost:8003"
+
+ ;; git (app)
+ :triangulum.git/tags-url "https://github.com/sig-gis/comimo/tags"
+
+ ;; handler (server)
+ :triangulum.handler/not-found-handler   triangulum.views/not-found-handler
  :triangulum.handler/redirect-handler    comimo.handlers/redirect-handler
  :triangulum.handler/route-authenticator comimo.handlers/route-authenticator
  :triangulum.handler/routing-tables      [comimo.routing/routes]
- :triangulum.server/nrepl-bind           "127.0.0.1"
- :triangulum.server/nrepl-port           5555
+ :triangulum.handler/session-key         "REQUIRED:16_CHARS" ; REVIEW add 16 char session key
+ :triangulum.handler/bad-tokens          #{".php"}
 
- :triangulum.worker/workers              [{:triangulum.worker/name  "alerts"
-                                           :triangulum.worker/start comimo.jobs/start-scheduling-service!
-                                           :triangulum.worker/stop  comimo.jobs/stop-scheduling-service!}]
+ ;; https (https) <-- These fields are not used in CoMiMo but are required to pass the spec check
+ :triangulum.https/email  "support@sig-gis.com"
+ :triangulum.https/domain "comimo.sig-gis.com"
 
- :triangulum.handler/session-key         "DkaZJTXfoCnu8L8D"      ; update it
- :triangulum.response/response-type      :json
+ ;; response (server)
+ :triangulum.response/response-type :json ; or :edn or :transit
 
- :triangulum.database/dbname             "comimo"
- :triangulum.database/user               "comimo"
- :triangulum.database/password           "comimo"
-
- :triangulum.email/host                  "smtp.gmail.com"
- :triangulum.email/user                  "subs.comimo@gmail.com"
- :triangulum.email/pass                  "your password"         ; update it
- :triangulum.email/base-url              "https://localhost:8080"
- :triangulum.https/email                 "support@sig-gis.com"
-
- :triangulum.https/domain                "comimo.sig-gis.com"
-
- :triangulum.git/tags-url                "https://github.com/sig-gis/comimo/tags"
-
- :triangulum.views/title                 {:en "Colombian Mining Monitoring"
-                                          :es "Monitoreo Minero Colombiano"}
- :triangulum.views/description           {:en "Colombian Mining Monitoring (CoMiMo) is an online mining monitoring application that uses machine learning and satellite imagery to alert government authorities, NGOs and concerned citizens about possible mining activities anywhere in Colombia, and enables them to assess the location, lawfulness and potential impacts to the environment of those mines."
-                                          :es "Monitoreo Minero Colombiano (CoMiMo) es una aplicación de monitoreo minero en línea que utiliza aprendizaje automático e imágenes satelitales para alertar a las autoridades gubernamentales, ONGs y ciudadanos preocupados sobre posibles actividades mineras en cualquier lugar de Colombia, y les permite evaluar la ubicación, la legalidad y los posibles impactos al entorno de esas minas."}
- :triangulum.views/keywords              {:en "colombian mining monitoring, comimo, satellite imagery, illegal mining, machine learning, image analysis, detection, crowdsourcing"
-                                          :es "monitoreo minero colombiano, comimo, imágenes satelitales, minería ilegal, aprendizaje automático, análisis de imágenes, detección, crowdsourcing"}
-
+ ;; views (app)
+ :triangulum.views/title            {:en "Colombian Mining Monitoring"
+                                     :es "Monitoreo Minero Colombiano"}
+ :triangulum.views/description      {:en "Colombian Mining Monitoring (CoMiMo) is an online mining monitoring application that uses machine learning and satellite imagery to alert government authorities, NGOs and concerned citizens about possible mining activities anywhere in Colombia, and enables them to assess the location, lawfulness and potential impacts to the environment of those mines."
+                                     :es "Monitoreo Minero Colombiano (CoMiMo) es una aplicación de monitoreo minero en línea que utiliza aprendizaje automático e imágenes satelitales para alertar a las autoridades gubernamentales, ONGs y ciudadanos preocupados sobre posibles actividades mineras en cualquier lugar de Colombia, y les permite evaluar la ubicación, la legalidad y los posibles impactos al entorno de esas minas."}
+ :triangulum.views/keywords         {:en "colombian mining monitoring, comimo, satellite imagery, illegal mining, machine learning, image analysis, detection, crowdsourcing"
+                                     :es "monitoreo minero colombiano, comimo, imágenes satelitales, minería ilegal, aprendizaje automático, análisis de imágenes, detección, crowdsourcing"}
  :triangulum.views/extra-head-tags  [[:meta {:name "viewport" :content "width=device-width, user-scalable=no"}]
                                      [:meta {:name "msapplication-TileColor" :content "#ffc40d"}]
                                      [:meta {:name "msapplication-config" :content "/favicon/browserconfig.xml"}]
@@ -48,15 +64,22 @@
                                      [:link {:rel "mask-icon" :color "#5bbad5" :href "/favicon/safari-pinned-tab.svg"}]
                                      [:link {:rel "shortcut icon" :href "/favicon/favicon.ico"}]
                                      [:link {:rel "manifest" :href "/favicon/site.webmanifest"}]]
- :triangulum.views/gtag-id          "G-BDLCXBE457"          ; update it
+ :triangulum.views/gtag-id          "G-" ; REVIEW
  :triangulum.views/static-css-files ["/css/comimo_global.css"] ; in resources/public/
  :triangulum.views/static-js-files  ["/js/jquery-3.4.1.min.js"
-                                     "/js/tabulator-4.5.3.min.js"
-                                     "https://www.gstatic.com/charts/loader.js"]
+                                     "/js/google-charts-loader.js"
+                                     "/js/tabulator-4.5.3.min.js"]
  :triangulum.views/get-user-lang    comimo.db.users/get-user-lang
- :triangulum.views/client-keys      {:mapboxToken "pk.syJ1IjoiY29taW1vIiwiYSI8ImNsN9lkMXQxYTARb3MzDHBmdW16ODRwZGwifQ.7dCyAC3arawmtSPgw_CPww" ; update it
-                                     :mapquestKey "MFOFF0YwZjZ1o5CvaXhfEKdixhfXWZFv"} ; update it
+ :triangulum.views/js-init          "/src/js/home.jsx" ; FIXME: need to implement equivalent to SARFDAS' /src/js/main.jsx
+ :triangulum.views/client-keys      {:mapboxToken "" ; REVIEW
+                                     :mapquestKey ""} ; REVIEW
 
- :comimo.py-interop/ee-account      "comimo@earth-engine-comimo.iam.gserviceaccount.com"
- :comimo.py-interop/ee-key-path     "gee-auth-key.json"     ; include it in the project root directory
- :comimo.proxy/nicfi-key            "d5ab0934329874e44a8ac99e25ddy7091"} ; update it
+ ;; workers (server)                     ;; FIXME: This was lost when porting server.clj from comimo to triangulum
+ :triangulum.worker/workers [{:triangulum.worker/name  "alerts"
+                              :triangulum.worker/start comimo.jobs/start-scheduling-service!
+                              :triangulum.worker/stop  comimo.jobs/stop-scheduling-service!}]
+
+ ;; comimo (my-keys)
+ :comimo.py-interop/ee-account  "comimo@earth-engine-comimo.iam.gserviceaccount.com"
+ :comimo.py-interop/ee-key-path "gee-auth-key.json" ; REVIEW
+ :comimo.proxy/nicfi-key        ""} ; REVIEW
