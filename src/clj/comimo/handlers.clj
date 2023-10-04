@@ -4,11 +4,7 @@
             [comimo.db.projects         :refer [can-collect?]]
             [comimo.db.users            :refer [is-admin?]]
             [triangulum.response        :refer [no-cross-traffic?]]
-            [triangulum.type-conversion :refer [val->int]]
-            [triangulum.views           :refer [render-page]]))
-
-
-(def home-page-handler (render-page "/home"))
+            [triangulum.type-conversion :refer [val->int]]))
 
 (defn redirect-handler [{:keys [session query-string uri] :as _request}]
   (let [full-url (url-encode (str uri (when query-string (str "?" query-string))))]

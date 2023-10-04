@@ -3,14 +3,13 @@
             [comimo.db.projects      :as projects]
             [comimo.db.subscriptions :as subscriptions]
             [comimo.db.users         :as users]
-            [comimo.handlers         :refer [home-page-handler]]
             [comimo.proxy            :as proxy]
             [comimo.py-interop       :as py]
             [triangulum.views        :refer [render-page]]))
 
 (def routes
   {;; Page Routes
-   [:get  "/"]                    {:handler     home-page-handler}
+   [:get  "/"]                    {:handler     (render-page "/home")}
    [:get  "/user-account"]        {:handler     (render-page "/user-account")
                                    :auth-type   :user
                                    :auth-action :redirect}
