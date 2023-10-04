@@ -80,6 +80,6 @@
                               :triangulum.worker/stop  comimo.jobs/stop-scheduling-service!}]
 
  ;; comimo (my-keys)
- :comimo.py-interop/ee-account  "comimo@earth-engine-comimo.iam.gserviceaccount.com"
+ :comimo.py-interop/ee-account  "" ; REVIEW
  :comimo.py-interop/ee-key-path "gee-auth-key.json" ; REVIEW
  :comimo.proxy/nicfi-key        ""} ; REVIEW
