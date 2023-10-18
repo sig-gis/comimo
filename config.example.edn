@@ -74,7 +74,7 @@
  :triangulum.views/client-keys      {:mapboxToken "" ; REVIEW
                                      :mapquestKey ""} ; REVIEW
 
- ;; workers (server)                     ;; FIXME: This was lost when porting server.clj from comimo to triangulum
+ ;; workers (server)
  :triangulum.worker/workers [{:triangulum.worker/name  "alerts"
                               :triangulum.worker/start comimo.jobs/start-scheduling-service!
                               :triangulum.worker/stop  comimo.jobs/stop-scheduling-service!}]
