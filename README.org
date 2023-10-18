@@ -13,9 +13,17 @@
 
 ** Application Configuration
 
-On startup, the CoMiMo application reads a file called ~config.edn~ in the top-level directory of this repository, which contains various user-configurable system parameters. A sample file called ~config.default.edn~ is provided with this repository to get you started. To begin, simply copy it to ~config.edn~. Then edit it according to the following sections.
+On startup, the COMIMO application reads a file called ~config.edn~ in the top-level directory of this repository, which contains various user-configurable system parameters. A sample file called ~config.example.edn~ is provided with this repository to get you started. To begin, simply copy it to ~config.edn~. Then edit it according to the following sections.
 
-Please note that you must replace all values surrounded with angle brackets (e.g., "<api-key>") with actual values for the application to work correctly. Most of the fields should be self-explanatory.
+Please note that sensitive information, such as access tokens and passwords, has been stripped from ~config.example.edn~. You can see which fields will need to be filled in by looking for ~; REVIEW~ comments.
+
+You can find these configuration values while using the SIG VPN & credentials by visiting ~gemini://dev-docs.sig-gis.com/operations/servers/prod/kite~, or by navigating to ~gemini://dev-docs.sig-gis.com~ -> ~Operations~ -> ~Application Servers~ -> ~kite (COMIMO - SIG)~.
+
+Once you have finished setting up dependencies and building ~config.edn~, you can validate that it passes the config spec set in Triangulum by navigating to the top level directory of COMIMO and running the following command:
+
+#+begin_src sh
+clojure -M:config validate -f ./config.edn
+#+end_src
 
 ** Postgresql Database Setup
 
