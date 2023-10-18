@@ -27,7 +27,7 @@
  :triangulum.email/pass     "" ; REVIEW
  :triangulum.email/tls      true
  :triangulum.email/port     587
- :triangulum.email/base-url "http://localhost:8003"
+ :triangulum.email/base-url "http://localhost:8080"
 
  ;; git (app)
  :triangulum.git/tags-url "https://github.com/sig-gis/comimo/tags"
