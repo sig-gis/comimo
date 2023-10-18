@@ -6,7 +6,7 @@
            org.clojure/data.json     {:mvn/version "1.0.0"}
            ring/ring                 {:mvn/version "1.8.2"}
            sig-gis/triangulum        {:git/url "https://github.com/sig-gis/triangulum"
-                                      :git/sha "eccf381d9927b77778f1e6cc5e40ed17c93e33d1"}}
+                                      :git/sha "38d339ecd37cef7080b9777faf31f29c75a5a190"}}
 
  :aliases {:build-db         {:main-opts ["-m" "triangulum.build-db"]}
            :config           {:main-opts ["-m" "triangulum.config"]}
