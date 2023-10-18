@@ -17,9 +17,9 @@
                      full-url)))))
 
 (defn route-authenticator [{:keys [session params headers] :as _request} auth-type]
-  (let [user-id (:userId session -1)
-        project-id   (val->int (:projectId params))
-        plot-id      (val->int (:plotId params))]
+  (let [user-id    (:userId session -1)
+        project-id (val->int (:projectId params))
+        plot-id    (val->int (:plotId params))]
     (condp = auth-type
       :user     (pos? user-id)
       :collect  (can-collect? user-id project-id plot-id)
