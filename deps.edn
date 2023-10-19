@@ -11,7 +11,7 @@
  :aliases {:build-db         {:main-opts ["-m" "triangulum.build-db"]}
            :config           {:main-opts ["-m" "triangulum.config"]}
            :https            {:main-opts ["-m" "triangulum.https"]}
-           :migrate          {:main-opts ["-m" "comimo.migrate"]}
+           :migrate          {:main-opts ["-m" "triangulum.migrate"]}
            :server           {:main-opts ["-m" "triangulum.server"]
                               :jvm-opts  ["--add-modules=jdk.incubator.foreign"
                                           "--enable-native-access=ALL-UNNAMED"]}
