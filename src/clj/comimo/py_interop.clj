@@ -161,8 +161,7 @@
   (let [{:keys [region dataLayer]} params]
     (data-response (py-wrapper utils/getDownloadURL
                                (str prediction-layers-location "/" dataLayer)
-                               region
-                               540))))
+                               region))))
 
 (defn- get-subscribed-regions [user-id]
   (->> (call-sql "get_user_subscriptions" user-id)
