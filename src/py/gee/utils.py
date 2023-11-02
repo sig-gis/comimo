@@ -42,19 +42,32 @@ def subscribedRegionsToFC(regions):
         regionsFC = regionsFC.merge(thisFC)
     return regionsFC
 
+def addPolygonCoords(polygon):
+    feature = ee.Feature(ee.Geometry.Polygon(polygon), {})
+    coords = feature.geometry().coordinates()
+    return feature.set("coordinates", coords)
 
-def getDownloadURL(source, region, scale):
-    img = ee.Image(source)
+def getDownloadURL(source, region):
+    fc = ee.FeatureCollection(source)
     if (region == "all"):
         regionFC = ee.FeatureCollection("users/comimoapp/Shapes/Level0")
     else:
         regionFC = subscribedRegionsToFC([region])
-    img = img.clip(regionFC)
-    img.reduceRegion(ee.Reducer.sum(),
-                     regionFC.first().geometry(),
-                     540,
-                     bestEffort=True).getInfo()
-    return img.toByte().getDownloadURL({"region": regionFC.geometry(), "scale": scale})
+    intersect = fc.geometry().intersection(region.geometry())
+    intersectFc = ee.FeatureCollection(intersect.coordinates().map(addPolygonCoords))
+    urlCsv = intersectFc.getDownloadURL(**{
+        "selectors": ["coordinates"],
+        "filetype": "CSV",
+        "filename": source
+    })
+    urlKml = intersectFc.getDownloadURL(**{
+        "filetype": "KML",
+        "filename": source
+    })
+    return {
+        "csvUrl": urlCsv,
+        "kmlUrl": urlKml
+    }
 
 
 def vectorPointOverlaps(source, lat, lon, cols):
