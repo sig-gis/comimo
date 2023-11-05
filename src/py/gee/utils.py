@@ -1,5 +1,6 @@
 import os
 import ee
+from functools import lru_cache
 
 # Initialize
 
@@ -47,28 +48,27 @@ def addPolygonCoords(polygon):
     coords = feature.geometry().coordinates()
     return feature.set("coordinates", coords)
 
+@lru_cache(maxsize=128)
 def getDownloadURL(source, region):
-    fc = ee.FeatureCollection(source)
-    if (region == "all"):
-        regionFC = ee.FeatureCollection("users/comimoapp/Shapes/Level0")
-    else:
-        regionFC = subscribedRegionsToFC([region])
-    intersect = fc.geometry().intersection(region.geometry())
-    intersectFc = ee.FeatureCollection(intersect.coordinates().map(addPolygonCoords))
-    urlCsv = intersectFc.getDownloadURL(**{
-        "selectors": ["coordinates"],
-        "filetype": "CSV",
-        "filename": source
-    })
-    urlKml = intersectFc.getDownloadURL(**{
-        "filetype": "KML",
-        "filename": source
-    })
-    return {
-        "csvUrl": urlCsv,
-        "kmlUrl": urlKml
-    }
+   fc = ee.FeatureCollection(source)
+   regionFC = ee.FeatureCollection("users/comimoapp/Shapes/Level0") if region == "all" else subscribedRegionsToFC([region])
+   intersect = fc.geometry().intersection(regionFC.geometry())
+   intersectFc = ee.FeatureCollection(intersect.coordinates().map(addPolygonCoords))
 
+   urlCsv = intersectFc.getDownloadURL(**{
+       "selectors": ["coordinates"],
+       "filetype": "CSV",
+       "filename": source[32:]
+   })
+   urlKml = intersectFc.getDownloadURL(**{
+       "filetype": "KML",
+       "filename": source[32:]
+   })
+
+   return {
+       "csvUrl": urlCsv,
+       "kmlUrl": urlKml
+   }
 
 def vectorPointOverlaps(source, lat, lon, cols):
     try:

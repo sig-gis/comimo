@@ -58,7 +58,7 @@
                    (str/join ": "))}))
 
 (defn- py-wrapper [py-fn & params]
-  (run-with-timeout 6000
+  (run-with-timeout 60000
                     (check-initialized)
                     (binding [*item-tuple-cutoff* 0]
                       (try (->jvm (apply py-fn params))
@@ -153,9 +153,9 @@
                         ""
                         (let [{:keys [source line fill]} opts]
                           (py-wrapper utils/getVectorUrl
-                            (if data-layer (str source "/" data-layer) source)
-                            line
-                            fill)))))))
+                                      (if data-layer (str source "/" data-layer) source)
+                                      line
+                                      fill)))))))
 
 (defn get-download-url [{:keys [params]}]
   (let [{:keys [region dataLayer]} params]
@@ -202,3 +202,4 @@
                            [v (let [{:keys [source source-base info-cols]} (get vector-layers v)]
                                 (py-wrapper utils/vectorPointOverlaps source lat lng info-cols))]))
                         (into {})))))
+

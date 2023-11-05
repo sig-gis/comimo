@@ -31,6 +31,7 @@ export default function DownloadPanel({ active, featureNames, mapquestKey, selec
 
   const [clipOption, setClipOption] = useState(1);
   const [downloadURL, setDownloadURL] = useState(false);
+  const [format, setFormat] = useState("CSV");
   const [fetching, setFetching] = useState(false);
   const [mineType, setMineType] = useState("cMines");
 
@@ -41,18 +42,27 @@ export default function DownloadPanel({ active, featureNames, mapquestKey, selec
 
     processModal(
       () =>
-        jsonRequest(URLS.GET_DL_URL, {
+        jsonRequest("get-download-url", {
           region,
           dataLayer: selectedDates[mineType],
         })
           .then((resp) => {
-            setDownloadURL([region, selectedDates[mineType], resp]);
+            setDownloadURL({
+              region,
+              alertsLayer: selectedDates[mineType],
+              csvURL: resp.csvUrl,
+              kmlURL: resp.kmlUrl,
+            });
           })
           .catch((err) => {
             console.error(err);
           }),
       setShowModal
     );
+  };
+
+  const handleFormatChange = (event) => {
+    setFormat(event.target.value);
   };
 
   return (
@@ -126,21 +136,41 @@ export default function DownloadPanel({ active, featureNames, mapquestKey, selec
           <p>{`${t("download.fetching")}...`}</p>
         ) : (
           downloadURL &&
-          downloadURL[0] && (
-            <p>
+          downloadURL.region && (
+            <div>
+              <div style={{ display: "flex" }}>
+                <label style={{ display: "inline-block" }}>
+                  <input
+                    type="radio"
+                    value="CSV"
+                    checked={format === "CSV"}
+                    onChange={handleFormatChange}
+                  />
+                  CSV
+                </label>
+                <label style={{ display: "inline-block" }}>
+                  <input
+                    type="radio"
+                    value="KML"
+                    checked={format === "KML"}
+                    onChange={handleFormatChange}
+                  />
+                  KML
+                </label>
+              </div>
               <span>
-                <a href={downloadURL[2]}>
+                <a href={format === "CSV" ? downloadURL.csvURL : downloadURL.kmlURL}>
                   {`${t("download.clickHere")}` +
                     ` ${
-                      downloadURL[0] === "all"
+                      downloadURL.region === "all"
                         ? t("download.completeData")
-                        : t("download.munData") + downloadURL[0].split("_").slice(1).join(", ")
+                        : t("download.munData") + downloadURL.region.split("_").slice(1).join(", ")
                     }` +
                     ` ${t("download.prep")}` +
-                    ` ${downloadURL[1]}.`}
+                    ` ${downloadURL.alertsLayer}.`}
                 </a>
               </span>
-            </p>
+            </div>
           )
         )}
       </div>
