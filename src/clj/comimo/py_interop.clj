@@ -199,7 +199,7 @@
     (data-response (->> visible-layers
                         (pmap
                          (fn [v]
-                           [v (let [{:keys [source source-base info-cols]} (get vector-layers v)]
+                           [v (let [{:keys [source source-base info-cols]} (get vector-layers (keyword v))]
                                 (py-wrapper utils/vectorPointOverlaps source lat lng info-cols))]))
                         (into {})))))
 
