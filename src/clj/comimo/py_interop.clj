@@ -193,13 +193,15 @@
 
 (defn get-info [{:keys [params]}]
   (let [visible-layers (:visibleLayers params)
-        mine-dates     (:dates params)
+        alert-dates    (:dates params)
         lat            (tc/val->double (:lat params))
         lng            (tc/val->double (:lng params))]
     (data-response (->> visible-layers
                         (pmap
                          (fn [v]
-                           [v (let [{:keys [source source-base info-cols]} (get vector-layers (keyword v))]
-                                (py-wrapper utils/vectorPointOverlaps source lat lng info-cols))]))
+                           [v (let [layer (keyword v)
+                                    {:keys [source source-base info-cols]} (get vector-layers layer)]
+                                (if (#{:cMines :nMines :pMines} layer)
+                                  (py-wrapper utils/mineExists (str source "/" (alert-dates layer)) lat lng)
+                                  (py-wrapper utils/vectorPointOverlaps source lat lng info-cols)))]))
                         (into {})))))
-
