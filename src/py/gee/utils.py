@@ -70,6 +70,11 @@ def getDownloadURL(source, region):
        "kmlUrl": urlKml
    }
 
+def mineExists(source, lat, lon):
+    point = ee.Geometry.Point(lon, lat)
+    mine = ee.FeatureCollection(source).geometry()
+    return point.intersects(mine).getInfo()
+
 def vectorPointOverlaps(source, lat, lon, cols):
     try:
         point = ee.Geometry.Point(lon, lat)
