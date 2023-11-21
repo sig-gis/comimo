@@ -50,6 +50,7 @@ def addPolygonCoords(polygon):
 
 @lru_cache(maxsize=128)
 def getDownloadURL(source, region):
+   # source here is the layer active/chosen, e.g. "users/comimoapp/ValidationPlots/2021-09-01-P"
    fc = ee.FeatureCollection(source)
    regionFC = ee.FeatureCollection("users/comimoapp/Shapes/Level0") if region == "all" else subscribedRegionsToFC([region])
    intersect = fc.geometry().intersection(regionFC.geometry())
@@ -71,6 +72,7 @@ def getDownloadURL(source, region):
    }
 
 def mineExists(source, lat, lon):
+    # source here is the layer active/chosen, e.g. "users/comimoapp/ValidationPlots/2021-09-01-P"
     point = ee.Geometry.Point(lon, lat)
     mine = ee.FeatureCollection(source).geometry()
     return point.intersects(mine).getInfo()
@@ -121,35 +123,34 @@ def getPointsWithin(source, regions):
 
 
 def statsByRegion(source, subscribedRegions):
+    # source here is the layer active/chosen, e.g. "users/comimoapp/ValidationPlots/2021-09-01-P"
     fc = subscribedRegionsToFC(subscribedRegions)
-    image = ee.Image(source)
-    pa = ee.Image.pixelArea()
-    image = image.selfMask().multiply(pa)
-    rr = image.reduceRegions(collection=fc,
-                             reducer=ee.Reducer.count(),
-                             scale=540,
-                             crs="EPSG:4326")
-    count = rr.aggregate_array("count")
-    names = rr.aggregate_array("MPIO_CNMBR")
-    return ee.Dictionary({"count": count, "names": names}).getInfo()
+    plots = ee.FeatureCollection(source)
+    def check_intersection(feature):
+        intersection = plots.filterBounds(feature.geometry())
+        name = feature.get("MPIO_CNMBR")
+        count = intersection.size()
+        return feature.set("name", name).set("count", count)
+    fc_info = fc.map(check_intersection)
+    names = fc_info.aggregate_array("name")
+    counts = fc_info.aggregate_array("count")
+    return ee.Dictionary({"count": counts, "names": names}).getInfo()
 
 
-def asBands(image, passedImage):
-    image = ee.Image(image)
-    id = image.id()
-    image = image.selfMask()
-    passedImage = ee.Image(passedImage)
-    return passedImage.addBands(image.rename(id))
-
-
-def statTotals(source, subscribedRegions):
+def statsTotals(source, subscribedRegions):
+    # source here is the folder containing all data "users/comimoapp/ValidationPlots"
     fc = subscribedRegionsToFC(subscribedRegions)
-    image = ee.Image(ee.ImageCollection(source)
-                     .filter(ee.Filter.stringEndsWith("system:index", "-C"))
-                     .iterate(asBands, ee.Image()))
-    image = image.select(image.bandNames().remove("constant"))
-    return image.reduceRegion(geometry=fc.geometry(),
-                              reducer=ee.Reducer.count(),
-                              scale=540,
-                              crs="EPSG:4326",
-                              bestEffort=True).getInfo()
+    tables = ee.data.listAssets(source)['assets']
+    names = []
+    for table in tables:
+        name = table['name'][35:]
+        names.append(name)
+    names_filt = [x for x in names if '-C' in x]
+    dicts = {}
+    for i in names_filt:
+        cmine = ee.FeatureCollection(i)
+        intersection = cmine.filterBounds(fc)
+        count = intersection.size().getInfo()
+        cmine_name = i[32:]
+        dicts[cmine_name] = count
+    return dicts
