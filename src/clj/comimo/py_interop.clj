@@ -182,7 +182,7 @@
 
 (defn get-stat-totals [{:keys [params session]}]
   (let [user-id    (tc/val->int (:userId session))]
-    (->> (py-wrapper utils/statTotals
+    (->> (py-wrapper utils/statsTotals
                      (str prediction-layers-location)
                      (get-subscribed-regions user-id))
          (mapv (fn [[k v]]
