@@ -248,6 +248,7 @@ export default function StatsPanel({ active, selectedDate, subscribedList }) {
         <div style={{ display: "flex", justifyContent: "center" }} id="stats1" />
         <p style={{ lineHeight: "1rem", fontSize: ".75rem" }}>{t("stats.regionSubTitle")}</p>
         {!chartsLoaded && <div>{`${t("stats.loading")}...`}</div>}
+        <p style={{ lineHeight: "1rem", fontSize: ".75rem" }}>{t("stats.areaWarning")}</p>
       </div>
     );
   };
@@ -259,6 +260,7 @@ export default function StatsPanel({ active, selectedDate, subscribedList }) {
         {/* <Title>CHART: Total Mined Areas Per Period</Title> */}
         <Title>{t("stats.dateTitle")}</Title>
         <div style={{ display: "flex", justifyContent: "center" }} id="stats2" />
+        <p style={{ lineHeight: "1rem", fontSize: ".75rem" }}>{t("stats.regionSubTitle")}</p>
         {!chartsLoaded && <div>{`${t("stats.loading")}...`}</div>}
         <p style={{ lineHeight: "1rem", fontSize: ".75rem" }}>{t("stats.areaWarning")}</p>
       </div>

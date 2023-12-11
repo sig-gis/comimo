@@ -58,7 +58,7 @@
                    (str/join ": "))}))
 
 (defn- py-wrapper [py-fn & params]
-  (run-with-timeout 60000
+  (run-with-timeout 6000000
                     (check-initialized)
                     (binding [*item-tuple-cutoff* 0]
                       (try (->jvm (apply py-fn params))
