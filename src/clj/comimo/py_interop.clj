@@ -58,7 +58,7 @@
                    (str/join ": "))}))
 
 (defn- py-wrapper [py-fn & params]
-  (run-with-timeout 60000
+  (run-with-timeout 6000000
                     (check-initialized)
                     (binding [*item-tuple-cutoff* 0]
                       (try (->jvm (apply py-fn params))
@@ -182,7 +182,7 @@
 
 (defn get-stat-totals [{:keys [params session]}]
   (let [user-id    (tc/val->int (:userId session))]
-    (->> (py-wrapper utils/statTotals
+    (->> (py-wrapper utils/statsTotals
                      (str prediction-layers-location)
                      (get-subscribed-regions user-id))
          (mapv (fn [[k v]]
