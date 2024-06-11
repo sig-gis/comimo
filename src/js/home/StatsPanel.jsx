@@ -307,6 +307,7 @@ export default function StatsPanel({ active, selectedDate, subscribedList }) {
           fillColorHover="var(--white)"
           icon="next"
           iconSize="20px"
+          iconLeftPosition={false}
           fill="var(--white)"
           isDisabled={currentChartIdx === secondChartIndex}
           extraStyle={{ marginRight: "2rem" }}
