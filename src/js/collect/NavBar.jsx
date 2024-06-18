@@ -129,6 +129,7 @@ export default function NavBar({
                 fillColorHover="var(--white)"
                 icon="next"
                 iconSize="20px"
+                iconLeftPosition={false}
                 fill="var(--white)"
                 extraStyle={{ marginRight: "2rem" }}
               />
