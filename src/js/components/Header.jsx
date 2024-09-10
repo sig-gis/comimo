@@ -11,7 +11,6 @@ import ToolCard from "./ToolCard";
 import UserDropdown from "./UserDropdown";
 
 import { visiblePanelAtom, featureNamesAtom } from "../home";
-import { mapquestKeyAtom } from "./PageLayout";
 
 const TitleBar = styled.div`
   background: var(--gray-1);
@@ -56,7 +55,6 @@ const UserSettings = styled.div`
 
 export default function Header({ showSearch, theMap, username }) {
   const featureNames = useAtomValue(featureNamesAtom);
-  const mapquestKey = useAtomValue(mapquestKeyAtom);
   const [visiblePanel, setVisiblePanel] = useAtom(visiblePanelAtom);
 
   const { t, i18n } = useTranslation();
@@ -87,7 +85,6 @@ export default function Header({ showSearch, theMap, username }) {
                 isPanel={true}
                 featureNames={featureNames}
                 theMap={theMap}
-                mapquestKey={mapquestKey}
               ></Search>
             </ToolCard>
           </>
