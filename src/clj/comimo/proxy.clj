@@ -22,7 +22,7 @@
 ;;; Fill cache
 
 (defn nicfi-dates []
-  (as-> (client/get (str "https://api.planet.com/basemaps/v1/mosaics?api_key=" (get-config ::nicfi-key))) $
+  (as-> (client/get (str "https://api.planet.com/basemaps/v1/mosaics?_page_size=150&api_key=" (get-config ::nicfi-key))) $
     (:body $)
     (json/read-str $ :key-fn keyword)
     (:mosaics $)
