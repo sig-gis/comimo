@@ -2,7 +2,7 @@
 
  :deps    {cider/cider-nrepl         {:mvn/version "0.30.0"}
            clj-http/clj-http         {:mvn/version "3.12.3"}
-           clj-python/libpython-clj  {:mvn/version "2.020"}
+           clj-python/libpython-clj  {:mvn/version "2.025"}
            org.clojure/clojure       {:mvn/version "1.11.1"}
            org.clojure/data.json     {:mvn/version "2.4.0"}
            ring/ring                 {:mvn/version "1.8.2"}
@@ -13,9 +13,7 @@
            :config           {:main-opts ["-m" "triangulum.config"]}
            :https            {:main-opts ["-m" "triangulum.https"]}
            :migrate          {:main-opts ["-m" "triangulum.migrate"]}
-           :server           {:main-opts ["-m" "triangulum.server"]
-                              :jvm-opts  ["--add-modules=jdk.incubator.foreign"
-                                          "--enable-native-access=ALL-UNNAMED"]}
+           :server           {:main-opts ["-m" "triangulum.server"]}
            :systemd          {:main-opts ["-m" "triangulum.systemd"]}
            :rebel            {:extra-deps {com.bhauman/rebel-readline {:mvn/version "0.1.4"}}
                               :main-opts  ["-m" "rebel-readline.main"]}
