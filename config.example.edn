@@ -71,8 +71,8 @@
                                      "/js/tabulator-4.5.3.min.js"]
  :triangulum.views/get-user-lang    comimo.db.users/get-user-lang
  :triangulum.views/js-init          "/src/js/home.jsx" ; FIXME: need to implement equivalent to SARFDAS' /src/js/main.jsx
- :triangulum.views/client-keys      {:mapboxToken "" ; REVIEW
-                                     :mapquestKey ""} ; REVIEW
+ :triangulum.views/client-keys      {:mapboxToken ""}
+
 
  ;; workers (server)
  :triangulum.worker/workers [{:triangulum.worker/name  "alerts"

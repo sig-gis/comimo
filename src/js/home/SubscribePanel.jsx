@@ -19,7 +19,6 @@ import { jsonRequest } from "../utils";
 
 export default function SubscribePanel({
   featureNames,
-  mapquestKey,
   subscribedList,
   setSubscribedList,
   active,
@@ -209,7 +208,6 @@ export default function SubscribePanel({
               isPanel={false}
               featureNames={featureNames}
               theMap={homeMap}
-              mapquestKey={mapquestKey}
             />
 
             {renderAddMunicipality()}

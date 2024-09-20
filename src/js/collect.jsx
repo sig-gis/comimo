@@ -305,7 +305,6 @@ export function pageInit(args, session) {
         role={session.role}
         username={session.username}
         mapboxToken={session.mapboxToken}
-        mapquestKey={session.mapquestKey}
         theMap="collectMap"
         versionDeployed={session.versionDeployed}
         showSearch={true}

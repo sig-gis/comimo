@@ -11,7 +11,6 @@ import IconTextButton from "./components/IconTextButton";
 import IconButton from "./components/IconButton";
 import {
   PageLayout,
-  mapquestKeyAtom,
   showInfoAtom,
   versionDeployedAtom,
   usernameAtom,
@@ -54,7 +53,6 @@ function HomeContents() {
   const [featureNames, setFeatureNames] = useAtom(featureNamesAtom);
   const username = useAtomValue(usernameAtom);
   const setShowInfo = useSetAtom(showInfoAtom);
-  const mapquestKey = useAtomValue(mapquestKeyAtom);
   const versionDeployed = useAtomValue(versionDeployedAtom);
   const [subscribedList, setSubscribedList] = useState([]);
   const [imageDates, setImageDates] = useState({});
@@ -165,7 +163,6 @@ function HomeContents() {
             <SubscribePanel
               active={visiblePanel === "subscribe"}
               featureNames={featureNames}
-              mapquestKey={mapquestKey}
               subscribedList={subscribedList}
               setSubscribedList={setSubscribedList}
             />
@@ -231,7 +228,6 @@ function HomeContents() {
                 <DownloadPanel
                   active={visiblePanel === "download"}
                   featureNames={featureNames}
-                  mapquestKey={mapquestKey}
                   selectedDates={selectedDates}
                 />
               </BarItem>
@@ -283,7 +279,6 @@ export function pageInit(args, session) {
         role={session.role}
         username={session.username}
         mapboxToken={session.mapboxToken}
-        mapquestKey={session.mapquestKey}
         theMap="homeMap"
         versionDeployed={session.versionDeployed}
         showSearch={true}

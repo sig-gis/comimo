@@ -24,7 +24,7 @@ const Label = styled.label`
   text-align: left;
 `;
 
-export default function DownloadPanel({ active, featureNames, mapquestKey, selectedDates }) {
+export default function DownloadPanel({ active, featureNames, selectedDates }) {
   const [showModal, setShowModal] = useAtom(showModalAtom);
   const [selectedRegion, setSelectedRegion] = useAtom(selectedRegionAtom);
   const homeMap = useAtomValue(homeMapAtom);
@@ -119,7 +119,6 @@ export default function DownloadPanel({ active, featureNames, mapquestKey, selec
                 isPanel={false}
                 featureNames={featureNames}
                 theMap={homeMap}
-                mapquestKey={mapquestKey}
               ></Search>
             </div>
           </>

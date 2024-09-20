@@ -15,7 +15,6 @@ import { collectMapAtom } from "../collect/CollectMap";
 export const myHeightAtom = atom(0);
 export const showInfoAtom = atom(false);
 export const mapboxTokenAtom = atom("");
-export const mapquestKeyAtom = atom("");
 export const versionDeployedAtom = atom("");
 export const usernameAtom = atom(null);
 export const visibleDropdownMenuAtom = atom(null);
@@ -34,7 +33,6 @@ export function PageLayout({
   username,
   children,
   mapboxToken,
-  mapquestKey,
   theMap,
   versionDeployed,
   showSearch,
@@ -44,7 +42,6 @@ export function PageLayout({
   const [myHeight, setMyHeight] = useAtom(myHeightAtom);
   const [showInfo, setShowInfo] = useAtom(showInfoAtom);
   const setMapboxToken = useSetAtom(mapboxTokenAtom);
-  const setMapquestKey = useSetAtom(mapquestKeyAtom);
   const setVersionDeployed = useSetAtom(versionDeployedAtom);
   const setUsername = useSetAtom(usernameAtom);
   const [activeDropDownMenu, setActiveDropDownMenu] = useAtom(activeDropDownMenuAtom);
@@ -93,7 +90,6 @@ export function PageLayout({
 
   useEffect(() => {
     setMapboxToken(mapboxToken);
-    setMapquestKey(mapquestKey);
     setVersionDeployed(versionDeployed);
     setUsername(username);
   }, []);

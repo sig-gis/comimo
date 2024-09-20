@@ -75,7 +75,7 @@ const Label = styled.span`
   text-align: left; */
 `;
 
-export default function Search({ theMap, featureNames = {}, mapquestKey, isPanel }) {
+export default function Search({ theMap, featureNames = {}, isPanel }) {
   // State
   const { t } = useTranslation();
   const setSelectedRegion = useSetAtom(selectedRegionAtom);
@@ -111,27 +111,6 @@ export default function Search({ theMap, featureNames = {}, mapquestKey, isPanel
       setLatLngText("");
     }
   }, [visiblePanel]);
-
-  const searchGeocode = () => {
-    const url = URLS.MAPQUEST + "?key=" + mapquestKey + "&location=" + searchText + ",Columbia";
-    jsonRequest(url, null, "GET")
-      .then((result) => {
-        setGeoCodedSearch(
-          result.results[0].locations.filter((l) => {
-            try {
-              return (
-                l.adminArea1 === "CO" &&
-                featureNames[l.adminArea4.toUpperCase()][l.adminArea5.toUpperCase()] &&
-                !l.adminArea6
-              );
-            } catch (err) {
-              return false;
-            }
-          })
-        );
-      })
-      .catch((error) => console.error(error));
-  };
 
   const processLatLng = () => {
     const pair = latLngText.split(",");
@@ -187,21 +166,6 @@ export default function Search({ theMap, featureNames = {}, mapquestKey, isPanel
       <div>
         {isPanel && (
           <>
-            <TextInput
-              id="inputGeocode"
-              label={t("search.internetLabel")}
-              onChange={(e) => setSearchText(e.target.value)}
-              onKeyUp={(e) => {
-                if (e.key === "Enter") searchGeocode();
-              }}
-              render={() => (
-                <Button onClick={searchGeocode} extraStyle={{ marginLeft: "0.25rem" }}>
-                  {t("search.goButton")}
-                </Button>
-              )}
-              value={searchText}
-            />
-            {geoSearchResults}
             <TextInput
               id="inputLatLng"
               label={t("search.coordLabel")}
