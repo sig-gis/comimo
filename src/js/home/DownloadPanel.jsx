@@ -65,6 +65,21 @@ export default function DownloadPanel({ active, featureNames, selectedDates }) {
     setFormat(event.target.value);
   };
 
+  const handleFileDownload = async (event) => {
+    event.preventDefault();
+    const downloadLink = format === "CSV" ? downloadURL.csvURL : downloadURL.kmlURL;
+    try {
+      const response = await fetch(downloadLink);
+      if (response.status === 200) {
+        window.location.href = downloadLink;
+      } else {
+        alert(`Error when downloading the requested file.`);
+      }
+    } catch (error) {
+      alert(`An unexpected error occurred: ${error.message}`);
+    }
+  }
+
   return (
     <ToolCard title={t("download.title")} active={active}>
       {showModal && <LoadingModal message={t("download.gettingUrl")} />}
@@ -158,15 +173,13 @@ export default function DownloadPanel({ active, featureNames, selectedDates }) {
                 </label>
               </div>
               <span>
-                <a href={format === "CSV" ? downloadURL.csvURL : downloadURL.kmlURL}>
+                <a href="#" onClick={handleFileDownload}>
                   {`${t("download.clickHere")}` +
-                    ` ${
-                      downloadURL.region === "all"
-                        ? t("download.completeData")
-                        : t("download.munData") + downloadURL.region.split("_").slice(1).join(", ")
-                    }` +
-                    ` ${t("download.prep")}` +
-                    ` ${downloadURL.alertsLayer}.`}
+                   ` ${downloadURL.region === "all"
+                       ? t("download.completeData")
+                       : t("download.munData") + downloadURL.region.split("_").slice(1).join(", ")}` +
+                   ` ${t("download.prep")}` +
+                   ` ${downloadURL.alertsLayer}.`}
                 </a>
               </span>
             </div>
