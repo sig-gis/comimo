@@ -12,8 +12,8 @@
 ;;; Constants
 
 (def ^:private max-age (* 24 60 60 1000)) ; Once a day
-(def validation-layers-location "users/comimoapp/ValidationCentroids")
-(def prediction-layers-location "users/comimoapp/ValidationPlots")
+(def validation-layers-location "projects/earth-engine-comimo/assets/validation-centroids")
+(def prediction-layers-location "projects/earth-engine-comimo/assets/validation-plots")
 
 ;;; Macros
 
