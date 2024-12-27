@@ -102,15 +102,15 @@
                     :nMines (filter #(re-matches #"\d{4}-\d{2}-\d{2}-N" %) image-list)
                     :pMines (filter #(re-matches #"\d{4}-\d{2}-\d{2}-P" %) image-list)})))
 
-(def vector-layers {:cMines              {:source     "users/comimoapp/ValidationPlots"
+(def vector-layers {:cMines              {:source     "projects/earth-engine-comimo/assets/validation-plots"
                                           :info-cols   ["ID"]
                                           :line        "purple"
                                           :fill        "purple"}
-                    :nMines              {:source      "users/comimoapp/ValidationPlots"
+                    :nMines              {:source      "projects/earth-engine-comimo/assets/validation-plots"
                                           :info-cols   ["ID"]
                                           :line        "red"
                                           :fill        "red"}
-                    :pMines              {:source      "users/comimoapp/ValidationPlots"
+                    :pMines              {:source      "projects/earth-engine-comimo/assets/validation-plots"
                                           :info-cols   ["ID"]
                                           :line        "orange"
                                           :fill        "orange"}

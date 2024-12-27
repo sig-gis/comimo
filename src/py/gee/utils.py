@@ -50,7 +50,7 @@ def addPolygonCoords(polygon):
 
 @lru_cache(maxsize=128)
 def getDownloadURL(source, region):
-   # source here is the layer active/chosen, e.g. "users/comimoapp/ValidationPlots/2021-09-01-P"
+   # source here is the layer active/chosen, e.g. "projects/earth-engine-comimo/assets/validation-plots/2021-09-01-P"
    fc = ee.FeatureCollection(source)
    regionFC = ee.FeatureCollection("users/comimoapp/Shapes/Level0") if region == "all" else subscribedRegionsToFC([region])
    intersect = fc.geometry().intersection(regionFC.geometry())
@@ -72,7 +72,7 @@ def getDownloadURL(source, region):
    }
 
 def mineExists(source, lat, lon):
-    # source here is the layer active/chosen, e.g. "users/comimoapp/ValidationPlots/2021-09-01-P"
+    # source here is the layer active/chosen, e.g. "projects/earth-engine-comimo/assets/validation-plots/2021-09-01-P"
     point = ee.Geometry.Point(lon, lat)
     mine = ee.FeatureCollection(source).geometry()
     return point.intersects(mine).getInfo()
@@ -123,7 +123,7 @@ def getPointsWithin(source, regions):
 
 
 def statsByRegion(source, subscribedRegions):
-    # source here is the layer active/chosen, e.g. "users/comimoapp/ValidationPlots/2021-09-01-P"
+    # source here is the layer active/chosen, e.g. "projects/earth-engine-comimo/assets/validation-plots/2021-09-01-P"
     fc = subscribedRegionsToFC(subscribedRegions)
     plots = ee.FeatureCollection(source)
     def check_intersection(feature):
@@ -138,7 +138,7 @@ def statsByRegion(source, subscribedRegions):
 
 
 def statsTotals(source, subscribedRegions):
-    # source here is the folder containing all data "users/comimoapp/ValidationPlots"
+    # source here is the folder containing all data "projects/earth-engine-comimo/assets/validation-plots"
     fc = subscribedRegionsToFC(subscribedRegions)
     tables = ee.data.listAssets(source)['assets']
     names = []
