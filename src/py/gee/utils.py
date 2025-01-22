@@ -59,11 +59,11 @@ def getDownloadURL(source, region):
    urlCsv = intersectFc.getDownloadURL(**{
        "selectors": ["coordinates"],
        "filetype": "CSV",
-       "filename": source[32:]
+       "filename": source[53:]
    })
    urlKml = intersectFc.getDownloadURL(**{
        "filetype": "KML",
-       "filename": source[32:]
+       "filename": source[53:]
    })
 
    return {
