@@ -34,7 +34,7 @@
 ;;; GEE Python interface
 
 (require-python '[sys :bind-ns])
-(py. (get-attr sys "path") "append" "src/py")
+(py. (get-attr sys "path") "append" "/home/danielhabib/sig/comimo/src/py")
 (require-python '[gee.utils :as utils])
 
 (defonce last-initialized (atom 0))
