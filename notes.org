@@ -1,0 +1,14 @@
+* ISSUE in dev and prod:
+
+:errType "ee.ee_exception.EEException"
+:errMsg "Project earth-engine-comimo is not registered to use Earth Engine. Visit https://console.cloud.google.com/earth-engine/configuration?project=earth-engine-comimo to register your project. See https://developers.google.com/earth-engine/guides/access for more details. If you have previously registered your project for noncommercial use and lost access, you will need to re-verify your eligibility. See the https://developers.google.com/earth-engine/gu
+
+#+begin_src sql
+select * from users
+#+end_src
+
+#+RESULTS:
+: user_uid | username | email         | password                                                     | token      | verified | created_date | role  | full_name | sector   | institution | default_lang
+: ---------+----------+---------------+--------------------------------------------------------------+------------+----------+--------------+-------+-----------+----------+-------------+-------------
+: 1        | admin    | admin@com.dev | $2a$06$hil4XcBS9HoWps5JwwbCjODVCi0PU4DYIZv0VM7SzGcEaf3q3VIT2 | 2022-04-22 | true     | 2025-11-25   | admin | COM Admin | academic | dev         | en
+: 2        | user     | user@com.dev  | $2a$06$KhY01lQEClNM2kSbEtW4.eIaZB.FAW6mb5NhteGOvLFEriPQc6iau | 2022-04-22 | true     | 2025-11-25   | user  | COM User  | academic | dev         | en
